@@ -1,21 +1,62 @@
 // @flow
 
 import React from 'react';
-import {NetInfo, StyleSheet, Text, View, WebView} from 'react-native';
+import {NetInfo} from 'react-native';
 import {AppLoading} from 'expo';
 import {connect} from 'react-redux';
-import TestContainer from '../containers/TestContainer';
 import {changeOnlineStatus, initialize} from "../actions/index";
+import {createBottomTabNavigator, createStackNavigator, createSwitchNavigator} from 'react-navigation';
+import LoginScreen from "../screens/auth/LoginScreen";
+import DashboardScreen from "../screens/user/DashboardScreen";
+import EditScreen from "../screens/user/EditScreen";
+import vars from '../vars';
+
+const AuthScreens = createStackNavigator({
+  Login: LoginScreen,
+});
+
+const UserScreens = createStackNavigator({
+  Dashboard: DashboardScreen,
+  Edit: EditScreen,
+}, {
+  navigationOptions: {
+    headerTintColor: vars.SHELTER_RED,
+  },
+});
+
+const BrowseStack = createStackNavigator({
+  Dashboard: DashboardScreen,
+});
+const ChatStack = createStackNavigator({
+  Dashboard: DashboardScreen,
+});
+const ReportingStack = createStackNavigator({
+  Dashboard: DashboardScreen,
+});
+
+const GroupScreens = createBottomTabNavigator({
+  Browse: BrowseStack,
+  Chat: ChatStack,
+  Reporting: ReportingStack
+}, {
+  // tab config
+});
+
+const MainNavigator = createSwitchNavigator(
+  {
+    Auth: AuthScreens,
+    User: UserScreens,
+    Group: GroupScreens,
+  }, {
+    initialRouteName: 'Auth',
+  }
+);
 
 type Props = {
   dispatch: () => {},
 }
 
 class AppContainer extends React.Component<Props> {
-  // state = {
-  //   isReady: false,
-  // };
-
   // Update "online" state based on device connection.
   // See https://facebook.github.io/react-native/docs/netinfo.html
   async componentDidMount() {
@@ -26,38 +67,19 @@ class AppContainer extends React.Component<Props> {
   }
 
   render() {
-    console.log('initializing is', this.props.initializing);
     if (this.props.initializing)
       return (
         <AppLoading
           startAsync={this.props.initialize}
-          onFinish={() => {}}
+          onFinish={() => {
+          }}
           onError={console.error}
         />
       );
 
-    return (
-      <View style={styles.container}>
-        <Text>Mini-test with kobo toolbox form</Text>
-        <TestContainer/>
-        <WebView
-          source={{uri: 'https://ee.humanitarianresponse.info/x/#XfkA2YFa'}}
-          style={{marginTop: 20, backgroundColor: '#dff', height: 100, width: 400}}
-        />
-      </View>
-    );
+    return <MainNavigator/>;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ff8',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-});
 
 const mapStateToProps = state => ({initializing: state.initializing});
 
