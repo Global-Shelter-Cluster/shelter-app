@@ -2,20 +2,16 @@
 
 import React from 'react';
 import {NetInfo, StyleSheet, Text, View, WebView} from 'react-native';
-// import {AppLoading} from 'expo';
+import {AppLoading} from 'expo';
 import {connect} from 'react-redux';
 import TestContainer from '../containers/TestContainer';
-import {changeOnlineStatus} from "../actions/index";
+import {changeOnlineStatus, initialize} from "../actions/index";
 
 type Props = {
   dispatch: () => {},
 }
 
-type State = {
-  // isReady: boolean,
-}
-
-class App extends React.Component<Props, State> {
+class AppContainer extends React.Component<Props> {
   // state = {
   //   isReady: false,
   // };
@@ -23,21 +19,22 @@ class App extends React.Component<Props, State> {
   // Update "online" state based on device connection.
   // See https://facebook.github.io/react-native/docs/netinfo.html
   async componentDidMount() {
-    const connectionInfoHandler = connectionInfo => this.props.dispatch(changeOnlineStatus(connectionInfo.type !== 'none'));
+    const connectionInfoHandler = connectionInfo => this.props.setOnline(connectionInfo.type !== 'none');
     NetInfo.addEventListener('connectionChange', connectionInfoHandler);
     const connectionInfo = await NetInfo.getConnectionInfo();
     connectionInfoHandler(connectionInfo);
   }
 
   render() {
-    // if (!this.state.isReady)
-    //   return (
-    //     <AppLoading
-    //       startAsync={this.load}
-    //       onFinish={() => this.setState({isReady: true})}
-    //       onError={console.error}
-    //     />
-    //   );
+    console.log('initializing is', this.props.initializing);
+    if (this.props.initializing)
+      return (
+        <AppLoading
+          startAsync={this.props.initialize}
+          onFinish={() => {}}
+          onError={console.error}
+        />
+      );
 
     return (
       <View style={styles.container}>
@@ -62,4 +59,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect()(App);
+const mapStateToProps = state => ({initializing: state.initializing});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    initialize: () => dispatch(initialize()),
+    setOnline: (isOnline: boolean) => dispatch(changeOnlineStatus(isOnline)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
