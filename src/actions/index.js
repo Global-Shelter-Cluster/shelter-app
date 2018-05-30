@@ -2,6 +2,7 @@
 
 import type {UserData} from "../reducers/user";
 import persist from "../persist";
+import {NetInfo} from 'react-native';
 
 export const CHANGE_ONLINE_STATUS = 'CHANGE_ONLINE_STATUS';
 export const changeOnlineStatus = (isOnline: boolean) => ({
@@ -48,13 +49,18 @@ export const logout = () => async dispatch => {
 
 export const INITIALIZE = 'INITIALIZE';
 export const initialize = () => async dispatch => {
-  function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  console.log('initializing...');
 
-  console.log('A');
-  await timeout(1000);
-  console.log('B');
+  // Update "online" state based on device connection.
+  // See https://facebook.github.io/react-native/docs/netinfo.html
+  const connectionInfoHandler = connectionInfo => dispatch(changeOnlineStatus(connectionInfo.type !== 'none'));
+  const connectionInfo = await NetInfo.getConnectionInfo();
+  connectionInfoHandler(connectionInfo);
+  NetInfo.addEventListener('connectionChange', connectionInfoHandler);
+
+  // Initialize persist object (loads user object if already logged in)
+  await persist.init();
+  console.log('...initialized');
 
   dispatch(changeInitializing(false));
 };

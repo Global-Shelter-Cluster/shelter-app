@@ -1,6 +1,6 @@
 import React from 'react';
 import TestContainer from '../../containers/TestContainer';
-import {Button, StyleSheet, View, WebView} from 'react-native';
+import {Button, StyleSheet, View, WebView, Text} from 'react-native';
 import {logout} from "../../actions";
 import {connect} from 'react-redux';
 
@@ -37,6 +37,7 @@ class DashboardScreen extends React.Component {
 
   render() {
     return <View style={styles.container}>
+      <Text>{this.props.userData.username}</Text>
       <TestContainer/>
       <WebView
         source={{uri: 'https://ee.humanitarianresponse.info/x/#XfkA2YFa'}}

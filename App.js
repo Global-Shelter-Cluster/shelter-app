@@ -21,7 +21,6 @@ const store = createStore(
 );
 
 persist.store = store;
-persist.init();
 
 export default () => (
   <Provider store={store}>

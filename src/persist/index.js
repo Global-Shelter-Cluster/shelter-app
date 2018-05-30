@@ -8,13 +8,13 @@ import type {Store} from "redux";
 class Persist {
   store: Store;
 
-  init() {
-    AsyncStorage.getItem('@Shelter:userData').then((userData: UserData) => {
-      if (userData === null)
-        return;
+  async init() {
+    const userData = await AsyncStorage.getItem('@Shelter:userData');
 
-      this.store.dispatch(setUserData(JSON.parse(userData)));
-    });
+    if (userData === null)
+      return;
+
+    this.store.dispatch(setUserData(JSON.parse(userData)));
   }
 
   saveUserData(userData: UserData) {

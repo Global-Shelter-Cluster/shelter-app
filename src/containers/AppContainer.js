@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react';
-import {NetInfo} from 'react-native';
 import {AppLoading} from 'expo';
 import {connect} from 'react-redux';
 import {changeOnlineStatus, initialize} from "../actions/index";
@@ -57,15 +56,6 @@ type Props = {
 }
 
 class AppContainer extends React.Component<Props> {
-  // Update "online" state based on device connection.
-  // See https://facebook.github.io/react-native/docs/netinfo.html
-  async componentDidMount() {
-    const connectionInfoHandler = connectionInfo => this.props.setOnline(connectionInfo.type !== 'none');
-    NetInfo.addEventListener('connectionChange', connectionInfoHandler);
-    const connectionInfo = await NetInfo.getConnectionInfo();
-    connectionInfoHandler(connectionInfo);
-  }
-
   render() {
     if (this.props.initializing)
       return (
