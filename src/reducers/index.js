@@ -3,12 +3,12 @@
 import {combineReducers} from 'redux';
 import online from './online';
 import initializing from './initializing';
-import groups from './groups';
-import user from './user';
+import objects from './objects';
+import currentUser from './currentUser';
 
 export default combineReducers({
   online,
   initializing,
-  groups,
-  user,
+  objects,
+  currentUser,
 });

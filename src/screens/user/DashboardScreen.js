@@ -1,8 +1,11 @@
+// @flow
+
 import React from 'react';
 import TestContainer from '../../containers/TestContainer';
-import {Button, StyleSheet, View, WebView, Text} from 'react-native';
+import {Button, StyleSheet, Text, View, WebView} from 'react-native';
 import {logout} from "../../actions";
 import {connect} from 'react-redux';
+import type {UserObject} from "../../model/user";
 
 const styles = StyleSheet.create({
   container: {
@@ -14,10 +17,17 @@ const styles = StyleSheet.create({
   },
 });
 
-class DashboardScreen extends React.Component {
+type Props = {
+  user: UserObject,
+  navigation: { setParams: ({}) => {} },
+  logout: () => {},
+}
+
+class DashboardScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => {
     const params = navigation.state.params || {
-      logout: () => {}
+      logout: () => {
+      }
     };
     return {
       title: 'Dashboard',
@@ -37,7 +47,7 @@ class DashboardScreen extends React.Component {
 
   render() {
     return <View style={styles.container}>
-      <Text>{this.props.userData.username}</Text>
+      <Text>{this.props.user.name}</Text>
       <TestContainer/>
       <WebView
         source={{uri: 'https://ee.humanitarianresponse.info/x/#XfkA2YFa'}}
@@ -47,9 +57,14 @@ class DashboardScreen extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  userData: state.user.data,
-});
+const mapStateToProps = state => {
+  const followedGroups = [];
+
+  return {
+    user: state.objects.users[state.currentUser],
+    followedGroups
+  }
+};
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),

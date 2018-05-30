@@ -1,8 +1,8 @@
 // @flow
 
-import type {UserData} from "../reducers/user";
 import persist from "../persist";
 import {NetInfo} from 'react-native';
+import type {UserObject} from "../model/user";
 
 export const CHANGE_ONLINE_STATUS = 'CHANGE_ONLINE_STATUS';
 export const changeOnlineStatus = (isOnline: boolean) => ({
@@ -16,34 +16,30 @@ export const changeInitializing = (isInitializing: boolean) => ({
   isInitializing,
 });
 
-export const SET_USER_DATA = 'SET_USER_DATA';
-export const setUserData = (userData: UserData | null) => ({
-  type: SET_USER_DATA,
-  userData,
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const setCurrentUser = (id: number | null) => ({
+  type: SET_CURRENT_USER,
+  id,
 });
 
-export const LOGIN = 'LOGIN';
-export const login = (user: string, pass: string) => async dispatch => {
-  function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+export const SET_OBJECTS = 'SET_OBJECTS';
+export const setObjects = (objects: {}) => ({
+  type: SET_OBJECTS,
+  objects,
+});
 
-  console.log('logging in with user ', user, ' and pwd ', pass);
-  await timeout(1000);
-  console.log('logged in');
-  const userData = {
-    id: 123,
-    updated: 12345678, //timestamp
-    groups: [10, 11],
-    username: "Camilo Bravo",
-  };
-  dispatch(setUserData(userData));
-  persist.saveUserData(userData);
-};
+export const CLEAR_ALL_OBJECTS = 'CLEAR_ALL_OBJECTS';
+export const clearAllObjects = () => ({
+  type: CLEAR_ALL_OBJECTS,
+});
+
+// export const LOGIN = 'LOGIN';
+export const login = (user: string, pass: string) => async () => persist.login(user, pass);
 
 export const LOGOUT = 'LOGOUT';
 export const logout = () => async dispatch => {
-  dispatch(setUserData(null));
+  dispatch(setCurrentUser(null));
+  dispatch(clearAllObjects());
   persist.clearAll();
 };
 

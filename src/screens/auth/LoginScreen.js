@@ -28,7 +28,7 @@ class LoginScreen extends React.Component {
 
 const mapStateToProps = state => ({
   initializing: state.initializing,
-  loggedIn: state.user.data !== undefined,
+  loggedIn: state.currentUser !== null,
 });
 
 const mapDispatchToProps = dispatch => ({
