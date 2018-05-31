@@ -1,6 +1,7 @@
 // @flow
 
 import type {Objects} from "../model";
+import type {ObjectRequest} from "./index";
 
 /**
  * Class Remote.
@@ -22,6 +23,34 @@ class Remote {
   }
 
   async login(user: string, pass: string): Objects {
+    //TODO: fetch from Drupal
+    await Remote.temporaryDelayGenerator();
+    return {
+      user: {
+        "733": {
+          id: 733,
+          name: 'Camilo',
+          mail: 'hola@cambraca.com',
+          picture: "https://www.sheltercluster.org/sites/default/files/styles/thumbnail/public/pictures/picture-733-1509053312.jpg?itok=rgtEPr7h",
+          groups: [9175, 10318],
+        },
+      },
+      group: {
+        "9175": {
+          type: "response",
+          id: 9175,
+          title: "Ecuador Earthquake 2016",
+        },
+        "10318": {
+          type: "response",
+          id: 10318,
+          title: "Haiti Hurricane Matthew 2016",
+        },
+      },
+    };
+  }
+
+  async loadObjects(requests: Array<ObjectRequest>): Objects {
     //TODO: fetch from Drupal
     await Remote.temporaryDelayGenerator();
     return {

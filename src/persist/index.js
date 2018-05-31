@@ -35,6 +35,10 @@ class Persist {
     return ['@Shelter', ...elements].join(':');
   }
 
+  static now() {
+    return Math.floor(Date.now() / 1000);
+  }
+
   async init() {
     this.remote = new Remote;
 
@@ -43,6 +47,10 @@ class Persist {
       if (currentUserId === null)
         return;
       const id: number = parseInt(currentUserId, 10);
+
+      // TODO: this should replace the stuff below
+      await this.loadObjects([{type: "user", id: id}], true);
+
       const currentUserData: string | null = await AsyncStorage.getItem(Persist.cacheKey('user', id));
       if (currentUserData === null)
         return;
@@ -57,7 +65,7 @@ class Persist {
     for (const type in objects) {
       for (const id in objects[type]) {
         if (resetLastRead) {
-          objects[type][id]._last_read = Math.floor(Date.now() / 1000);
+          objects[type][id]._last_read = Persist.now();
         }
 
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
@@ -82,7 +90,7 @@ class Persist {
 
     // Save everything we received (user object, groups, etc.)
     this.saveObjects(objects, true);
-    this.dispatchObjects(objects, true);
+    this.dispatchObjects(objects);
 
     // Now set the current user id
     const currentUserId = parseInt(Object.keys(objects.user)[0], 10);
@@ -90,16 +98,7 @@ class Persist {
     this.store.dispatch(setCurrentUser(currentUserId));
   }
 
-  // If recursiveLoadFirst is true, first loads any objects related to the ones received.
-  async dispatchObjects(objects: Objects, recursiveLoadFirst: boolean = false) {
-    if (recursiveLoadFirst) {
-      // const toLoad: Array<ObjectRequest> = [];
-      // for (const type in objects) {
-      //   for (const object of objects[type])
-      //     toLoad.push(...Model.getChildren(type, object));
-      // }
-    }
-    console.log('about to dispatch objects', objects);
+  async dispatchObjects(objects: Objects) {
     this.store.dispatch(setObjects(objects));
   }
 
@@ -113,14 +112,69 @@ class Persist {
    *
    * If currently offline, dispatches only the objects it can find on AsyncStorage.
    */
-  async loadObjects(objects: Array<ObjectRequest>, forceRemoteLoad: boolean = false) {
-    const loaded = await AsyncStorage.multiGet(objects.map(o => Persist.cacheKey(o.type, o.id)));
+  async loadObjects(requests: Array<ObjectRequest>, recursive: boolean = false, forceRemoteLoad: boolean = false) {
+    const loaded = await AsyncStorage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id)));
 
     console.log('loadObjects(), loaded:', loaded);
-    // this.store.dispatch(setObjects(loaded));
 
-    if (this.store.getState().online) {
+    if (loaded.length) {
+      const objects = {};
 
+      loaded
+        .map(item => {
+          const type = item[0].split(':').splice(-2, 1); // Next to last part in cache key (e.g. "@Shelter:user:123")
+          const id = item[0].split(':').slice(-1); // Last part
+
+          if (!objects[type]) objects[type] = {};
+          objects[type][id] = item[1];
+        });
+
+      this.dispatchObjects(objects);
+    }
+
+    const now = Persist.now();
+
+    const expired: Array<ObjectRequest> = loaded
+      .map(item => ({
+        type: item[0].split(':').splice(-2, 1), // Next to last part in cache key (e.g. "@Shelter:user:123")
+        id: item[0].split(':').slice(-1), // Last part
+        object: item[1],
+      }))
+      .filter(item => (now - item.object._last_read) > expirationLimitsByObjectType[item.type])
+      .map(item => ({type: item.type, id: item.id}));
+
+    const isOnline = this.store.getState().online;
+    let loadedExpired = false;
+
+    if (isOnline) {
+      const loadImmediately: Array<ObjectRequest> = loaded.length >= requests.length
+        ? [] // We don't need to load from remote immediately, or we're offline
+        : requests
+          .filter(request => {
+            for (const item of loaded) {
+              const type = item[0].split(':').splice(-2, 1);
+              const id = item[0].split(':').slice(-1);
+              if (type === request.type && id === request.id)
+              // This object request was found in "loaded" (i.e. it was loaded), so we exclude it from loadImmediately.
+                return false;
+            }
+            return true;
+          });
+
+      if (loadImmediately.length) {
+        loadImmediately.push(...expired); // Might as well load the expired objects in the same call
+        loadedExpired = true; // Flag to stop from doing this twice
+
+        const newObjects: Objects = await this.remote.loadObjects(loadImmediately);
+        this.saveObjects(newObjects, true);
+        this.dispatchObjects(newObjects);
+      }
+    }
+
+    if (isOnline && !loadedExpired && expired.length) {
+      const newObjects: Objects = await this.remote.loadObjects(expired);
+      this.saveObjects(newObjects, true);
+      this.dispatchObjects(newObjects);
     }
   }
 }

@@ -21,17 +21,29 @@ const styles = StyleSheet.create({
 });
 
 type Props = {
+  online: boolean,
   user: UserObject,
   groups: Array<GroupObject>,
   navigation: { setParams: ({}) => {} },
   logout: () => {},
 }
 
+const mapStateToProps = state => {
+  return {
+    online: state.online,
+    user: getCurrentUser(state),
+    groups: getUserGroups(state),
+  }
+};
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logout()),
+});
+
 class DashboardScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => {
     const params = navigation.state.params || {
-      logout: () => {
-      }
+      logout: () => {}
     };
     return {
       title: 'Dashboard',
@@ -61,19 +73,5 @@ class DashboardScreen extends React.Component<Props> {
     </View>;
   }
 }
-
-const mapStateToProps = state => {
-  const followedGroups = [];
-
-  return {
-    user: getCurrentUser(state),
-    groups: getUserGroups(state),
-    followedGroups
-  }
-};
-
-const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout()),
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(DashboardScreen);
