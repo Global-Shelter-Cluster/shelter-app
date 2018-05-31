@@ -7,6 +7,8 @@ export interface UserObject {
   _last_read?: number,
   id: number,
   name: string,
+  mail: string,
+  picture: string,
   groups?: Array<number>,
 }
 

@@ -19,7 +19,7 @@ const UserScreens = createStackNavigator({
   Edit: EditScreen,
 }, {
   navigationOptions: {
-    headerTintColor: vars.SHELTER_RED,
+    // headerTintColor: vars.SHELTER_RED,
   },
 });
 

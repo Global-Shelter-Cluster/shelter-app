@@ -1,24 +1,16 @@
 // @flow
 
 import React from 'react';
-import TestContainer from '../../containers/TestContainer';
-import {Button, StyleSheet, Text, View, WebView} from 'react-native';
+import {Button, Text, View} from 'react-native';
 import {logout} from "../../actions";
 import {connect} from 'react-redux';
 import type {UserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
-import {getUserGroups} from "../../model/group";
 import type {GroupObject} from "../../model/group";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ff8',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-});
+import {getUserGroups} from "../../model/group";
+import Dashboard from './Dashboard';
+import {FontAwesome} from '@expo/vector-icons';
+import vars from "../../vars";
 
 type Props = {
   online: boolean,
@@ -41,34 +33,48 @@ const mapDispatchToProps = dispatch => ({
 class DashboardScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => {
     const params = navigation.state.params || {
-      logout: () => {}
+      logout: () => {
+      },
+      online: false,
     };
+
+    const headerLeft = !params.online
+      ? <FontAwesome name="wifi" size={20} color={vars.ACCENT_RED} style={{marginLeft: 6}} />
+      : null;
+
+    const headerRight = params.online
+      ? <View>
+        <Button
+          onPress={() => {
+            params.logout();
+            navigation.navigate('Auth');
+          }}
+          title="Log out"
+        />
+
+      </View>
+      : null;
+
+    const title = 'Dashboard';
+
     return {
-      title: 'Dashboard',
-      headerRight: <Button
-        onPress={() => {
-          params.logout();
-          navigation.navigate('Auth');
-        }}
-        title="Log out"
-      />
+      title: title,
+      headerLeft: headerLeft,
+      headerRight: headerRight,
     };
   };
 
   componentWillMount() {
-    this.props.navigation.setParams({logout: this.props.logout});
+    this.props.navigation.setParams({logout: this.props.logout, online: this.props.online});
+  }
+
+  componentDidUpdate() {
+    if (this.props.online !== this.props.navigation.getParam('online'))
+      this.props.navigation.setParams({online: this.props.online});
   }
 
   render() {
-    return <View style={styles.container}>
-      <Text>{this.props.user.name}</Text>
-      <Text>groups: {JSON.stringify(this.props.groups)}</Text>
-      <TestContainer/>
-      <WebView
-        source={{uri: 'https://ee.humanitarianresponse.info/x/#XfkA2YFa'}}
-        style={{marginTop: 20, backgroundColor: '#dff', height: 100, width: 400}}
-      />
-    </View>;
+    return <Dashboard {...this.props}/>;
   }
 }
 
