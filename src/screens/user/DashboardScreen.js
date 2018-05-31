@@ -6,6 +6,9 @@ import {Button, StyleSheet, Text, View, WebView} from 'react-native';
 import {logout} from "../../actions";
 import {connect} from 'react-redux';
 import type {UserObject} from "../../model/user";
+import {getCurrentUser} from "../../model/user";
+import {getUserGroups} from "../../model/group";
+import type {GroupObject} from "../../model/group";
 
 const styles = StyleSheet.create({
   container: {
@@ -19,6 +22,7 @@ const styles = StyleSheet.create({
 
 type Props = {
   user: UserObject,
+  groups: Array<GroupObject>,
   navigation: { setParams: ({}) => {} },
   logout: () => {},
 }
@@ -48,6 +52,7 @@ class DashboardScreen extends React.Component<Props> {
   render() {
     return <View style={styles.container}>
       <Text>{this.props.user.name}</Text>
+      <Text>groups: {JSON.stringify(this.props.groups)}</Text>
       <TestContainer/>
       <WebView
         source={{uri: 'https://ee.humanitarianresponse.info/x/#XfkA2YFa'}}
@@ -61,7 +66,8 @@ const mapStateToProps = state => {
   const followedGroups = [];
 
   return {
-    user: state.objects.users[state.currentUser],
+    user: getCurrentUser(state),
+    groups: getUserGroups(state),
     followedGroups
   }
 };

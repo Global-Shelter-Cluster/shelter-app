@@ -5,22 +5,23 @@ import type {UserObject} from "../model/user";
 import type {GroupObject} from "../model/group";
 
 export interface Objects {
-  users: Array<UserObject>,
-  groups: Array<GroupObject>,
+  user?: { [number]: UserObject },
+  group?: { [number]: GroupObject },
 }
 
-const initialObjectsState: Objects = {users: [], groups: []};
+const initialObjectsState: Objects = {user: {}, group: {}};
 
-const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: {} }) => {
+const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: Objects }) => {
   switch (action.type) {
     case CLEAR_ALL_OBJECTS:
       return initialObjectsState;
     case SET_OBJECTS:
-      const newState = Object.assign({}, state); // shallow copy
-      for (const type in state) {
-        if (action.objects !== undefined && action.objects[type] !== undefined)
+      // debugger;
+      const newState = Object.assign({}, state); // copies references to the actual objects
+      if (action.objects)
+        for (const type in state)
           newState[type] = Object.assign({}, state[type], action.objects[type]);
-      }
+      console.log('newState',newState,state,action);
       return newState;
     default:
       return state

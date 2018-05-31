@@ -1,6 +1,7 @@
 // @flow
 
 import type {ObjectRequest} from "../persist";
+import {createSelector} from 'reselect';
 
 export interface UserObject {
   updated: number,
@@ -15,5 +16,10 @@ class User {
     return groups;
   }
 }
+
+export const getCurrentUser = createSelector(
+  [state => state.currentUser, state => state.objects.user],
+  (currentUser, users) => users[currentUser]
+);
 
 export default User;

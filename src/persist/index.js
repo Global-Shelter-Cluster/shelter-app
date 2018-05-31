@@ -5,7 +5,6 @@ import {setCurrentUser, setObjects} from "../actions/index";
 import type {UserData} from "../reducers/user";
 import type {Store} from "redux";
 import Remote from "./remote";
-import Model from "../model";
 import type {Objects} from "../reducers/objects";
 
 export interface ObjectRequest {
@@ -20,6 +19,8 @@ const expirationLimitsByObjectType = { // 3600s = 1hr
   "event": 3600 * 24,
   "factsheet": 3600 * 24,
 };
+
+const lastReadPropertyName = '_last_read';
 
 /**
  * Class Persist.
@@ -41,22 +42,37 @@ class Persist {
     this.remote = new Remote;
 
     try {
-      const currentUserId: string = await AsyncStorage.getItem(Persist.cacheKey('currentUser'));
+      const currentUserId: string | null = await AsyncStorage.getItem(Persist.cacheKey('currentUser'));
       if (currentUserId === null)
         return;
       const id: number = parseInt(currentUserId, 10);
-      const currentUserData: string = await AsyncStorage.getItem(Persist.cacheKey('user', id));
-      await this.dispatchObjects({users: {[id]: JSON.parse(currentUserData)}});
+      const currentUserData: string | null = await AsyncStorage.getItem(Persist.cacheKey('user', id));
+      if (currentUserData === null)
+        return;
+      await this.dispatchObjects({user: {[id]: JSON.parse(currentUserData)}});
       await this.store.dispatch(setCurrentUser(id));
     } catch (e) {
     }
   }
 
-  saveUserData(id: number, data: UserData) {
-    AsyncStorage.multiSet([
-      [Persist.cacheKey('currentUser'), '' + id],
-      [Persist.cacheKey('user', id), JSON.stringify(data)],
-    ]);
+  saveObjects(objects: Objects, resetLastRead: boolean = false) {
+    const data = [];
+    for (const type in objects) {
+      for (const id in objects[type]) {
+        if (resetLastRead) {
+          objects[type][id][lastReadPropertyName] = Math.floor(Date.now() / 1000);
+        }
+
+        data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
+      }
+    }
+
+    console.log('saveObjects data', data);
+    AsyncStorage.multiSet(data);
+    // AsyncStorage.multiSet([
+    //   [Persist.cacheKey('currentUser'), '' + id],
+    //   [Persist.cacheKey('user', id), JSON.stringify(data)],
+    // ]);
   }
 
   clearAll() {
@@ -65,34 +81,41 @@ class Persist {
 
   async login(user: string, pass: string) {
     // Always get user data from remote on login
-    const userData = await this.remote.loginAndGetUserData(user, pass);
-    this.saveUserData(userData.id, userData);
+    const objects = await this.remote.login(user, pass);
 
-    this.dispatchObjects({users: {[userData.id]: userData}}, false); // TODO: change 'deep' param to true
-    this.store.dispatch(setCurrentUser(userData.id));
-    // this.dispatchUserData(userData);
+    // Save everything we received (user object, groups, etc.)
+    this.saveObjects(objects, true);
+    this.dispatchObjects(objects, true);
+
+    // Now set the current user id
+    const currentUserId = parseInt(Object.keys(objects.user)[0], 10);
+    AsyncStorage.setItem(Persist.cacheKey('currentUser'), '' + currentUserId);
+    this.store.dispatch(setCurrentUser(currentUserId));
   }
 
-  async dispatchObjects(objects: Objects, deep: boolean = false) {
-    if (deep) {
-      const toLoad: Array<ObjectRequest> = [];
-      for (const type in objects) {
-        for (const object of objects[type])
-          toLoad.push(...Model.getChildren(type, object));
-      }
+  // If recursiveLoadFirst is true, first loads any objects related to the ones received.
+  async dispatchObjects(objects: Objects, recursiveLoadFirst: boolean = false) {
+    if (recursiveLoadFirst) {
+      // const toLoad: Array<ObjectRequest> = [];
+      // for (const type in objects) {
+      //   for (const object of objects[type])
+      //     toLoad.push(...Model.getChildren(type, object));
+      // }
     }
+    console.log('about to dispatch objects', objects);
     this.store.dispatch(setObjects(objects));
   }
 
-  async dispatchUserData(userData: UserData) {
-    // Load all data on followed groups
-    // this.loadObjects()
-    // userData.groups
-    console.log('diUD', userData);
-
-    this.store.dispatch(setCurrentUser(userData));
-  }
-
+  /**
+   * Loads objects from AsyncStorage and puts them into the store.
+   *
+   * If it can't find any of them, it first loads the ones that are missing from the remote server.
+   *
+   * Triggers a remote load for expired ones. If every object was found in AsyncStorage, this happens asynchronously
+   * after the objects are dispatched.
+   *
+   * If currently offline, dispatches only the objects it can find on AsyncStorage.
+   */
   async loadObjects(objects: Array<ObjectRequest>, forceRemoteLoad: boolean = false) {
     const loaded = await AsyncStorage.multiGet(objects.map(o => Persist.cacheKey(o.type, o.id)));
 
