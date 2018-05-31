@@ -66,12 +66,7 @@ class Persist {
       }
     }
 
-    console.log('saveObjects data', data);
     AsyncStorage.multiSet(data);
-    // AsyncStorage.multiSet([
-    //   [Persist.cacheKey('currentUser'), '' + id],
-    //   [Persist.cacheKey('user', id), JSON.stringify(data)],
-    // ]);
   }
 
   clearAll() {

@@ -7,7 +7,7 @@ export interface UserObject {
   _last_read?: number,
   id: number,
   name: string,
-  groups: Array<number>,
+  groups?: Array<number>,
 }
 
 class User {

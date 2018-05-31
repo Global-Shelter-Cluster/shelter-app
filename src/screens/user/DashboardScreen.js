@@ -28,13 +28,11 @@ type Props = {
   logout: () => {},
 }
 
-const mapStateToProps = state => {
-  return {
-    online: state.online,
-    user: getCurrentUser(state),
-    groups: getUserGroups(state),
-  }
-};
+const mapStateToProps = state => ({
+  online: state.online,
+  user: getCurrentUser(state),
+  groups: getUserGroups(state),
+});
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),
