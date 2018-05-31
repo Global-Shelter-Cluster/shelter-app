@@ -2,10 +2,9 @@
 
 import {AsyncStorage} from 'react-native';
 import {setCurrentUser, setObjects} from "../actions/index";
-import type {UserData} from "../reducers/user";
 import type {Store} from "redux";
 import Remote from "./remote";
-import type {Objects} from "../reducers/objects";
+import type {Objects} from "../model";
 
 export interface ObjectRequest {
   type: "group" | "user" | "document" | "event" | "factsheet",
@@ -19,8 +18,6 @@ const expirationLimitsByObjectType = { // 3600s = 1hr
   "event": 3600 * 24,
   "factsheet": 3600 * 24,
 };
-
-const lastReadPropertyName = '_last_read';
 
 /**
  * Class Persist.
@@ -60,7 +57,7 @@ class Persist {
     for (const type in objects) {
       for (const id in objects[type]) {
         if (resetLastRead) {
-          objects[type][id][lastReadPropertyName] = Math.floor(Date.now() / 1000);
+          objects[type][id]._last_read = Math.floor(Date.now() / 1000);
         }
 
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);

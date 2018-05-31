@@ -6,14 +6,14 @@ import {getCurrentUser} from "./user";
 import {createSelector} from 'reselect';
 
 export interface GroupObject {
-  updated: number,
+  _last_read?: number,
   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
   id: number,
   title: string,
 }
 
 class Group {
-  static getChildren(group: GroupObject, deep: boolean = false): Array<ObjectRequest> {
+  static getRelated(group: GroupObject, deep: boolean = false): Array<ObjectRequest> {
     return [];
   }
 }

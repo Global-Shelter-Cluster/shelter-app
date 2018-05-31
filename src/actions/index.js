@@ -2,7 +2,7 @@
 
 import persist from "../persist";
 import {NetInfo} from 'react-native';
-import type {UserObject} from "../model/user";
+import type {Objects} from "../model";
 
 export const CHANGE_ONLINE_STATUS = 'CHANGE_ONLINE_STATUS';
 export const changeOnlineStatus = (isOnline: boolean) => ({
@@ -23,7 +23,7 @@ export const setCurrentUser = (id: number | null) => ({
 });
 
 export const SET_OBJECTS = 'SET_OBJECTS';
-export const setObjects = (objects: {}) => ({
+export const setObjects = (objects: Objects) => ({
   type: SET_OBJECTS,
   objects,
 });

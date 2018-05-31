@@ -4,14 +4,14 @@ import type {ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
 
 export interface UserObject {
-  updated: number,
+  _last_read?: number,
   id: number,
   name: string,
   groups: Array<number>,
 }
 
 class User {
-  static getChildren(user: UserObject, deep: boolean = false): Array<ObjectRequest> {
+  static getRelated(user: UserObject, deep: boolean = false): Array<ObjectRequest> {
     const groups = user.groups.map(id => ({type: "group", id: id}));
     return groups;
   }

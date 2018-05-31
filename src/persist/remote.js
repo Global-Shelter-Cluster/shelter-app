@@ -1,7 +1,6 @@
 // @flow
 
-import type {UserData} from "../reducers/user";
-import type {Objects} from "../reducers/objects";
+import type {Objects} from "../model";
 
 /**
  * Class Remote.
