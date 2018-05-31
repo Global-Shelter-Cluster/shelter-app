@@ -5,6 +5,7 @@ import {setCurrentUser, setObjects} from "../actions/index";
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects} from "../model";
+import Model from "../model";
 
 export interface ObjectRequest {
   type: "group" | "user" | "document" | "event" | "factsheet",
@@ -111,22 +112,61 @@ class Persist {
    * after the objects are dispatched.
    *
    * If currently offline, dispatches only the objects it can find on AsyncStorage.
+   *
+   * If called with recursive=true, this will also load all related objects.
    */
   async loadObjects(requests: Array<ObjectRequest>, recursive: boolean = false, forceRemoteLoad: boolean = false) {
-    const loaded = await AsyncStorage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id)));
+    const convertItem = item => ({
+      type: item[0].split(':').splice(-2, 1)[0], // Next to last part in cache key (e.g. "@Shelter:user:123")
+      id: item[0].split(':').slice(-1)[0], // Last part
+      object: JSON.parse(item[1]),
+    });
 
-    console.log('loadObjects(), loaded:', loaded);
+    const loaded = (await AsyncStorage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id)))).map(convertItem);
 
     if (loaded.length) {
+      if (recursive) {
+        let continueLoop = true; // When nothing was done on the loop, this is set to false
+        let iterations = 10; // Limit the number of times we do this to prevent an infinite loop (which shouldn't happen anyway)
+
+        do {
+          const allRelatedRequests: Array<ObjectRequest> = [];
+          const countBeforeProcessing = requests.length;
+
+          loaded.map(item => {
+            let relatedRequests = Model.getRelated(item.type, item.object);
+
+            relatedRequests = relatedRequests
+              .filter((relatedRequest: ObjectRequest) => {
+                for (const request of requests) {
+                  if (relatedRequest.type === request.type && relatedRequest.id === request.id)
+                    return false; // Already in the original "requests"
+                }
+                return true;
+              });
+
+            allRelatedRequests.push(...relatedRequests);
+            requests.push(...relatedRequests);
+          });
+
+          if (allRelatedRequests.length) {
+            const temp = await AsyncStorage.multiGet(allRelatedRequests.map(o => Persist.cacheKey(o.type, o.id)));
+            loaded.push(...temp.map(convertItem));
+          }
+
+          // Continue as long as there were new requests added
+          continueLoop = requests.length > countBeforeProcessing;
+        } while (continueLoop && (iterations-- > 0));
+      }
+
       const objects = {};
 
       loaded
         .map(item => {
-          const type = item[0].split(':').splice(-2, 1); // Next to last part in cache key (e.g. "@Shelter:user:123")
-          const id = item[0].split(':').slice(-1); // Last part
+          if (objects[item.type] === undefined)
+            objects[item.type] = {};
 
-          if (!objects[type]) objects[type] = {};
-          objects[type][id] = item[1];
+          objects[item.type][item.id] = item.object;
         });
 
       this.dispatchObjects(objects);
@@ -135,11 +175,6 @@ class Persist {
     const now = Persist.now();
 
     const expired: Array<ObjectRequest> = loaded
-      .map(item => ({
-        type: item[0].split(':').splice(-2, 1), // Next to last part in cache key (e.g. "@Shelter:user:123")
-        id: item[0].split(':').slice(-1), // Last part
-        object: item[1],
-      }))
       .filter(item => (now - item.object._last_read) > expirationLimitsByObjectType[item.type])
       .map(item => ({type: item.type, id: item.id}));
 
@@ -152,11 +187,8 @@ class Persist {
         : requests
           .filter(request => {
             for (const item of loaded) {
-              const type = item[0].split(':').splice(-2, 1);
-              const id = item[0].split(':').slice(-1);
-              if (type === request.type && id === request.id)
-              // This object request was found in "loaded" (i.e. it was loaded), so we exclude it from loadImmediately.
-                return false;
+              if (item.type === request.type && item.id === request.id)
+                return false; // This object request was found in "loaded" (i.e. it was loaded), so we exclude it from loadImmediately.
             }
             return true;
           });

@@ -13,7 +13,7 @@ export interface GroupObject {
 }
 
 class Group {
-  static getRelated(group: GroupObject, deep: boolean = false): Array<ObjectRequest> {
+  static getRelated(group: GroupObject): Array<ObjectRequest> {
     return [];
   }
 }

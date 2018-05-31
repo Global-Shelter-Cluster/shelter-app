@@ -11,7 +11,7 @@ export interface UserObject {
 }
 
 class User {
-  static getRelated(user: UserObject, deep: boolean = false): Array<ObjectRequest> {
+  static getRelated(user: UserObject): Array<ObjectRequest> {
     const groups = user.groups.map(id => ({type: "group", id: id}));
     return groups;
   }

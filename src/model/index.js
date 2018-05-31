@@ -17,14 +17,16 @@ export const initialObjectsState: Objects = {
 };
 
 class Model {
-  static getRelated(type, object, deep: boolean = false): Array<ObjectRequest> {
+  static getRelated(type, object): Array<ObjectRequest> {
     switch (type) {
       case 'user':
-        return User.getRelated(object, deep);
+        return User.getRelated(object);
       case 'group':
-        return Group.getRelated(object, deep);
+        return Group.getRelated(object);
       default:
         throw new Error("unknown type: " + type)
     }
   }
 }
+
+export default Model;
