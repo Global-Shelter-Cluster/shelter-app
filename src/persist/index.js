@@ -48,14 +48,7 @@ class Persist {
       if (currentUserId === null)
         return;
       const id: number = parseInt(currentUserId, 10);
-
-      // TODO: this should replace the stuff below
       await this.loadObjects([{type: "user", id: id}], true);
-
-      const currentUserData: string | null = await AsyncStorage.getItem(Persist.cacheKey('user', id));
-      if (currentUserData === null)
-        return;
-      await this.dispatchObjects({user: {[id]: JSON.parse(currentUserData)}});
       await this.store.dispatch(setCurrentUser(id));
     } catch (e) {
     }
