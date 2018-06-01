@@ -2,10 +2,11 @@
 
 import React from 'react';
 import TestContainer from '../../containers/TestContainer';
-import {StyleSheet, Text, View, WebView} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import type {GroupObject} from "../../model/group";
 import type {UserObject} from "../../model/user";
-import User from "../../components/User";
+import UserContainer from "../../containers/UserContainer";
+import FollowedGroups from "../../components/FollowedGroups";
 
 const styles = StyleSheet.create({
   container: {
@@ -17,15 +18,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ({user, groups, online}: {user: UserObject, groups: Array<GroupObject>, online: boolean}) => (
-  <View style={styles.container}>
-    <User user={user} showEdit={online}/>
-    <Text>{user.name}</Text>
-    <Text>groups: {JSON.stringify(groups)}</Text>
+export default ({user, groups, edit, navigation}: { user: UserObject, groups: Array<GroupObject>, edit: () => {}, navigation: {} }) => (
+  <View style2={styles.container}>
+    <UserContainer user={user} showEdit={true} navigation={navigation}/>
     <TestContainer/>
-    <WebView
-      source={{uri: 'https://ee.humanitarianresponse.info/x/#XfkA2YFa'}}
-      style={{marginTop: 20, backgroundColor: '#dff', height: 100, width: 400}}
-    />
+    <FollowedGroups ids={user.groups} navigation={navigation}/>
   </View>
 );

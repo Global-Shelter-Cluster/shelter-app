@@ -8,44 +8,64 @@ import {createBottomTabNavigator, createStackNavigator, createSwitchNavigator} f
 import LoginScreen from "../screens/auth/LoginScreen";
 import DashboardScreen from "../screens/user/DashboardScreen";
 import EditScreen from "../screens/user/EditScreen";
-import vars from '../vars';
+import GroupScreen from "../screens/group/GroupScreen";
+import {FontAwesome} from '@expo/vector-icons';
+import vars from "../vars";
+import TempBlankScreen from "../screens/TempBlankScreen";
+import TempReportingScreen from "../screens/reporting/TempReportingScreen";
 
 const AuthScreens = createStackNavigator({
   Login: LoginScreen,
 });
 
-const UserScreens = createStackNavigator({
+const ExploreStack = createStackNavigator({
+  Explore: TempBlankScreen,
+  Group: GroupScreen,
+});
+const ChatStack = createSwitchNavigator({
+  Chat: TempBlankScreen,
+});
+const ReportingStack = createSwitchNavigator({
+  Reporting: TempReportingScreen,
+});
+const UserStack = createStackNavigator({
   Dashboard: DashboardScreen,
   Edit: EditScreen,
-}, {
-  navigationOptions: {
-    // headerTintColor: vars.SHELTER_RED,
-  },
 });
 
-const BrowseStack = createStackNavigator({
-  Dashboard: DashboardScreen,
-});
-const ChatStack = createStackNavigator({
-  Dashboard: DashboardScreen,
-});
-const ReportingStack = createStackNavigator({
-  Dashboard: DashboardScreen,
-});
-
-const GroupScreens = createBottomTabNavigator({
-  Browse: BrowseStack,
+const TabScreens = createBottomTabNavigator({
+  Explore: ExploreStack,
   Chat: ChatStack,
-  Reporting: ReportingStack
+  Reporting: ReportingStack,
+  User: UserStack,
 }, {
-  // tab config
+  navigationOptions: ({navigation}) => ({
+    tabBarIcon: ({focused, tintColor}) => {
+      const {routeName} = navigation.state;
+
+      const icons = {
+        'Explore': "globe",
+        'Chat': "comments",
+        'Reporting': "paper-plane",
+        'User': "user",
+      };
+
+      return <FontAwesome
+        name={icons[routeName]} size={26} color={tintColor}
+      />;
+    },
+    tabBarOptions: {
+      activeTintColor: vars.SHELTER_RED,
+      inactiveTintColor: vars.SHELTER_GREY,
+    },
+  }),
+  initialRouteName2: 'User',
 });
 
 const MainNavigator = createSwitchNavigator(
   {
     Auth: AuthScreens,
-    User: UserScreens,
-    Group: GroupScreens,
+    Tabs: TabScreens,
   }, {
     initialRouteName: 'Auth',
   }

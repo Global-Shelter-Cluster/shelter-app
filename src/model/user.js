@@ -9,6 +9,8 @@ export interface UserObject {
   name: string,
   mail: string,
   picture: string,
+  org: string,
+  role: string,
   groups?: Array<number>,
 }
 

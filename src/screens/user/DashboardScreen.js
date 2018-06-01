@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {Button, Text, View} from 'react-native';
+import {Button, View} from 'react-native';
 import {logout} from "../../actions";
 import {connect} from 'react-redux';
 import type {UserObject} from "../../model/user";
@@ -39,7 +39,7 @@ class DashboardScreen extends React.Component<Props> {
     };
 
     const headerLeft = !params.online
-      ? <FontAwesome name="wifi" size={20} color={vars.ACCENT_RED} style={{marginLeft: 6}} />
+      ? <FontAwesome name="wifi" size={20} color={vars.ACCENT_RED} style={{marginLeft: 10}}/>
       : null;
 
     const headerRight = params.online
@@ -74,7 +74,7 @@ class DashboardScreen extends React.Component<Props> {
   }
 
   render() {
-    return <Dashboard {...this.props}/>;
+    return <Dashboard {...this.props} edit={() => this.props.navigation.navigate('Edit')}/>;
   }
 }
 
