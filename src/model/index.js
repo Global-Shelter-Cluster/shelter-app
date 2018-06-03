@@ -5,22 +5,27 @@ import User from "./user";
 import type {GroupObject} from "./group";
 import Group from "./group";
 import type {ObjectRequest} from "../persist";
+import type {FactsheetObject} from "./factsheet";
+import Factsheet from "./factsheet";
 
 export type Objects = {
   user?: { [id: string]: UserObject },
   group?: { [id: string]: GroupObject },
+  factsheet?: { [id: string]: FactsheetObject },
 }
 
-export type Object = UserObject | GroupObject;
+export type Object = UserObject | GroupObject | FactsheetObject;
 
 export const initialObjectsState: Objects = {
   user: {},
   group: {},
+  factsheet: {},
 };
 
 const mapTypesToClasses = {
   'user': User,
   'group': Group,
+  'factsheet': Factsheet,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.

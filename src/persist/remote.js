@@ -3,6 +3,7 @@
 import type {Objects} from "../model";
 import {OBJECT_MODE_PRIVATE, OBJECT_MODE_STUB} from "../model";
 import type {ObjectRequest} from "./index";
+import {OBJECT_MODE_PUBLIC} from "../model/index";
 
 /**
  * Class Remote.
@@ -54,6 +55,7 @@ class Remote {
           title: "Ecuador Earthquake 2016",
           associated_regions: [9104, 62],
           parent_response: null,
+          latest_factsheet: 13454,
         },
         "10318": {
           _mode: OBJECT_MODE_PRIVATE,
@@ -62,6 +64,7 @@ class Remote {
           title: "Haiti Hurricane Matthew 2016",
           associated_regions: [68, 7370, 62],
           parent_response: 10339,
+          latest_factsheet: 13455,
         },
         "9104": {
           _mode: OBJECT_MODE_STUB,
@@ -92,6 +95,26 @@ class Remote {
           type: "response",
           id: 10339,
           title: "Regional Hurricane Matthew 2016",
+        },
+      },
+      factsheet: {
+        "13454": {
+          _mode: OBJECT_MODE_PUBLIC,
+          id: 13454,
+          date: "2018-04",
+          highlights: "<p>El <strong>16 de abril de 2016</strong>, un terremoto de magnitud 7,8 con una profundidad de 20km golpeó la costa de Ecuador. El epicentro sucedió a 27 km al sur sureste de la ciudad costera de Muisne, una zona escasamente poblada con puertos de pesca muy populares y con atracción turística muy importante. El mayor impacto con daños de alta consideración fue en la localidad de Pedernales y Portoviejo.  Posterior al evento sísmico el Gobierno declaró \"zona de desastre\" y “estado de emergencia”  en seis provincias: Esmeraldas, Guayas, Los Ríos, Manabí, Santo Domingo y Santa Elena.</p>",
+          image: "https://www.dropbox.com/s/6lv22bmawkr3w34/20160804_145050.jpg?dl=1",
+          photo_credit: "Anna Pont",
+          map: "",
+        },
+        "13455": {
+          _mode: OBJECT_MODE_PUBLIC,
+          id: 13455,
+          date: "2018-05",
+          highlights: "<p><font style=\"vertical-align: inherit;\"><font style=\"vertical-align: inherit;\">Coordination of interventions in the Shelter / BNA sector was provided by the DPC with the support of the IOM (co-lead) at national and departmental level (Grande Anse and Sud). </font><font style=\"vertical-align: inherit;\">A total of 86 partners (including 30 Haitians and 56 internationals) contributed to the response in 8 departments and 72 municipalities.&nbsp;</font></font><span style=\"font-size: 1rem;\"><font style=\"vertical-align: inherit;\"><font style=\"vertical-align: inherit;\">As of March 20, 2017, 189,412 households received plastic sheeting or emergency shelter kits, 105,896 households received blankets, 26,277 households received tool kits and 5,306 households received sheet metal kits.</font></font></span></p>",
+          image: "https://www.sheltercluster.org/sites/default/files/sites/default/files/content/haiti_-_coteaux_-_nov_2016_-_gael_leloup_0.jpg",
+          photo_credit: "",
+          map: "",
         },
       },
     };

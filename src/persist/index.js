@@ -144,6 +144,7 @@ class Persist {
 
           // Continue as long as there were new requests added
           continueLoop = requests.length > countBeforeProcessing;
+          // console.debug('Persist.loadObjects(): recursive loop', iterations, Object.assign({}, requests));
         } while (continueLoop && (iterations-- > 0));
       }
 

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {Button, View} from 'react-native';
+import {Button} from 'react-native';
 import {logout} from "../../actions";
 import {connect} from 'react-redux';
 import type {PrivateUserObject} from "../../model/user";
@@ -38,18 +38,13 @@ class DashboardScreen extends React.Component<Props> {
       ? <FontAwesome name="wifi" size={20} color={vars.ACCENT_RED} style={{marginLeft: 10}}/>
       : null;
 
-    const headerRight = params.online
-      ? <View>
-        <Button
-          onPress={() => {
-            params.logout();
-            navigation.navigate('Auth');
-          }}
-          title="Log out"
-        />
-
-      </View>
-      : null;
+    const headerRight = <Button
+      onPress={() => {
+        params.logout();
+        navigation.navigate('Auth');
+      }}
+      title="Log out"
+    />;
 
     const title = 'Dashboard';
 
