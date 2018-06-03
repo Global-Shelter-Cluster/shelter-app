@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import type {GroupObject} from "../../model/group";
+import type {PrivateGroupObject, PublicGroupObject} from "../../model/group";
 import {getGroup} from "../../model/group";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
@@ -10,7 +10,7 @@ import Group from './Group';
 
 type Props = {
   online: boolean,
-  group: GroupObject,
+  group: PublicGroupObject | PrivateGroupObject,
   navigation: { setParams: ({}) => {} },
 }
 

@@ -4,26 +4,22 @@ import React from 'react';
 import {Button, View} from 'react-native';
 import {logout} from "../../actions";
 import {connect} from 'react-redux';
-import type {UserObject} from "../../model/user";
+import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
-import type {GroupObject} from "../../model/group";
-import {getUserGroups} from "../../model/group";
 import Dashboard from './Dashboard';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
 
 type Props = {
   online: boolean,
-  user: UserObject,
-  groups: Array<GroupObject>,
-  navigation: { setParams: ({}) => {} },
+  user: PrivateUserObject,
+  navigation: { setParams: ({}) => {}, getParam: (string) => {}, navigate: (string) => {} },
   logout: () => {},
 }
 
 const mapStateToProps = state => ({
   online: state.online,
   user: getCurrentUser(state),
-  groups: getUserGroups(state),
 });
 
 const mapDispatchToProps = dispatch => ({

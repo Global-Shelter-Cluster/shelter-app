@@ -7,7 +7,7 @@ import Remote from "./remote";
 import type {Objects} from "../model";
 import Model from "../model";
 
-export interface ObjectRequest {
+export type ObjectRequest = {
   type: "group" | "user" | "document" | "event" | "factsheet",
   id: number,
 }

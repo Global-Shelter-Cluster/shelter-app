@@ -3,8 +3,7 @@
 import React from 'react';
 import TestContainer from '../../containers/TestContainer';
 import {StyleSheet, View} from 'react-native';
-import type {GroupObject} from "../../model/group";
-import type {UserObject} from "../../model/user";
+import type {PrivateUserObject} from "../../model/user";
 import UserContainer from "../../containers/UserContainer";
 import FollowedGroups from "../../components/FollowedGroups";
 
@@ -18,7 +17,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ({user, groups, edit, navigation}: { user: UserObject, groups: Array<GroupObject>, edit: () => {}, navigation: {} }) => (
+export default ({user, navigation}: { user: PrivateUserObject, navigation: {} }) => (
   <View style2={styles.container}>
     <UserContainer user={user} showEdit={true} navigation={navigation}/>
     <TestContainer/>

@@ -2,10 +2,10 @@
 
 import React from 'react';
 import {Button, Image, Text, View} from 'react-native';
-import type {UserObject} from "../model/user";
+import type {PrivateUserObject, PublicUserObject} from "../model/user";
 import vars from "../vars";
 
-export default ({user, showEdit, edit}: { user: UserObject, showEdit: boolean, edit: () => {} }) => (
+export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserObject, showEdit: boolean, edit: () => {} }) => (
   <View
     style={{flexDirection: 'row', justifyContent: "space-between", width: "100%", padding: 10}}>
     <View style={{flexShrink: 1}}>
