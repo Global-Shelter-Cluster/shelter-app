@@ -7,6 +7,7 @@ import Group from "./group";
 import type {ObjectRequest} from "../persist";
 import type {FactsheetObject} from "./factsheet";
 import Factsheet from "./factsheet";
+import createCachedSelector from 're-reselect';
 
 export type Objects = {
   user?: { [id: string]: UserObject },
@@ -56,5 +57,11 @@ class Model {
     return mapTypesToClasses[type].getFiles(object);
   }
 }
+
+export const getObject = createCachedSelector(
+  (state, type, id) => state.objects[type],
+  (state, type, id) => id,
+  (objects, id) => objects[id],
+)((state, type, id) => [type, id].join(':'));
 
 export default Model;

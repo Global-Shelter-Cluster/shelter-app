@@ -2,13 +2,13 @@
 
 import React from 'react';
 import {ImageBackground, Text, TouchableOpacity} from 'react-native';
-import type {ExpandedGroupObject} from "../model/group";
+import type {GroupObject} from "../model/group";
+import type {FactsheetObject} from "../model/factsheet";
 
-export default ({group, enter}: { group: ExpandedGroupObject, enter: (id: number) => {} }) => (
+export default ({group, factsheet, enter}: { group: GroupObject, factsheet?: FactsheetObject, enter: (id: number) => {} }) => (
   <ImageBackground
-    source={{uri: group.latest_factsheet.image}}
+    source={{uri: factsheet ? factsheet.image : null}}
     style={{
-      // width: "100%",
       height: 100,
       marginBottom: 10,
     }}

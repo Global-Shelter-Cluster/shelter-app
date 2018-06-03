@@ -1,11 +1,7 @@
 // @flow
 
 import type {ObjectRequest} from "../persist";
-import type {PrivateUserObject, UserObject} from "./user";
-import {getCurrentUser} from "./user";
 import {createSelector} from 'reselect';
-import createCachedSelector from 're-reselect';
-import {OBJECT_MODE_STUB} from "./index";
 
 // export type PrivateFactsheetObject = {
 //   _last_read?: number,
@@ -46,12 +42,5 @@ class Factsheet {
     return [];
   }
 }
-
-export const getFactsheet = createCachedSelector(
-  (id, state) => id,
-  (id, state) => state.objects.factsheet,
-  (id, state) => state.objects.user,
-  Factsheet.expand
-)((id, state) => id);
 
 export default Factsheet;

@@ -3,7 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import type {PrivateGroupObject, PublicGroupObject} from "../../model/group";
-import {getGroup} from "../../model/group";
+import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
 import Group from './Group';
@@ -16,7 +16,7 @@ type Props = {
 
 const mapStateToProps = (state, props) => ({
   online: state.online,
-  group: getGroup(props.navigation.getParam('groupId'), state),
+  group: getObject(state, 'group', props.navigation.getParam('groupId')),
 });
 
 const mapDispatchToProps = dispatch => ({
