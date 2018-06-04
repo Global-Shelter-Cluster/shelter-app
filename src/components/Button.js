@@ -21,7 +21,6 @@ export default ({onPress, primary, title, icon}: {
   </TouchableOpacity>;
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
