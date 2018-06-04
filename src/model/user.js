@@ -7,6 +7,7 @@ import {OBJECT_MODE_PRIVATE} from "./index";
 export type PrivateUserObject = {
   _last_read?: number,
   _mode: "private",
+  _persist?: true,
   id: number,
   name: string,
   mail: string,
@@ -19,6 +20,7 @@ export type PrivateUserObject = {
 export type PublicUserObject = {
   _last_read?: number,
   _mode: "public",
+  _persist?: true,
   id: number,
   name: string,
   mail: string,
@@ -30,6 +32,7 @@ export type PublicUserObject = {
 export type StubUserObject = {
   _last_read?: number,
   _mode: "stub",
+  _persist?: true,
   id: number,
   name: string,
 }

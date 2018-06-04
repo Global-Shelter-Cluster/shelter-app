@@ -7,6 +7,7 @@ import {OBJECT_MODE_STUB} from "./index";
 // export type PrivateGroupObject = {
 //   _last_read?: number,
 //   _mode: "private",
+//   _persist?: true,
 //   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
 //   id: number,
 //   title: string,
@@ -18,6 +19,7 @@ import {OBJECT_MODE_STUB} from "./index";
 export type PublicResponseGroupObject = {
   _last_read?: number,
   _mode: "public",
+  _persist?: true,
   type: "response",
   id: number,
   title: string,
@@ -29,6 +31,7 @@ export type PublicResponseGroupObject = {
 export type PublicGeographicRegionGroupObject = {
   _last_read?: number,
   _mode: "public",
+  _persist?: true,
   type: "geographic-region",
   id: number,
   title: string,
@@ -39,6 +42,7 @@ export type PublicGeographicRegionGroupObject = {
 export type PublicHubGroupObject = {
   _last_read?: number,
   _mode: "public",
+  _persist?: true,
   type: "hub",
   id: number,
   title: string,
@@ -50,6 +54,7 @@ export type PublicHubGroupObject = {
 export type PublicStrategicAdvisoryGroupObject = {
   _last_read?: number,
   _mode: "public",
+  _persist?: true,
   type: "strategic-advisory",
   id: number,
   title: string,
@@ -61,6 +66,7 @@ export type PublicStrategicAdvisoryGroupObject = {
 export type PublicWorkingGroupObject = {
   _last_read?: number,
   _mode: "public",
+  _persist?: true,
   type: "working-group",
   id: number,
   title: string,
@@ -72,6 +78,7 @@ export type PublicWorkingGroupObject = {
 // export type PublicGroupObject = {
 //   _last_read?: number,
 //   _mode: "public",
+//   _persist?: true,
 //   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
 //   id: number,
 //   title: string,
@@ -83,6 +90,7 @@ export type PublicWorkingGroupObject = {
 export type StubGroupObject = {
   _last_read?: number,
   _mode: "stub",
+  _persist?: true,
   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
   id: number,
   title: string,

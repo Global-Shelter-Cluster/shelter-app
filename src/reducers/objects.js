@@ -27,7 +27,16 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
               existingObjects[id] === undefined // Object didn't exist, we copy it (return true)
               || !(newObjects[id]._mode === OBJECT_MODE_STUB && existingObjects[id]._mode !== OBJECT_MODE_STUB) // Don't replace non-stub objects with stubs
             ))
-            .reduce((ret, id) => Object.assign(ret, {[id]: newObjects[id]}), {}); // This converts Array<id> back to {[id]:{}}
+            .reduce((ret, id) => {
+              // If a new object comes without the "_persist" flag, but an existing one has it, we add it so we don't lose
+              // the object on garbage collection.
+              const addPersistFlag = existingObjects[id] && existingObjects[id]._persist && !newObjects[id]._persist;
+
+              return Object.assign(
+                ret,
+                {[id]: Object.assign({}, newObjects[id], addPersistFlag ? {_persist: true} : null)}
+              );
+            }, {}); // Converted Array<id> back to {[id]:{}}
 
           newState[type] = Object.assign({}, existingObjects, newObjectsFiltered);
         }

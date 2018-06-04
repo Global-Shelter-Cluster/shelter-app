@@ -6,6 +6,7 @@ import {createSelector} from 'reselect';
 // export type PrivateFactsheetObject = {
 //   _last_read?: number,
 //   _mode: "private",
+//   _persist?: true,
 //   id: number,
 //   date: string, // TODO: proper date?
 //   highlights: string, // HTML
@@ -17,6 +18,7 @@ import {createSelector} from 'reselect';
 export type PublicFactsheetObject = {
   _last_read?: number,
   _mode: "public",
+  _persist?: true,
   id: number,
   date: string, // TODO: proper date?
   highlights: string, // HTML
@@ -28,6 +30,7 @@ export type PublicFactsheetObject = {
 export type StubFactsheetObject = {
   _last_read?: number,
   _mode: "stub",
+  _persist?: true,
   id: number,
   date: string, // TODO: proper date?
   image: string,

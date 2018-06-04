@@ -198,6 +198,13 @@ class Persist {
       this.dispatchObjects(newObjects);
     }
   }
+
+  /**
+   * Deletes expired objects, unless they have the "_persist" flag.
+   */
+  garbageCollect() {
+    // TODO
+  }
 }
 
 const persist = new Persist();
