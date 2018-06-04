@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react';
-import {Button, Image, Text, View} from 'react-native';
+import {Image, Text, View} from 'react-native';
+import Button from './Button.js';
 import type {PrivateUserObject, PublicUserObject} from "../model/user";
 import vars from "../vars";
 
@@ -16,8 +17,8 @@ export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserOb
         {user.org && user.role && <Text style={{}}> • </Text>}
         <Text style={{fontStyle: "italic"}}>{user.role}</Text>
       </Text>}
-      {showEdit && <Button color={vars.SHELTER_RED} onPress={edit} title="Edit"/>}
+      {showEdit && <Button primary onPress={edit} title="Edit"/>}
     </View>
-    <Image style={{width: 120, height: 120, borderRadius: 60}} source={{uri: user.picture}}/>
+    <Image style={{width: 100, height: 100, borderRadius: 50, marginLeft: 10}} source={{uri: user.picture}}/>
   </View>
 );
