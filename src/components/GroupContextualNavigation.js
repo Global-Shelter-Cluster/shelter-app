@@ -4,6 +4,7 @@ import React from 'react';
 import {SectionList, StyleSheet, Text, View} from 'react-native';
 import type {PublicGroupObject} from "../model/group";
 import GroupListItemContainer from "../containers/GroupListItemContainer";
+import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemContainer";
 import Collapsible from "./Collapsible";
 import vars from "../vars";
 
@@ -30,14 +31,12 @@ export default ({group}: { group: PublicGroupObject }) => {
         <GroupListItemContainer display="text-only" id={group.parent_region} noLink/>
       </View>;
     }
-  }
-
-  if (group.associated_regions) {
+  } else if (group.associated_regions) {
     sections.push({title: "In", data: group.associated_regions});
     if (!collapsibleTitle) {
       collapsibleTitle = <View>
         <Text style={styles.sectionHeader}>In</Text>
-        <GroupListItemContainer display="text-only" id={group.associated_regions[0]} noLink/>
+        <MultipleGroupListItemContainer ids={group.associated_regions}/>
       </View>;
     }
   }
@@ -59,12 +58,13 @@ export default ({group}: { group: PublicGroupObject }) => {
     keyExtractor={(item, index) => index}
   />;
 
-  if (groupCount === 1)
-    return sectionList;
-
-  return <Collapsible title={collapsibleTitle} hideTitleWhenOpen>
-    {sectionList}
-  </Collapsible>
+  return <View style={{borderBottomColor: vars.LIGHT_GREY, borderBottomWidth: .5}}>
+    {groupCount === 1 ? sectionList :
+      <Collapsible title={collapsibleTitle} hideTitleWhenOpen>
+        {sectionList}
+      </Collapsible>
+    }
+  </View>;
 }
 
 const styles = StyleSheet.create({

@@ -1,4 +1,5 @@
 export default {
+  // From website
   SHELTER_RED: '#7F1416',
   SHELTER_GREY: '#575757',
   SHELTER_LIGHT_BLUE: '#CDD6DB',
@@ -8,4 +9,7 @@ export default {
   ACCENT_RED: '#FC0000',
   ACCENT_BLUE: '#1687CB',
   ACCENT_DARK_BLUE: '#04314C',
+
+  // App-specific
+  LIGHT_GREY: 'rgba(0,0,0,.3)',
 }

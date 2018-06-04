@@ -4,6 +4,8 @@ import React from 'react';
 import {ImageBackground, Text, TouchableOpacity, View} from 'react-native';
 import type {GroupObject} from "../model/group";
 import type {FactsheetObject} from "../model/factsheet";
+import {FontAwesome} from '@expo/vector-icons';
+import vars from "../vars";
 
 export default ({group, link, display, factsheet, enter}: {
   group: GroupObject,
@@ -15,18 +17,31 @@ export default ({group, link, display, factsheet, enter}: {
   switch (display) {
     case 'text-only':
       return link
-        ? <TouchableOpacity onPress={() => enter(group.id)}>
-          <Text style={{
+        ? <TouchableOpacity onPress={() => enter(group.id)} style={{flexDirection: "row"}}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={{
+              flex: 1,
+              padding: 10,
+              paddingTop: 0,
+              fontSize: 18,
+            }}
+          >{group.title}</Text>
+          <FontAwesome
+            name={"angle-right"} size={18} color={vars.SHELTER_GREY}
+            style={{paddingRight: 10, paddingTop: 2}}
+          />
+        </TouchableOpacity>
+        : <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={{
             padding: 10,
             paddingTop: 0,
             fontSize: 18,
-          }}>{group.title}</Text>
-        </TouchableOpacity>
-        : <Text style={{
-          padding: 10,
-          paddingTop: 0,
-          fontSize: 18,
-        }}>{group.title}</Text>;
+          }}
+        >{group.title}</Text>;
 
     case 'full':
     default:

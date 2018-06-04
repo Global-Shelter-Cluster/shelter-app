@@ -26,7 +26,7 @@ export default class Collapsible extends React.Component<Props, State> {
   render() {
     const icon = <FontAwesome
       name={this.state.open ? "minus" : "plus"} size={26} color={vars.SHELTER_RED}
-      style={{padding: 10, width: 30, height: 30}}
+      style={{padding: 7, width: 40, height: 40, marginRight: -10}}
     />;
 
     const buttonProps = {
