@@ -13,7 +13,7 @@ import {OBJECT_MODE_PUBLIC} from "../model/index";
  */
 class Remote {
   static async temporaryDelayGenerator() {
-    const ms: number = 500 + parseInt(Math.random() * 500, 10);
+    const ms: number = 1000 + parseInt(Math.random() * 1000, 10);
 
     function timeout(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -54,7 +54,6 @@ class Remote {
           id: 9175,
           title: "Ecuador Earthquake 2016",
           associated_regions: [9104, 62],
-          parent_response: null,
           latest_factsheet: 13454,
         },
         "10318": {

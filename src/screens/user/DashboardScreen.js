@@ -65,7 +65,7 @@ class DashboardScreen extends React.Component<Props> {
   }
 
   render() {
-    return <Dashboard {...this.props} edit={() => this.props.navigation.navigate('Edit')}/>;
+    return <Dashboard {...this.props}/>;
   }
 }
 

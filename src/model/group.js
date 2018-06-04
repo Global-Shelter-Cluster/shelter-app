@@ -4,27 +4,81 @@ import type {ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
 import {OBJECT_MODE_STUB} from "./index";
 
-export type PrivateGroupObject = {
-  _last_read?: number,
-  _mode: "private",
-  type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
-  id: number,
-  title: string,
-  associated_regions: Array<number>,
-  parent_response: number,
-  latest_factsheet: number,
-}
+// export type PrivateGroupObject = {
+//   _last_read?: number,
+//   _mode: "private",
+//   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
+//   id: number,
+//   title: string,
+//   associated_regions: Array<number>,
+//   parent_response: number,
+//   latest_factsheet: number,
+// }
 
-export type PublicGroupObject = {
+export type PublicResponseGroupObject = {
   _last_read?: number,
   _mode: "public",
-  type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
+  type: "response",
   id: number,
   title: string,
-  associated_regions: Array<number>,
-  parent_response: number,
-  latest_factsheet: number,
+  associated_regions?: Array<number>,
+  parent_response?: number,
+  latest_factsheet?: number,
 }
+
+export type PublicGeographicRegionGroupObject = {
+  _last_read?: number,
+  _mode: "public",
+  type: "geographic-region",
+  id: number,
+  title: string,
+  parent_region?: number,
+  latest_factsheet?: number,
+}
+
+export type PublicHubGroupObject = {
+  _last_read?: number,
+  _mode: "public",
+  type: "hub",
+  id: number,
+  title: string,
+  parent_response?: number,
+  parent_region?: number,
+  latest_factsheet?: number,
+}
+
+export type PublicStrategicAdvisoryGroupObject = {
+  _last_read?: number,
+  _mode: "public",
+  type: "strategic-advisory",
+  id: number,
+  title: string,
+  parent_response?: number,
+  parent_region?: number,
+  latest_factsheet?: number,
+}
+
+export type PublicWorkingGroupObject = {
+  _last_read?: number,
+  _mode: "public",
+  type: "working-group",
+  id: number,
+  title: string,
+  parent_response?: number,
+  parent_region?: number,
+  latest_factsheet?: number,
+}
+//
+// export type PublicGroupObject = {
+//   _last_read?: number,
+//   _mode: "public",
+//   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
+//   id: number,
+//   title: string,
+//   associated_regions: Array<number>,
+//   parent_response: number,
+//   latest_factsheet: number,
+// }
 
 export type StubGroupObject = {
   _last_read?: number,
@@ -34,7 +88,22 @@ export type StubGroupObject = {
   title: string,
 }
 
-export type GroupObject = PrivateGroupObject | PublicGroupObject | StubGroupObject;
+export type PublicGroupObject =
+  PublicResponseGroupObject
+  | PublicGeographicRegionGroupObject
+  | PublicHubGroupObject
+  | PublicStrategicAdvisoryGroupObject
+  | PublicWorkingGroupObject;
+
+export type GroupObject =
+  StubGroupObject
+  | PublicResponseGroupObject
+  | PublicGeographicRegionGroupObject
+  | PublicHubGroupObject
+  | PublicStrategicAdvisoryGroupObject
+  | PublicWorkingGroupObject;
+// export type GroupObject = PublicGroupObject | StubGroupObject;
+// export type GroupObject = PrivateGroupObject | PublicGroupObject | StubGroupObject;
 
 class Group {
   static getRelated(group: GroupObject): Array<ObjectRequest> {
