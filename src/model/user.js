@@ -53,7 +53,7 @@ class User {
   static getFiles(user: UserObject): Array<ObjectFileDescription> {
     return user._mode === OBJECT_MODE_STUB
       ? []
-      : [{property: "picture", url: user.picture}];
+      : [{type: "user", id: user.id, property: "picture", url: user.picture}];
   }
 }
 

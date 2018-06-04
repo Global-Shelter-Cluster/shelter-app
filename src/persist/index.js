@@ -6,6 +6,8 @@ import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects} from "../model";
 import Model from "../model";
+import {FileSystem} from "expo";
+import md5 from "md5";
 
 export type ObjectRequest = {
   type: "group" | "user" | "document" | "event" | "factsheet",
@@ -13,8 +15,17 @@ export type ObjectRequest = {
 }
 
 export type ObjectFileDescription = {
+  type: "group" | "user" | "document" | "event" | "factsheet",
+  id: number,
   property: string,
   url: string,
+}
+
+type Files = {
+  [url: string]: {
+    filename: string,
+    uses: Array<ObjectRequest>,
+  }
 }
 
 const expirationLimitsByObjectType = { // 3600s = 1hr
@@ -61,16 +72,83 @@ class Persist {
 
   saveObjects(objects: Objects, resetLastRead: boolean = false) {
     const data = [];
+    const files: Array<ObjectFileDescription> = [];
+
     for (const type in objects) {
       for (const id in objects[type]) {
         if (resetLastRead)
           objects[type][id]._last_read = Persist.now();
+
+        if (objects[type][id]._persist)
+          files.push(...Model.getFiles(type, objects[type][id]));
 
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
       }
     }
 
     AsyncStorage.multiSet(data);
+
+    // We don't add "await" here so it runs in the background.
+    this.saveFiles(files);
+  }
+
+  // Download and save files, one at a time.
+  async saveFiles(files: Array<ObjectFileDescription>) {
+    for (const file of files)
+      await this.saveFile(file);
+  }
+
+  async saveFile(file: ObjectFileDescription) {
+    // getExtension() function adapted from https://stackoverflow.com/a/6997591/368864
+    const getExtension = url => (url = url
+      .substr(1 + url.lastIndexOf("/"))
+      .split('?')[0]).split('#')[0]
+      .substr(
+        url.lastIndexOf(".") === -1
+          ? Number.MAX_SAFE_INTEGER
+          : url.lastIndexOf(".")
+      );
+
+    // 1. Download and save the file
+    const localFilename = md5(file.url) + getExtension(file.url);
+    const localUri = FileSystem.documentDirectory + localFilename;
+
+    const fileInfo = await FileSystem.getInfoAsync(localUri);
+    if (!fileInfo.exists) {
+      try {
+        await FileSystem.downloadAsync(file.url, localUri);
+      } catch (error) {
+        console.error('saveFile(): error downloading file', file.url, error);
+
+        // We couldn't download the file, so we leave the object unmodified in the hopes that the app will be able to
+        // read the external uri.
+        return;
+      }
+    }
+
+    // 2. Update "files" data from AsyncStorage
+    let files: Files | string | null = await AsyncStorage.getItem(Persist.cacheKey('files'));
+    files = typeof files === "string" ? JSON.parse(files) : {};
+
+    const use = {type: file.type, id: file.id};
+    if (files[file.url])
+      files[file.url].uses.push(use);
+    else
+      files[file.url] = {
+        filename: localFilename,
+        uses: [use],
+      };
+
+    AsyncStorage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
+
+    // 3. Update the object using the file
+    let object = await AsyncStorage.getItem(Persist.cacheKey(file.type, file.id));
+    if (object) {
+      object = JSON.parse(object);
+      object[file.property] = localUri;
+      AsyncStorage.setItem(Persist.cacheKey(file.type, file.id), JSON.stringify(object));
+      this.dispatchObject(file.type, file.id, object);
+    }
   }
 
   clearAll() {
@@ -89,6 +167,10 @@ class Persist {
     const currentUserId = parseInt(Object.keys(objects.user)[0], 10);
     AsyncStorage.setItem(Persist.cacheKey('currentUser'), '' + currentUserId);
     this.store.dispatch(setCurrentUser(currentUserId));
+  }
+
+  async dispatchObject(type: string, id: number, object: {}) {
+    this.dispatchObjects({[type]: {[id]: object}});
   }
 
   async dispatchObjects(objects: Objects) {

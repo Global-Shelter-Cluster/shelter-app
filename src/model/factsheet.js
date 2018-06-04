@@ -47,7 +47,7 @@ class Factsheet {
   }
 
   static getFiles(factsheet: FactsheetObject): Array<ObjectFileDescription> {
-    return [{property: "image", url: factsheet.image}];
+    return [{type: "factsheet", id: factsheet.id, property: "image", url: factsheet.image}];
   }
 }
 

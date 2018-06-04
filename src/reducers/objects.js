@@ -18,6 +18,9 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
           // Don't replace non-stub objects with stubs (see OBJECT_MODE_* consts in model/index.js).
           const existingObjects = state[type];
           const newObjects = action.objects[type];
+          if (!newObjects)
+            continue;
+
           // For some reason these two lines, with the types, makes the whole thing crash.
           // const existingObjects: { [string]: { _mode: string } } = state[type];
           // const newObjects: { [string]: { _mode: string } } = action.objects[type];
