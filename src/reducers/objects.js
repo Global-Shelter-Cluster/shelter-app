@@ -2,7 +2,8 @@
 
 import {CLEAR_ALL_OBJECTS, SET_OBJECTS} from "../actions";
 import type {Objects} from "../model";
-import {initialObjectsState, objectModeLevels} from "../model";
+import {initialObjectsState} from "../model";
+import {OBJECT_MODE_STUB} from "../model/index";
 
 const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: Objects }) => {
   switch (action.type) {
@@ -14,7 +15,7 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
 
       if (action.objects)
         for (const type in state) {
-          // Only replace objects with the same level of detail ("object mode") or higher: private > public > stub.
+          // Don't replace non-stub objects with stubs (see OBJECT_MODE_* consts in model/index.js).
           const existingObjects = state[type];
           const newObjects = action.objects[type];
           // For some reason these two lines, with the types, makes the whole thing crash.
@@ -24,8 +25,8 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
           const newObjectsFiltered = Object.keys(newObjects) // This converts {[id]:{}} to Array<id>
             .filter(id => (
               existingObjects[id] === undefined // Object didn't exist, we copy it (return true)
-              || objectModeLevels[newObjects[id]] >= objectModeLevels[existingObjects[id]]) // Object has the same or higher level of detail
-            )
+              || !(newObjects[id]._mode === OBJECT_MODE_STUB && existingObjects[id]._mode !== OBJECT_MODE_STUB) // Don't replace non-stub objects with stubs
+            ))
             .reduce((ret, id) => Object.assign(ret, {[id]: newObjects[id]}), {}); // This converts Array<id> back to {[id]:{}}
 
           newState[type] = Object.assign({}, existingObjects, newObjectsFiltered);

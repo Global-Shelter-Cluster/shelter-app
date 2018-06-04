@@ -36,12 +36,6 @@ export const OBJECT_MODE_PUBLIC = 'public';
 // Simplified object, usually without any references to other objects, e.g. just an id and title.
 export const OBJECT_MODE_STUB = 'stub';
 
-export const objectModeLevels = {
-  OBJECT_MODE_STUB: 0,
-  OBJECT_MODE_PUBLIC: 1,
-  OBJECT_MODE_PRIVATE: 2,
-};
-
 class Model {
   static getRelated(type: string, object: Object): Array<ObjectRequest> {
     if (!mapTypesToClasses[type])
