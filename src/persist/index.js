@@ -109,9 +109,20 @@ class Persist {
           : url.lastIndexOf(".")
       );
 
+    // 0. Make sure the directory exists
+    const dir = FileSystem.documentDirectory + 'persisted';
+    const dirInfo = await FileSystem.getInfoAsync(dir);
+    if (!dirInfo.exists)
+      await FileSystem.makeDirectoryAsync(dir);
+    else if (!dirInfo.isDirectory) {
+      // Our directory exists as a file. Delete it and create a directory instead.
+      await FileSystem.deleteAsync(dir);
+      await FileSystem.makeDirectoryAsync(dir);
+    }
+
     // 1. Download and save the file
     const localFilename = md5(file.url) + getExtension(file.url);
-    const localUri = FileSystem.documentDirectory + localFilename;
+    const localUri = dir + '/' + localFilename;
 
     const fileInfo = await FileSystem.getInfoAsync(localUri);
     if (!fileInfo.exists) {
@@ -287,6 +298,7 @@ class Persist {
 
   /**
    * Deletes expired objects, unless they have the "_persist" flag.
+   * Also deletes files that have no objects using them.
    */
   garbageCollect() {
     // TODO
