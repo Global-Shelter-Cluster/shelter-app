@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
+import SingleLineText from "./SingleLineText";
 
 export default ({onPress, primary, title, icon}: {
   onPress: () => {},
@@ -14,9 +15,16 @@ export default ({onPress, primary, title, icon}: {
   const bgColor = primary ? vars.SHELTER_RED : vars.SHELTER_GREY;
   const textColor = "white";
 
-  return <TouchableOpacity onPress={onPress} style={{
+  return <TouchableOpacity onPress={onPress} style={[styles.container, {backgroundColor: bgColor}]}>
+    {icon && <FontAwesome name={icon} size={18} color={textColor} style={styles.icon}/>}
+    <SingleLineText style={[styles.label, {color: textColor}]}>{title}</SingleLineText>
+  </TouchableOpacity>;
+}
+
+
+const styles = StyleSheet.create({
+  container: {
     flexDirection: "row",
-    backgroundColor: bgColor,
     borderRadius: 2,
     marginTop: 20,
     marginBottom: 20,
@@ -24,22 +32,14 @@ export default ({onPress, primary, title, icon}: {
     paddingBottom: 8,
     paddingLeft: 20,
     paddingRight: 20,
-  }}>
-    {icon && <FontAwesome
-      name={icon} size={18} color={textColor}
-      style={{paddingRight: 10, paddingTop: 2}}
-    />}
-    <Text
-      numberOfLines={1}
-      ellipsizeMode="tail"
-      style={{
-        color: textColor,
-        flex: 1,
-        fontSize: 18,
-        textAlign: "center",
-      }}
-    >
-      {title}
-    </Text>
-  </TouchableOpacity>;
-}
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon: {
+    paddingRight: 8,
+  },
+  label: {
+    fontSize: 18,
+    textAlign: "center",
+  },
+});

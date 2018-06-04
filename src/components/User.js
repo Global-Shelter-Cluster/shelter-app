@@ -17,7 +17,7 @@ export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserOb
         {user.org && user.role && <Text style={{}}> • </Text>}
         <Text style={{fontStyle: "italic"}}>{user.role}</Text>
       </Text>}
-      {showEdit && <Button primary onPress={edit} title="Edit"/>}
+      {showEdit && <Button primary onPress={edit} title="Edit" icon="pencil"/>}
     </View>
     <Image style={{width: 100, height: 100, borderRadius: 50, marginLeft: 10}} source={{uri: user.picture}}/>
   </View>
