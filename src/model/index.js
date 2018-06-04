@@ -4,7 +4,7 @@ import type {UserObject} from "./user";
 import User from "./user";
 import type {GroupObject} from "./group";
 import Group from "./group";
-import type {ObjectRequest} from "../persist";
+import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import type {FactsheetObject} from "./factsheet";
 import Factsheet from "./factsheet";
 import createCachedSelector from 're-reselect';
@@ -44,7 +44,7 @@ class Model {
     return mapTypesToClasses[type].getRelated(object);
   }
 
-  static getFiles(type: string, object: Object): Array<{}> {
+  static getFiles(type: string, object: Object): Array<ObjectFileDescription> {
     if (!mapTypesToClasses[type])
       throw new Error("unknown type: " + type);
 

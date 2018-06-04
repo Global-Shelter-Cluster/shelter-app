@@ -12,6 +12,11 @@ export type ObjectRequest = {
   id: number,
 }
 
+export type ObjectFileDescription = {
+  property: string,
+  url: string,
+}
+
 const expirationLimitsByObjectType = { // 3600s = 1hr
   "group": 3600,
   "user": 3600,
@@ -58,9 +63,8 @@ class Persist {
     const data = [];
     for (const type in objects) {
       for (const id in objects[type]) {
-        if (resetLastRead) {
+        if (resetLastRead)
           objects[type][id]._last_read = Persist.now();
-        }
 
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
       }

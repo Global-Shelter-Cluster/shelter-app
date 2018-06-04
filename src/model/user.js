@@ -1,8 +1,8 @@
 // @flow
 
-import type {ObjectRequest} from "../persist";
+import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
-import {OBJECT_MODE_PRIVATE} from "./index";
+import {OBJECT_MODE_PRIVATE, OBJECT_MODE_STUB} from "./index";
 
 export type PrivateUserObject = {
   _last_read?: number,
@@ -48,6 +48,12 @@ class User {
       : []);
 
     return ret;
+  }
+
+  static getFiles(user: UserObject): Array<ObjectFileDescription> {
+    return user._mode === OBJECT_MODE_STUB
+      ? []
+      : [{property: "picture", url: user.picture}];
   }
 }
 

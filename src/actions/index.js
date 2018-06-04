@@ -33,17 +33,14 @@ export const clearAllObjects = () => ({
   type: CLEAR_ALL_OBJECTS,
 });
 
-// export const LOGIN = 'LOGIN';
 export const login = (user: string, pass: string) => async () => persist.login(user, pass);
 
-export const LOGOUT = 'LOGOUT';
 export const logout = () => async dispatch => {
   dispatch(setCurrentUser(null));
   dispatch(clearAllObjects());
   persist.clearAll();
 };
 
-export const INITIALIZE = 'INITIALIZE';
 export const initialize = () => async dispatch => {
   console.log('initializing...');
 

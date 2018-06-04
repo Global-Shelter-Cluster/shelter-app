@@ -130,6 +130,10 @@ class Group {
     return ret;
   }
 
+  static getFiles(): [] {
+    return [];
+  }
+
   // static expand(id: number, groups: { [id: string]: GroupObject }, users: { [id: string]: UserObject }, factsheets: { [id: string]: FactsheetObject }): ExpandedGroupObject {
   //   const ret: ExpandedGroupObject = Object.assign({}, groups['' + id]);
   //
