@@ -40,7 +40,7 @@ export default class Collapsible extends React.Component<Props, State> {
           <TouchableOpacity {...buttonProps}>
             {icon}
           </TouchableOpacity>
-          <View style={{flex: 1, marginTop: 10}}>
+          <View style={{flex: 1}}>
             {this.props.children}
           </View>
         </View>;
@@ -48,7 +48,7 @@ export default class Collapsible extends React.Component<Props, State> {
         return <View>
           <TouchableOpacity style={{flexDirection: "row"}} {...buttonProps}>
             {icon}
-            <View style={{flex: 1, marginTop: 10}}>
+            <View style={{flex: 1}}>
               {this.props.title}
             </View>
           </TouchableOpacity>
@@ -60,7 +60,7 @@ export default class Collapsible extends React.Component<Props, State> {
       return <View>
         <TouchableOpacity style={{flexDirection: "row"}} {...buttonProps}>
           {icon}
-          <View style={{flex: 1, marginTop: 10}}>
+          <View style={{flex: 1}}>
             {this.props.title}
           </View>
         </TouchableOpacity>

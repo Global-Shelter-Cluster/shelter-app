@@ -26,7 +26,7 @@ export default ({group}: { group: PublicGroupObject }) => {
   if (group.parent_region) {
     sections.push({title: "In", data: [group.parent_region]});
     if (!collapsibleTitle) {
-      collapsibleTitle = <View>
+      collapsibleTitle = <View style={{marginTop: 10}}>
         <Text style={styles.sectionHeader}>In</Text>
         <GroupListItemContainer display="text-only" id={group.parent_region} noLink/>
       </View>;
@@ -34,7 +34,7 @@ export default ({group}: { group: PublicGroupObject }) => {
   } else if (group.associated_regions) {
     sections.push({title: "In", data: group.associated_regions});
     if (!collapsibleTitle) {
-      collapsibleTitle = <View>
+      collapsibleTitle = <View style={{marginTop: 10}}>
         <Text style={styles.sectionHeader}>In</Text>
         <MultipleGroupListItemContainer ids={group.associated_regions}/>
       </View>;
@@ -44,7 +44,7 @@ export default ({group}: { group: PublicGroupObject }) => {
   if (group.parent_response) {
     sections.push({title: "Related to", data: [group.parent_response]});
     if (!collapsibleTitle) {
-      collapsibleTitle = <View>
+      collapsibleTitle = <View style={{marginTop: 10}}>
         <Text style={styles.sectionHeader}>Related to</Text>
         <GroupListItemContainer display="text-only" id={group.parent_response} noLink/>
       </View>;
@@ -52,6 +52,7 @@ export default ({group}: { group: PublicGroupObject }) => {
   }
 
   const sectionList = <SectionList
+    style={{marginTop: 10}}
     sections={sections}
     renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
     renderItem={({item}) => <GroupListItemContainer display="text-only" id={item}/>}
