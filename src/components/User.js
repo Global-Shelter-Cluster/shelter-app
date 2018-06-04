@@ -11,7 +11,7 @@ export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserOb
     <View style={{flexShrink: 1}}>
       <Text style={{fontSize: 30, fontWeight: "bold", color: vars.SHELTER_RED, marginBottom: 10}}>{user.name}</Text>
       {(user.org || user.role) &&
-      <Text style={{fontSize: 14, color: vars.SHELTER_GREY}}>
+      <Text style={{fontSize: 14, color: vars.MEDIUM_GREY}}>
         <Text style={{fontWeight: "bold"}}>{user.org}</Text>
         {user.org && user.role && <Text style={{}}> • </Text>}
         <Text style={{fontStyle: "italic"}}>{user.role}</Text>

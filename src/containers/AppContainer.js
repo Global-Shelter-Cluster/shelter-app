@@ -56,7 +56,7 @@ const TabScreens = createBottomTabNavigator({
     },
     tabBarOptions: {
       activeTintColor: vars.SHELTER_RED,
-      inactiveTintColor: vars.SHELTER_GREY,
+      inactiveTintColor: vars.MEDIUM_GREY,
     },
   }),
   initialRouteName2: 'User',

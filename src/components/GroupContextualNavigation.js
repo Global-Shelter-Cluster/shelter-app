@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
     fontSize: 14,
     fontWeight: 'bold',
-    color: vars.SHELTER_GREY,
+    color: vars.MEDIUM_GREY,
   },
   item: {
     padding: 10,

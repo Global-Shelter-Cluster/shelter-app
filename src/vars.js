@@ -12,4 +12,5 @@ export default {
 
   // App-specific
   LIGHT_GREY: 'rgba(0,0,0,.3)',
+  MEDIUM_GREY: 'rgba(0,0,0,.5)',
 }

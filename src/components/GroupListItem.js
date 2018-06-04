@@ -29,7 +29,7 @@ export default ({group, link, display, factsheet, enter}: {
             }}
           >{group.title}</Text>
           <FontAwesome
-            name={"angle-right"} size={18} color={vars.SHELTER_GREY}
+            name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
             style={{paddingRight: 10, paddingTop: 2}}
           />
         </TouchableOpacity>
@@ -50,7 +50,7 @@ export default ({group, link, display, factsheet, enter}: {
           source={factsheet ? {uri: factsheet.image} : null}
           style={{
             height: 100,
-            marginBottom: 10,
+            marginBottom: .5,
           }}
         >
           <TouchableOpacity
