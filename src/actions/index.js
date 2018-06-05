@@ -35,6 +35,11 @@ export const clearAllObjects = () => ({
 
 export const login = (user: string, pass: string) => async () => persist.login(user, pass);
 
+export const loadObject = (type: string, id: number, recursive: boolean, forceRemoteLoad: boolean) => async () => persist.loadObjects([{
+  type: type,
+  id: id
+}], recursive, forceRemoteLoad);
+
 export const logout = () => async dispatch => {
   dispatch(setCurrentUser(null));
   dispatch(clearAllObjects());

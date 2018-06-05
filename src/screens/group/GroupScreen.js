@@ -7,19 +7,40 @@ import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
 import Group from './Group';
+import type {FactsheetObject} from "../../model/factsheet";
+import {FileSystem} from "expo";
+import {loadObject} from "../../actions/index";
+import {OBJECT_MODE_STUB} from "../../model/index";
 
 type Props = {
   online: boolean,
   group: PublicGroupObject,
+  loaded: boolean,
   navigation: { setParams: ({}) => {} },
+  load: number => {},
+  refresh: number => {},
 }
 
-const mapStateToProps = (state, props) => ({
-  online: state.online,
-  group: getObject(state, 'group', props.navigation.getParam('groupId')),
-});
+const mapStateToProps = (state, props) => {
+  const group: PublicGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
+  const factsheet: FactsheetObject | null = group.latest_factsheet ? getObject(state, 'factsheet', group.latest_factsheet) : null;
+
+  if (factsheet)
+    FileSystem.getInfoAsync(factsheet.image).then(info => {
+      console.log('CAM fs', factsheet, info);
+    });
+
+  return {
+    online: state.online,
+    group: group,
+    loaded: group._mode !== OBJECT_MODE_STUB,
+    factsheet: factsheet,
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
+  load: id => dispatch(loadObject('group', id, true, false)),
+  refresh: id => dispatch(loadObject('group', id, true, true)),
 });
 
 class GroupScreen extends React.Component<Props> {
@@ -39,6 +60,15 @@ class GroupScreen extends React.Component<Props> {
   };
 
   componentWillMount() {
+    const groupId = this.props.navigation.getParam('groupId');
+    if (!this.props.loaded) {
+      try {
+        this.props.refresh(groupId);
+      } catch (e) {
+        console.log('CC load ERR', groupId, e);
+      }
+    }
+
     this.props.navigation.setParams({
       online: this.props.online,
       title: this.props.group.title,

@@ -88,7 +88,6 @@ class Persist {
           return;
 
         files.push(...Model.getFiles(type, objects[type][id]));
-
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
       }
     }
@@ -230,7 +229,9 @@ class Persist {
       object: JSON.parse(item[1]),
     });
 
-    const loaded = (await AsyncStorage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id)))).map(convertItem);
+    const loaded = (await AsyncStorage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id))))
+      .map(convertItem)
+      .filter(i => i.object); // Safety check: discard results that for some reason don't contain the actual objects
 
     if (loaded.length) {
       if (recursive) {
@@ -291,16 +292,21 @@ class Persist {
     let loadedExpired = false;
 
     if (isOnline) {
-      const loadImmediately: Array<ObjectRequest> = loaded.length >= requests.length
-        ? [] // We don't need to load from remote immediately, or we're offline
-        : requests
-          .filter(request => {
-            for (const item of loaded) {
-              if (item.type === request.type && item.id === request.id)
-                return false; // This object request was found in "loaded" (i.e. it was loaded), so we exclude it from loadImmediately.
-            }
-            return true;
-          });
+      let loadImmediately: Array<ObjectRequest> = [];
+
+      if (forceRemoteLoad)
+        loadImmediately = requests;
+      else
+        loadImmediately = loaded.length >= requests.length
+          ? [] // We don't need to load from remote immediately, or we're offline
+          : requests
+            .filter(request => {
+              for (const item of loaded) {
+                if (item.type === request.type && item.id === request.id)
+                  return false; // This object request was found in "loaded" (i.e. it was loaded), so we exclude it from loadImmediately.
+              }
+              return true;
+            });
 
       if (loadImmediately.length) {
         loadImmediately.push(...expired); // Might as well load the expired objects in the same call
