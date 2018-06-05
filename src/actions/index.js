@@ -35,10 +35,24 @@ export const clearAllObjects = () => ({
 
 export const login = (user: string, pass: string) => async () => persist.login(user, pass);
 
-export const loadObject = (type: string, id: number, recursive: boolean, forceRemoteLoad: boolean) => async () => persist.loadObjects([{
-  type: type,
-  id: id
-}], recursive, forceRemoteLoad);
+export const loadObject = (type: string, id: number, recursive: boolean, forceRemoteLoad: boolean) => async (dispatch, getState) => {
+  try {
+    await persist.loadObjects([{type: type, id: id}], recursive, forceRemoteLoad);
+  } catch (e) {
+    dispatch(setLastError('object-load', {type: type, id: id}));
+  }
+};
+
+export const SET_LAST_ERROR = 'SET_LAST_ERROR';
+export const setLastError = (type: string, data: {}) => ({
+  type: SET_LAST_ERROR,
+  data: {type, data},
+});
+
+export const CLEAR_LAST_ERROR = 'CLEAR_LAST_ERROR';
+export const clearLastError = () => ({
+  type: CLEAR_LAST_ERROR,
+});
 
 export const logout = () => async dispatch => {
   dispatch(setCurrentUser(null));

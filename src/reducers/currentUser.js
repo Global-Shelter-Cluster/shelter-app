@@ -1,6 +1,6 @@
 // @flow
 
-import {SET_CURRENT_USER} from "../actions/index";
+import {SET_CURRENT_USER} from "../actions";
 
 const currentUser = (state: number | null = null, action: { type: string, id: number }) => {
   switch (action.type) {

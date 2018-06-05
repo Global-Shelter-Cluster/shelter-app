@@ -9,7 +9,7 @@ import vars from "../../vars";
 import Group from './Group';
 import type {FactsheetObject} from "../../model/factsheet";
 import {FileSystem} from "expo";
-import {loadObject} from "../../actions/index";
+import {clearLastError, loadObject} from "../../actions/index";
 import {OBJECT_MODE_STUB} from "../../model/index";
 
 type Props = {
@@ -32,6 +32,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     online: state.online,
+    lastError: state.lastError,
     group: group,
     loaded: group._mode !== OBJECT_MODE_STUB,
     factsheet: factsheet,
@@ -40,7 +41,16 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = dispatch => ({
   load: id => dispatch(loadObject('group', id, true, false)),
-  refresh: id => dispatch(loadObject('group', id, true, true)),
+  refresh: id => {
+    dispatch(clearLastError());
+    const action = loadObject('group', id, true, true);
+    try {
+      dispatch(action);
+    } catch (e) {
+      console.log('refresh err', e);
+    }
+    return action;
+  },
 });
 
 class GroupScreen extends React.Component<Props> {
@@ -61,13 +71,8 @@ class GroupScreen extends React.Component<Props> {
 
   componentWillMount() {
     const groupId = this.props.navigation.getParam('groupId');
-    if (!this.props.loaded) {
-      try {
-        this.props.refresh(groupId);
-      } catch (e) {
-        console.log('CC load ERR', groupId, e);
-      }
-    }
+    if (!this.props.loaded)
+      this.props.refresh(groupId);
 
     this.props.navigation.setParams({
       online: this.props.online,
