@@ -23,6 +23,7 @@ export default ({onPress, primary, title, icon}: {
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     flexDirection: "row",
     borderRadius: 2,
     marginTop: 20,

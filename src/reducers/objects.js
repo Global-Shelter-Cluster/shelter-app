@@ -2,8 +2,7 @@
 
 import {CLEAR_ALL_OBJECTS, SET_OBJECTS} from "../actions";
 import type {Objects} from "../model";
-import {initialObjectsState} from "../model";
-import {OBJECT_MODE_STUB} from "../model/index";
+import {initialObjectsState, OBJECT_MODE_STUB} from "../model";
 
 const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: Objects }) => {
   switch (action.type) {

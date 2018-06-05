@@ -8,6 +8,7 @@ import type {Objects} from "../model";
 import Model from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
+import {OBJECT_MODE_PRIVATE} from "../model/index";
 
 export type ObjectRequest = {
   type: "group" | "user" | "document" | "event" | "factsheet",
@@ -70,17 +71,23 @@ class Persist {
     }
   }
 
-  saveObjects(objects: Objects, resetLastRead: boolean = false) {
+  updateLastRead(objects: Objects) {
+    for (const type in objects)
+      for (const id in objects[type])
+        objects[type][id]._last_read = Persist.now();
+  }
+
+  // Saves the objects (and their files) marked with _persist:true to AsyncStorage (and FileSystem).
+  saveObjects(objects: Objects) {
     const data = [];
     const files: Array<ObjectFileDescription> = [];
 
     for (const type in objects) {
       for (const id in objects[type]) {
-        if (resetLastRead)
-          objects[type][id]._last_read = Persist.now();
+        if (!objects[type][id]._persist)
+          return;
 
-        if (objects[type][id]._persist)
-          files.push(...Model.getFiles(type, objects[type][id]));
+        files.push(...Model.getFiles(type, objects[type][id]));
 
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
       }
@@ -142,9 +149,17 @@ class Persist {
     files = typeof files === "string" ? JSON.parse(files) : {};
 
     const use = {type: file.type, id: file.id};
-    if (files[file.url])
-      files[file.url].uses.push(use);
-    else
+    if (files[file.url]) {
+      let found = false;
+      for (const existingUse of files[file.url].uses) {
+        if (existingUse.type === use.type && existingUse.id === use.id) {
+          found = true;
+          break;
+        }
+      }
+      if (!found)
+        files[file.url].uses.push(use);
+    } else
       files[file.url] = {
         filename: localFilename,
         uses: [use],
@@ -171,13 +186,21 @@ class Persist {
     const objects = await this.remote.login(user, pass);
 
     // Save everything we received (user object, groups, etc.)
-    this.saveObjects(objects, true);
+    this.updateLastRead(objects);
+    this.saveObjects(objects);
     this.dispatchObjects(objects);
 
-    // Now set the current user id
-    const currentUserId = parseInt(Object.keys(objects.user)[0], 10);
-    AsyncStorage.setItem(Persist.cacheKey('currentUser'), '' + currentUserId);
-    this.store.dispatch(setCurrentUser(currentUserId));
+    // Now set the current user id (the only one returned as OBJECT_MODE_PRIVATE).
+    for (const id in objects.user) {
+      if (objects.user[id]._mode === OBJECT_MODE_PRIVATE) {
+        AsyncStorage.setItem(Persist.cacheKey('currentUser'), '' + id);
+        this.store.dispatch(setCurrentUser(id));
+        return;
+      }
+    }
+
+    // No private user returned, something's wrong
+    throw new Error("No user returned by login call")
   }
 
   async dispatchObject(type: string, id: number, object: {}) {
@@ -203,7 +226,7 @@ class Persist {
   async loadObjects(requests: Array<ObjectRequest>, recursive: boolean = false, forceRemoteLoad: boolean = false) {
     const convertItem = item => ({
       type: item[0].split(':').splice(-2, 1)[0], // Next to last part in cache key (e.g. "@Shelter:user:123")
-      id: item[0].split(':').slice(-1)[0], // Last part
+      id: parseInt(item[0].split(':').slice(-1)[0], 10), // Last part
       object: JSON.parse(item[1]),
     });
 
@@ -219,9 +242,9 @@ class Persist {
           const countBeforeProcessing = requests.length;
 
           loaded.map(item => {
-            let relatedRequests = Model.getRelated(item.type, item.object);
+            const relatedRequests = Model.getRelated(item.type, item.object)
 
-            relatedRequests = relatedRequests
+            // relatedRequests = relatedRequests
               .filter((relatedRequest: ObjectRequest) => {
                 for (const request of requests) {
                   if (relatedRequest.type === request.type && relatedRequest.id === request.id)
@@ -284,21 +307,22 @@ class Persist {
         loadedExpired = true; // Flag to stop from doing this twice
 
         const newObjects: Objects = await this.remote.loadObjects(loadImmediately);
-        this.saveObjects(newObjects, true);
+        this.updateLastRead(newObjects);
+        this.saveObjects(newObjects);
         this.dispatchObjects(newObjects);
       }
     }
 
     if (isOnline && !loadedExpired && expired.length) {
       const newObjects: Objects = await this.remote.loadObjects(expired);
-      this.saveObjects(newObjects, true);
+      this.updateLastRead(newObjects);
+      this.saveObjects(newObjects);
       this.dispatchObjects(newObjects);
     }
   }
 
   /**
-   * Deletes expired objects, unless they have the "_persist" flag.
-   * Also deletes files that have no objects using them.
+   * Deletes objects and files that have no references to them.
    */
   garbageCollect() {
     // TODO

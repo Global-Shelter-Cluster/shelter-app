@@ -117,7 +117,7 @@ class Group {
   static getRelated(group: GroupObject): Array<ObjectRequest> {
     const ret = [];
 
-    ret.push(...group._mode !== OBJECT_MODE_STUB
+    ret.push(...group._mode !== OBJECT_MODE_STUB && group.associated_regions
       ? group.associated_regions.map(id => ({type: "group", id: id}))
       : []);
 
