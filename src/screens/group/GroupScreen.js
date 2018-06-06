@@ -25,10 +25,10 @@ const mapStateToProps = (state, props) => {
   const group: PublicGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
   const factsheet: FactsheetObject | null = group.latest_factsheet ? getObject(state, 'factsheet', group.latest_factsheet) : null;
 
-  if (factsheet)
-    FileSystem.getInfoAsync(factsheet.image).then(info => {
-      console.log('CAM fs', factsheet, info);
-    });
+  // if (factsheet)
+  //   FileSystem.getInfoAsync(factsheet.image).then(info => {
+  //     console.log('CAM fs', factsheet, info);
+  //   });
 
   return {
     online: state.online,

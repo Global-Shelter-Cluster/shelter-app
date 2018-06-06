@@ -15,9 +15,7 @@ class Remote {
   static async temporaryDelayGenerator() {
     const ms: number = 1000 + parseInt(Math.random() * 1000, 10);
 
-    function timeout(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     console.log('TEMPORARY delay generator: waiting for ' + ms + 'ms...');
     await timeout(ms);

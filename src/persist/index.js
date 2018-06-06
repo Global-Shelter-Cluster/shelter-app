@@ -48,6 +48,7 @@ const expirationLimitsByObjectType = { // 3600s = 1hr
 class Persist {
   store: Store;
   remote: Remote;
+  directory: string;
 
   static cacheKey(...elements: Array<string | number>) {
     return ['@Shelter', ...elements].join(':');
@@ -58,10 +59,13 @@ class Persist {
   }
 
   async init() {
+    this.directory = FileSystem.documentDirectory + 'persisted';
     this.remote = new Remote;
 
     try {
+      console.log('init() AsyncStorage.getItem(Persist.cacheKey(\'currentUser\')): START');
       const currentUserId: string | null = await AsyncStorage.getItem(Persist.cacheKey('currentUser'));
+      console.log('init() AsyncStorage.getItem(Persist.cacheKey(\'currentUser\')): END', currentUserId);
       if (currentUserId === null)
         return;
       const id: number = parseInt(currentUserId, 10);
@@ -105,6 +109,8 @@ class Persist {
   }
 
   async saveFile(file: ObjectFileDescription) {
+    // return; // TODO: temporarily deactivate file caching
+
     // getExtension() function adapted from https://stackoverflow.com/a/6997591/368864
     const getExtension = url => (url = url
       .substr(1 + url.lastIndexOf("/"))
@@ -116,21 +122,20 @@ class Persist {
       );
 
     // 0. Make sure the directory exists
-    const dir = FileSystem.documentDirectory + 'persisted';
-    const dirInfo = await FileSystem.getInfoAsync(dir);
+    const dirInfo = await FileSystem.getInfoAsync(this.directory);
     if (!dirInfo.exists)
-      await FileSystem.makeDirectoryAsync(dir);
+      await FileSystem.makeDirectoryAsync(this.directory);
     else if (!dirInfo.isDirectory) {
       // Our directory exists as a file. Delete it and create a directory instead.
-      await FileSystem.deleteAsync(dir);
-      await FileSystem.makeDirectoryAsync(dir);
+      await FileSystem.deleteAsync(this.directory);
+      await FileSystem.makeDirectoryAsync(this.directory);
     }
 
     // 1. Download and save the file
     const localFilename = md5(file.url) + getExtension(file.url);
-    const localUri = dir + '/' + localFilename;
+    const localUri = this.directory + '/' + localFilename;
 
-    const fileInfo = await FileSystem.getInfoAsync(localUri);
+    let fileInfo = await FileSystem.getInfoAsync(localUri);
     if (!fileInfo.exists) {
       try {
         await FileSystem.downloadAsync(file.url, localUri);
@@ -142,6 +147,10 @@ class Persist {
         return;
       }
     }
+    // Just in case, we check if the downloaded file exists and isn't empty.
+    fileInfo = await FileSystem.getInfoAsync(localUri);
+    if (!fileInfo.exists || fileInfo.size === 0)
+      return;
 
     // 2. Update "files" data from AsyncStorage
     let files: Files | string | null = await AsyncStorage.getItem(Persist.cacheKey('files'));
@@ -178,6 +187,7 @@ class Persist {
 
   clearAll() {
     AsyncStorage.clear();
+    FileSystem.deleteAsync(this.directory, {idempotent: true});
   }
 
   async login(user: string, pass: string) {
