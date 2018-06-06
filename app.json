@@ -1,15 +1,34 @@
 {
   "expo": {
+    "name": "Shelter Cluster",
+    "description": "Mobile app for the Shelter Cluster",
+    "slug": "sheltercluster",
+    "version": "0.1.0",
     "sdkVersion": "27.0.0",
+    "githubUrl": "https://github.com/Global-Shelter-Cluster/shelter-app",
     "orientation": "portrait",
+    "primaryColor": "#7F1416",
     "icon": "./assets/icon/opaque.png",
     "android": {
-      "icon": "./assets/icon/transparent.png"
+      "icon": "./assets/icon/transparent.png",
+      "package": "org.sheltercluster.shelterapp"
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#7F1416"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "org.sheltercluster.shelterapp"
     },
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#EEEEEE"
+    },
+    "notification": {
+      "icon": "./assets/icon/notification.png",
+      "color": "#7F1416"
     }
   }
 }
