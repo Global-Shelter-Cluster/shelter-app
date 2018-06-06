@@ -6,22 +6,27 @@ import Button from './Button.js';
 import type {PrivateUserObject, PublicUserObject} from "../model/user";
 import vars from "../vars";
 
-export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserObject, showEdit: boolean, edit: () => {} }) => (
-  <View
+export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserObject, showEdit: boolean, edit: () => {} }) => {
+  const separator = user.org && user.role ? <Text> • </Text> : null;
+
+  const org_role = (user.org || user.role)
+    ? <Text style={styles.org_role}>
+      <Text style={{fontWeight: "bold"}}>{user.org}</Text>
+      {separator}
+      <Text style={{fontStyle: "italic"}}>{user.role}</Text>
+    </Text>
+    : null;
+
+  return <View
     style={styles.container}>
     <View style={{flexShrink: 1}}>
       <Text style={styles.name}>{user.name}</Text>
-      {(user.org || user.role) &&
-      <Text style={styles.org_role}>
-        <Text style={{fontWeight: "bold"}}>{user.org}</Text>
-        {user.org && user.role && <Text> • </Text>}
-        <Text style={{fontStyle: "italic"}}>{user.role}</Text>
-      </Text>}
+      {org_role}
       {showEdit && <Button primary onPress={edit} title="Edit" icon="pencil"/>}
     </View>
-    <Image style={styles.photo} source={{uri: user.picture}}/>
-  </View>
-);
+    <Image key={user.picture} style={styles.photo} source={{uri: user.picture}}/>
+  </View>;
+}
 
 const styles = StyleSheet.create({
   container: {
