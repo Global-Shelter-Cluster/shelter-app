@@ -5,20 +5,22 @@ import {connect} from 'react-redux';
 import type {PublicGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
-import vars from "../../vars";
 import Group from './Group';
 import type {FactsheetObject} from "../../model/factsheet";
-import {FileSystem} from "expo";
 import {clearLastError, loadObject} from "../../actions/index";
 import {OBJECT_MODE_STUB} from "../../model/index";
+import NavTitleContainer from "../../containers/NavTitleContainer";
+import type {lastErrorType} from "../../reducers/lastError";
 
 type Props = {
   online: boolean,
   group: PublicGroupObject,
   loaded: boolean,
+  factsheet: FactsheetObject,
   navigation: { setParams: ({}) => {} },
   load: number => {},
   refresh: number => {},
+  lastError: lastErrorType,
 }
 
 const mapStateToProps = (state, props) => {
@@ -55,18 +57,11 @@ const mapDispatchToProps = dispatch => ({
 
 class GroupScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => {
-    const params = navigation.state.params || {
-      online: null,
-    };
-
-    const headerLeft = params.online === false
-      ? <FontAwesome name="wifi" size={20} color={vars.ACCENT_RED} style={{marginLeft: 10}}/>
-      : null;
+    const title = navigation.getParam('title', 'Loading...');
 
     return {
-      title: params.title,
-      headerLeft: headerLeft,
-    };
+      headerTitle: <NavTitleContainer title={title}/>,
+    }
   };
 
   componentWillMount() {
@@ -74,15 +69,10 @@ class GroupScreen extends React.Component<Props> {
     if (!this.props.loaded)
       this.props.refresh(groupId);
 
-    this.props.navigation.setParams({
-      online: this.props.online,
-      title: this.props.group.title,
-    });
+    this.props.navigation.setParams({title: this.props.group.title});
   }
 
   componentDidUpdate() {
-    if (this.props.online !== this.props.navigation.getParam('online'))
-      this.props.navigation.setParams({online: this.props.online});
     if (this.props.group.title !== this.props.navigation.getParam('title'))
       this.props.navigation.setParams({title: this.props.group.title});
   }

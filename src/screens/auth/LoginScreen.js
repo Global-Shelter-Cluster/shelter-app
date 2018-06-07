@@ -1,11 +1,14 @@
+// @flow
+
 import React from 'react';
 import {Button, Text, View} from 'react-native';
 import {login} from '../../actions';
 import {connect} from 'react-redux';
+import NavTitleContainer from "../../containers/NavTitleContainer";
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
-    title: 'Log in',
+    headerTitle: <NavTitleContainer title="Log in"/>,
   };
 
   componentDidMount() {

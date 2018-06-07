@@ -4,6 +4,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {FontAwesome} from '@expo/vector-icons';
 import {WebView} from 'react-native';
+import NavTitleContainer from "../../containers/NavTitleContainer";
 
 type Props = {}
 
@@ -12,10 +13,8 @@ const mapStateToProps = (state, props) => ({});
 const mapDispatchToProps = (dispatch, props) => ({});
 
 class TempReportingScreen extends React.Component<Props> {
-  static navigationOptions = ({navigation}) => {
-    return {
-      title: "Not implemented yet!",
-    };
+  static navigationOptions = {
+    headerTitle: <NavTitleContainer title="Not implemented yet!"/>,
   };
 
   render() {

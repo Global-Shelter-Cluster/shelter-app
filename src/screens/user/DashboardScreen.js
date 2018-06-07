@@ -1,68 +1,29 @@
 // @flow
 
 import React from 'react';
-import {Button} from 'react-native';
-import {logout} from "../../actions";
 import {connect} from 'react-redux';
 import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import Dashboard from './Dashboard';
 import {FontAwesome} from '@expo/vector-icons';
-import vars from "../../vars";
+import NavTitleContainer from "../../containers/NavTitleContainer";
+import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
 
 type Props = {
-  online: boolean,
   user: PrivateUserObject,
-  navigation: { setParams: ({}) => {}, getParam: (string) => {}, navigate: (string) => {} },
-  logout: () => {},
 }
 
 const mapStateToProps = state => ({
-  online: state.online,
   user: getCurrentUser(state),
 });
 
-const mapDispatchToProps = dispatch => ({
-  logout: () => dispatch(logout()),
-});
+const mapDispatchToProps = dispatch => ({});
 
 class DashboardScreen extends React.Component<Props> {
-  static navigationOptions = ({navigation}) => {
-    const params = navigation.state.params || {
-      logout: () => {
-      },
-      online: false,
-    };
-
-    const headerLeft = !params.online
-      ? <FontAwesome name="wifi" size={20} color={vars.ACCENT_RED} style={{marginLeft: 10}}/>
-      : null;
-
-    const headerRight = <Button
-      onPress={() => {
-        params.logout();
-        navigation.navigate('Auth');
-      }}
-      title="Log out"
-    />;
-
-    const title = 'Dashboard';
-
-    return {
-      title: title,
-      headerLeft: headerLeft,
-      headerRight: headerRight,
-    };
+  static navigationOptions = {
+    headerTitle: <NavTitleContainer title="Dashboard"/>,
+    headerRight: <LogoutNavButtonContainer/>,
   };
-
-  componentWillMount() {
-    this.props.navigation.setParams({logout: this.props.logout, online: this.props.online});
-  }
-
-  componentDidUpdate() {
-    if (this.props.online !== this.props.navigation.getParam('online'))
-      this.props.navigation.setParams({online: this.props.online});
-  }
 
   render() {
     return <Dashboard {...this.props}/>;
