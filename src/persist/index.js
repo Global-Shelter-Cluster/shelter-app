@@ -1,6 +1,5 @@
 // @flow
 
-import {AsyncStorage} from 'react-native';
 import {setCurrentUser, setObjects} from "../actions/index";
 import type {Store} from "redux";
 import Remote from "./remote";
@@ -9,6 +8,7 @@ import Model from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
 import {OBJECT_MODE_PRIVATE} from "../model/index";
+import Storage from "./storage_async";
 
 export type ObjectRequest = {
   type: "group" | "user" | "document" | "event" | "factsheet",
@@ -63,14 +63,15 @@ class Persist {
     this.remote = new Remote;
 
     try {
-      console.log('init() AsyncStorage.getItem(Persist.cacheKey(\'currentUser\')): START');
-      const currentUserId: string | null = await AsyncStorage.getItem(Persist.cacheKey('currentUser'));
-      console.log('init() AsyncStorage.getItem(Persist.cacheKey(\'currentUser\')): END', currentUserId);
-      if (currentUserId === null)
-        return;
-      const id: number = parseInt(currentUserId, 10);
-      await this.loadObjects([{type: "user", id: id}], true);
-      await this.store.dispatch(setCurrentUser(id));
+      // TODO: when AsyncStorage works on Android, change this back to use "await".
+      // const currentUserId: string | null = await Storage.getItem(Persist.cacheKey('currentUser'));
+      Storage.getItem(Persist.cacheKey('currentUser')).then(async (currentUserId: string | null) => {
+        if (currentUserId === null)
+          return;
+        const id: number = parseInt(currentUserId, 10);
+        await this.loadObjects([{type: "user", id: id}], true);
+        await this.store.dispatch(setCurrentUser(id));
+      });
     } catch (e) {
     }
   }
@@ -96,7 +97,7 @@ class Persist {
       }
     }
 
-    AsyncStorage.multiSet(data);
+    Storage.multiSet(data);
 
     // We don't add "await" here so it runs in the background.
     this.saveFiles(files);
@@ -153,7 +154,7 @@ class Persist {
       return;
 
     // 2. Update "files" data from AsyncStorage
-    let files: Files | string | null = await AsyncStorage.getItem(Persist.cacheKey('files'));
+    let files: Files | string | null = await Storage.getItem(Persist.cacheKey('files'));
     files = typeof files === "string" ? JSON.parse(files) : {};
 
     const use = {type: file.type, id: file.id};
@@ -173,20 +174,20 @@ class Persist {
         uses: [use],
       };
 
-    AsyncStorage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
+    Storage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
 
     // 3. Update the object using the file
-    let object = await AsyncStorage.getItem(Persist.cacheKey(file.type, file.id));
+    let object = await Storage.getItem(Persist.cacheKey(file.type, file.id));
     if (object) {
       object = JSON.parse(object);
       object[file.property] = localUri;
-      AsyncStorage.setItem(Persist.cacheKey(file.type, file.id), JSON.stringify(object));
+      Storage.setItem(Persist.cacheKey(file.type, file.id), JSON.stringify(object));
       this.dispatchObject(file.type, file.id, object);
     }
   }
 
   clearAll() {
-    AsyncStorage.clear();
+    Storage.clear();
     FileSystem.deleteAsync(this.directory, {idempotent: true});
   }
 
@@ -202,7 +203,7 @@ class Persist {
     // Now set the current user id (the only one returned as OBJECT_MODE_PRIVATE).
     for (const id in objects.user) {
       if (objects.user[id]._mode === OBJECT_MODE_PRIVATE) {
-        AsyncStorage.setItem(Persist.cacheKey('currentUser'), '' + id);
+        Storage.setItem(Persist.cacheKey('currentUser'), '' + id);
         this.store.dispatch(setCurrentUser(id));
         return;
       }
@@ -228,7 +229,7 @@ class Persist {
    * Triggers a remote load for expired ones. If every object was found in AsyncStorage, this happens asynchronously
    * after the objects are dispatched.
    *
-   * If currently offline, dispatches only the objects it can find on AsyncStorage.
+   * If currently offline, dispatches only the objects it can find on Storage.
    *
    * If called with recursive=true, this will also load all related objects.
    */
@@ -239,7 +240,7 @@ class Persist {
       object: JSON.parse(item[1]),
     });
 
-    const loaded = (await AsyncStorage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id))))
+    const loaded = (await Storage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id))))
       .map(convertItem)
       .filter(i => i.object); // Safety check: discard results that for some reason don't contain the actual objects
 
@@ -269,7 +270,7 @@ class Persist {
           });
 
           if (allRelatedRequests.length) {
-            const temp = await AsyncStorage.multiGet(allRelatedRequests.map(o => Persist.cacheKey(o.type, o.id)));
+            const temp = await Storage.multiGet(allRelatedRequests.map(o => Persist.cacheKey(o.type, o.id)));
             loaded.push(...temp.map(convertItem));
           }
 
