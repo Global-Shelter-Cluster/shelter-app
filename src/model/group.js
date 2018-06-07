@@ -1,7 +1,7 @@
 // @flow
 
 import type {ObjectRequest} from "../persist";
-import {createSelector} from 'reselect';
+// import {createSelector} from 'reselect';
 import {OBJECT_MODE_STUB} from "./index";
 
 // export type PrivateGroupObject = {

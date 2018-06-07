@@ -7,26 +7,31 @@ import Group from "./group";
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import type {FactsheetObject} from "./factsheet";
 import Factsheet from "./factsheet";
+import type {DocumentObject} from "./document";
+import Document from "./document";
 import createCachedSelector from 're-reselect';
 
 export type Objects = {
   user?: { [id: string]: UserObject },
   group?: { [id: string]: GroupObject },
   factsheet?: { [id: string]: FactsheetObject },
+  document?: { [id: string]: DocumentObject },
 }
 
-export type Object = UserObject | GroupObject | FactsheetObject;
+export type Object = UserObject | GroupObject | FactsheetObject | DocumentObject;
 
 export const initialObjectsState: Objects = {
   user: {},
   group: {},
   factsheet: {},
+  document: {},
 };
 
 const mapTypesToClasses = {
   'user': User,
   'group': Group,
   'factsheet': Factsheet,
+  'document': Document,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.

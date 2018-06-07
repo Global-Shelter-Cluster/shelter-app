@@ -1,7 +1,6 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
-import {createSelector} from 'reselect';
 
 // export type PrivateFactsheetObject = {
 //   _last_read?: number,

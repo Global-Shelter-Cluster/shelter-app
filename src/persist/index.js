@@ -59,8 +59,8 @@ class Persist {
   }
 
   async init() {
-    this.directory = FileSystem.documentDirectory + 'persisted';
     this.remote = new Remote;
+    await this.initDirectory(FileSystem.documentDirectory + 'persisted');
 
     try {
       // TODO: when AsyncStorage works on Android, change this back to use "await".
@@ -73,6 +73,19 @@ class Persist {
         await this.store.dispatch(setCurrentUser(id));
       });
     } catch (e) {
+    }
+  }
+
+  async initDirectory(directory: string) {
+    this.directory = directory;
+    const dirInfo = await FileSystem.getInfoAsync(this.directory);
+
+    if (!dirInfo.exists)
+      await FileSystem.makeDirectoryAsync(this.directory);
+    else if (!dirInfo.isDirectory) {
+      // Our directory exists as a file. Delete it and create a directory instead.
+      await FileSystem.deleteAsync(this.directory);
+      await FileSystem.makeDirectoryAsync(this.directory);
     }
   }
 
@@ -122,16 +135,6 @@ class Persist {
           : url.lastIndexOf(".")
       );
 
-    // 0. Make sure the directory exists
-    const dirInfo = await FileSystem.getInfoAsync(this.directory);
-    if (!dirInfo.exists)
-      await FileSystem.makeDirectoryAsync(this.directory);
-    else if (!dirInfo.isDirectory) {
-      // Our directory exists as a file. Delete it and create a directory instead.
-      await FileSystem.deleteAsync(this.directory);
-      await FileSystem.makeDirectoryAsync(this.directory);
-    }
-
     // 1. Download and save the file
     const localFilename = md5(file.url) + getExtension(file.url);
     const localUri = this.directory + '/' + localFilename;
@@ -152,6 +155,7 @@ class Persist {
     fileInfo = await FileSystem.getInfoAsync(localUri);
     if (!fileInfo.exists || fileInfo.size === 0)
       return;
+    console.debug('saveFile(): downloaded file successfully', fileInfo);
 
     // 2. Update "files" data from AsyncStorage
     let files: Files | string | null = await Storage.getItem(Persist.cacheKey('files'));
