@@ -14,69 +14,84 @@ import vars from "../vars";
 import TempBlankScreen from "../screens/TempBlankScreen";
 import TempReportingScreen from "../screens/reporting/TempReportingScreen";
 
-const AuthScreens = createStackNavigator({
-  Login: LoginScreen,
-});
-
-const ExploreStack = createStackNavigator({
-  Explore: TempBlankScreen,
-  Group: GroupScreen,
-});
-const ChatStack = createSwitchNavigator({
-  Chat: TempBlankScreen,
-});
-const ReportingStack = createSwitchNavigator({
-  Reporting: TempReportingScreen,
-});
-const UserStack = createStackNavigator({
-  Dashboard: DashboardScreen,
-  Edit: EditScreen,
-});
-
-const TabScreens = createBottomTabNavigator({
-  Explore: ExploreStack,
-  Chat: ChatStack,
-  Reporting: ReportingStack,
-  User: UserStack,
-}, {
-  navigationOptions: ({navigation}) => ({
-    tabBarIcon: ({focused, tintColor}) => {
-      const {routeName} = navigation.state;
-
-      const icons = {
-        'Explore': "globe",
-        'Chat': "comments",
-        'Reporting': "paper-plane",
-        'User': "user",
-      };
-
-      return <FontAwesome
-        name={icons[routeName]} size={26} color={tintColor}
-      />;
-    },
-    tabBarOptions: {
-      activeTintColor: vars.SHELTER_RED,
-      inactiveTintColor: vars.MEDIUM_GREY,
-    },
-  }),
-  initialRouteName2: 'User',
-});
-
-const MainNavigator = createSwitchNavigator(
-  {
-    Auth: AuthScreens,
-    Tabs: TabScreens,
-  }, {
-    initialRouteName: 'Auth',
-  }
-);
-
 type Props = {
   dispatch: () => {},
 }
 
 class AppContainer extends React.Component<Props> {
   render() {
+
+    const AuthScreens = createStackNavigator({
+      Login: LoginScreen,
+    });
+
+    const ExploreStack = createStackNavigator({
+      Explore: TempBlankScreen,
+      Group: GroupScreen,
+    });
+    const ChatStack = createSwitchNavigator({
+      Chat: TempBlankScreen,
+    });
+    const ReportingStack = createSwitchNavigator({
+      Reporting: TempReportingScreen,
+    });
+    const UserStack = createStackNavigator({
+      Dashboard: DashboardScreen,
+      Edit: EditScreen,
+    });
+    const SearchStack = createStackNavigator({
+      Search: TempBlankScreen,
+    });
+
+    const tabs = this.props.online
+      ? {
+        Search: SearchStack,
+        Explore: ExploreStack,
+        Chat: ChatStack,
+        Reporting: ReportingStack,
+        User: UserStack,
+      }
+      : {
+        Explore: ExploreStack,
+        Chat: ChatStack,
+        Reporting: ReportingStack,
+        User: UserStack,
+      };
+
+    const TabScreens = createBottomTabNavigator(tabs, {
+      navigationOptions: ({navigation}) => ({
+        tabBarIcon: ({focused, tintColor}) => {
+          const {routeName} = navigation.state;
+
+          const icons = {
+            'Search': "search",
+            'Explore': "globe",
+            'Chat': "comments",
+            'Reporting': "paper-plane",
+            'User': "user",
+          };
+
+          return <FontAwesome
+            name={icons[routeName]} size={26} color={tintColor}
+          />;
+        },
+        tabBarOptions: {
+          activeTintColor: vars.SHELTER_RED,
+          inactiveTintColor: vars.MEDIUM_GREY,
+        },
+      }),
+      initialRouteName2: 'User',
+    });
+
+    const MainNavigator = createSwitchNavigator(
+      {
+        Auth: AuthScreens,
+        Tabs: TabScreens,
+      }, {
+        initialRouteName: 'Auth',
+      }
+    );
+
     if (this.props.initializing)
       return (
         <AppLoading
@@ -91,7 +106,10 @@ class AppContainer extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({initializing: state.initializing});
+const mapStateToProps = state => ({
+  initializing: state.initializing,
+  online: state.online,
+});
 
 const mapDispatchToProps = dispatch => {
   return {
