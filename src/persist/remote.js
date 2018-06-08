@@ -34,10 +34,10 @@ const axios = axiosLib.create({
  */
 class Remote {
   async request(path: string, data) {
-    console.log('Axios request', path, data);
+    console.debug('Axios request', path, data);
     try {
       const response = await axios.post(path, JSON.stringify(data), config.axiosExtra);
-      console.log('Axios response', response.data);
+      console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB', response.data);
       return response.data;
     } catch (e) {
       console.error('Axios error', e);
