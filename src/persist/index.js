@@ -1,14 +1,14 @@
 // @flow
 
-import {setCurrentUser, setObjects} from "../actions/index";
+import {downloadFiles, setCurrentUser, setObjects} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects} from "../model";
-import Model from "../model";
+import Model, {OBJECT_MODE_PRIVATE} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
-import {OBJECT_MODE_PRIVATE} from "../model/index";
 import Storage from "./storage_async";
+import config from "../config";
 
 export type ObjectRequest = {
   type: "group" | "user" | "document" | "event" | "factsheet",
@@ -98,28 +98,38 @@ class Persist {
   // Saves the objects (and their files) marked with _persist:true to AsyncStorage (and FileSystem).
   saveObjects(objects: Objects) {
     const data = [];
-    const files: Array<ObjectFileDescription> = [];
 
     for (const type in objects) {
       for (const id in objects[type]) {
         if (!objects[type][id]._persist)
-          return;
+          continue;
 
-        files.push(...Model.getFiles(type, objects[type][id]));
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
       }
     }
 
     Storage.multiSet(data);
 
-    // We don't add "await" here so it runs in the background.
-    this.saveFiles(files);
+    this.downloadFilesForObjects(objects);
   }
 
-  // Download and save files, one at a time.
-  async saveFiles(files: Array<ObjectFileDescription>) {
-    for (const file of files)
-      await this.saveFile(file);
+  // Very similar to saveObjects(), but it only triggers the file downloads.
+  downloadFilesForObjects(objects: Objects) {
+    const data = [];
+    const files: Array<ObjectFileDescription> = [];
+
+    for (const type in objects) {
+      for (const id in objects[type]) {
+        if (!objects[type][id]._persist)
+          continue;
+
+        files.push(...Model.getFiles(type, objects[type][id]));
+      }
+    }
+
+    if (files.length > 0)
+      // This will run in the background.
+      this.store.dispatch(downloadFiles(files));
   }
 
   async saveFile(file: ObjectFileDescription) {
@@ -192,7 +202,8 @@ class Persist {
 
   clearAll() {
     Storage.clear();
-    FileSystem.deleteAsync(this.directory, {idempotent: true});
+    if (config.deleteFilesOnLogout)
+      FileSystem.deleteAsync(this.directory, {idempotent: true});
   }
 
   async login(user: string, pass: string) {
@@ -208,7 +219,7 @@ class Persist {
     for (const id in objects.user) {
       if (objects.user[id]._mode === OBJECT_MODE_PRIVATE) {
         Storage.setItem(Persist.cacheKey('currentUser'), '' + id);
-        this.store.dispatch(setCurrentUser(id));
+        this.store.dispatch(setCurrentUser(parseInt(id, 10)));
         return;
       }
     }
@@ -259,8 +270,6 @@ class Persist {
 
           loaded.map(item => {
             const relatedRequests = Model.getRelated(item.type, item.object)
-
-            // relatedRequests = relatedRequests
               .filter((relatedRequest: ObjectRequest) => {
                 for (const request of requests) {
                   if (relatedRequest.type === request.type && relatedRequest.id === request.id)
@@ -295,6 +304,7 @@ class Persist {
         });
 
       this.dispatchObjects(objects);
+      this.downloadFilesForObjects(objects);
     }
 
     const now = Persist.now();

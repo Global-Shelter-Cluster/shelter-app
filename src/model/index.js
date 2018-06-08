@@ -53,7 +53,8 @@ class Model {
     if (!mapTypesToClasses[type])
       throw new Error("unknown type: " + type);
 
-    return mapTypesToClasses[type].getFiles(object);
+    return mapTypesToClasses[type].getFiles(object)
+      .filter(f => f.url && f.url.startsWith('http'));
   }
 }
 

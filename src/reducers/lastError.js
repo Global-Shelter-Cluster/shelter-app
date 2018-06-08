@@ -1,17 +1,13 @@
 // @flow
 
-import {SET_LAST_ERROR} from "../actions";
-import {CLEAR_LAST_ERROR} from "../actions/index";
+import {CLEAR_LAST_ERROR, SET_LAST_ERROR} from "../actions";
 
 export type lastErrorType = {
   type: string | null,
   data: {} | null,
 }
 
-const lastError = (state: lastErrorType = {
-  type: null,
-  data: null
-}, action: { type: string, data: {} }) => {
+const lastError = (state: lastErrorType = {type: null, data: null}, action: { type: string, data: {} }) => {
   switch (action.type) {
     case SET_LAST_ERROR:
       return action.data;

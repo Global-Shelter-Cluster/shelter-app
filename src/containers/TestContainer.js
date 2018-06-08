@@ -7,6 +7,7 @@ import Test from '../components/Test';
 
 const mapStateToProps = state => ({
   isOnline: state.online,
+  downloadProgress: state.downloadProgress,
 });
 
 const mapDispatchToProps = dispatch => {

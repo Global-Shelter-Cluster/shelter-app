@@ -6,6 +6,7 @@ import initializing from './initializing';
 import objects from './objects';
 import currentUser from './currentUser';
 import lastError from './lastError';
+import downloadProgress from './downloadProgress';
 
 export default combineReducers({
   online,
@@ -13,4 +14,5 @@ export default combineReducers({
   objects,
   currentUser,
   lastError,
+  downloadProgress,
 });

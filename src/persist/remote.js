@@ -1,9 +1,7 @@
 // @flow
 
 import type {Objects} from "../model";
-import {OBJECT_MODE_PRIVATE, OBJECT_MODE_STUB} from "../model";
 import type {ObjectRequest} from "./index";
-import {OBJECT_MODE_PUBLIC} from "../model/index";
 import axiosLib from 'axios';
 import config from "../config";
 

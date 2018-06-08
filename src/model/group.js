@@ -14,6 +14,8 @@ import {OBJECT_MODE_STUB} from "./index";
 //   associated_regions: Array<number>,
 //   parent_response: number,
 //   latest_factsheet: number,
+//   featured_documents: Array<number>,
+//   key_documents: Array<number>,
 // }
 
 export type PublicResponseGroupObject = {
@@ -26,6 +28,8 @@ export type PublicResponseGroupObject = {
   associated_regions?: Array<number>,
   parent_response?: number,
   latest_factsheet?: number,
+  featured_documents: Array<number>,
+  key_documents: Array<number>,
 }
 
 export type PublicGeographicRegionGroupObject = {
@@ -37,6 +41,8 @@ export type PublicGeographicRegionGroupObject = {
   title: string,
   parent_region?: number,
   latest_factsheet?: number,
+  featured_documents: Array<number>,
+  key_documents: Array<number>,
 }
 
 export type PublicHubGroupObject = {
@@ -49,6 +55,8 @@ export type PublicHubGroupObject = {
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
+  featured_documents: Array<number>,
+  key_documents: Array<number>,
 }
 
 export type PublicStrategicAdvisoryGroupObject = {
@@ -61,6 +69,8 @@ export type PublicStrategicAdvisoryGroupObject = {
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
+  featured_documents: Array<number>,
+  key_documents: Array<number>,
 }
 
 export type PublicWorkingGroupObject = {
@@ -73,6 +83,8 @@ export type PublicWorkingGroupObject = {
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
+  featured_documents: Array<number>,
+  key_documents: Array<number>,
 }
 //
 // export type PublicGroupObject = {
@@ -85,6 +97,8 @@ export type PublicWorkingGroupObject = {
 //   associated_regions: Array<number>,
 //   parent_response: number,
 //   latest_factsheet: number,
+//   featured_documents: Array<number>,
+//   key_documents: Array<number>,
 // }
 
 export type StubGroupObject = {
@@ -126,6 +140,14 @@ class Group {
 
     if (group._mode !== OBJECT_MODE_STUB && group.latest_factsheet)
       ret.push({type: "factsheet", id: group.latest_factsheet});
+
+    ret.push(...group._mode !== OBJECT_MODE_STUB
+      ? group.featured_documents.map(id => ({type: "document", id: id}))
+      : []);
+
+    ret.push(...group._mode !== OBJECT_MODE_STUB
+      ? group.key_documents.map(id => ({type: "document", id: id}))
+      : []);
 
     return ret;
   }

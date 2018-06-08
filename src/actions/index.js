@@ -1,5 +1,6 @@
 // @flow
 
+import type {ObjectFileDescription} from "../persist";
 import persist from "../persist";
 import {NetInfo} from 'react-native';
 import type {Objects} from "../model";
@@ -35,7 +36,7 @@ export const clearAllObjects = () => ({
 
 export const login = (user: string, pass: string) => async () => persist.login(user, pass);
 
-export const loadObject = (type: string, id: number, recursive: boolean, forceRemoteLoad: boolean) => async (dispatch, getState) => {
+export const loadObject = (type: string, id: number, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
   try {
     await persist.loadObjects([{type: type, id: id}], recursive, forceRemoteLoad);
   } catch (e) {
@@ -81,3 +82,23 @@ export const REFRESH_OLD_DATA = 'REFRESH_OLD_DATA';
 export const refreshOldData = () => {
 
 };
+
+export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dispatch, getState) => {
+  dispatch(addFilesToDownload(files));
+
+  while (getState().downloadProgress.filesLeft.length > 0) {
+    await persist.saveFile(getState().downloadProgress.filesLeft[0]);
+    dispatch(oneFileDownloaded());
+  }
+};
+
+export const ADD_FILES_TO_DOWNLOAD = 'ADD_FILES_TO_DOWNLOAD';
+export const addFilesToDownload = (files: Array<ObjectFileDescription>) => ({
+  type: ADD_FILES_TO_DOWNLOAD,
+  files: files,
+});
+
+export const ONE_FILE_DOWNLOADED = 'ONE_FILE_DOWNLOADED';
+export const oneFileDownloaded = () => ({
+  type: ONE_FILE_DOWNLOADED,
+});
