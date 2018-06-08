@@ -2,11 +2,16 @@
 
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-import Button from './Button.js';
+import Button from './Button';
 import type {PrivateUserObject, PublicUserObject} from "../model/user";
 import vars from "../vars";
+// import {FileSystem} from "expo";
 
-export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserObject, showEdit: boolean, edit: () => {} }) => {
+export default ({user, showEdit, edit}: {
+  user: PrivateUserObject | PublicUserObject,
+  showEdit: boolean,
+  edit: () => {},
+}) => {
   const separator = user.org && user.role ? <Text> • </Text> : null;
 
   const org_role = (user.org || user.role)
@@ -17,8 +22,15 @@ export default ({user, showEdit, edit}: { user: PrivateUserObject | PublicUserOb
     </Text>
     : null;
 
-  return <View
-    style={styles.container}>
+  // console.log('user org', user.org);
+  // console.log('user role', user.role);
+  // if (user.picture.substr(0, 7) === 'file://') {
+  //   FileSystem.getInfoAsync(user.picture).then(i => console.log('user pic info', i));
+  //   // FileSystem.readAsStringAsync(user.picture).then(i => console.log('user pic data', i));
+  // }
+  // console.log('user pic', user.picture);
+
+  return <View style={styles.container}>
     <View style={{flexShrink: 1}}>
       <Text style={styles.name}>{user.name}</Text>
       {org_role}

@@ -41,7 +41,7 @@ export const OBJECT_MODE_PUBLIC = 'public';
 // Simplified object, usually without any references to other objects, e.g. just an id and title.
 export const OBJECT_MODE_STUB = 'stub';
 
-class Model {
+export default class Model {
   static getRelated(type: string, object: Object): Array<ObjectRequest> {
     if (!mapTypesToClasses[type])
       throw new Error("unknown type: " + type);
@@ -62,6 +62,4 @@ export const getObject = createCachedSelector(
   (state, type, id) => state.objects[type],
   (state, type, id) => id,
   (objects, id) => objects[id],
-)((state, type, id) => [type, id].join(':'));
-
-export default Model;
+)((state, type, id) => [type, id].join(':')); // group:123

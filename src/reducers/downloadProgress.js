@@ -3,6 +3,7 @@
 import {ADD_FILES_TO_DOWNLOAD, ONE_FILE_DOWNLOADED} from "../actions";
 import type {ObjectFileDescription} from "../persist";
 import clone from "clone";
+import {CLEAR_ALL_DOWNLOADS} from "../actions/index";
 
 export type downloadProgressType = {
   downloadingCount: number,
@@ -33,6 +34,12 @@ const downloadProgress = (state: downloadProgressType = {
         newState.downloadingCount = 0;
 
       return newState;
+    }
+    case CLEAR_ALL_DOWNLOADS: {
+      return {
+        downloadingCount: 0,
+        filesLeft: [],
+      };
     }
     default:
       return state

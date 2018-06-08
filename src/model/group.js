@@ -2,7 +2,9 @@
 
 import type {ObjectRequest} from "../persist";
 // import {createSelector} from 'reselect';
-import {OBJECT_MODE_STUB} from "./index";
+import {getObject, OBJECT_MODE_STUB} from "./index";
+import moment from 'moment';
+import createCachedSelector from 're-reselect';
 
 // export type PrivateGroupObject = {
 //   _last_read?: number,
@@ -16,6 +18,7 @@ import {OBJECT_MODE_STUB} from "./index";
 //   latest_factsheet: number,
 //   featured_documents: Array<number>,
 //   key_documents: Array<number>,
+//   recent_documents: Array<number>,
 // }
 
 export type PublicResponseGroupObject = {
@@ -30,6 +33,7 @@ export type PublicResponseGroupObject = {
   latest_factsheet?: number,
   featured_documents: Array<number>,
   key_documents: Array<number>,
+  recent_documents: Array<number>,
 }
 
 export type PublicGeographicRegionGroupObject = {
@@ -43,6 +47,7 @@ export type PublicGeographicRegionGroupObject = {
   latest_factsheet?: number,
   featured_documents: Array<number>,
   key_documents: Array<number>,
+  recent_documents: Array<number>,
 }
 
 export type PublicHubGroupObject = {
@@ -57,6 +62,7 @@ export type PublicHubGroupObject = {
   latest_factsheet?: number,
   featured_documents: Array<number>,
   key_documents: Array<number>,
+  recent_documents: Array<number>,
 }
 
 export type PublicStrategicAdvisoryGroupObject = {
@@ -71,6 +77,7 @@ export type PublicStrategicAdvisoryGroupObject = {
   latest_factsheet?: number,
   featured_documents: Array<number>,
   key_documents: Array<number>,
+  recent_documents: Array<number>,
 }
 
 export type PublicWorkingGroupObject = {
@@ -85,6 +92,7 @@ export type PublicWorkingGroupObject = {
   latest_factsheet?: number,
   featured_documents: Array<number>,
   key_documents: Array<number>,
+  recent_documents: Array<number>,
 }
 //
 // export type PublicGroupObject = {
@@ -99,6 +107,7 @@ export type PublicWorkingGroupObject = {
 //   latest_factsheet: number,
 //   featured_documents: Array<number>,
 //   key_documents: Array<number>,
+//   recent_documents: Array<number>,
 // }
 
 export type StubGroupObject = {
@@ -127,11 +136,11 @@ export type GroupObject =
 // export type GroupObject = PublicGroupObject | StubGroupObject;
 // export type GroupObject = PrivateGroupObject | PublicGroupObject | StubGroupObject;
 
-class Group {
+export default class Group {
   static getRelated(group: GroupObject): Array<ObjectRequest> {
     const ret = [];
 
-    ret.push(...group._mode !== OBJECT_MODE_STUB && group.associated_regions
+    ret.push(...group._mode !== OBJECT_MODE_STUB && group.associated_regions !== undefined
       ? group.associated_regions.map(id => ({type: "group", id: id}))
       : []);
 
@@ -141,13 +150,11 @@ class Group {
     if (group._mode !== OBJECT_MODE_STUB && group.latest_factsheet)
       ret.push({type: "factsheet", id: group.latest_factsheet});
 
-    ret.push(...group._mode !== OBJECT_MODE_STUB
-      ? group.featured_documents.map(id => ({type: "document", id: id}))
-      : []);
-
-    ret.push(...group._mode !== OBJECT_MODE_STUB
-      ? group.key_documents.map(id => ({type: "document", id: id}))
-      : []);
+    ['featured', 'key', 'recent'].map(key => ret
+      .push(...group._mode !== OBJECT_MODE_STUB
+        ? group[key + '_documents'].map(id => ({type: "document", id: id}))
+        : [])
+    );
 
     return ret;
   }
@@ -196,4 +203,11 @@ class Group {
 //       : []
 // );
 
-export default Group;
+const RECENT_DOCS_MAX_DAYS = 7; // how many days ago are docs still considered "recent"
+
+export const getRecentDocumentsCount = createCachedSelector(
+  (state, id) => state,
+  (state, id) => id,
+  () => moment(),
+  (state, id, now) => state.objects.group[id].recent_documents.map(id => getObject(state, 'document', id)).filter(d => now.diff(d.changed, 'days') <= RECENT_DOCS_MAX_DAYS).length
+)((state, id) => moment().format('YYYY-MM-DD')); // e.g. "2018-06-08"

@@ -1,12 +1,15 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import {OBJECT_MODE_STUB} from "./index";
+import createCachedSelector from 're-reselect';
 
 export type PublicDocumentObject = {
   _last_read?: number,
   _mode: "public",
   _persist?: true,
   id: number,
+  changed: string, // date
   title: string,
   publisher: number,
   groups: Array<number>,
@@ -26,18 +29,17 @@ export type StubDocumentObject = {
   _mode: "stub",
   _persist?: true,
   id: number,
+  changed: string, // date
   title: string,
   publisher: number,
   groups: Array<number>,
   date: string,
-  file?: string,
-  link?: string,
   preview: string,
 }
 
 export type DocumentObject = PublicDocumentObject | StubDocumentObject;
 
-class Document {
+export default class Document {
   static getRelated(document: DocumentObject): Array<ObjectRequest> {
     const ret = [];
 
@@ -50,13 +52,14 @@ class Document {
   }
 
   static getFiles(document: DocumentObject): Array<ObjectFileDescription> {
-    return document.file
-      ? [
-        {type: "document", id: document.id, property: "file", url: document.file},
-        {type: "document", id: document.id, property: "preview", url: document.preview},
-      ]
-      : [];
+    const files = [];
+
+    if (document.preview)
+      files.push({type: "document", id: document.id, property: "preview", url: document.preview});
+
+    if (document._mode !== OBJECT_MODE_STUB && document.file)
+      files.push({type: "document", id: document.id, property: "file", url: document.file});
+
+    return files;
   }
 }
-
-export default Document;

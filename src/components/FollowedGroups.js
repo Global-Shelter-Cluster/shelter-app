@@ -7,6 +7,6 @@ import GroupListItemContainer from '../containers/GroupListItemContainer';
 export default ({ids}: { ids: Array<number> }) => (
   <FlatList
     data={ids.map(id => ({key: '' + id, id: id}))}
-    renderItem={({item}) => <GroupListItemContainer id={item.id}/>}
+    renderItem={({item}) => <GroupListItemContainer display="full" id={item.id}/>}
   />
 );

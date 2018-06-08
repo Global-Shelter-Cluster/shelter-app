@@ -39,7 +39,7 @@ export type StubUserObject = {
 
 export type UserObject = PrivateUserObject | PublicUserObject | StubUserObject;
 
-class User {
+export default class User {
   static getRelated(user: UserObject): Array<ObjectRequest> {
     const ret = [];
 
@@ -61,5 +61,3 @@ export const getCurrentUser = createSelector(
   [state => state.currentUser, state => state.objects.user],
   (currentUser, users) => users[currentUser]
 );
-
-export default User;

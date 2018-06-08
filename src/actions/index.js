@@ -58,6 +58,7 @@ export const clearLastError = () => ({
 export const logout = () => async dispatch => {
   dispatch(setCurrentUser(null));
   dispatch(clearAllObjects());
+  dispatch(clearAllDownloads());
   persist.clearAll();
 };
 
@@ -101,4 +102,9 @@ export const addFilesToDownload = (files: Array<ObjectFileDescription>) => ({
 export const ONE_FILE_DOWNLOADED = 'ONE_FILE_DOWNLOADED';
 export const oneFileDownloaded = () => ({
   type: ONE_FILE_DOWNLOADED,
+});
+
+export const CLEAR_ALL_DOWNLOADS = 'CLEAR_ALL_DOWNLOADS';
+export const clearAllDownloads = () => ({
+  type: CLEAR_ALL_DOWNLOADS,
 });
