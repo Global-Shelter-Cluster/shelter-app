@@ -10,12 +10,11 @@ const NavTitle = ({online, title, downloading}: {
   title: string,
   downloading: { value: number, total: number },
 }) => {
-  const icons = [];
+  let icon = null;
 
   if (!online)
-    icons.push(<FontAwesome key="online" name="wifi" size={20} color={vars.ACCENT_RED}/>);
-
-  if (downloading.total > 0) {
+    icon = <FontAwesome key="online" name="wifi" size={20} color={vars.ACCENT_RED}/>;
+  else if (downloading.total > 0) {
     const downloadingIcons = [
       'hourglass-start',
       'hourglass-half',
@@ -26,14 +25,14 @@ const NavTitle = ({online, title, downloading}: {
       downloadingIcons.length - 1,
       Math.floor(downloading.value / downloading.total * downloadingIcons.length)
     )];
-    icons.push(<FontAwesome key="downloading" name={downloadingIcon} size={20}/>);
+    icon = <FontAwesome key="downloading" name={downloadingIcon} size={20}/>;
   }
 
-  if (icons.length === 0)
+  if (icon === null)
     return <Text style={[styles.title, styles.container]} numberOfLines={1} ellipsizeMode="tail">{title}</Text>;
   else
     return <Text style={styles.container} numberOfLines={1}>
-      {icons}
+      {icon}
       <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{" " + title}</Text>
     </Text>;
 };

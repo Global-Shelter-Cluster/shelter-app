@@ -86,10 +86,17 @@ export const refreshOldData = () => {
 
 export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dispatch, getState) => {
   dispatch(addFilesToDownload(files));
+  let state = getState();
+  const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  while (getState().downloadProgress.filesLeft.length > 0) {
-    await persist.saveFile(getState().downloadProgress.filesLeft[0]);
+  while (state.downloadProgress.filesLeft.length > 0) {
+    while (!state.online) {
+      await timeout(5000);
+      state = getState();
+    }
+    await persist.saveFile(state.downloadProgress.filesLeft[0]);
     dispatch(oneFileDownloaded());
+    state = getState();
   }
 };
 
