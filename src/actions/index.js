@@ -88,9 +88,11 @@ export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dis
   dispatch(addFilesToDownload(files));
   let state = getState();
   const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  let count = 0;
 
   while (state.downloadProgress.filesLeft.length > 0) {
-    await timeout(100); // a small pause between each download
+    if (count++ % 20 === 0)
+      await timeout(100); // a small pause every 20 downloads (let the thread breathe)
 
     while (!state.online) {
       await timeout(5000);

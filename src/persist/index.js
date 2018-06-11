@@ -112,7 +112,6 @@ class Persist {
     this.downloadFilesForObjects(objects);
   }
 
-  // Very similar to saveObjects(), but it only triggers the file downloads.
   downloadFilesForObjects(objects: Objects) {
     const files: Array<ObjectFileDescription> = [];
 
@@ -126,7 +125,7 @@ class Persist {
     }
 
     if (files.length > 0)
-    // This will run in the background.
+    // This should run in the background.
       setTimeout(() => this.store.dispatch(downloadFiles(files)), 1000);
   }
 
@@ -216,8 +215,10 @@ class Persist {
     // Now set the current user id (the only one returned as OBJECT_MODE_PRIVATE).
     for (const id in objects.user) {
       if (objects.user[id]._mode === OBJECT_MODE_PRIVATE) {
-        await Storage.setItem(Persist.cacheKey('currentUser'), '' + id);
         this.store.dispatch(setCurrentUser(parseInt(id, 10)));
+        console.debug('Saving current user id...', id);
+        await Storage.setItem(Persist.cacheKey('currentUser'), '' + id);
+        console.debug('Saving current user id... done.');
         return;
       }
     }
@@ -321,12 +322,12 @@ class Persist {
         loadImmediately = requests;
       else
         loadImmediately = loaded.length >= requests.length
-          ? [] // We don't need to load from remote immediately, or we're offline
+          ? [] // We don't need to load from remote immediately
           : requests
             .filter(request => {
               for (const item of loaded) {
                 if (item.type === request.type && item.id === request.id)
-                  return false; // This object request was found in "loaded" (i.e. it was loaded), so we exclude it from loadImmediately.
+                  return false; // This object request was found in "loaded" (i.e. it was loaded from storage), so we exclude it from loadImmediately.
               }
               return true;
             });
