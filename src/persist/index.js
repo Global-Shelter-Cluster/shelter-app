@@ -202,7 +202,9 @@ class Persist {
     Storage.clear();
     console.debug('Cleared storage');
     if (config.deleteFilesOnLogout) {
-      FileSystem.deleteAsync(this.directory, {idempotent: true});
+      FileSystem.deleteAsync(this.directory, {idempotent: true}).then(
+        () => this.initDirectory(this.directory)
+      );
       console.debug('Deleted all files');
     }
   }
