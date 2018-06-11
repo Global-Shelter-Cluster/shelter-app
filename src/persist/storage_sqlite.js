@@ -94,7 +94,7 @@ class Storage {
 
     // TODO: each setItem takes time, so build better queries (do this in batches)
     data.map(async tuple => {
-      await timeout(5);
+      await timeout(50);
       this.setItem(tuple[0], tuple[1]);
     });
   }
