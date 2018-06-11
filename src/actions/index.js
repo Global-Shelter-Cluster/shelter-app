@@ -1,9 +1,10 @@
 // @flow
 
-import type {ObjectFileDescription, ObjectType} from "../persist";
-import persist from "../persist";
+import type {Files, ObjectFileDescription, ObjectType} from "../persist";
+import persist, {ObjectRequest} from "../persist";
 import {NetInfo} from 'react-native';
 import type {Objects} from "../model";
+import config from "../config";
 
 export const CHANGE_ONLINE_STATUS = 'CHANGE_ONLINE_STATUS';
 export const changeOnlineStatus = (isOnline: boolean) => ({
@@ -59,6 +60,8 @@ export const logout = () => async dispatch => {
   dispatch(setCurrentUser(null));
   dispatch(clearAllObjects());
   dispatch(clearAllDownloads());
+  if (config.deleteFilesOnLogout)
+    dispatch(setFiles({}));
   persist.clearAll();
 };
 
@@ -85,7 +88,9 @@ export const refreshOldData = () => {
 };
 
 export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dispatch, getState) => {
-  dispatch(addFilesToDownload(files));
+  const existingFiles = getState().files;
+
+  dispatch(addFilesToDownload(files.filter(i => existingFiles[i.url] === undefined)));
   let state = getState();
   const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   let count = 0;
@@ -120,3 +125,20 @@ export const CLEAR_ALL_DOWNLOADS = 'CLEAR_ALL_DOWNLOADS';
 export const clearAllDownloads = () => ({
   type: CLEAR_ALL_DOWNLOADS,
 });
+
+export const SET_FILES = 'SET_FILES';
+export const setFiles = (files: Files) => ({
+  type: SET_FILES,
+  files: files,
+});
+
+export const setFile = (url: string, filename: string, uses: Array<ObjectRequest>) => async (dispatch, getState) => {
+  const files = Object.assign({}, getState().files);
+  files[url] = {
+    filename: filename,
+    uses: uses,
+  };
+
+  await dispatch(setFiles(files));
+  await persist.saveFiles();
+};

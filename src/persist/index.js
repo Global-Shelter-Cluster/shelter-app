@@ -1,6 +1,6 @@
 // @flow
 
-import {downloadFiles, setCurrentUser, setObjects} from "../actions";
+import {downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects} from "../model";
@@ -9,6 +9,7 @@ import {FileSystem} from "expo";
 import md5 from "md5";
 import Storage from "./storage_sqlite";
 import config from "../config";
+import clone from 'clone';
 
 export type ObjectType = "group" | "user" | "document" | "event" | "factsheet";
 
@@ -24,7 +25,7 @@ export type ObjectFileDescription = {
   url: string,
 }
 
-type Files = {
+export type Files = {
   [url: string]: {
     filename: string,
     uses: Array<ObjectRequest>,
@@ -69,6 +70,13 @@ class Persist {
       if (currentUserId === null)
         return;
       const id: number = parseInt(currentUserId, 10);
+
+      const filesString: string | null = await Storage.getItem(Persist.cacheKey('files'));
+      if (filesString !== null) {
+        const files: Files = JSON.parse(filesString);
+        await this.store.dispatch(setFiles(files));
+      }
+
       await this.loadObjects([{type: "user", id: id}], true);
       await this.store.dispatch(setCurrentUser(id));
     } catch (e) {
@@ -164,9 +172,8 @@ class Persist {
       return;
     console.debug('saveFile(): downloaded file successfully', fileInfo.uri);
 
-    // 2. Update "files" data from AsyncStorage
-    let files: Files | string | null = await Storage.getItem(Persist.cacheKey('files'));
-    files = typeof files === "string" ? JSON.parse(files) : {};
+    // 2. Update "files" data from state
+    let files: Files = this.store.getState().files;
 
     const use = {type: file.type, id: file.id};
     if (files[file.url]) {
@@ -177,30 +184,27 @@ class Persist {
           break;
         }
       }
-      if (!found)
-        files[file.url].uses.push(use);
+      if (!found) {
+        const newUses: Array<ObjectRequest> = clone(files[file.url].uses);
+        newUses.push(use);
+        await this.store.dispatch(setFile(file.url, files[file.url].filename, newUses));
+      }
     } else
-      files[file.url] = {
-        filename: localFilename,
-        uses: [use],
-      };
+      await this.store.dispatch(setFile(file.url, localFilename, [use]));
+  }
 
+  async saveFiles() {
+    const files = this.store.getState().files;
     await Storage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
-
-    // 3. Update the object using the file
-    let object = await Storage.getItem(Persist.cacheKey(file.type, file.id));
-    if (object) {
-      object = JSON.parse(object);
-      object[file.property] = localUri;
-      await Storage.setItem(Persist.cacheKey(file.type, file.id), JSON.stringify(object));
-      this.dispatchObject(file.type, file.id, object);
-    }
   }
 
   clearAll() {
     Storage.clear();
-    if (config.deleteFilesOnLogout)
+    console.debug('Cleared storage');
+    if (config.deleteFilesOnLogout) {
       FileSystem.deleteAsync(this.directory, {idempotent: true});
+      console.debug('Deleted all files');
+    }
   }
 
   async login(user: string, pass: string) {

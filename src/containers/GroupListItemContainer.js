@@ -7,6 +7,7 @@ import {getObject, OBJECT_MODE_STUB} from "../model";
 import {withNavigation} from 'react-navigation';
 import type {GroupObject} from "../model/group";
 import {getRecentDocumentsCount} from "../model/group";
+import {convertFiles} from "../model/file";
 
 const mapStateToProps = (state, props) => {
   const group: GroupObject = getObject(state, 'group', props.id);
@@ -18,7 +19,7 @@ const mapStateToProps = (state, props) => {
   };
 
   if (props.display === 'full') {
-    ret.factsheet = group.latest_factsheet ? getObject(state, 'factsheet', group.latest_factsheet) : null;
+    ret.factsheet = group.latest_factsheet ? convertFiles(state, 'factsheet', getObject(state, 'factsheet', group.latest_factsheet)) : null;
     ret.recentDocs = getRecentDocumentsCount(state, props.id);
   }
 
