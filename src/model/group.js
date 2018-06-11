@@ -28,6 +28,7 @@ export type PublicResponseGroupObject = {
   type: "response",
   id: number,
   title: string,
+  url: string,
   associated_regions?: Array<number>,
   parent_response?: number,
   latest_factsheet?: number,
@@ -43,6 +44,7 @@ export type PublicGeographicRegionGroupObject = {
   type: "geographic-region",
   id: number,
   title: string,
+  url: string,
   parent_region?: number,
   latest_factsheet?: number,
   featured_documents: Array<number>,
@@ -57,6 +59,7 @@ export type PublicHubGroupObject = {
   type: "hub",
   id: number,
   title: string,
+  url: string,
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
@@ -72,6 +75,7 @@ export type PublicStrategicAdvisoryGroupObject = {
   type: "strategic-advisory",
   id: number,
   title: string,
+  url: string,
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
@@ -87,6 +91,7 @@ export type PublicWorkingGroupObject = {
   type: "working-group",
   id: number,
   title: string,
+  url: string,
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
@@ -94,21 +99,6 @@ export type PublicWorkingGroupObject = {
   key_documents: Array<number>,
   recent_documents: Array<number>,
 }
-//
-// export type PublicGroupObject = {
-//   _last_read?: number,
-//   _mode: "public",
-//   _persist?: true,
-//   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
-//   id: number,
-//   title: string,
-//   associated_regions: Array<number>,
-//   parent_response: number,
-//   latest_factsheet: number,
-//   featured_documents: Array<number>,
-//   key_documents: Array<number>,
-//   recent_documents: Array<number>,
-// }
 
 export type StubGroupObject = {
   _last_read?: number,

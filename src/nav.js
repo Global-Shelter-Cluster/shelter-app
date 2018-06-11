@@ -6,6 +6,7 @@ import LoginScreen from "./screens/auth/LoginScreen";
 import DashboardScreen from "./screens/user/DashboardScreen";
 import EditScreen from "./screens/user/EditScreen";
 import GroupScreen from "./screens/group/GroupScreen";
+import WebsiteViewerScreen from "./screens/group/WebsiteViewerScreen";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "./vars";
 import TempBlankScreen from "./screens/TempBlankScreen";
@@ -18,6 +19,7 @@ const AuthScreens = createStackNavigator({
 const ExploreStack = createStackNavigator({
   Explore: TempBlankScreen,
   Group: GroupScreen,
+  WebsiteViewer: WebsiteViewerScreen,
 });
 const ChatStack = createSwitchNavigator({
   Chat: TempBlankScreen,

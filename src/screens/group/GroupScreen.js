@@ -56,13 +56,9 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class GroupScreen extends React.Component<Props> {
-  static navigationOptions = ({navigation}) => {
-    const title = navigation.getParam('title', 'Loading...');
-
-    return {
-      headerTitle: <NavTitleContainer title={title}/>,
-    }
-  };
+  static navigationOptions = ({navigation}) => ({
+    headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
+  });
 
   componentWillMount() {
     const groupId = this.props.navigation.getParam('groupId');

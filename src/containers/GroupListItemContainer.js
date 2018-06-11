@@ -5,12 +5,12 @@ import {connect} from 'react-redux';
 import GroupListItem from '../components/GroupListItem';
 import {getObject, OBJECT_MODE_STUB} from "../model";
 import {withNavigation} from 'react-navigation';
-import type {GroupObject} from "../model/group";
+import type {PublicGroupObject} from "../model/group";
 import {getRecentDocumentsCount} from "../model/group";
 import {convertFiles} from "../model/file";
 
 const mapStateToProps = (state, props) => {
-  const group: GroupObject = getObject(state, 'group', props.id);
+  const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', props.id));
 
   const ret = {
     group: group,
