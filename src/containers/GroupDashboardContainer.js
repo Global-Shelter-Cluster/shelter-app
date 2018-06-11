@@ -27,25 +27,25 @@ const mapStateToProps = (state, props) => {
       title: 'Recent\ndocuments',
       badge: recentDocs,
       icon: 'file-o',
-      action: () => {},
+      action: () => props.navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });
   else if (group.featured_documents.length > 0)
     blocks.push({
       title: 'Featured\ndocuments',
       icon: 'file-o',
-      action: () => {},
+      action: () => props.navigation.push('DocumentList', {groupId: group.id, which: "featured"}),
     });
   else if (group.key_documents.length > 0)
     blocks.push({
       title: 'Key\ndocuments',
       icon: 'file-o',
-      action: () => {},
+      action: () => props.navigation.push('DocumentList', {groupId: group.id, which: "key"}),
     });
   else if (group.recent_documents.length > 0)
     blocks.push({
       title: 'Documents',
       icon: 'file-o',
-      action: () => {},
+      action: () => props.navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });
 
   blocks.push({
