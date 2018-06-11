@@ -7051,6 +7051,10 @@ webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
 
+websql-promisified@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/websql-promisified/-/websql-promisified-1.2.0.tgz#8410a3f49ae538e37cc594988e79af94b5e1839c"
+
 whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/whatwg-encoding/-/whatwg-encoding-1.0.3.tgz#57c235bc8657e914d24e1a397d3c82daee0a6ba3"

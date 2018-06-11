@@ -7,7 +7,7 @@ import type {Objects} from "../model";
 import Model, {OBJECT_MODE_PRIVATE} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
-import Storage from "./storage_async";
+import Storage from "./storage_sqlite";
 import config from "../config";
 
 export type ObjectType = "group" | "user" | "document" | "event" | "factsheet";
@@ -65,15 +65,12 @@ class Persist {
     await this.initDirectory(FileSystem.documentDirectory + 'persisted');
 
     try {
-      // TODO: when AsyncStorage works on Android, change this back to use "await".
-      // const currentUserId: string | null = await Storage.getItem(Persist.cacheKey('currentUser'));
-      Storage.getItem(Persist.cacheKey('currentUser')).then(async (currentUserId: string | null) => {
-        if (currentUserId === null)
-          return;
-        const id: number = parseInt(currentUserId, 10);
-        await this.loadObjects([{type: "user", id: id}], true);
-        await this.store.dispatch(setCurrentUser(id));
-      });
+      const currentUserId: string | null = await Storage.getItem(Persist.cacheKey('currentUser'));
+      if (currentUserId === null)
+        return;
+      const id: number = parseInt(currentUserId, 10);
+      await this.loadObjects([{type: "user", id: id}], true);
+      await this.store.dispatch(setCurrentUser(id));
     } catch (e) {
     }
   }
@@ -130,7 +127,7 @@ class Persist {
     }
 
     if (files.length > 0)
-      // This will run in the background.
+    // This will run in the background.
       this.store.dispatch(downloadFiles(files));
   }
 
@@ -190,14 +187,14 @@ class Persist {
         uses: [use],
       };
 
-    Storage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
+    await Storage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
 
     // 3. Update the object using the file
     let object = await Storage.getItem(Persist.cacheKey(file.type, file.id));
     if (object) {
       object = JSON.parse(object);
       object[file.property] = localUri;
-      Storage.setItem(Persist.cacheKey(file.type, file.id), JSON.stringify(object));
+      await Storage.setItem(Persist.cacheKey(file.type, file.id), JSON.stringify(object));
       this.dispatchObject(file.type, file.id, object);
     }
   }
@@ -220,7 +217,7 @@ class Persist {
     // Now set the current user id (the only one returned as OBJECT_MODE_PRIVATE).
     for (const id in objects.user) {
       if (objects.user[id]._mode === OBJECT_MODE_PRIVATE) {
-        Storage.setItem(Persist.cacheKey('currentUser'), '' + id);
+        await Storage.setItem(Persist.cacheKey('currentUser'), '' + id);
         this.store.dispatch(setCurrentUser(parseInt(id, 10)));
         return;
       }
