@@ -164,7 +164,7 @@ class Persist {
     fileInfo = await FileSystem.getInfoAsync(localUri);
     if (!fileInfo.exists || fileInfo.size === 0)
       return;
-    console.debug('saveFile(): downloaded file successfully', fileInfo);
+    console.debug('saveFile(): downloaded file successfully', fileInfo.uri);
 
     // 2. Update "files" data from AsyncStorage
     let files: Files | string | null = await Storage.getItem(Persist.cacheKey('files'));

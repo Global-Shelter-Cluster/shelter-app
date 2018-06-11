@@ -35,7 +35,7 @@ class Remote {
     console.debug('Axios request', path, data);
     try {
       const response = await axios.post(path, JSON.stringify(data), config.axiosExtra);
-      console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB', response.data);
+      console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
       return response.data;
     } catch (e) {
       console.error('Axios error', e);
