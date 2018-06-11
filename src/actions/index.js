@@ -90,10 +90,13 @@ export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dis
   const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   while (state.downloadProgress.filesLeft.length > 0) {
+    await timeout(100); // a small pause between each download
+
     while (!state.online) {
       await timeout(5000);
       state = getState();
     }
+
     await persist.saveFile(state.downloadProgress.filesLeft[0]);
     dispatch(oneFileDownloaded());
     state = getState();

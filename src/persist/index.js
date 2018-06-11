@@ -114,7 +114,6 @@ class Persist {
 
   // Very similar to saveObjects(), but it only triggers the file downloads.
   downloadFilesForObjects(objects: Objects) {
-    const data = [];
     const files: Array<ObjectFileDescription> = [];
 
     for (const type in objects) {
@@ -128,7 +127,7 @@ class Persist {
 
     if (files.length > 0)
     // This will run in the background.
-      this.store.dispatch(downloadFiles(files));
+      setTimeout(() => this.store.dispatch(downloadFiles(files)), 1000);
   }
 
   async saveFile(file: ObjectFileDescription) {
