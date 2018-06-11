@@ -1,6 +1,6 @@
 // @flow
 
-import type {ObjectFileDescription} from "../persist";
+import type {ObjectFileDescription, ObjectType} from "../persist";
 import persist from "../persist";
 import {NetInfo} from 'react-native';
 import type {Objects} from "../model";
@@ -36,7 +36,7 @@ export const clearAllObjects = () => ({
 
 export const login = (user: string, pass: string) => async () => persist.login(user, pass);
 
-export const loadObject = (type: string, id: number, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
+export const loadObject = (type: ObjectType, id: number, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
   try {
     await persist.loadObjects([{type: type, id: id}], recursive, forceRemoteLoad);
   } catch (e) {

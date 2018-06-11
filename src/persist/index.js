@@ -10,13 +10,15 @@ import md5 from "md5";
 import Storage from "./storage_async";
 import config from "../config";
 
+export type ObjectType = "group" | "user" | "document" | "event" | "factsheet";
+
 export type ObjectRequest = {
-  type: "group" | "user" | "document" | "event" | "factsheet",
+  type: ObjectType,
   id: number,
 }
 
 export type ObjectFileDescription = {
-  type: "group" | "user" | "document" | "event" | "factsheet",
+  type: ObjectType,
   id: number,
   property: string,
   url: string,
@@ -228,7 +230,7 @@ class Persist {
     throw new Error("No user returned by login call")
   }
 
-  async dispatchObject(type: string, id: number, object: {}) {
+  async dispatchObject(type: ObjectType, id: number, object: {}) {
     this.dispatchObjects({[type]: {[id]: object}});
   }
 

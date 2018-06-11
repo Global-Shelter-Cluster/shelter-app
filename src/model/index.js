@@ -4,7 +4,7 @@ import type {UserObject} from "./user";
 import User from "./user";
 import type {GroupObject} from "./group";
 import Group from "./group";
-import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import type {ObjectFileDescription, ObjectRequest, ObjectType} from "../persist";
 import type {FactsheetObject} from "./factsheet";
 import Factsheet from "./factsheet";
 import type {DocumentObject} from "./document";
@@ -32,6 +32,7 @@ const mapTypesToClasses = {
   'group': Group,
   'factsheet': Factsheet,
   'document': Document,
+  'event': null,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.
@@ -42,14 +43,14 @@ export const OBJECT_MODE_PUBLIC = 'public';
 export const OBJECT_MODE_STUB = 'stub';
 
 export default class Model {
-  static getRelated(type: string, object: Object): Array<ObjectRequest> {
+  static getRelated(type: ObjectType, object: Object): Array<ObjectRequest> {
     if (!mapTypesToClasses[type])
       throw new Error("unknown type: " + type);
 
     return mapTypesToClasses[type].getRelated(object);
   }
 
-  static getFiles(type: string, object: Object): Array<ObjectFileDescription> {
+  static getFiles(type: ObjectType, object: Object): Array<ObjectFileDescription> {
     if (!mapTypesToClasses[type])
       throw new Error("unknown type: " + type);
 
