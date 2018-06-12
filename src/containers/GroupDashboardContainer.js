@@ -20,6 +20,12 @@ const mapStateToProps = (state, props) => {
       icon: 'external-link',
       action: () => props.navigation.push('WebsiteViewer', {title: group.title, url: group.url}),
     });
+  else
+    blocks.push({
+      title: 'View on\nwebsite',
+      icon: 'external-link',
+      disabledIcon: 'wifi',
+    });
 
   const recentDocs = getRecentDocumentsCount(state, props.id);
   if (recentDocs > 0)
