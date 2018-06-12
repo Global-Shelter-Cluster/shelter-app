@@ -318,8 +318,8 @@ class Persist {
       .filter(item => (now - item.object._last_read) > expirationLimitsByObjectType[item.type])
       .map(item => ({type: item.type, id: item.id}));
 
-    const isOnline = this.store.getState().online;
-    let loadedExpired = false;
+    const isOnline = this.store.getState().flags.online;
+    let skipLoadingExpiredObjects = false;
 
     if (isOnline) {
       let loadImmediately: Array<ObjectRequest> = [];
@@ -340,7 +340,7 @@ class Persist {
 
       if (loadImmediately.length) {
         loadImmediately.push(...expired); // Might as well load the expired objects in the same call
-        loadedExpired = true; // Flag to stop from doing this twice
+        skipLoadingExpiredObjects = true; // Flag to stop from doing this twice
 
         const newObjects: Objects = await this.remote.loadObjects(loadImmediately);
         this.updateLastRead(newObjects);
@@ -349,7 +349,7 @@ class Persist {
       }
     }
 
-    if (isOnline && !loadedExpired && expired.length) {
+    if (isOnline && !skipLoadingExpiredObjects && expired.length) {
       const newObjects: Objects = await this.remote.loadObjects(expired);
       this.updateLastRead(newObjects);
       this.saveObjects(newObjects);
