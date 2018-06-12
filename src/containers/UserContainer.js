@@ -7,7 +7,7 @@ import {withNavigation} from 'react-navigation';
 import {convertFiles} from "../model/file";
 
 const mapStateToProps = (state, props) => ({
-  showEdit: props.showEdit && state.online,
+  showEdit: props.showEdit && state.flags.online,
   edit: () => props.navigation.navigate('Edit'),
   user: convertFiles(state, 'user', props.user),
 });

@@ -13,7 +13,7 @@ import TempBlankScreen from "./screens/TempBlankScreen";
 import TempReportingScreen from "./screens/reporting/TempReportingScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
 
-const AuthScreens = createStackNavigator({
+const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
 });
 

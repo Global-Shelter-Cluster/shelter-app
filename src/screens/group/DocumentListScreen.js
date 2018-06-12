@@ -24,7 +24,7 @@ const mapStateToProps = (state, props) => {
   const group: PublicGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
 
   return {
-    online: state.online,
+    online: state.flags.online,
     group: group,
     which: props.navigation.getParam('which', 'recent'),
   };

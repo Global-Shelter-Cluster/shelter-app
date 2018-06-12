@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react';
-import {Button, Text, View} from 'react-native';
 import {login} from '../../actions';
 import {connect} from 'react-redux';
 import NavTitleContainer from "../../containers/NavTitleContainer";
+import Login from "./Login";
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -22,16 +22,14 @@ class LoginScreen extends React.Component {
   }
 
   render() {
-    return <View>
-      <Text>Log in screen</Text>
-      <Button onPress={() => this.props.login("myuser", "mypwd")} title="Log in"/>
-    </View>;
+    return <Login {...this.props}/>;
   }
 }
 
 const mapStateToProps = state => ({
-  initializing: state.initializing,
   loggedIn: state.currentUser !== null,
+  online: state.flags.online,
+  loggingIn: state.flags.loggingIn,
 });
 
 const mapDispatchToProps = dispatch => ({

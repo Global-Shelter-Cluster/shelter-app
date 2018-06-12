@@ -14,7 +14,7 @@ const mapStateToProps = (state, props) => {
 
   const ret = {
     group: group,
-    link: props.noLink ? false : (state.online || group._mode !== OBJECT_MODE_STUB),
+    link: props.noLink ? false : (state.flags.online || group._mode !== OBJECT_MODE_STUB),
     enter: (id: number) => props.navigation.push('Group', {groupId: id}),
   };
 

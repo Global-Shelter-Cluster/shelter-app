@@ -1,8 +1,7 @@
 // @flow
 
 import {combineReducers} from 'redux';
-import online from './online';
-import initializing from './initializing';
+import flags from './flags';
 import objects from './objects';
 import currentUser from './currentUser';
 import lastError from './lastError';
@@ -10,8 +9,7 @@ import downloadProgress from './downloadProgress';
 import files from './files';
 
 export default combineReducers({
-  online,
-  initializing,
+  flags,
   objects,
   currentUser,
   lastError,

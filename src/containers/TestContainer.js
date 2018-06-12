@@ -1,19 +1,19 @@
 // @flow
 
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
-import {changeOnlineStatus} from '../actions';
+import {changeFlag} from '../actions';
 import Test from '../components/Test';
 
 const mapStateToProps = state => ({
-  isOnline: state.online,
+  isOnline: state.flags.online,
   downloadProgress: state.downloadProgress,
 });
 
 const mapDispatchToProps = dispatch => {
   return {
     doIt: newValue => {
-      dispatch(changeOnlineStatus(newValue));
+      dispatch(changeFlag('online', newValue));
     },
   };
 };

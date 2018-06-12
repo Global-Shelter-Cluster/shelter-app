@@ -33,7 +33,7 @@ const mapStateToProps = (state, props) => {
   //   });
 
   return {
-    online: state.online,
+    online: state.flags.online,
     lastError: state.lastError,
     group: group,
     loaded: group._mode !== OBJECT_MODE_STUB,

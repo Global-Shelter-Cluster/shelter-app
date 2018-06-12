@@ -14,7 +14,7 @@ const mapStateToProps = (state, props) => {
 
   const blocks: Array<{ title: string, icon: string, action: () => {} }> = [];
 
-  if (state.online)
+  if (state.flags.online)
     blocks.push({
       title: 'View on\nwebsite',
       icon: 'external-link',

@@ -28,7 +28,7 @@ class AppContainer extends React.Component<Props> {
 }
 
 const mapStateToProps = state => ({
-  initializing: state.initializing,
+  initializing: state.flags.initializing,
 });
 
 const mapDispatchToProps = dispatch => {

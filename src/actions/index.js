@@ -5,17 +5,13 @@ import persist, {ObjectRequest} from "../persist";
 import {NetInfo} from 'react-native';
 import type {Objects} from "../model";
 import config from "../config";
+import type {flags} from "../reducers/flags";
 
-export const CHANGE_ONLINE_STATUS = 'CHANGE_ONLINE_STATUS';
-export const changeOnlineStatus = (isOnline: boolean) => ({
-  type: CHANGE_ONLINE_STATUS,
-  isOnline,
-});
-
-export const CHANGE_INITIALIZING = 'CHANGE_INITIALIZING';
-export const changeInitializing = (isInitializing: boolean) => ({
-  type: CHANGE_INITIALIZING,
-  isInitializing,
+export const CHANGE_FLAG = 'CHANGE_FLAG';
+export const changeFlag = (flag: flags, value: boolean) => ({
+  type: CHANGE_FLAG,
+  flag,
+  value,
 });
 
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
@@ -35,7 +31,15 @@ export const clearAllObjects = () => ({
   type: CLEAR_ALL_OBJECTS,
 });
 
-export const login = (user: string, pass: string) => async () => persist.login(user, pass);
+export const login = (user: string, pass: string) => async dispatch => {
+  dispatch(changeFlag("loggingIn", true));
+  try {
+    await persist.login(user, pass);
+  } catch (e) {
+    console.error("Error on login:", e);
+  }
+  dispatch(changeFlag("loggingIn", false));
+};
 
 export const loadObject = (type: ObjectType, id: number, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
   try {
@@ -60,6 +64,7 @@ export const logout = () => async dispatch => {
   dispatch(setCurrentUser(null));
   dispatch(clearAllObjects());
   dispatch(clearAllDownloads());
+  dispatch(changeFlag('loggingIn', false));
   if (config.deleteFilesOnLogout)
     dispatch(setFiles({}));
   persist.clearAll();
@@ -70,7 +75,7 @@ export const initialize = () => async dispatch => {
 
   // Update "online" state based on device connection.
   // See https://facebook.github.io/react-native/docs/netinfo.html
-  const connectionInfoHandler = connectionInfo => dispatch(changeOnlineStatus(connectionInfo.type !== 'none'));
+  const connectionInfoHandler = connectionInfo => dispatch(changeFlag('online', connectionInfo.type !== 'none'));
   const connectionInfo = await NetInfo.getConnectionInfo();
   connectionInfoHandler(connectionInfo);
   NetInfo.addEventListener('connectionChange', connectionInfoHandler);
@@ -79,7 +84,7 @@ export const initialize = () => async dispatch => {
   await persist.init();
   console.log('...initialized');
 
-  dispatch(changeInitializing(false));
+  dispatch(changeFlag('initializing', false));
 };
 
 export const REFRESH_OLD_DATA = 'REFRESH_OLD_DATA';
@@ -99,7 +104,7 @@ export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dis
     if (count++ % 20 === 0)
       await timeout(100); // a small pause every 20 downloads (let the thread breathe)
 
-    while (!state.online) {
+    while (!state.flags.online) {
       await timeout(5000);
       state = getState();
     }

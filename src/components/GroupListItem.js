@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   textOnlyIcon: {
-    paddingRight: 10,
+    paddingHorizontal: 10,
     paddingTop: 2,
   },
   fullContainer: {

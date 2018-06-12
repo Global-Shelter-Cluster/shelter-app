@@ -199,5 +199,9 @@ export const getRecentDocumentsCount = createCachedSelector(
   (state, id) => state,
   (state, id) => id,
   () => moment(),
-  (state, id, now) => state.objects.group[id].recent_documents.map(id => getObject(state, 'document', id)).filter(d => now.diff(d.changed, 'days') <= RECENT_DOCS_MAX_DAYS).length
+  (state, id, now) => state.objects.group[id]
+    .recent_documents
+    .map(id => getObject(state, 'document', id))
+    .filter(d => d && now.diff(d.changed, 'days') <= RECENT_DOCS_MAX_DAYS)
+    .length
 )((state, id) => moment().format('YYYY-MM-DD')); // e.g. "2018-06-08"
