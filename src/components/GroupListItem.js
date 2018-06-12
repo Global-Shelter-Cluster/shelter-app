@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import type {GroupObject} from "../model/group";
 import type {FactsheetObject} from "../model/factsheet";
 import {FontAwesome} from '@expo/vector-icons';
@@ -35,7 +35,10 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
       if (recentDocs && recentDocs > 0)
         badges.push(<Badge key="recentDocs" icon="file-o" value={recentDocs} color="white"/>);
 
-      const contents = [<SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>];
+      const contents = [
+        <Text key="type" style={styles.typeLabel}>{group.type.toUpperCase().replace(/-/g, ' ')}</Text>,
+        <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>,
+      ];
 
       if (badges.length > 0)
         contents.unshift(<View key="badges" style={styles.badges}>{badges}</View>);
@@ -91,6 +94,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     margin: 10,
+    marginTop: 0,
+  },
+  typeLabel: {
+    color: "white",
+    opacity: .75,
+    fontSize: 10,
+    marginHorizontal: 10,
   },
   badges: {
     flex: 1,
