@@ -44,7 +44,7 @@ class Remote {
   }
 
   async login(user: string, pass: string): Objects {
-    return this.request('/get-objects', [{type: 'user', id: 733}]);
+    return this.request('/get-objects', [{type: 'global', id: 1}, {type: 'user', id: 733}]);
   }
 
   async loadObjects(requests: Array<ObjectRequest>): Objects {
