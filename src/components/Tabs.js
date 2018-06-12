@@ -1,11 +1,13 @@
 // @flow
 
 import React from "react";
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleSheet, TouchableOpacity, View} from "react-native";
+import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
+import SingleLineText from "./SingleLineText";
 
 const Tabs = ({tabs, current, changeTab}: {
-  tabs: { [string]: string },
+  tabs: { [string]: { label: string, disabledIcon?: string } },
   current: string,
   changeTab: (tab: string) => {},
 }) => {
@@ -17,13 +19,24 @@ const Tabs = ({tabs, current, changeTab}: {
       tabStyle.push(styles.tabFirst);
     if (i === Object.keys(tabs).length - 1)
       tabStyle.push(styles.tabLast);
+    if (tabs[key].disabledIcon)
+      tabStyle.push(styles.disabledTab);
 
     if (current === key)
       return <View
         key={key}
         style={tabStyle}
       >
-        <Text style={[styles.label, styles.activeLabel]}>{tabs[key]}</Text>
+        <SingleLineText style={[styles.label, styles.activeLabel]}>{tabs[key].label}</SingleLineText>
+      </View>;
+    else if (tabs[key].disabledIcon)
+      return <View
+        key={key}
+        style={tabStyle}
+      >
+        <FontAwesome style={styles.iconBadge} name={tabs[key].disabledIcon} size={20} color={vars.ACCENT_RED}/>
+        <SingleLineText
+          style={[styles.label, styles.disabledLabel]}>{" " + tabs[key].label}</SingleLineText>
       </View>;
     else
       return <TouchableOpacity
@@ -32,7 +45,7 @@ const Tabs = ({tabs, current, changeTab}: {
         style={tabStyle}
         onPress={() => changeTab(key)}
       >
-        <Text style={styles.label}>{tabs[key]}</Text>
+        <SingleLineText style={styles.label}>{tabs[key].label}</SingleLineText>
       </TouchableOpacity>;
   };
 
@@ -51,6 +64,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   tab: {
+    flexDirection: "row",
+    justifyContent: "center",
     flex: 1,
     backgroundColor: vars.SHELTER_LIGHT_BLUE,
     padding: 8,
@@ -68,12 +83,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
   },
+  disabledTab: {
+    backgroundColor: "rgba(0,0,0,.05)",
+  },
+  disabledLabel: {
+    opacity: .5,
+  },
   active: {
     backgroundColor: vars.SHELTER_DARK_BLUE,
   },
   label: {
-    fontSize: 17,
-    textAlign: "center",
+    fontSize: 16,
   },
   activeLabel: {
     fontWeight: "bold",

@@ -6,6 +6,7 @@ import type {PublicGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
+import type tabs from "./DocumentList";
 import DocumentList from "./DocumentList";
 
 type Props = {
@@ -15,7 +16,7 @@ type Props = {
 }
 
 type State = {
-  tab: "recent" | "featured" | "key",
+  tab: tabs,
 }
 
 const mapStateToProps = (state, props) => {
@@ -43,7 +44,7 @@ class DocumentListScreen extends React.Component<Props, State> {
 
   componentWillMount() {
     this.props.navigation.setParams({title: this.props.group.title});
-    const tab = this.props.navigation.getParam('which', 'recent');
+    const tab = this.props.navigation.getParam('which', this.state.tab);
     console.log("componentWillMount()", tab, this.state);
     if (this.state.tab !== tab)
       this.setState({tab: tab});

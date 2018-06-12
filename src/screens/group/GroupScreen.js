@@ -17,8 +17,7 @@ type Props = {
   group: PublicGroupObject,
   loaded: boolean,
   factsheet: FactsheetObject,
-  navigation: { setParams: ({}) => {} },
-  load: number => {},
+  navigation: { setParams: ({}) => {}, getParam: (string) => string },
   refresh: number => {},
   lastError: lastErrorType,
 }
@@ -42,7 +41,6 @@ const mapStateToProps = (state, props) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  load: id => dispatch(loadObject('group', id, true, false)),
   refresh: id => {
     dispatch(clearLastError());
     const action = loadObject('group', id, true, true);

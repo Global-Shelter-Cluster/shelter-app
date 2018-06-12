@@ -6,9 +6,11 @@ import type {PublicGroupObject} from "../../model/group";
 import DocumentListItemContainer from "../../containers/DocumentListItemContainer";
 import Tabs from "../../components/Tabs";
 
+export type tabs = "recent" | "featured" | "key";
+
 export default ({online, tab, group, changeTab}: {
   online: boolean,
-  tab: "recent" | "featured" | "key",
+  tab: tabs,
   group: PublicGroupObject,
   changeTab: (tab: string) => {},
 }) => {
@@ -30,7 +32,7 @@ export default ({online, tab, group, changeTab}: {
     <Tabs
       current={tab}
       changeTab={changeTab}
-      tabs={{"recent": "Recent", "featured": "Featured", "key": "Key"}}
+      tabs={{"recent": {label: "Recent"}, "featured": {label: "Featured"}, "key": {label: "Key"}}}
     />
     <FlatList
       key={tab} // This makes the list scroll up when changing the tab.

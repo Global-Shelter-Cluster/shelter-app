@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react';
-import TestContainer from '../../containers/TestContainer';
 import {Button, ScrollView, Text} from 'react-native';
 import type {PublicGroupObject} from "../../model/group";
 import GroupContextualNavigation from "../../components/GroupContextualNavigation";
@@ -29,6 +28,5 @@ export default ({online, group, loaded, factsheet, refresh, lastError}: {
   return <ScrollView>
     <GroupContextualNavigation group={group}/>
     <GroupDashboardContainer id={group.id}/>
-    <TestContainer/>
   </ScrollView>;
 }
