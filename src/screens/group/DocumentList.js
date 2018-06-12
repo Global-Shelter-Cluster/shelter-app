@@ -28,11 +28,20 @@ export default ({online, tab, group, changeTab}: {
       break;
   }
 
+  const tabs = {"recent": {label: "Recent"}, "featured": {label: "Featured"}, "key": {label: "Key"}};
+
+  if (group.recent_documents.length === 0)
+    delete tabs.recent;
+  if (group.featured_documents.length === 0)
+    delete tabs.featured;
+  if (group.key_documents.length === 0)
+    delete tabs.key;
+
   return <View style={{flex: 1}}>
     <Tabs
       current={tab}
       changeTab={changeTab}
-      tabs={{"recent": {label: "Recent"}, "featured": {label: "Featured"}, "key": {label: "Key"}}}
+      tabs={tabs}
     />
     <FlatList
       key={tab} // This makes the list scroll up when changing the tab.
