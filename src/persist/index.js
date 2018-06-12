@@ -34,7 +34,7 @@ export type Files = {
 
 const expirationLimitsByObjectType = { // 3600s = 1hr
   "group": 3600,
-  "user": 3600,
+  "user": 3600 * 24 * 7,
   "document": 3600 * 24,
   "event": 3600 * 24,
   "factsheet": 3600 * 24,
