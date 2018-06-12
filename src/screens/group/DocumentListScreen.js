@@ -45,7 +45,6 @@ class DocumentListScreen extends React.Component<Props, State> {
   componentWillMount() {
     this.props.navigation.setParams({title: this.props.group.title});
     const tab = this.props.navigation.getParam('which', this.state.tab);
-    console.log("componentWillMount()", tab, this.state);
     if (this.state.tab !== tab)
       this.setState({tab: tab});
   }
