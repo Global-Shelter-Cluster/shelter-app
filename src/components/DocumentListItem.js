@@ -1,104 +1,77 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, StyleSheet, TouchableOpacity, View} from 'react-native';
-import type {GroupObject} from "../model/group";
-import type {FactsheetObject} from "../model/factsheet";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
-import vars from "../vars";
-import SingleLineText from "./SingleLineText";
-import Badge from "./Badge";
 import type {DocumentObject} from "../model/document";
+import vars from "../vars";
+import {timeAgo} from "../util";
 
-export default ({document}: {
+export default ({document, link, enter}: {
   document: DocumentObject,
-  // link: boolean,
-  // display: "full" | "text-only",
-  // factsheet?: FactsheetObject,
-  // recentDocs?: number,
-  // enter: (id: number) => {},
+  link: boolean,
+  enter: (id: number) => {},
 }) => {
-  return <SingleLineText>{document.title}</SingleLineText>;
-  /*
-  switch (display) {
-    case 'text-only':
-      return link
-        ? <TouchableOpacity onPress={() => enter(group.id)} style={styles.textOnlyContainer}>
-          <SingleLineText style={[styles.textOnlyLabel, {flex: 1}]}>{group.title}</SingleLineText>
-          <FontAwesome
-            name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
-            style={styles.textOnlyIcon}
-          />
-        </TouchableOpacity>
-        : <SingleLineText style={styles.textOnlyLabel}>{group.title}</SingleLineText>;
+  const preview = document.preview
+    ? <Image key="preview" style={styles.preview} source={{uri: document.preview}}/>
+    : <View key="preview" style={styles.previewBlank}/>;
 
-    case 'full':
-      const badges = [];
+  const contents = [
+    preview,
+    <View key="info" style={styles.info}>
+      <Text numberOfLines={4} ellipsizeMode="tail" style={styles.title}>{document.title}</Text>
+      <Text style={styles.secondary}>{timeAgo(document.date)}</Text>
+    </View>,
+  ];
 
-      if (recentDocs && recentDocs > 0)
-        badges.push(<Badge key="recentDocs" icon="file-o" value={recentDocs} color="white"/>);
-
-      const contents = [<SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>];
-
-      if (badges.length > 0)
-        contents.unshift(<View key="badges" style={styles.badges}>{badges}</View>);
-
-      return link
-        ? <ImageBackground
-          source={factsheet ? {uri: factsheet.image} : null}
-          style={styles.fullContainer}
-        >
-          <TouchableOpacity
-            style={styles.fullInnerContainer}
-            activeOpacity={0}
-            onPress={() => enter(group.id)}
-          >
-            {contents}
-          </TouchableOpacity>
-        </ImageBackground>
-        : <ImageBackground
-          source={factsheet ? {uri: factsheet.image} : null}
-          style={styles.fullContainer}
-        >
-          <View style={styles.fullInnerContainer}>
-            {contents}
-          </View>
-        </ImageBackground>;
-  }
-  */
+  return link
+    ? <TouchableOpacity
+      style={styles.container}
+      onPress={() => enter(document.id)}
+    >
+      {contents}
+      <FontAwesome
+        name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
+        style={styles.rightArrow}
+      />
+    </TouchableOpacity>
+    : <View style={styles.container}>
+      {contents}
+    </View>;
 }
 
 const styles = StyleSheet.create({
-  textOnlyContainer: {
+  container: {
     flexDirection: "row",
-  },
-  textOnlyLabel: {
     padding: 10,
     paddingTop: 0,
-    fontSize: 18,
   },
-  textOnlyIcon: {
-    paddingRight: 10,
+  preview: {
+    width: 120,
+    height: 120,
+    resizeMode: "cover",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: vars.SHELTER_GREY,
+  },
+  previewBlank: {
+    width: 120,
+    height: 120,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: vars.SHELTER_GREY,
+  },
+  info: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 4,
+  },
+  secondary: {
+    color: vars.SHELTER_GREY,
+  },
+  rightArrow: {
+    paddingLeft: 10,
     paddingTop: 2,
-  },
-  fullContainer: {
-    height: 100,
-    marginBottom: StyleSheet.hairlineWidth,
-  },
-  fullInnerContainer: {
-    padding: 10,
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,.6)",
-  },
-  fullLabel: {
-    color: "white",
-    fontSize: 18,
-    margin: 10,
-  },
-  badges: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-end",
   },
 });

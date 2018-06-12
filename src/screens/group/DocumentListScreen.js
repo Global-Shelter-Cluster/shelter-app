@@ -5,19 +5,17 @@ import {connect} from 'react-redux';
 import type {PublicGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
-import Group from './Group';
-import type {FactsheetObject} from "../../model/factsheet";
-import {clearLastError, loadObject} from "../../actions/index";
-import {OBJECT_MODE_STUB} from "../../model/index";
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import type {lastErrorType} from "../../reducers/lastError";
 import DocumentList from "./DocumentList";
 
 type Props = {
   online: boolean,
   group: PublicGroupObject,
-  which: "recent" | "featured" | "key",
   navigation: { setParams: ({}) => {} },
+}
+
+type State = {
+  tab: "recent" | "featured" | "key",
 }
 
 const mapStateToProps = (state, props) => {
@@ -26,20 +24,29 @@ const mapStateToProps = (state, props) => {
   return {
     online: state.flags.online,
     group: group,
-    which: props.navigation.getParam('which', 'recent'),
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-});
+const mapDispatchToProps = dispatch => ({});
 
-class DocumentListScreen extends React.Component<Props> {
+class DocumentListScreen extends React.Component<Props, State> {
   static navigationOptions = ({navigation}) => ({
     headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
   });
 
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      tab: "recent",
+    };
+  }
+
   componentWillMount() {
     this.props.navigation.setParams({title: this.props.group.title});
+    const tab = this.props.navigation.getParam('which', 'recent');
+    console.log("componentWillMount()", tab, this.state);
+    if (this.state.tab !== tab)
+      this.setState({tab: tab});
   }
 
   componentDidUpdate() {
@@ -48,7 +55,7 @@ class DocumentListScreen extends React.Component<Props> {
   }
 
   render() {
-    return <DocumentList {...this.props}/>;
+    return <DocumentList {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
   }
 }
 
