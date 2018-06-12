@@ -7,20 +7,40 @@ import Group from "./group";
 import type {ObjectFileDescription, ObjectRequest, ObjectType} from "../persist";
 import type {FactsheetObject} from "./factsheet";
 import Factsheet from "./factsheet";
+import type {GlobalObject} from "./global";
+import Global from "./global";
 import type {DocumentObject} from "./document";
 import Document from "./document";
 import createCachedSelector from 're-reselect';
 
 export type Objects = {
+  global?: { [id: string]: GlobalObject },
   user?: { [id: string]: UserObject },
   group?: { [id: string]: GroupObject },
   factsheet?: { [id: string]: FactsheetObject },
   document?: { [id: string]: DocumentObject },
 }
 
-export type Object = UserObject | GroupObject | FactsheetObject | DocumentObject;
+export const expirationLimitsByObjectType = { // 3600 = 1 hour
+  "global": 3600 * 24 * 7,
+  "user": 3600 * 24 * 7,
+  "group": 3600,
+  "document": 3600 * 24,
+  "event": 3600 * 24,
+  "factsheet": 3600 * 24,
+};
+
+export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject;
 
 export const initialObjectsState: Objects = {
+  global: {
+    '1': {
+      _mode: "public",
+      _persist: true,
+      id: 1,
+      featured_groups: [],
+    },
+  },
   user: {},
   group: {},
   factsheet: {},
@@ -28,6 +48,7 @@ export const initialObjectsState: Objects = {
 };
 
 const mapTypesToClasses = {
+  'global': Global,
   'user': User,
   'group': Group,
   'factsheet': Factsheet,

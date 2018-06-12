@@ -4,7 +4,7 @@ import {downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../a
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects} from "../model";
-import Model, {OBJECT_MODE_PRIVATE} from "../model";
+import Model, {expirationLimitsByObjectType, OBJECT_MODE_PRIVATE} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
 import Storage from "./storage_sqlite";
@@ -31,14 +31,6 @@ export type Files = {
     uses: Array<ObjectRequest>,
   }
 }
-
-const expirationLimitsByObjectType = { // 3600s = 1hr
-  "group": 3600,
-  "user": 3600 * 24 * 7,
-  "document": 3600 * 24,
-  "event": 3600 * 24,
-  "factsheet": 3600 * 24,
-};
 
 /**
  * Class Persist.

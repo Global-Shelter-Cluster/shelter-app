@@ -6,8 +6,15 @@ import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import SingleLineText from "./SingleLineText";
 
+export type tabsDefinition = {
+  [tab: string]: {
+    label: string,
+    disabledIcon?: string,
+  },
+};
+
 const Tabs = ({tabs, current, changeTab}: {
-  tabs: { [string]: { label: string, disabledIcon?: string } },
+  tabs: tabsDefinition,
   current: string,
   changeTab: (tab: string) => {},
 }) => {

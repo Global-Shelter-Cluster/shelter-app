@@ -8,6 +8,8 @@ import type {tabs} from "./Explore";
 import Explore from "./Explore";
 import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
+import {getObject} from "../../model";
+import {GLOBAL_OBJECT_ID} from "../../model/global";
 
 type Props = {
   online: boolean,
@@ -22,6 +24,7 @@ type State = {
 const mapStateToProps = (state, props) => ({
   online: state.flags.online,
   user: getCurrentUser(state),
+  global: getObject(state, 'global', GLOBAL_OBJECT_ID),
 });
 
 const mapDispatchToProps = dispatch => ({});

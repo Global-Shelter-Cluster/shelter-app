@@ -2,15 +2,18 @@
 
 import React from 'react';
 import {FlatList, View} from 'react-native';
+import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 import type {PrivateUserObject} from "../../model/user";
 import GroupListItemContainer from '../../containers/GroupListItemContainer';
+import type {GlobalObject} from "../../model/global";
 
 export type tabs = "followed" | "featured" | "search";
 
-export default ({online, tab, user, changeTab}: {
+export default ({online, tab, global, user, changeTab}: {
   online: boolean,
   tab: tabs,
+  global: GlobalObject,
   user: PrivateUserObject,
   changeTab: (tab: string) => {},
 }) => {
@@ -21,14 +24,23 @@ export default ({online, tab, user, changeTab}: {
       ids = user.groups;
       break;
     case "featured":
-      ids = []; //TODO
+      ids = global.featured_groups;
       break;
     // case "search":
     //   ids = group.key_documents;
     //   break;
   }
 
-  const tabs = {"followed": {label: "Followed"}, "featured": {label: "Featured"}, "search": {label: "Search"}};
+  const tabs: tabsDefinition = {
+    "followed": {label: "Followed"},
+    "featured": {label: "Featured"},
+    // "search": {label: "Search"},
+  };
+
+  if (user.groups.length === 0)
+    delete tabs.recent;
+  if (global.featured_groups.length === 0)
+    delete tabs.featured;
 
   if (!online)
     tabs.search.disabledIcon = 'wifi';

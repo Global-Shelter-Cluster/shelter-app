@@ -4,6 +4,7 @@ import React from 'react';
 import {FlatList, View} from 'react-native';
 import type {PublicGroupObject} from "../../model/group";
 import DocumentListItemContainer from "../../containers/DocumentListItemContainer";
+import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 
 export type tabs = "recent" | "featured" | "key";
@@ -28,7 +29,11 @@ export default ({online, tab, group, changeTab}: {
       break;
   }
 
-  const tabs = {"recent": {label: "Recent"}, "featured": {label: "Featured"}, "key": {label: "Key"}};
+  const tabs: tabsDefinition = {
+    "recent": {label: "Recent"},
+    "featured": {label: "Featured"},
+    "key": {label: "Key"},
+  };
 
   if (group.recent_documents.length === 0)
     delete tabs.recent;
