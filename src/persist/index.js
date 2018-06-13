@@ -4,7 +4,7 @@ import {downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../a
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects, ObjectType} from "../model";
-import Model, {detailLevels, expirationLimitsByObjectType, OBJECT_MODE_PRIVATE} from "../model";
+import Model, {detailLevels, expirationLimitsByObjectType, OBJECT_MODE_PRIVATE, OBJECT_MODE_PUBLIC} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
 import Storage from "./storage_sqlite";
@@ -320,8 +320,9 @@ class Persist {
       }
 
       expired = loaded
-        .filter(item => (Persist.now() - item.object._last_read) > expirationLimitsByObjectType[item.type])
-        .map(item => ({type: item.type, id: item.id}));
+        .filter(item => (Persist.now() - item.object._last_read) > expirationLimitsByObjectType[item.type]) // Only take expired objects
+        .filter(item => detailLevels[item.object._mode] >= detailLevels[OBJECT_MODE_PUBLIC]) // Only consider full (public or more) objects
+        .map(item => ({type: item.type, id: item.id})); // Convert to ObjectRequest
     }
 
     const isOnline = this.store.getState().flags.online;
