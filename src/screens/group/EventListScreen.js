@@ -6,8 +6,8 @@ import type {PublicGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import type tabs from "./DocumentList";
-import DocumentList from "./DocumentList";
+import type tabs from "./EventList";
+import EventList from "./EventList";
 import {clearLastError, loadObject} from "../../actions";
 
 type Props = {
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   },
 });
 
-class DocumentListScreen extends React.Component<Props, State> {
+class EventListScreen extends React.Component<Props, State> {
   static navigationOptions = ({navigation}) => ({
     headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
   });
@@ -47,7 +47,7 @@ class DocumentListScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tab: "recent",
+      tab: "upcoming",
     };
   }
 
@@ -64,8 +64,8 @@ class DocumentListScreen extends React.Component<Props, State> {
   }
 
   render() {
-    return <DocumentList {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
+    return <EventList {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentListScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(EventListScreen);

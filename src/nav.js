@@ -13,6 +13,7 @@ import vars from "./vars";
 import TempBlankScreen from "./screens/TempBlankScreen";
 import TempReportingScreen from "./screens/reporting/TempReportingScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
+import EventListScreen from "./screens/group/EventListScreen";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
@@ -23,6 +24,7 @@ const ExploreStack = createStackNavigator({
   Group: GroupScreen,
   WebsiteViewer: WebsiteViewerScreen,
   DocumentList: DocumentListScreen,
+  EventList: EventListScreen,
 });
 const ChatStack = createSwitchNavigator({
   Chat: TempBlankScreen,
