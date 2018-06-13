@@ -10,24 +10,38 @@ import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import {getObject} from "../../model";
 import {GLOBAL_OBJECT_ID} from "../../model/global";
+import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
 
 type Props = {
   online: boolean,
+  loading: boolean,
   user: PrivateUserObject,
   navigation: { setParams: ({}) => {} },
+  refreshGlobal: () => {},
+  refreshUser: () => {},
 }
 
 type State = {
   tab: tabs,
 }
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = state => ({
   online: state.flags.online,
+  loading: state.flags.loading,
   user: getCurrentUser(state),
   global: getObject(state, 'global', GLOBAL_OBJECT_ID),
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  refreshGlobal: () => {
+    dispatch(clearLastError());
+    dispatch(loadObject('global', GLOBAL_OBJECT_ID, false, true));
+  },
+  refreshUser: () => {
+    dispatch(clearLastError());
+    dispatch(loadCurrentUser(false, true));
+  },
+});
 
 class ExploreScreen extends React.Component<Props, State> {
   static navigationOptions = {

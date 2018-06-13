@@ -4,7 +4,7 @@ import {downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../a
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects, ObjectType} from "../model";
-import Model, {expirationLimitsByObjectType, OBJECT_MODE_PRIVATE} from "../model";
+import Model, {detailLevels, expirationLimitsByObjectType, OBJECT_MODE_PRIVATE} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
 import Storage from "./storage_sqlite";
@@ -98,11 +98,20 @@ class Persist {
 
   // Saves the objects (and their files) marked with _persist:true to AsyncStorage (and FileSystem).
   saveObjects(objects: Objects) {
+    const storedObjects = this.store.getState().objects;
+
     const data = [];
 
     for (const type in objects) {
       for (const id in objects[type]) {
         if (!objects[type][id]._persist)
+          continue;
+
+        if (
+          storedObjects[type][id] !== undefined
+          && detailLevels[objects[type][id]._mode] < detailLevels[storedObjects[type][id]._mode]
+        )
+        // Don't store, for example, the current user if it's a stub.
           continue;
 
         data.push([Persist.cacheKey(type, id), JSON.stringify(objects[type][id])]);
@@ -254,63 +263,66 @@ class Persist {
       object: JSON.parse(item[1]),
     });
 
-    const loaded = (await Storage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id))))
-      .map(convertItem)
-      .filter(i => i.object); // Safety check: discard results that for some reason don't contain the actual objects
+    let loaded: Array<{ type: string, id: number, object: {} }> = [];
+    let expired: Array<ObjectRequest> = [];
 
-    if (loaded.length) {
-      if (recursive) {
-        let continueLoop = true; // When nothing was done on the loop, this is set to false
-        let iterations = 10; // Limit the number of times we do this to prevent an infinite loop (which shouldn't happen anyway)
+    if (!forceRemoteLoad) {
+      loaded = (await Storage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id))))
+        .map(convertItem)
+        .filter(i => i.object); // Safety check: discard results that for some reason don't contain the actual objects
 
-        do {
-          const allRelatedRequests: Array<ObjectRequest> = [];
-          const countBeforeProcessing = requests.length;
+      if (loaded.length) {
+        if (recursive) {
+          let continueLoop = true; // When nothing was done on the loop, this is set to false
+          let iterations = 10; // Limit the number of times we do this to prevent an infinite loop (which shouldn't happen anyway)
 
-          loaded.map(item => {
-            const relatedRequests = Model.getRelated(item.type, item.object)
-              .filter((relatedRequest: ObjectRequest) => {
-                for (const request of requests) {
-                  if (relatedRequest.type === request.type && relatedRequest.id === request.id)
-                    return false; // Already in the original "requests"
-                }
-                return true;
-              });
+          do {
+            const allRelatedRequests: Array<ObjectRequest> = [];
+            const countBeforeProcessing = requests.length;
 
-            allRelatedRequests.push(...relatedRequests);
-            requests.push(...relatedRequests);
+            loaded.map(item => {
+              const relatedRequests = Model.getRelated(item.type, item.object)
+                .filter((relatedRequest: ObjectRequest) => {
+                  for (const request of requests) {
+                    if (relatedRequest.type === request.type && relatedRequest.id === request.id)
+                      return false; // Already in the original "requests"
+                  }
+                  return true;
+                });
+
+              allRelatedRequests.push(...relatedRequests);
+              requests.push(...relatedRequests);
+            });
+
+            if (allRelatedRequests.length) {
+              const temp = await Storage.multiGet(allRelatedRequests.map(o => Persist.cacheKey(o.type, o.id)));
+              loaded.push(...temp.map(convertItem));
+            }
+
+            // Continue as long as there were new requests added
+            continueLoop = requests.length > countBeforeProcessing;
+            // console.debug('Persist.loadObjects(): recursive loop', iterations, Object.assign({}, requests));
+          } while (continueLoop && (iterations-- > 0));
+        }
+
+        const objects = {};
+
+        loaded
+          .map(item => {
+            if (objects[item.type] === undefined)
+              objects[item.type] = {};
+
+            objects[item.type][item.id] = item.object;
           });
 
-          if (allRelatedRequests.length) {
-            const temp = await Storage.multiGet(allRelatedRequests.map(o => Persist.cacheKey(o.type, o.id)));
-            loaded.push(...temp.map(convertItem));
-          }
-
-          // Continue as long as there were new requests added
-          continueLoop = requests.length > countBeforeProcessing;
-          // console.debug('Persist.loadObjects(): recursive loop', iterations, Object.assign({}, requests));
-        } while (continueLoop && (iterations-- > 0));
+        this.dispatchObjects(objects);
+        this.downloadFilesForObjects(objects);
       }
 
-      const objects = {};
-
-      loaded
-        .map(item => {
-          if (objects[item.type] === undefined)
-            objects[item.type] = {};
-
-          objects[item.type][item.id] = item.object;
-        });
-
-      this.dispatchObjects(objects);
-      this.downloadFilesForObjects(objects);
+      expired = loaded
+        .filter(item => (Persist.now() - item.object._last_read) > expirationLimitsByObjectType[item.type])
+        .map(item => ({type: item.type, id: item.id}));
     }
-
-    const now = Persist.now();
-
-    const expired: Array<ObjectRequest> = loaded
-      .filter(item => (now - item.object._last_read) > expirationLimitsByObjectType[item.type])
-      .map(item => ({type: item.type, id: item.id}));
 
     const isOnline = this.store.getState().flags.online;
     let skipLoadingExpiredObjects = false;
@@ -338,16 +350,16 @@ class Persist {
 
         const newObjects: Objects = await this.remote.loadObjects(loadImmediately);
         this.updateLastRead(newObjects);
+        await this.dispatchObjects(newObjects);
         this.saveObjects(newObjects);
-        this.dispatchObjects(newObjects);
       }
     }
 
     if (isOnline && !skipLoadingExpiredObjects && expired.length) {
       const newObjects: Objects = await this.remote.loadObjects(expired);
       this.updateLastRead(newObjects);
+      await this.dispatchObjects(newObjects);
       this.saveObjects(newObjects);
-      this.dispatchObjects(newObjects);
     }
   }
 

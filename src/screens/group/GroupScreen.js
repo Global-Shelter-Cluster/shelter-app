@@ -13,11 +13,12 @@ import type {lastErrorType} from "../../reducers/lastError";
 
 type Props = {
   online: boolean,
+  loading: boolean,
   group: PublicGroupObject,
   loaded: boolean,
   factsheet: FactsheetObject,
   navigation: { setParams: ({}) => {}, getParam: (string) => string },
-  refresh: number => {},
+  refresh: () => {},
   lastError: lastErrorType,
 }
 
@@ -32,6 +33,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     online: state.flags.online,
+    loading: state.flags.loading,
     lastError: state.lastError,
     group: group,
     loaded: detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
@@ -39,16 +41,16 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  refresh: id => {
+const mapDispatchToProps = (dispatch, props) => ({
+  refresh: () => {
     dispatch(clearLastError());
-    const action = loadObject('group', id, true, true);
-    try {
-      dispatch(action);
-    } catch (e) {
-      console.log('refresh err', e);
-    }
-    return action;
+    dispatch(loadObject('group', props.navigation.getParam('groupId'), false, true));
+    // try {
+    //   dispatch(action);
+    // } catch (e) {
+    //   console.log('refresh err', e);
+    // }
+    // return action;
   },
 });
 
@@ -58,9 +60,8 @@ class GroupScreen extends React.Component<Props> {
   });
 
   componentWillMount() {
-    const groupId = this.props.navigation.getParam('groupId');
     if (!this.props.loaded)
-      this.props.refresh(groupId);
+      this.props.refresh();
 
     this.props.navigation.setParams({title: this.props.group.title});
   }

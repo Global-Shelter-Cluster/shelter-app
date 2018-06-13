@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, View, RefreshControl} from 'react-native';
 import type {PublicGroupObject} from "../../model/group";
 import DocumentListItemContainer from "../../containers/DocumentListItemContainer";
 import type {tabsDefinition} from "../../components/Tabs";
@@ -9,10 +9,12 @@ import Tabs from "../../components/Tabs";
 
 export type tabs = "recent" | "featured" | "key";
 
-export default ({online, tab, group, changeTab}: {
+export default ({online, loading, tab, group, refresh, changeTab}: {
   online: boolean,
+  loading: boolean,
   tab: tabs,
   group: PublicGroupObject,
+  refresh: () => {},
   changeTab: (tab: string) => {},
 }) => {
   let ids: Array<number> = [];
@@ -52,6 +54,7 @@ export default ({online, tab, group, changeTab}: {
       key={tab} // This makes the list scroll up when changing the tab.
       data={ids.map(id => ({key: '' + id, id: id}))}
       renderItem={({item}) => <DocumentListItemContainer id={item.id}/>}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     />
   </View>;
 }

@@ -8,11 +8,14 @@ import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type tabs from "./DocumentList";
 import DocumentList from "./DocumentList";
+import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
 
 type Props = {
   online: boolean,
+  loading: boolean,
   group: PublicGroupObject,
   navigation: { setParams: ({}) => {} },
+  refresh: () => {},
 }
 
 type State = {
@@ -24,11 +27,17 @@ const mapStateToProps = (state, props) => {
 
   return {
     online: state.flags.online,
+    loading: state.flags.loading,
     group: group,
   };
 };
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch, props) => ({
+  refresh: () => {
+    dispatch(clearLastError());
+    dispatch(loadObject('group', props.navigation.getParam('groupId'), false, true));
+  },
+});
 
 class DocumentListScreen extends React.Component<Props, State> {
   static navigationOptions = ({navigation}) => ({

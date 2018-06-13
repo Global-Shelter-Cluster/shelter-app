@@ -8,16 +8,26 @@ import Dashboard from './Dashboard';
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
+import {GLOBAL_OBJECT_ID} from "../../model/global";
+import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
 
 type Props = {
   user: PrivateUserObject,
+  loading: boolean,
+  refreshUser: () => {},
 }
 
 const mapStateToProps = state => ({
   user: getCurrentUser(state),
+  loading: state.flags.loading,
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+  refreshUser: () => {
+    dispatch(clearLastError());
+    dispatch(loadCurrentUser(false, true));
+  },
+});
 
 class DashboardScreen extends React.Component<Props> {
   static navigationOptions = {

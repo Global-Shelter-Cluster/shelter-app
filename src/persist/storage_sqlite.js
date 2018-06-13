@@ -90,11 +90,11 @@ class Storage {
   }
 
   async multiSet(data: Array<[string, string]>) {
-    const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    // const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     // TODO: each setItem takes time, so build better queries (do this in batches)
     data.map(async tuple => {
-      await timeout(50);
+      // await timeout(50);
       this.setItem(tuple[0], tuple[1]);
     });
   }

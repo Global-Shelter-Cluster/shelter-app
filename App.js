@@ -9,7 +9,7 @@ import {logout} from "./src/actions";
 
 persist.store = store;
 
-// TEMP: clear everything (logout, etc)
+// // TEMP: clear everything (logout, etc)
 // persist.clearAll();
 // store.dispatch(logout());
 

@@ -42,11 +42,27 @@ export const login = (user: string, pass: string) => async dispatch => {
 };
 
 export const loadObject = (type: ObjectType, id: number, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
+  dispatch(changeFlag('loading', true));
   try {
     await persist.loadObjects([{type: type, id: id}], recursive, forceRemoteLoad);
   } catch (e) {
     dispatch(setLastError('object-load', {type: type, id: id}));
   }
+  dispatch(changeFlag('loading', false));
+};
+
+export const loadCurrentUser = (recursive: boolean, forceRemoteLoad: boolean) => async (dispatch, getState) => {
+  const id = getState().currentUser;
+  if (!id)
+    return;
+
+  dispatch(changeFlag('loading', true));
+  try {
+    await persist.loadObjects([{type: 'user', id: id}], recursive, forceRemoteLoad);
+  } catch (e) {
+    dispatch(setLastError('object-load', {type: 'user', id: id}));
+  }
+  dispatch(changeFlag('loading', false));
 };
 
 export const SET_LAST_ERROR = 'SET_LAST_ERROR';
@@ -93,6 +109,9 @@ export const refreshOldData = () => {
 };
 
 export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dispatch, getState) => {
+  if (!config.persistFiles)
+    return;
+
   const existingFiles = getState().files;
 
   dispatch(addFilesToDownload(files.filter(i => existingFiles[i.url] === undefined)));
