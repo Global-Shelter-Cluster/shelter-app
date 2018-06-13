@@ -29,8 +29,6 @@ export type StubDocumentObject = {
   id: number,
   changed: string, // date
   title: string,
-  publisher: number,
-  groups: Array<number>,
   date: string,
   preview: string,
 }
