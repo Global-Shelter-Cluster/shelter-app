@@ -36,7 +36,7 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
         badges.push(<Badge key="recentDocs" icon="file-o" value={recentDocs} color="white"/>);
 
       const contents = [
-        <Text key="type" style={styles.typeLabel}>{group.type.toUpperCase().replace(/-/g, ' ')}</Text>,
+        <Text key="type" style={styles.typeLabel}>{group.type.toUpperCase().replace(/_/g, ' ')}</Text>,
         <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>,
       ];
 
