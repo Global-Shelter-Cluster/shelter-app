@@ -3,7 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import GroupListItem from '../components/GroupListItem';
-import {getObject, OBJECT_MODE_STUB} from "../model";
+import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../model";
 import {withNavigation} from 'react-navigation';
 import type {PublicGroupObject} from "../model/group";
 import {getRecentDocumentsCount} from "../model/group";
@@ -14,7 +14,7 @@ const mapStateToProps = (state, props) => {
 
   const ret = {
     group: group,
-    link: props.noLink ? false : (state.flags.online || group._mode !== OBJECT_MODE_STUB),
+    link: props.noLink ? false : (state.flags.online || detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC]),
     enter: (id: number) => props.navigation.push('Group', {groupId: id}),
   };
 

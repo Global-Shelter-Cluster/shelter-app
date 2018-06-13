@@ -1,9 +1,9 @@
 // @flow
 
-import type {Files, ObjectFileDescription, ObjectType} from "../persist";
+import type {Files, ObjectFileDescription} from "../persist";
 import persist, {ObjectRequest} from "../persist";
 import {NetInfo} from 'react-native';
-import type {Objects} from "../model";
+import type {Objects, ObjectType} from "../model";
 import config from "../config";
 import type {flags} from "../reducers/flags";
 

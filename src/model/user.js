@@ -2,7 +2,6 @@
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
-import {OBJECT_MODE_PRIVATE, OBJECT_MODE_STUB} from "./index";
 
 export type PrivateUserObject = {
   _last_read?: number,
@@ -43,7 +42,7 @@ export default class User {
   static getRelated(user: UserObject): Array<ObjectRequest> {
     const ret = [];
 
-    ret.push(...user._mode === OBJECT_MODE_PRIVATE
+    ret.push(...user.groups !== undefined
       ? user.groups.map(id => ({type: "group", id: id}))
       : []);
 
@@ -51,9 +50,9 @@ export default class User {
   }
 
   static getFiles(user: UserObject): Array<ObjectFileDescription> {
-    return user._mode === OBJECT_MODE_STUB
-      ? []
-      : [{type: "user", id: user.id, property: "picture", url: user.picture}];
+    return user.picture !== undefined && user.picture
+      ? [{type: "user", id: user.id, property: "picture", url: user.picture}]
+      : [];
   }
 }
 

@@ -1,8 +1,7 @@
 // @flow
 
 import type {ObjectRequest} from "../persist";
-// import {createSelector} from 'reselect';
-import {getObject, OBJECT_MODE_STUB} from "./index";
+import {getObject} from "./index";
 import moment from 'moment';
 import createCachedSelector from 're-reselect';
 
@@ -100,6 +99,16 @@ export type PublicWorkingGroupObject = {
   recent_documents: Array<number>,
 }
 
+export type StubPlusGroupObject = {
+  _last_read?: number,
+  _mode: "stubplus",
+  _persist?: true,
+  type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
+  id: number,
+  title: string,
+  latest_factsheet?: number,
+}
+
 export type StubGroupObject = {
   _last_read?: number,
   _mode: "stub",
@@ -116,32 +125,24 @@ export type PublicGroupObject =
   | PublicStrategicAdvisoryGroupObject
   | PublicWorkingGroupObject;
 
-export type GroupObject =
-  StubGroupObject
-  | PublicResponseGroupObject
-  | PublicGeographicRegionGroupObject
-  | PublicHubGroupObject
-  | PublicStrategicAdvisoryGroupObject
-  | PublicWorkingGroupObject;
-// export type GroupObject = PublicGroupObject | StubGroupObject;
-// export type GroupObject = PrivateGroupObject | PublicGroupObject | StubGroupObject;
+export type GroupObject = StubGroupObject | StubPlusGroupObject | PublicGroupObject;
 
 export default class Group {
   static getRelated(group: GroupObject): Array<ObjectRequest> {
     const ret = [];
 
-    ret.push(...group._mode !== OBJECT_MODE_STUB && group.associated_regions !== undefined
+    ret.push(...group.associated_regions !== undefined
       ? group.associated_regions.map(id => ({type: "group", id: id}))
       : []);
 
-    if (group._mode !== OBJECT_MODE_STUB && group.parent_response)
+    if (group.parent_response !== undefined)
       ret.push({type: "group", id: group.parent_response});
 
-    if (group._mode !== OBJECT_MODE_STUB && group.latest_factsheet)
+    if (group.latest_factsheet !== undefined)
       ret.push({type: "factsheet", id: group.latest_factsheet});
 
     ['featured', 'key', 'recent'].map(key => ret
-      .push(...group._mode !== OBJECT_MODE_STUB
+      .push(...group[key + '_documents'] !== undefined
         ? group[key + '_documents'].map(id => ({type: "document", id: id}))
         : [])
     );
@@ -152,46 +153,7 @@ export default class Group {
   static getFiles(): [] {
     return [];
   }
-
-  // static expand(id: number, groups: { [id: string]: GroupObject }, users: { [id: string]: UserObject }, factsheets: { [id: string]: FactsheetObject }): ExpandedGroupObject {
-  //   const ret: ExpandedGroupObject = Object.assign({}, groups['' + id]);
-  //
-  //   ret.associated_regions = ret.associated_regions.map(id => groups[id]);
-  //   if (ret.parent_response)
-  //     ret.parent_response = groups[ret.parent_response];
-  //
-  //   if (ret.latest_factsheet)
-  //     ret.latest_factsheet = factsheets[ret.latest_factsheet];
-  //
-  //   // ret.user_count = users.length;
-  //
-  //   return ret;
-  // }
 }
-
-// export const getGroup = createCachedSelector(
-//   (id, state) => id,
-//   (id, state) => state.objects.group,
-//   (id, groups) => groups[id],
-// )((id, state) => id);
-//
-// export const getGroup = createCachedSelector(
-//   (id, state) => id,
-//   (id, state) => state.objects.group,
-//   (id, state) => state.objects.user,
-//   (id, state) => state.objects.factsheet,
-//   Group.expand
-// )((id, state) => id);
-//
-// export const getUserGroups = createSelector(
-//   [getCurrentUser, state => state.objects.group],
-//   (user: PrivateUserObject, groups: Array<GroupObject>) =>
-//     user
-//       ? user.groups
-//         .filter(id => groups[id] !== undefined)
-//         .map(id => groups[id])
-//       : []
-// );
 
 const RECENT_DOCS_MAX_DAYS = 7; // how many days ago are docs still considered "recent"
 
@@ -199,9 +161,11 @@ export const getRecentDocumentsCount = createCachedSelector(
   (state, id) => state,
   (state, id) => id,
   () => moment(),
-  (state, id, now) => state.objects.group[id]
-    .recent_documents
-    .map(id => getObject(state, 'document', id))
-    .filter(d => d && now.diff(d.changed, 'days') <= RECENT_DOCS_MAX_DAYS)
-    .length
+  (state, id, now) => state.objects.group[id].recent_documents !== undefined
+    ? state.objects.group[id]
+      .recent_documents
+      .map(id => getObject(state, 'document', id))
+      .filter(d => d && now.diff(d.changed, 'days') <= RECENT_DOCS_MAX_DAYS)
+      .length
+    : 0
 )((state, id) => moment().format('YYYY-MM-DD')); // e.g. "2018-06-08"

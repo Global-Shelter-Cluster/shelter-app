@@ -1,8 +1,6 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
-import {OBJECT_MODE_STUB} from "./index";
-import createCachedSelector from 're-reselect';
 
 export type PublicDocumentObject = {
   _last_read?: number,
@@ -57,7 +55,7 @@ export default class Document {
     if (document.preview)
       files.push({type: "document", id: document.id, property: "preview", url: document.preview});
 
-    if (document._mode !== OBJECT_MODE_STUB && document.file)
+    if (document.file !== undefined && document.file)
       files.push({type: "document", id: document.id, property: "file", url: document.file});
 
     return files;

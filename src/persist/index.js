@@ -3,15 +3,14 @@
 import {downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
-import type {Objects} from "../model";
+import type {Objects, ObjectType} from "../model";
 import Model, {expirationLimitsByObjectType, OBJECT_MODE_PRIVATE} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
 import Storage from "./storage_sqlite";
 import config from "../config";
 import clone from 'clone';
-
-export type ObjectType = "group" | "user" | "document" | "event" | "factsheet";
+import {GLOBAL_OBJECT_ID} from "../model/global";
 
 export type ObjectRequest = {
   type: ObjectType,
@@ -69,7 +68,10 @@ class Persist {
         await this.store.dispatch(setFiles(files));
       }
 
-      await this.loadObjects([{type: "user", id: id}], true);
+      await this.loadObjects([
+        {type: "global", id: GLOBAL_OBJECT_ID},
+        {type: "user", id: id},
+      ], true);
       await this.store.dispatch(setCurrentUser(id));
     } catch (e) {
     }

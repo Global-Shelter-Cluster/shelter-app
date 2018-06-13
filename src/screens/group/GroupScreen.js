@@ -3,12 +3,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import type {PublicGroupObject} from "../../model/group";
-import {getObject} from "../../model";
+import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import Group from './Group';
 import type {FactsheetObject} from "../../model/factsheet";
-import {clearLastError, loadObject} from "../../actions/index";
-import {OBJECT_MODE_STUB} from "../../model/index";
+import {clearLastError, loadObject} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 
@@ -35,7 +34,7 @@ const mapStateToProps = (state, props) => {
     online: state.flags.online,
     lastError: state.lastError,
     group: group,
-    loaded: group._mode !== OBJECT_MODE_STUB,
+    loaded: detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
     factsheet: factsheet,
   };
 };

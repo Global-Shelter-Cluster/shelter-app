@@ -4,7 +4,7 @@ import type {UserObject} from "./user";
 import User from "./user";
 import type {GroupObject} from "./group";
 import Group from "./group";
-import type {ObjectFileDescription, ObjectRequest, ObjectType} from "../persist";
+import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import type {FactsheetObject} from "./factsheet";
 import Factsheet from "./factsheet";
 import type {GlobalObject} from "./global";
@@ -12,6 +12,8 @@ import Global from "./global";
 import type {DocumentObject} from "./document";
 import Document from "./document";
 import createCachedSelector from 're-reselect';
+
+export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet";
 
 export type Objects = {
   global?: { [id: string]: GlobalObject },
@@ -60,8 +62,19 @@ const mapTypesToClasses = {
 export const OBJECT_MODE_PRIVATE = 'private';
 // Complete object, as seen by anonymous users.
 export const OBJECT_MODE_PUBLIC = 'public';
+// Simplified object with some extra fields (see STUB). This should rarely be used.
+export const OBJECT_MODE_STUBPLUS = 'stubplus';
 // Simplified object, usually without any references to other objects, e.g. just an id and title.
 export const OBJECT_MODE_STUB = 'stub';
+
+export type ObjectMode = "private" | "public" | "stubplus" | "stub";
+
+export const detailLevels: { [ObjectMode]: number } = {
+  [OBJECT_MODE_PRIVATE]: 3,
+  [OBJECT_MODE_PUBLIC]: 2,
+  [OBJECT_MODE_STUBPLUS]: 1,
+  [OBJECT_MODE_STUB]: 0,
+};
 
 export default class Model {
   static getRelated(type: ObjectType, object: Object): Array<ObjectRequest> {

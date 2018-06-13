@@ -2,7 +2,7 @@
 
 import {CLEAR_ALL_OBJECTS, SET_OBJECTS} from "../actions";
 import type {Objects} from "../model";
-import {initialObjectsState, OBJECT_MODE_STUB} from "../model";
+import {initialObjectsState, OBJECT_MODE_STUB, OBJECT_MODE_STUBPLUS} from "../model";
 
 const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: Objects }) => {
   switch (action.type) {
@@ -27,7 +27,10 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
           const newObjectsFiltered = Object.keys(newObjects) // This converts {[id]:{}} to Array<id>
             .filter(id => (
               existingObjects[id] === undefined // Object didn't exist, we copy it (return true)
-              || !(newObjects[id]._mode === OBJECT_MODE_STUB && existingObjects[id]._mode !== OBJECT_MODE_STUB) // Don't replace non-stub objects with stubs
+              || !( // Don't replace non-stub objects with stubs
+                (newObjects[id]._mode === OBJECT_MODE_STUB || newObjects[id]._mode === OBJECT_MODE_STUBPLUS)
+                && (existingObjects[id]._mode !== OBJECT_MODE_STUB && existingObjects[id]._mode !== OBJECT_MODE_STUBPLUS)
+              )
             ))
             .reduce((ret, id) => {
               // If a new object comes without the "_persist" flag, but an existing one has it, we add it so we don't lose
