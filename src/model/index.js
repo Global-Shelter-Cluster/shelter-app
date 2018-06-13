@@ -12,6 +12,8 @@ import Global from "./global";
 import type {DocumentObject} from "./document";
 import Document from "./document";
 import createCachedSelector from 're-reselect';
+import type {EventObject} from "./event";
+import Event from "./event";
 
 export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet";
 
@@ -21,18 +23,19 @@ export type Objects = {
   group?: { [id: string]: GroupObject },
   factsheet?: { [id: string]: FactsheetObject },
   document?: { [id: string]: DocumentObject },
+  event?: { [id: string]: EventObject },
 }
 
 export const expirationLimitsByObjectType = { // 3600 = 1 hour
   "global": 3600 * 24 * 7,
   "user": 3600 * 24 * 7,
   "group": 3600,
+  "factsheet": 3600 * 24,
   "document": 3600 * 24,
   "event": 3600 * 24,
-  "factsheet": 3600 * 24,
 };
 
-export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject;
+export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject;
 
 export const initialObjectsState: Objects = {
   global: {
@@ -47,6 +50,7 @@ export const initialObjectsState: Objects = {
   group: {},
   factsheet: {},
   document: {},
+  event: {},
 };
 
 const mapTypesToClasses = {
@@ -55,7 +59,7 @@ const mapTypesToClasses = {
   'group': Group,
   'factsheet': Factsheet,
   'document': Document,
-  'event': null,
+  'event': Event,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.

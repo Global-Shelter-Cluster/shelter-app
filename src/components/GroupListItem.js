@@ -35,6 +35,9 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
       if (recentDocs && recentDocs > 0)
         badges.push(<Badge key="recentDocs" icon="file-o" value={recentDocs} color="white"/>);
 
+      if (group.upcoming_events !== undefined && group.upcoming_events.length > 0)
+        badges.push(<Badge key="upcomingEvents" icon="calendar" value={group.upcoming_events.length} color="white"/>);
+
       const contents = [
         <Text key="type" style={styles.typeLabel}>{group.type.toUpperCase().replace(/_/g, ' ')}</Text>,
         <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>,

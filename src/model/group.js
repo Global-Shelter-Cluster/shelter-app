@@ -34,6 +34,7 @@ export type PublicResponseGroupObject = {
   featured_documents: Array<number>,
   key_documents: Array<number>,
   recent_documents: Array<number>,
+  upcoming_events: Array<number>,
 }
 
 export type PublicGeographicRegionGroupObject = {
@@ -49,6 +50,7 @@ export type PublicGeographicRegionGroupObject = {
   featured_documents: Array<number>,
   key_documents: Array<number>,
   recent_documents: Array<number>,
+  upcoming_events: Array<number>,
 }
 
 export type PublicHubGroupObject = {
@@ -65,6 +67,7 @@ export type PublicHubGroupObject = {
   featured_documents: Array<number>,
   key_documents: Array<number>,
   recent_documents: Array<number>,
+  upcoming_events: Array<number>,
 }
 
 export type PublicStrategicAdvisoryGroupObject = {
@@ -81,6 +84,7 @@ export type PublicStrategicAdvisoryGroupObject = {
   featured_documents: Array<number>,
   key_documents: Array<number>,
   recent_documents: Array<number>,
+  upcoming_events: Array<number>,
 }
 
 export type PublicWorkingGroupObject = {
@@ -97,6 +101,7 @@ export type PublicWorkingGroupObject = {
   featured_documents: Array<number>,
   key_documents: Array<number>,
   recent_documents: Array<number>,
+  upcoming_events: Array<number>,
 }
 
 export type StubPlusGroupObject = {
@@ -146,6 +151,9 @@ export default class Group {
         ? group[key + '_documents'].map(id => ({type: "document", id: id}))
         : [])
     );
+
+    if (group.upcoming_events !== undefined)
+      ret.push(...group.upcoming_events.map(id => ({type: "event", id: id})));
 
     return ret;
   }

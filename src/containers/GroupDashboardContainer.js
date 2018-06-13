@@ -54,17 +54,19 @@ const mapStateToProps = (state, props) => {
       action: () => props.navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });
 
-  blocks.push({
-    title: 'Upcoming\nevents',
-    icon: 'calendar',
-    action: () => {},
-  });
+  if (group.upcoming_events.length > 0)
+    blocks.push({
+      title: 'Upcoming\nevents',
+      badge: group.upcoming_events.length,
+      icon: 'calendar',
+      action: () => props.navigation.push('EventList', {groupId: group.id}),
+    });
 
   if (group.latest_factsheet)
     blocks.push({
       title: 'Latest\nfactsheet',
       icon: 'bar-chart',
-      action: () => {},
+      action: () => props.navigation.push('Factsheet', {id: group.latest_factsheet}),
     });
 
   const ret = {

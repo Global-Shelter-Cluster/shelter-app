@@ -39,9 +39,10 @@ export default class Document {
   static getRelated(document: DocumentObject): Array<ObjectRequest> {
     const ret = [];
 
-    ret.push(...document.groups.map(id => ({type: "group", id: id})));
+    if (document.groups !== undefined)
+      ret.push(...document.groups.map(id => ({type: "group", id: id})));
 
-    if (document.publisher)
+    if (document.publisher !== undefined)
       ret.push({type: "user", id: document.publisher});
 
     return ret;
