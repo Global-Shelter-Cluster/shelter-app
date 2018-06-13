@@ -42,8 +42,8 @@ export default ({online, tab, global, user, changeTab}: {
   if (global.featured_groups.length === 0)
     delete tabs.featured;
 
-  if (!online)
-    tabs.search.disabledIcon = 'wifi';
+  // if (!online)
+  //   tabs.search.disabledIcon = 'wifi';
 
   return <View style={{flex: 1}}>
     <Tabs
