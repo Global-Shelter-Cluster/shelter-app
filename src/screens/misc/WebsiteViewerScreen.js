@@ -4,6 +4,7 @@ import React from 'react';
 import {FontAwesome} from '@expo/vector-icons';
 import {Text, WebView} from 'react-native';
 import NavTitleContainer from "../../containers/NavTitleContainer";
+import Loading from "../../components/Loading";
 
 type Props = {
   navigation: { setParams: ({}) => {} },
@@ -20,6 +21,6 @@ export default class WebsiteViewerScreen extends React.Component<Props> {
     if (url)
       return <WebView source={{uri: url}}/>;
     else
-      return <Text>Loading...</Text>;
+      return <Loading/>;
   }
 }

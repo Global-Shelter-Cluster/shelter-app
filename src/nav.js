@@ -10,11 +10,11 @@ import ExploreScreen from "./screens/group/ExploreScreen";
 import WebsiteViewerScreen from "./screens/misc/WebsiteViewerScreen";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "./vars";
-import TempBlankScreen from "./screens/TempBlankScreen";
+import TempBlankScreen from "./screens/misc/TempBlankScreen";
 import TempReportingScreen from "./screens/reporting/TempReportingScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
 import EventListScreen from "./screens/group/EventListScreen";
-import DocumentScreen from "./screens/document/DocumentScreen";
+import DocumentScreen from "./screens/view/DocumentScreen";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,

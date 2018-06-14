@@ -8,6 +8,7 @@ import type {FactsheetObject} from "../../model/factsheet";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import GroupDashboardContainer from "../../containers/GroupDashboardContainer";
+import Loading from "../../components/Loading";
 
 export default ({online, group, loaded, factsheet, refresh, loading, lastError}: {
   online: boolean,
@@ -24,7 +25,7 @@ export default ({online, group, loaded, factsheet, refresh, loading, lastError}:
       title="Error loading, please check your connection and try again"
     />;
   if (!loaded)
-    return <Text>Loading...</Text>;
+    return <Loading/>;
 
   return <ScrollView
     refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}

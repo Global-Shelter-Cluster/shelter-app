@@ -12,6 +12,7 @@ import Button from "../../components/Button";
 import vars from "../../vars";
 import HTML from 'react-native-render-html';
 import moment from "moment/moment";
+import Loading from "../../components/Loading";
 
 export default ({online, document, loaded, factsheet, refresh, loading, lastError, navigation}: {
   online: boolean,
@@ -28,7 +29,7 @@ export default ({online, document, loaded, factsheet, refresh, loading, lastErro
       title="Error loading, please check your connection and try again"
     />;
   if (!loaded)
-    return <Text>Loading...</Text>;
+    return <Loading/>;
 
   console.log('doc desc', document.description);
 
