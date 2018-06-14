@@ -10,12 +10,13 @@ import type {DocumentObject} from "../model/document";
 
 const mapStateToProps = (state, props) => {
   const document: DocumentObject = convertFiles(state, 'document', getObject(state, 'document', props.id));
+  const hasLink = state.flags.online || detailLevels[document._mode] >= detailLevels[OBJECT_MODE_PUBLIC];
 
-  return {
-    document: document,
-    link: state.flags.online || detailLevels[document._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
-    enter: (id: number) => props.navigation.push('Document', {documentId: id}),
-  };
+  const ret = {document};
+  if (hasLink)
+    ret.enter = (id: number) => props.navigation.push('Document', {documentId: id});
+
+  return ret;
 };
 
 export default withNavigation(connect(mapStateToProps)(DocumentListItem));

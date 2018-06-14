@@ -2,51 +2,29 @@
 
 import React from 'react';
 import {SectionList, StyleSheet, Text, View} from 'react-native';
-import type {PublicGroupObject} from "../model/group";
+import type {PublicDocumentObject} from "../model/document";
 import GroupListItemContainer from "../containers/GroupListItemContainer";
 import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemContainer";
 import Collapsible from "./Collapsible";
 import vars from "../vars";
 
-export default ({group}: { group: PublicGroupObject }) => {
-  if (!group.parent_region && !group.parent_response && !group.associated_regions)
+export default ({document}: { document: PublicDocumentObject }) => {
+  if (!document.groups)
     return null;
 
   let groupCount = 0;
-  if (group.parent_region)
-    groupCount++;
-  if (group.associated_regions)
-    groupCount += group.associated_regions.length;
-  if (group.parent_response)
-    groupCount++;
+  if (document.groups)
+    groupCount += document.groups.length;
 
   const sections: Array<{ title: string, data: Array<number> }> = [];
   let collapsibleTitle: React$Element<*> | null = null;
 
-  if (group.parent_region) {
-    sections.push({title: "In", data: [group.parent_region]});
+  if (document.groups) {
+    sections.push({title: "In", data: document.groups});
     if (!collapsibleTitle) {
       collapsibleTitle = <View style={styles.container}>
         <Text style={styles.sectionHeader}>In</Text>
-        <GroupListItemContainer display="text-only" id={group.parent_region} noLink/>
-      </View>;
-    }
-  } else if (group.associated_regions) {
-    sections.push({title: "In", data: group.associated_regions});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>In</Text>
-        <MultipleGroupListItemContainer ids={group.associated_regions}/>
-      </View>;
-    }
-  }
-
-  if (group.parent_response) {
-    sections.push({title: "Related to", data: [group.parent_response]});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Related to</Text>
-        <GroupListItemContainer display="text-only" id={group.parent_response} noLink/>
+        <MultipleGroupListItemContainer ids={document.groups}/>
       </View>;
     }
   }

@@ -10,6 +10,7 @@ import type {FactsheetObject} from "../../model/factsheet";
 import {clearLastError, loadObject} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
+import {convertFiles} from "../../model/file";
 
 type Props = {
   online: boolean,
@@ -23,7 +24,7 @@ type Props = {
 }
 
 const mapStateToProps = (state, props) => {
-  const group: PublicGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
+  const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', props.navigation.getParam('groupId')));
   const factsheet: FactsheetObject | null = group.latest_factsheet ? getObject(state, 'factsheet', group.latest_factsheet) : null;
 
   // if (factsheet)

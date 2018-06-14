@@ -30,6 +30,6 @@ export default ({online, group, loaded, factsheet, refresh, loading, lastError}:
     refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
   >
     <GroupContextualNavigation group={group}/>
-    <GroupDashboardContainer id={group.id}/>
+    <GroupDashboardContainer group={group}/>
   </ScrollView>;
 }

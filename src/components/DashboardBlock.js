@@ -5,13 +5,15 @@ import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
-const DashboardBlock = ({title, icon, badge, action, disabledIcon}: {
+export type DashboardBlockType = {
   title: string,
   icon: string,
   badge?: string,
-  action: () => {},
+  action?: () => {},
   disabledIcon?: string,
-}) => {
+};
+
+const DashboardBlock = ({title, icon, badge, action, disabledIcon}: DashboardBlockType) => {
   if (disabledIcon !== undefined)
     return <View style={[styles.container, styles.disabledContainer]}>
       <FontAwesome name={icon} size={40} style={[styles.icon, styles.disabled]}/>

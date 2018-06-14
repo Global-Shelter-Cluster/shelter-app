@@ -3,8 +3,9 @@
 import React from 'react';
 import {View} from 'react-native';
 import DashboardBlock from './DashboardBlock';
+import type {DashboardBlockType} from "./DashboardBlock";
 
-const GroupDashboard = ({blocks}: { blocks: Array<{ title: string, icon: string, action: () => {} }> }) => (
+const GroupDashboard = ({blocks}: { blocks: Array<DashboardBlockType> }) => (
   <View style={{
     flexDirection: "row",
     flexWrap: "wrap",

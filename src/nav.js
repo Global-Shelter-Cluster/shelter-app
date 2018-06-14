@@ -7,13 +7,14 @@ import DashboardScreen from "./screens/user/DashboardScreen";
 import EditScreen from "./screens/user/EditScreen";
 import GroupScreen from "./screens/group/GroupScreen";
 import ExploreScreen from "./screens/group/ExploreScreen";
-import WebsiteViewerScreen from "./screens/group/WebsiteViewerScreen";
+import WebsiteViewerScreen from "./screens/misc/WebsiteViewerScreen";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "./vars";
 import TempBlankScreen from "./screens/TempBlankScreen";
 import TempReportingScreen from "./screens/reporting/TempReportingScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
 import EventListScreen from "./screens/group/EventListScreen";
+import DocumentScreen from "./screens/document/DocumentScreen";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
@@ -24,6 +25,7 @@ const ExploreStack = createStackNavigator({
   Group: GroupScreen,
   WebsiteViewer: WebsiteViewerScreen,
   DocumentList: DocumentListScreen,
+  Document: DocumentScreen,
   EventList: EventListScreen,
 });
 const ChatStack = createSwitchNavigator({

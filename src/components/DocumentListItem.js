@@ -7,10 +7,9 @@ import type {DocumentObject} from "../model/document";
 import vars from "../vars";
 import {timeAgo} from "../util";
 
-export default ({document, link, enter}: {
+export default ({document, enter}: {
   document: DocumentObject,
-  link: boolean,
-  enter: (id: number) => {},
+  enter?: (id: number) => {},
 }) => {
   const preview = document.preview
     ? <Image key="preview" style={styles.preview} source={{uri: document.preview}}/>
@@ -24,7 +23,7 @@ export default ({document, link, enter}: {
     </View>,
   ];
 
-  return link
+  return enter !== undefined
     ? <TouchableOpacity
       style={styles.container}
       onPress={() => enter(document.id)}
