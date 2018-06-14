@@ -11,6 +11,7 @@ import Storage from "./storage_sqlite";
 import config from "../config";
 import clone from 'clone';
 import {GLOBAL_OBJECT_ID} from "../model/global";
+import {getExtension} from "../util";
 
 export type ObjectRequest = {
   type: ObjectType,
@@ -141,18 +142,6 @@ class Persist {
   }
 
   async saveFile(file: ObjectFileDescription) {
-    // return; // TODO: temporarily deactivate file caching
-
-    // getExtension() function adapted from https://stackoverflow.com/a/6997591/368864
-    const getExtension = url => (url = url
-      .substr(1 + url.lastIndexOf("/"))
-      .split('?')[0]).split('#')[0]
-      .substr(
-        url.lastIndexOf(".") === -1
-          ? Number.MAX_SAFE_INTEGER
-          : url.lastIndexOf(".")
-      );
-
     // 1. Download and save the file
     const localFilename = md5(file.url) + getExtension(file.url);
     const localUri = this.directory + '/' + localFilename;

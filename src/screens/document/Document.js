@@ -1,17 +1,19 @@
 // @flow
 
 import React from 'react';
-import {RefreshControl, ScrollView, Text, Linking} from 'react-native';
+import {Image, Linking, RefreshControl, ScrollView, Share, StyleSheet, Text, View} from 'react-native';
 import type {PublicDocumentObject} from "../../model/document";
 import DocumentContextualNavigation from "../../components/DocumentContextualNavigation";
+import DocumentActionsContainer from "../../containers/DocumentActionsContainer";
 import type {FactsheetObject} from "../../model/factsheet";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
-import Document from "../../components/Document";
 import Button from "../../components/Button";
 import vars from "../../vars";
+import HTML from 'react-native-render-html';
+import moment from "moment/moment";
 
-export default ({online, document, loaded, factsheet, refresh, loading, lastError}: {
+export default ({online, document, loaded, factsheet, refresh, loading, lastError, navigation}: {
   online: boolean,
   loading: boolean,
   document: PublicDocumentObject,
@@ -28,14 +30,49 @@ export default ({online, document, loaded, factsheet, refresh, loading, lastErro
   if (!loaded)
     return <Text>Loading...</Text>;
 
-  return <ScrollView
-    refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
-  >
-    <Text style={{fontSize: 20, fontWeight: "bold", margin: 10, color: vars.SHELTER_RED}}>{document.title}</Text>
-    <DocumentContextualNavigation document={document}/>
-    <Button primary title="View" onPress={() => {Linking.openURL(document.file)}}/>
-    <Button primary title="View map on iOS" onPress={() => {Linking.openURL("http://maps.apple.com/?ll=37.484847,-122.148386")}}/>
-    <Button primary title="View map" onPress={() => {Linking.openURL("geo:37.484847,-122.148386")}}/>
-    {/*<Document document={document}/>*/}
-  </ScrollView>;
+  console.log('doc desc', document.description);
+
+  return <View style={{flex: 1}}>
+    <ScrollView
+      style={{flex: 1}}
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
+    >
+      <Text style={styles.title}>{document.title}</Text>
+      <Text style={styles.secondary}>{moment(document.date).format('D MMM YYYY')}</Text>
+      <DocumentContextualNavigation document={document}/>
+      <View style={styles.info}>
+        {document.preview !== undefined && document.preview &&
+        <Image key="preview" style={styles.preview} source={{uri: document.preview}}/>}
+        {document.description !== undefined && document.description && <HTML html={document.description}/>}
+      </View>
+    </ScrollView>
+    <DocumentActionsContainer document={document}/>
+  </View>;
 }
+
+const styles = StyleSheet.create({
+  info: {
+    flexDirection: "row",
+    margin: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    margin: 10,
+    marginBottom: 0,
+    color: vars.SHELTER_RED,
+  },
+  secondary: {
+    color: vars.SHELTER_GREY,
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+  preview: {
+    width: 120,
+    height: 120,
+    resizeMode: "cover",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: vars.SHELTER_GREY,
+    marginRight: 10,
+  },
+});

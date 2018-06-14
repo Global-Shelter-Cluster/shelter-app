@@ -9,7 +9,7 @@ type Props = {
   navigation: { setParams: ({}) => {} },
 }
 
-class WebsiteViewerScreen extends React.Component<Props> {
+export default class WebsiteViewerScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => ({
     headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
   });
@@ -23,5 +23,3 @@ class WebsiteViewerScreen extends React.Component<Props> {
       return <Text>Loading...</Text>;
   }
 }
-
-export default WebsiteViewerScreen;

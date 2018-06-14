@@ -12,3 +12,13 @@ export const timeAgo = (date: string, limitDays: number = 7) => {
   else
     return moment(date).format('D MMM YYYY');
 };
+
+// getExtension() function adapted from https://stackoverflow.com/a/6997591/368864
+export const getExtension = url => (url = url
+  .substr(1 + url.lastIndexOf("/"))
+  .split('?')[0]).split('#')[0]
+  .substr(
+    url.lastIndexOf(".") === -1
+      ? Number.MAX_SAFE_INTEGER
+      : url.lastIndexOf(".")
+  ).toLowerCase();
