@@ -47,7 +47,7 @@ const SearchStack = createStackNavigator({
 const TabScreens = createBottomTabNavigator({
   Search: SearchStack,
   Explore: ExploreStack,
-  Chat: ChatStack,
+  // Chat: ChatStack, //TODO: hide this for now
   Reporting: ReportingStack,
   User: UserStack,
 }, {
