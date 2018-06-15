@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     margin: 10,
-    marginBottom: 0,
+    marginBottom: 5,
     color: vars.SHELTER_RED,
   },
   secondary: {
