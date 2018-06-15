@@ -8,8 +8,7 @@ import Dashboard from './Dashboard';
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
-import {GLOBAL_OBJECT_ID} from "../../model/global";
-import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
+import {clearLastError, loadCurrentUser} from "../../actions";
 
 type Props = {
   user: PrivateUserObject,
@@ -34,6 +33,10 @@ class DashboardScreen extends React.Component<Props> {
     headerTitle: <NavTitleContainer title="Dashboard"/>,
     headerRight: <LogoutNavButtonContainer/>,
   };
+
+  componentWillMount() {
+    // this.props.navigation.push('Event', {eventId: 9671}); //TODO: temporary!! redirects to an arbitrary screen, useful for development
+  }
 
   render() {
     return <Dashboard {...this.props}/>;

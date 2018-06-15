@@ -15,6 +15,7 @@ import TempReportingScreen from "./screens/reporting/TempReportingScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
 import EventListScreen from "./screens/group/EventListScreen";
 import DocumentScreen from "./screens/view/DocumentScreen";
+import EventScreen from "./screens/view/EventScreen";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
@@ -27,6 +28,7 @@ const ExploreStack = createStackNavigator({
   DocumentList: DocumentListScreen,
   Document: DocumentScreen,
   EventList: EventListScreen,
+  Event: EventScreen,
 });
 const ChatStack = createSwitchNavigator({
   Chat: TempBlankScreen,
@@ -70,7 +72,6 @@ const TabScreens = createBottomTabNavigator({
       inactiveTintColor: vars.MEDIUM_GREY,
     },
   }),
-  initialRouteName2: 'User',
 });
 
 const MainNavigator = createSwitchNavigator(

@@ -2,10 +2,10 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import type {PublicDocumentObject} from "../../model/document";
+import type {PublicEventObject} from "../../model/event";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
-import Document from './Document';
+import Event from './Event';
 import {clearLastError, loadObject} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
@@ -14,7 +14,7 @@ import {convertFiles} from "../../model/file";
 type Props = {
   online: boolean,
   loading: boolean,
-  document: PublicDocumentObject,
+  event: PublicEventObject,
   loaded: boolean,
   navigation: { setParams: ({}) => {}, getParam: (string) => string },
   refresh: () => {},
@@ -22,27 +22,27 @@ type Props = {
 }
 
 const mapStateToProps = (state, props) => {
-  const document: PublicDocumentObject = convertFiles(state, 'document', getObject(state, 'document', props.navigation.getParam('documentId')));
+  const event: PublicEventObject = convertFiles(state, 'event', getObject(state, 'event', props.navigation.getParam('eventId')));
 
   return {
     online: state.flags.online,
     loading: state.flags.loading,
     lastError: state.lastError,
-    document: document,
-    loaded: detailLevels[document._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
+    event: event,
+    loaded: detailLevels[event._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
   };
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
   refresh: () => {
     dispatch(clearLastError());
-    dispatch(loadObject('document', props.navigation.getParam('documentId'), false, true));
+    dispatch(loadObject('event', props.navigation.getParam('eventId'), false, true));
   },
 });
 
-class DocumentScreen extends React.Component<Props> {
+class EventScreen extends React.Component<Props> {
   static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Document"/>,
+    headerTitle: <NavTitleContainer title="Event"/>,
   };
 
   componentWillMount() {
@@ -51,8 +51,8 @@ class DocumentScreen extends React.Component<Props> {
   }
 
   render() {
-    return <Document {...this.props}/>;
+    return <Event {...this.props}/>;
   }
 }
 
-export default DocumentScreen = connect(mapStateToProps, mapDispatchToProps)(DocumentScreen);
+export default EventScreen = connect(mapStateToProps, mapDispatchToProps)(EventScreen);

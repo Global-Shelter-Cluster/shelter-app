@@ -141,9 +141,20 @@ class Persist {
       setTimeout(() => this.store.dispatch(downloadFiles(files)), 1000);
   }
 
+  generateLocalFilename(url: string): string {
+    let extension = getExtension(url);
+
+    console.log(url, extension);
+    if (!extension && /^https?:\/\/maps\.googleapis\.com\/maps\/api\/staticmap/.test(url))
+      extension = '.png';
+    console.log(url, extension);
+
+    return md5(url) + extension;
+  }
+
   async saveFile(file: ObjectFileDescription) {
     // 1. Download and save the file
-    const localFilename = md5(file.url) + getExtension(file.url);
+    const localFilename = this.generateLocalFilename(file.url);
     const localUri = this.directory + '/' + localFilename;
 
     let fileInfo = await FileSystem.getInfoAsync(localUri);

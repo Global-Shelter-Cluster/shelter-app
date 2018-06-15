@@ -7,24 +7,25 @@ import GroupListItemContainer from "../containers/GroupListItemContainer";
 import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemContainer";
 import Collapsible from "./Collapsible";
 import vars from "../vars";
+import type {PublicEventObject} from "../model/event";
 
-export default ({document}: { document: PublicDocumentObject }) => {
-  if (!document.groups)
+export default ({object}: { object: PublicDocumentObject | PublicEventObject }) => {
+  if (!object.groups)
     return null;
 
   let groupCount = 0;
-  if (document.groups)
-    groupCount += document.groups.length;
+  if (object.groups)
+    groupCount += object.groups.length;
 
   const sections: Array<{ title: string, data: Array<number> }> = [];
   let collapsibleTitle: React$Element<*> | null = null;
 
-  if (document.groups) {
-    sections.push({title: "In", data: document.groups});
+  if (object.groups) {
+    sections.push({title: "In", data: object.groups});
     if (!collapsibleTitle) {
       collapsibleTitle = <View style={styles.container}>
         <Text style={styles.sectionHeader}>In</Text>
-        <MultipleGroupListItemContainer ids={document.groups}/>
+        <MultipleGroupListItemContainer ids={object.groups}/>
       </View>;
     }
   }

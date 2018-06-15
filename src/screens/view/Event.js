@@ -2,9 +2,9 @@
 
 import React from 'react';
 import {Image, Linking, RefreshControl, ScrollView, Share, StyleSheet, Text, View} from 'react-native';
-import type {PublicDocumentObject} from "../../model/document";
+import type {PublicEventObject} from "../../model/event";
 import ContextualNavigation from "../../components/ContextualNavigation";
-import DocumentActionsContainer from "../../containers/DocumentActionsContainer";
+import EventActionsContainer from "../../containers/EventActionsContainer";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import Button from "../../components/Button";
@@ -13,15 +13,15 @@ import HTML from 'react-native-render-html';
 import moment from "moment/moment";
 import Loading from "../../components/Loading";
 
-export default ({online, document, loaded, refresh, loading, lastError}: {
+export default ({online, event, loaded, refresh, loading, lastError}: {
   online: boolean,
   loading: boolean,
-  document: PublicDocumentObject,
+  event: PublicEventObject,
   loaded: boolean,
   refresh: () => {},
   lastError: lastErrorType,
 }) => {
-  if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'document', id: document.id}}))
+  if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'event', id: event.id}}))
     return <Button
       onPress={refresh}
       title="Error loading, please check your connection and try again"
@@ -29,27 +29,29 @@ export default ({online, document, loaded, refresh, loading, lastError}: {
   if (!loaded)
     return <Loading/>;
 
-  console.log('doc desc', document.description);
+  // console.log('event map', event.map);
 
   return <View style={{flex: 1}}>
     <ScrollView
       style={{flex: 1}}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     >
-      <Text style={styles.title}>{document.title}</Text>
-      <Text style={styles.secondary}>{moment(document.date).format('D MMM YYYY')}</Text>
-      <ContextualNavigation object={document}/>
+      <Text style={styles.title}>{event.title}</Text>
+      <Text style={styles.secondary}>{moment(event.date).format('D MMM YYYY, h:mm a')}</Text>
+      <ContextualNavigation object={event}/>
       <View style={styles.info}>
-        {document.preview !== undefined && document.preview &&
-        <Image key="preview" style={styles.preview} source={{uri: document.preview}}/>}
         <View style={{flex: 1}}>
-          {document.description !== undefined && document.description && <HTML html={document.description}/>}
+          {event.address !== undefined && event.address && <HTML html={event.address}/>}
         </View>
+        {event.map !== undefined && event.map &&
+        <Image key="map" style={styles.map} source={{uri: event.map}}/>}
+      </View>
+      <View style={{margin: 10}}>
+        {event.description !== undefined && event.description && <HTML html={event.description}/>}
       </View>
     </ScrollView>
-    <DocumentActionsContainer document={document}/>
-  </View>
-    ;
+    <EventActionsContainer event={event}/>
+  </View>;
 }
 
 const styles = StyleSheet.create({
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     margin: 10,
-    marginBottom: 5,
+    marginBottom: 0,
     color: vars.SHELTER_RED,
   },
   secondary: {
@@ -69,12 +71,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginBottom: 10,
   },
-  preview: {
+  map: {
     width: 120,
     height: 120,
     resizeMode: "cover",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: vars.SHELTER_GREY,
-    marginRight: 10,
+    marginLeft: 10,
   },
 });
