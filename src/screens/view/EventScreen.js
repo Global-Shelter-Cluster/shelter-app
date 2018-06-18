@@ -4,7 +4,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import type {PublicEventObject} from "../../model/event";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
-import {FontAwesome} from '@expo/vector-icons';
 import Event from './Event';
 import {clearLastError, loadObject} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";

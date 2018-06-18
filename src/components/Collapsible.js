@@ -1,13 +1,14 @@
 // @flow
 
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 
 type Props = {
-  title: React$Element<*> | null,
-  hideTitleWhenOpen?: boolean,
+  title: React$Element<*> | string | null,
+  hideTitleWhenOpen?: true,
+  separatorAndMargins?: true,
   children: React$Element<*>,
 }
 
@@ -34,37 +35,56 @@ export default class Collapsible extends React.Component<Props, State> {
       activeOpacity: 1,
     };
 
+    const title = typeof this.props.title === 'string'
+      ? <Text style={styles.textTitle}>{this.props.title}</Text>
+      : this.props.title;
+
     if (this.state.open) {
       if (this.props.hideTitleWhenOpen)
-        return <View style={{flexDirection: "row"}}>
+        return <View style={[{flexDirection: "row"}, this.props.separatorAndMargins ? styles.border : null]}>
           <TouchableOpacity {...buttonProps}>
             {icon}
           </TouchableOpacity>
-          <View style={{flex: 1}}>
+          <View style={[{flex: 1}, this.props.separatorAndMargins ? styles.contentMargin : null]}>
             {this.props.children}
           </View>
         </View>;
       else
-        return <View>
+        return <View style={this.props.separatorAndMargins ? styles.border : null}>
           <TouchableOpacity style={{flexDirection: "row"}} {...buttonProps}>
             {icon}
             <View style={{flex: 1}}>
-              {this.props.title}
+              {title}
             </View>
           </TouchableOpacity>
-          <View>
+          <View style={this.props.separatorAndMargins ? styles.contentMargin : null}>
             {this.props.children}
           </View>
         </View>;
     } else {
-      return <View>
+      return <View style={this.props.separatorAndMargins ? styles.border : null}>
         <TouchableOpacity style={{flexDirection: "row"}} {...buttonProps}>
           {icon}
           <View style={{flex: 1}}>
-            {this.props.title}
+            {title}
           </View>
         </TouchableOpacity>
       </View>;
     }
   }
 }
+
+const styles = StyleSheet.create({
+  border: {
+    borderColor: vars.LIGHT_GREY,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  textTitle: {
+    padding: 10,
+    fontSize: 18,
+  },
+  contentMargin: {
+    margin: 10,
+    marginLeft: 40,
+  },
+});

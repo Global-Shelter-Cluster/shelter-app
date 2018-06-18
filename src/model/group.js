@@ -31,10 +31,10 @@ export type PublicResponseGroupObject = {
   associated_regions?: Array<number>,
   parent_response?: number,
   latest_factsheet?: number,
-  featured_documents: Array<number>,
-  key_documents: Array<number>,
-  recent_documents: Array<number>,
-  upcoming_events: Array<number>,
+  featured_documents?: Array<number>,
+  key_documents?: Array<number>,
+  recent_documents?: Array<number>,
+  upcoming_events?: Array<number>,
 }
 
 export type PublicGeographicRegionGroupObject = {

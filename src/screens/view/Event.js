@@ -29,8 +29,6 @@ export default ({online, event, loaded, refresh, loading, lastError}: {
   if (!loaded)
     return <Loading/>;
 
-  // console.log('event map', event.map);
-
   return <View style={{flex: 1}}>
     <ScrollView
       style={{flex: 1}}
@@ -63,7 +61,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     margin: 10,
-    marginBottom: 0,
+    marginBottom: 5,
     color: vars.SHELTER_RED,
   },
   secondary: {

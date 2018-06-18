@@ -35,7 +35,7 @@ class DashboardScreen extends React.Component<Props> {
   };
 
   componentWillMount() {
-    // this.props.navigation.push('Event', {eventId: 9671}); //TODO: temporary!! redirects to an arbitrary screen, useful for development
+    // this.props.navigation.push('Factsheet', {factsheetId: 13449}); //TODO: temporary!! redirects to an arbitrary screen, useful for development
   }
 
   render() {

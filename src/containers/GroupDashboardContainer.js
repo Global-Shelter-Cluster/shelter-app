@@ -31,26 +31,26 @@ const mapStateToProps = (state, {group, navigation}) => {
       icon: 'file-o',
       action: () => navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });
-  else if (group.featured_documents.length > 0)
+  else if (group.featured_documents && group.featured_documents.length > 0)
     blocks.push({
       title: 'Featured\ndocuments',
       icon: 'file-o',
       action: () => navigation.push('DocumentList', {groupId: group.id, which: "featured"}),
     });
-  else if (group.key_documents.length > 0)
+  else if (group.key_documents && group.key_documents.length > 0)
     blocks.push({
       title: 'Key\ndocuments',
       icon: 'file-o',
       action: () => navigation.push('DocumentList', {groupId: group.id, which: "key"}),
     });
-  else if (group.recent_documents.length > 0)
+  else if (group.recent_documents && group.recent_documents.length > 0)
     blocks.push({
       title: 'Documents',
       icon: 'file-o',
       action: () => navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });
 
-  if (group.upcoming_events.length > 0)
+  if (group.upcoming_events && group.upcoming_events.length > 0)
     blocks.push({
       title: 'Upcoming\nevents',
       badge: group.upcoming_events.length,
@@ -62,7 +62,7 @@ const mapStateToProps = (state, {group, navigation}) => {
     blocks.push({
       title: 'Latest\nfactsheet',
       icon: 'bar-chart',
-      action: () => navigation.push('Factsheet', {id: group.latest_factsheet}),
+      action: () => navigation.push('Factsheet', {factsheetId: group.latest_factsheet}),
     });
 
   return {
@@ -71,4 +71,4 @@ const mapStateToProps = (state, {group, navigation}) => {
   };
 };
 
-export default withNavigation(connect(mapStateToProps)(GroupDashboard));
+export default GroupDashboardContainer = withNavigation(connect(mapStateToProps)(GroupDashboard));

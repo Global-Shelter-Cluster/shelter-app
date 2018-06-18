@@ -18,12 +18,12 @@ class Storage {
     this.db = websql(dbRaw);
 
     await this.db.transaction(tx => {
-      tx.executeSql(
-          `CREATE TABLE IF NOT EXISTS items (
-            k text primary key not null,
-            v text             not null
-          );`
-      );
+      tx.executeSql(`
+        CREATE TABLE IF NOT EXISTS items (
+          k text primary key not null,
+          v text             not null
+        );
+      `);
     });
 
     this.initialized = true;
@@ -34,11 +34,11 @@ class Storage {
     await this.init();
 
     const results = await this.db.transaction(tx => {
-      tx.executeSql(
-          `SELECT v
-           FROM items
-           WHERE k = ?;`,
-        [key]
+      tx.executeSql(`
+          SELECT v
+          FROM items
+          WHERE k = ?;
+        `, [key]
       );
     });
 
@@ -51,16 +51,16 @@ class Storage {
   async setItem(key: string, value: string) {
     await this.init();
 
-    const temp = await this.db.transaction(tx => {
-      tx.executeSql(
-          `DELETE FROM items
-          WHERE k = ?;`,
-        [key]
+    await this.db.transaction(tx => {
+      tx.executeSql(`
+          DELETE FROM items
+          WHERE k = ?;
+        `, [key]
       );
-      tx.executeSql(
-          `INSERT INTO items (k, v)
-          VALUES (?, ?);`,
-        [key, value]
+      tx.executeSql(`
+          INSERT INTO items (k, v)
+          VALUES (?, ?);
+        `, [key, value]
       );
     });
   }
@@ -73,11 +73,11 @@ class Storage {
 
     const results = await this.db.transaction(tx => {
       const placeholders = ",?".repeat(keys.length).substr(1);
-      tx.executeSql(
-        `SELECT *
-           FROM items
-           WHERE k IN (${placeholders});`,
-        keys
+      tx.executeSql(`
+          SELECT *
+          FROM items
+          WHERE k IN(${placeholders});
+        `, keys
       );
     });
 
@@ -90,12 +90,26 @@ class Storage {
   }
 
   async multiSet(data: Array<[string, string]>) {
-    // const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    await this.init();
 
-    // TODO: each setItem takes time, so build better queries (do this in batches)
-    data.map(async tuple => {
-      // await timeout(50);
-      this.setItem(tuple[0], tuple[1]);
+    await this.db.transaction(tx => {
+      const deletePlaceholders = ",?".repeat(data.length).substr(1);
+      const keys = data.map(tuple => tuple[0]);
+
+      tx.executeSql(`
+          DELETE FROM items
+          WHERE k IN (${deletePlaceholders});
+        `, keys
+      );
+
+      const placeholders = ",(?, ?)".repeat(data.length).substr(1);
+      const values = data.reduce((a, b) => [...a, ...b], []); // "flatten"
+
+      tx.executeSql(`
+          INSERT INTO items(k, v)
+          VALUES ${placeholders};
+        `, values
+      );
     });
   }
 
@@ -103,7 +117,9 @@ class Storage {
     await this.init();
 
     await this.db.transaction(tx => {
-      tx.executeSql(`DELETE FROM items;`);
+      tx.executeSql(`
+        DELETE FROM items;
+      `);
     });
   }
 }

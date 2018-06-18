@@ -8,8 +8,9 @@ import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemC
 import Collapsible from "./Collapsible";
 import vars from "../vars";
 import type {PublicEventObject} from "../model/event";
+import type {PublicFactsheetObject} from "../model/factsheet";
 
-export default ({object}: { object: PublicDocumentObject | PublicEventObject }) => {
+export default ContextualNavigation = ({object}: { object: PublicDocumentObject | PublicEventObject | PublicFactsheetObject }) => {
   if (!object.groups)
     return null;
 

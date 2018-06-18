@@ -8,7 +8,7 @@ import SingleLineText from "./SingleLineText";
 
 export default ({onPress, primary, title, icon, disabledIcon}: {
   onPress?: () => {},
-  primary: boolean,
+  primary?: boolean,
   title: string,
   icon?: string,
   disabledIcon?: string,
