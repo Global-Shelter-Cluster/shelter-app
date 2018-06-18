@@ -7,30 +7,35 @@ import vars from "../vars";
 
 const image = require("../../assets/logo-dim.png");
 
-export default Loading = () => {
+export default class Loading extends React.Component {
+  shouldComponentUpdate() {
+    return false;
+  }
 
-  const spinValue = new Animated.Value(0)
+  render() {
+    const spinValue = new Animated.Value(0);
 
-  Animated.loop(Animated.timing(spinValue, {
-    toValue: 1,
-    duration: 3000,
-    easing: Easing.linear,
-    useNativeDriver: true,
-  })).start();
+    Animated.loop(Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 3000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    })).start();
 
-  const spin = spinValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
+    const spin = spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg'],
+    });
 
-  return <View style={styles.container}>
-    <ImageBackground style={styles.image} source={image}>
-      <Animated.View style={{transform: [{rotate: spin}]}}>
-        <FontAwesome name={"refresh"} size={80} color={vars.LIGHT_GREY}/>
-      </Animated.View>
-    </ImageBackground>
-    <Text style={styles.label}>Loading...</Text>
-  </View>;
+    return <View style={styles.container}>
+      <ImageBackground style={styles.image} source={image}>
+        <Animated.View style={{transform: [{rotate: spin}]}}>
+          <FontAwesome name={"refresh"} size={80} color={vars.LIGHT_GREY}/>
+        </Animated.View>
+      </ImageBackground>
+      <Text style={styles.label}>Loading...</Text>
+    </View>;
+  }
 }
 
 const styles = StyleSheet.create({
