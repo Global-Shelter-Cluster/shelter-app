@@ -90,6 +90,9 @@ class Storage {
   }
 
   async multiSet(data: Array<[string, string]>) {
+    if (data.length === 0)
+      return;
+
     await this.init();
 
     await this.db.transaction(tx => {
