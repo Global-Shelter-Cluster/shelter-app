@@ -31,10 +31,11 @@ const axios = axiosLib.create({
  * Is not allowed to talk to the redux store or the app itself.
  */
 class Remote {
-  async request(path: string, data) {
+  async request(path: string, data = null) {
     console.debug('Axios request', path, data);
     try {
-      const response = await axios.post(path, JSON.stringify(data), config.axiosExtra);
+      data = data ? JSON.stringify(data) : null;
+      const response = await axios.post(path, data, config.axiosExtra);
       console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
       return response.data;
     } catch (e) {
@@ -49,6 +50,10 @@ class Remote {
 
   async loadObjects(requests: Array<ObjectRequest>): Objects {
     return this.request('/get-objects', requests);
+  }
+
+  async followGroup(id: number): Objects {
+    return this.request('/follow/' + id);
   }
 }
 

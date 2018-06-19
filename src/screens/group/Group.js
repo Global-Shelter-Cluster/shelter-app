@@ -10,13 +10,15 @@ import type {lastErrorType} from "../../reducers/lastError";
 import GroupDashboardContainer from "../../containers/GroupDashboardContainer";
 import Loading from "../../components/Loading";
 
-export default ({online, group, loaded, factsheet, refresh, loading, lastError}: {
+export default ({online, group, loaded, factsheet, refresh, follow, unfollow, loading, lastError}: {
   online: boolean,
   loading: boolean,
   group: PublicGroupObject,
   loaded: boolean,
   factsheet?: FactsheetObject,
   refresh: () => {},
+  follow: () => {},
+  unfollow: () => {},
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'group', id: group.id}}))
@@ -31,6 +33,6 @@ export default ({online, group, loaded, factsheet, refresh, loading, lastError}:
     refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
   >
     <GroupContextualNavigation group={group}/>
-    <GroupDashboardContainer group={group}/>
+    <GroupDashboardContainer group={group} follow={follow} unfollow={unfollow}/>
   </ScrollView>;
 }

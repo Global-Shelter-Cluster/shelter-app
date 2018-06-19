@@ -2,12 +2,32 @@
 
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
-import {getRecentDocumentsCount} from "../model/group";
+import {getRecentDocumentsCount, isFollowing} from "../model/group";
 import GroupDashboard from "../components/GroupDashboard";
 import type {DashboardBlockType} from "../components/DashboardBlock";
+import {getCurrentUser} from "../model/user";
 
-const mapStateToProps = (state, {group, navigation}) => {
+const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
   const blocks: Array<DashboardBlockType> = [];
+
+  if (isFollowing(state, group.id))
+    blocks.push({
+      title: 'Un-follow this\n' + group.type.replace('_', ' '),
+      icon: 'sign-out',
+      action: unfollow,
+    });
+  else if (getCurrentUser(state).groups !== undefined && getCurrentUser(state).groups.length >= 5)
+    blocks.push({
+      title: 'Can\'t follow\n(too many)',
+      icon: 'sign-in',
+      disabledIcon: 'ban',
+    });
+  else
+    blocks.push({
+      title: 'Follow this\n' + group.type.replace('_', ' '),
+      icon: 'sign-in',
+      action: follow,
+    });
 
   if (state.flags.online)
     blocks.push({

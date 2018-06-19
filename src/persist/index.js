@@ -1,6 +1,6 @@
 // @flow
 
-import {downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
+import {clearAllObjects, downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects, ObjectType} from "../model";
@@ -12,6 +12,8 @@ import config from "../config";
 import clone from 'clone';
 import {GLOBAL_OBJECT_ID} from "../model/global";
 import {getExtension} from "../util";
+import type {PrivateUserObject} from "../model/user";
+import {getCurrentUser} from "../model/user";
 
 export type ObjectRequest = {
   type: ObjectType,
@@ -234,6 +236,42 @@ class Persist {
 
     // No private user returned, something's wrong
     throw new Error("No user returned by login call")
+  }
+
+  async followGroup(id: number) {
+    // Remote returns the group and related objects
+    const objects = await this.remote.followGroup(id);
+
+    const user: PrivateUserObject = clone(getCurrentUser(this.store.getState()));
+    if (user.groups === undefined)
+      user.groups = [];
+    user.groups.push(id);
+    if (objects.user === undefined)
+      objects.user = {};
+    objects.user[user.id] = user;
+
+    // Save everything we received
+    this.updateLastRead(objects);
+    this.saveObjects(objects);
+    this.dispatchObjects(objects);
+  }
+
+  async unfollowGroup(id: number) {
+    throw new Error('Not implemented yet');
+
+    // Remote returns the user and related objects, same as login, so, until we have a better solution, we just delete
+    // all objects and save the ones we receive here.
+    const objects = await this.remote.unfollowGroup(id);
+
+    // Delete every object in the store (memory)...
+    this.store.dispatch(clearAllObjects());
+    // ...and also in permanent storage.
+    Storage.clear();
+
+    // Save everything we received (includes the user object)
+    this.updateLastRead(objects);
+    this.saveObjects(objects);
+    this.dispatchObjects(objects);
   }
 
   async dispatchObject(type: ObjectType, id: number, object: {}) {

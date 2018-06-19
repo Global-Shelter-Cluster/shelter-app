@@ -4,10 +4,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import type {PublicGroupObject} from "../../model/group";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
-import {FontAwesome} from '@expo/vector-icons';
 import Group from './Group';
 import type {FactsheetObject} from "../../model/factsheet";
-import {clearLastError, loadObject} from "../../actions";
+import {clearLastError, followGroup, loadObject, unfollowGroup} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
@@ -21,17 +20,14 @@ type Props = {
   factsheet: FactsheetObject,
   navigation: { setParams: ({}) => {}, getParam: (string) => string },
   refresh: () => {},
+  follow: () => {},
+  unfollow: () => {},
   lastError: lastErrorType,
 }
 
 const mapStateToProps = (state, props) => {
   const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', props.navigation.getParam('groupId')));
   const factsheet: FactsheetObject | null = group.latest_factsheet ? getObject(state, 'factsheet', group.latest_factsheet) : null;
-
-  // if (factsheet)
-  //   FileSystem.getInfoAsync(factsheet.image).then(info => {
-  //     console.log('CAM fs', factsheet, info);
-  //   });
 
   return {
     online: state.flags.online,
@@ -53,6 +49,12 @@ const mapDispatchToProps = (dispatch, props) => ({
     //   console.log('refresh err', e);
     // }
     // return action;
+  },
+  follow: () => {
+    dispatch(followGroup(props.navigation.getParam('groupId')));
+  },
+  unfollow: () => {
+    dispatch(unfollowGroup(props.navigation.getParam('groupId')));
   },
 });
 

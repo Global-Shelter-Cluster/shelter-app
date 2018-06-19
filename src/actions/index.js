@@ -65,6 +65,26 @@ export const loadCurrentUser = (recursive: boolean, forceRemoteLoad: boolean) =>
   dispatch(changeFlag('loading', false));
 };
 
+export const followGroup = (id: number) => async dispatch => {
+  // dispatch(changeFlag('loading', true));
+  try {
+    await persist.followGroup(id);
+  } catch (e) {
+    dispatch(setLastError('object-load', {type: 'group', id: id}));
+  }
+  // dispatch(changeFlag('loading', false));
+};
+
+export const unfollowGroup = (id: number) => async dispatch => {
+  // dispatch(changeFlag('loading', true));
+  try {
+    await persist.unfollowGroup(id);
+  } catch (e) {
+    dispatch(setLastError('object-load', {type: 'group', id: id}));
+  }
+  // dispatch(changeFlag('loading', false));
+};
+
 export const SET_LAST_ERROR = 'SET_LAST_ERROR';
 export const setLastError = (type: string, data: {}) => ({
   type: SET_LAST_ERROR,

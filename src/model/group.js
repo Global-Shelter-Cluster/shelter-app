@@ -4,12 +4,15 @@ import type {ObjectRequest} from "../persist";
 import {getObject} from "./index";
 import moment from 'moment';
 import createCachedSelector from 're-reselect';
+import {getCurrentUser} from "./user";
+
+type GroupType = "response" | "geographic_region" | "hub" | "strategic_advisory" | "working_group";
 
 // export type PrivateGroupObject = {
 //   _last_read?: number,
 //   _mode: "private",
 //   _persist?: true,
-//   type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
+//   type: GroupType,
 //   id: number,
 //   title: string,
 //   associated_regions: Array<number>,
@@ -41,7 +44,7 @@ export type PublicGeographicRegionGroupObject = {
   _last_read?: number,
   _mode: "public",
   _persist?: true,
-  type: "geographic-region",
+  type: "geographic_region",
   id: number,
   title: string,
   url: string,
@@ -74,7 +77,7 @@ export type PublicStrategicAdvisoryGroupObject = {
   _last_read?: number,
   _mode: "public",
   _persist?: true,
-  type: "strategic-advisory",
+  type: "strategic_advisory",
   id: number,
   title: string,
   url: string,
@@ -91,7 +94,7 @@ export type PublicWorkingGroupObject = {
   _last_read?: number,
   _mode: "public",
   _persist?: true,
-  type: "working-group",
+  type: "working_group",
   id: number,
   title: string,
   url: string,
@@ -108,7 +111,7 @@ export type StubPlusGroupObject = {
   _last_read?: number,
   _mode: "stubplus",
   _persist?: true,
-  type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
+  type: GroupType,
   id: number,
   title: string,
   latest_factsheet?: number,
@@ -118,7 +121,7 @@ export type StubGroupObject = {
   _last_read?: number,
   _mode: "stub",
   _persist?: true,
-  type: "response" | "geographic-region" | "hub" | "strategic-advisory" | "working-group",
+  type: GroupType,
   id: number,
   title: string,
 }
@@ -178,3 +181,16 @@ export const getRecentDocumentsCount = createCachedSelector(
       : 0
   }
 )((state, groupId) => [groupId, moment().format('YYYY-MM-DD')].join(':')); // e.g. "12345:2018-06-08"
+
+export const isFollowing = createCachedSelector(
+  state => getCurrentUser(state),
+  (state, groupId) => groupId,
+  (user, groupId) => {
+    if (user.groups === undefined)
+      return false;
+    for (const id of user.groups)
+      if (id === groupId)
+        return true;
+    return false;
+  }
+)((state, groupId) => groupId);
