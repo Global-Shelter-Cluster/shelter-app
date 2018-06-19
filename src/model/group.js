@@ -166,14 +166,16 @@ export default class Group {
 const RECENT_DOCS_MAX_DAYS = 7; // how many days ago are docs still considered "recent"
 
 export const getRecentDocumentsCount = createCachedSelector(
-  (state, id) => state,
-  (state, id) => id,
-  () => moment(),
-  (state, id, now) => state.objects.group[id].recent_documents !== undefined
-    ? state.objects.group[id]
-      .recent_documents
-      .map(id => getObject(state, 'document', id))
-      .filter(d => d && now.diff(d.changed, 'days') <= RECENT_DOCS_MAX_DAYS)
-      .length
-    : 0
-)((state, id) => moment().format('YYYY-MM-DD')); // e.g. "2018-06-08"
+  state => state,
+  (state, groupId) => groupId,
+  (state, groupId) => {
+    const now = moment();
+    console.log('CAM running');
+    return state.objects.group[groupId].recent_documents !== undefined
+      ? state.objects.group[groupId].recent_documents
+        .map(id => getObject(state, 'document', id))
+        .filter(d => d && now.diff(d.date, 'days') <= RECENT_DOCS_MAX_DAYS)
+        .length
+      : 0
+  }
+)((state, groupId) => [groupId, moment().format('YYYY-MM-DD')].join(':')); // e.g. "2018-06-08"
