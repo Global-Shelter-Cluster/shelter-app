@@ -13,7 +13,7 @@ export type PrivateUserObject = {
   picture: string,
   org: string,
   role: string,
-  groups: Array<number>,
+  groups?: Array<number>,
 }
 
 export type PublicUserObject = {

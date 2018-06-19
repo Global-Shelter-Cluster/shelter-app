@@ -22,9 +22,28 @@ export default ({online, loading, tab, global, user, changeTab, refreshGlobal, r
 }) => {
   let ids: Array<number> = [];
 
+  const tabs: tabsDefinition = {
+    "followed": {label: "Followed"},
+    "featured": {label: "Featured"},
+    // "search": {label: "Search"},
+  };
+
+  if (user.groups === undefined || user.groups.length === 0) {
+    delete tabs.followed;
+    if (tab === 'followed')
+      tab = 'featured';
+  }
+  if (global.featured_groups.length === 0) {
+    delete tabs.featured;
+    if (tab === 'featured')
+      tab = 'followed';
+  }
+  // if (!online)
+  //   tabs.search.disabledIcon = 'wifi';
+
   switch (tab) {
     case "followed":
-      ids = user.groups;
+      ids = user.groups !== undefined ? user.groups : [];
       break;
     case "featured":
       ids = global.featured_groups;
@@ -33,20 +52,6 @@ export default ({online, loading, tab, global, user, changeTab, refreshGlobal, r
     //   ids = group.key_documents;
     //   break;
   }
-
-  const tabs: tabsDefinition = {
-    "followed": {label: "Followed"},
-    "featured": {label: "Featured"},
-    // "search": {label: "Search"},
-  };
-
-  if (user.groups.length === 0)
-    delete tabs.recent;
-  if (global.featured_groups.length === 0)
-    delete tabs.featured;
-
-  // if (!online)
-  //   tabs.search.disabledIcon = 'wifi';
 
   let list = null;
 

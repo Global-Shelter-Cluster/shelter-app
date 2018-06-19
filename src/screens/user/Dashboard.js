@@ -14,11 +14,11 @@ export default ({user, loading, refreshUser}: {
 }) => (
   <View style={{flex: 1}}>
     <UserContainer user={user} showEdit={true}/>
-    <FlatList
+    {user.groups !== undefined && <FlatList
       data={user.groups.map(id => ({key: '' + id, id: id}))}
       renderItem={({item}) => <GroupListItemContainer display="full" id={item.id}/>}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
-    />
+    />}
     <TestContainer/>
   </View>
 );
