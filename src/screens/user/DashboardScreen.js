@@ -5,10 +5,10 @@ import {connect} from 'react-redux';
 import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import Dashboard from './Dashboard';
-import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
 import {clearLastError, loadCurrentUser} from "../../actions";
+import {propEqual} from "../../util";
 
 type Props = {
   user: PrivateUserObject,
@@ -33,6 +33,10 @@ class DashboardScreen extends React.Component<Props> {
     headerTitle: <NavTitleContainer title="Dashboard"/>,
     headerRight: <LogoutNavButtonContainer/>,
   };
+
+  shouldComponentUpdate(nextProps) {
+    return !propEqual(this.props, nextProps, ['loading'], ['user']);
+  }
 
   componentWillMount() {
     // this.props.navigation.push('Factsheet', {factsheetId: 13449}); //TODO: temporary!! redirects to an arbitrary screen, useful for development

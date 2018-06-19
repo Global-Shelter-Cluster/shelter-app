@@ -1,6 +1,7 @@
 // @flow
 
 import moment from "moment/moment";
+import equal from 'deep-equal';
 
 export const timeAgo = (date: string, limitDays: number = 7) => {
   const daysDiff = moment().diff(date, "days");
@@ -22,3 +23,19 @@ export const getExtension = url => (url = url
       ? Number.MAX_SAFE_INTEGER
       : url.lastIndexOf(".")
   ).toLowerCase();
+
+const shallowPropEqual = (a: {}, b: {}, properties: Array<string>) => {
+  for (const p of properties)
+    if (a[p] !== b[p])
+      return false;
+  return true;
+};
+
+export const propEqual = (a: {}, b: {}, shallowProps: Array<string>, deepProps: Array<string> = []) => {
+  if (!shallowPropEqual(a, b, shallowProps))
+    return false;
+  for (const p of deepProps)
+    if (!equal(a[p], b[p]))
+      return false;
+  return true;
+};

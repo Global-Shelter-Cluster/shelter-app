@@ -170,7 +170,6 @@ export const getRecentDocumentsCount = createCachedSelector(
   (state, groupId) => groupId,
   (state, groupId) => {
     const now = moment();
-    console.log('CAM running');
     return state.objects.group[groupId].recent_documents !== undefined
       ? state.objects.group[groupId].recent_documents
         .map(id => getObject(state, 'document', id))
@@ -178,4 +177,4 @@ export const getRecentDocumentsCount = createCachedSelector(
         .length
       : 0
   }
-)((state, groupId) => [groupId, moment().format('YYYY-MM-DD')].join(':')); // e.g. "2018-06-08"
+)((state, groupId) => [groupId, moment().format('YYYY-MM-DD')].join(':')); // e.g. "12345:2018-06-08"

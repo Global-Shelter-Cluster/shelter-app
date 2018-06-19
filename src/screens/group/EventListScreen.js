@@ -9,6 +9,7 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import type tabs from "./EventList";
 import EventList from "./EventList";
 import {clearLastError, loadObject} from "../../actions";
+import {propEqual} from "../../util";
 
 type Props = {
   online: boolean,
@@ -49,6 +50,11 @@ class EventListScreen extends React.Component<Props, State> {
     this.state = {
       tab: "upcoming",
     };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !propEqual(this.state, nextState, ['tab'])
+      || !propEqual(this.props, nextProps, ['online', 'loading'], ['group']);
   }
 
   componentWillMount() {

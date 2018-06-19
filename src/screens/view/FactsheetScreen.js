@@ -10,6 +10,7 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import moment from "moment/moment";
+import {propEqual} from "../../util";
 
 type Props = {
   online: boolean,
@@ -44,6 +45,10 @@ class FactsheetScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => ({
     headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
   });
+
+  shouldComponentUpdate(nextProps) {
+    return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['factsheet', 'lastError']);
+  }
 
   componentWillMount() {
     if (!this.props.loaded)

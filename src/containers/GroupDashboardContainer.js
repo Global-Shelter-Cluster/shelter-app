@@ -1,6 +1,5 @@
 // @flow
 
-import React from 'react';
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
 import {getRecentDocumentsCount} from "../model/group";

@@ -1,6 +1,5 @@
 // @flow
 
-import React from 'react';
 import {connect} from 'react-redux';
 import GroupListItem from '../components/GroupListItem';
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../model";

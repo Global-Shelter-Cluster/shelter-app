@@ -9,6 +9,7 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import type tabs from "./DocumentList";
 import DocumentList from "./DocumentList";
 import {clearLastError, loadObject} from "../../actions";
+import {propEqual} from "../../util";
 
 type Props = {
   online: boolean,
@@ -49,6 +50,11 @@ class DocumentListScreen extends React.Component<Props, State> {
     this.state = {
       tab: "recent",
     };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !propEqual(this.state, nextState, ['tab'])
+      || !propEqual(this.props, nextProps, ['online', 'loading'], ['group']);
   }
 
   componentWillMount() {

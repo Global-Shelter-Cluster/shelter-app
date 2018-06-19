@@ -4,12 +4,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 import type {PublicDocumentObject} from "../../model/document";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
-import {FontAwesome} from '@expo/vector-icons';
 import Document from './Document';
 import {clearLastError, loadObject} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
+import {propEqual} from "../../util";
 
 type Props = {
   online: boolean,
@@ -44,6 +44,10 @@ class DocumentScreen extends React.Component<Props> {
   static navigationOptions = {
     headerTitle: <NavTitleContainer title="Document"/>,
   };
+
+  shouldComponentUpdate(nextProps) {
+    return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['document', 'lastError']);
+  }
 
   componentWillMount() {
     if (!this.props.loaded)

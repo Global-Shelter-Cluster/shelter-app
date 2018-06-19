@@ -7,7 +7,7 @@ import Model from "./index";
 import clone from "clone";
 
 export const convertFiles = createSelector(
-  (state, type, object) => state.files,
+  state => state.files,
   (state, type, object) => Model.getFiles(type, object),
   (state, type, object) => object,
   (files, objectFileDescriptions: Array<ObjectFileDescription>, object) => {

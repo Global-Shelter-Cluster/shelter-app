@@ -2,7 +2,6 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {tabs} from "./Explore";
 import Explore from "./Explore";
@@ -11,6 +10,7 @@ import {getCurrentUser} from "../../model/user";
 import {getObject} from "../../model";
 import {GLOBAL_OBJECT_ID} from "../../model/global";
 import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
+import {propEqual} from "../../util";
 
 type Props = {
   online: boolean,
@@ -53,6 +53,11 @@ class ExploreScreen extends React.Component<Props, State> {
     this.state = {
       tab: "followed",
     };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !propEqual(this.state, nextState, ['tab'])
+      || !propEqual(this.props, nextProps, ['online', 'loading'], ['user', 'global']);
   }
 
   componentWillMount() {

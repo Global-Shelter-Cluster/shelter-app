@@ -9,6 +9,7 @@ import {clearLastError, loadObject} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
+import {propEqual} from "../../util";
 
 type Props = {
   online: boolean,
@@ -43,6 +44,10 @@ class EventScreen extends React.Component<Props> {
   static navigationOptions = {
     headerTitle: <NavTitleContainer title="Event"/>,
   };
+
+  shouldComponentUpdate(nextProps) {
+    return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['event', 'lastError']);
+  }
 
   componentWillMount() {
     if (!this.props.loaded)
