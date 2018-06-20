@@ -13,7 +13,7 @@ import {propEqual} from "../../util";
 type Props = {
   user: PrivateUserObject,
   loading: boolean,
-  refreshUser: () => {},
+  refresh: () => {},
 }
 
 const mapStateToProps = state => ({
@@ -22,7 +22,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  refreshUser: () => {
+  refresh: () => {
     dispatch(clearLastError());
     dispatch(loadCurrentUser(false, true));
   },
