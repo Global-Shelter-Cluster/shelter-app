@@ -69,12 +69,12 @@ export default class DocumentActions extends React.Component<Props, State> {
         buttons.push(<Button key="view" disabledIcon="wifi" title="View"/>);
     }
 
-    if (online)
+    // if (online)
       buttons.push(<Button key="share" title="Share" icon="share" onPress={() => {
         Share.share({url: document.file})
       }}/>);
-    else
-      buttons.push(<Button key="share" disabledIcon="wifi" title="Share"/>);
+    // else
+    //   buttons.push(<Button key="share" disabledIcon="wifi" title="Share"/>);
 
     // buttons.push(<Button key="test1" primary title="View" onPress={() => {
     //   Linking.openURL(document.file)
