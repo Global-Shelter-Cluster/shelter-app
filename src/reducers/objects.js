@@ -3,13 +3,23 @@
 import {CLEAR_ALL_OBJECTS, SET_OBJECTS} from "../actions";
 import type {Objects} from "../model";
 import {initialObjectsState, OBJECT_MODE_STUB, OBJECT_MODE_STUBPLUS} from "../model";
+import clone from 'clone';
 
-const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: Objects }) => {
+const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: Objects, replaceAll?: boolean }) => {
   switch (action.type) {
     case CLEAR_ALL_OBJECTS:
       return initialObjectsState;
 
     case SET_OBJECTS:
+      if (action.replaceAll) {
+        const ret = clone(initialObjectsState);
+
+        for (const i in action.objects)
+          ret[i] = clone(action.objects[i]);
+
+        return ret;
+      }
+
       const newState = Object.assign({}, state); // copies references to the actual objects
 
       if (action.objects)

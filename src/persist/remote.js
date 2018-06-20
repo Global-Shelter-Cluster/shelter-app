@@ -31,8 +31,8 @@ const axios = axiosLib.create({
  * Is not allowed to talk to the redux store or the app itself.
  */
 class Remote {
-  async request(path: string, data = null) {
-    console.debug('Axios request', path, data);
+  async _post(path: string, data = null) {
+    console.debug('Axios POST request', path, data);
     try {
       data = data ? JSON.stringify(data) : null;
       const response = await axios.post(path, data, config.axiosExtra);
@@ -44,16 +44,32 @@ class Remote {
     }
   }
 
+  async _delete(path: string) {
+    console.debug('Axios DELETE request', path);
+    try {
+      const response = await axios.delete(path, config.axiosExtra);
+      console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
+      return response.data;
+    } catch (e) {
+      console.error('Axios error', e);
+      throw e;
+    }
+  }
+
   async login(user: string, pass: string): Objects {
-    return this.request('/get-objects', [{type: 'global', id: 1}, {type: 'user', id: 733}]);
+    return this._post('/get-objects', [{type: 'global', id: 1}, {type: 'user', id: 733}]);
   }
 
   async loadObjects(requests: Array<ObjectRequest>): Objects {
-    return this.request('/get-objects', requests);
+    return this._post('/get-objects', requests);
   }
 
   async followGroup(id: number): Objects {
-    return this.request('/follow/' + id);
+    return this._post('/follow/' + id);
+  }
+
+  async unfollowGroup(id: number): Objects {
+    return this._delete('/follow/' + id);
   }
 }
 

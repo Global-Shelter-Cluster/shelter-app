@@ -1,6 +1,14 @@
 // @flow
 
-import {clearAllObjects, downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
+import {
+  clearAllDownloads,
+  clearAllObjects,
+  downloadFiles,
+  setCurrentUser,
+  setFile,
+  setFiles,
+  setObjects
+} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects, ObjectType} from "../model";
@@ -257,29 +265,30 @@ class Persist {
   }
 
   async unfollowGroup(id: number) {
-    throw new Error('Not implemented yet');
-
     // Remote returns the user and related objects, same as login, so, until we have a better solution, we just delete
     // all objects and save the ones we receive here.
     const objects = await this.remote.unfollowGroup(id);
 
-    // Delete every object in the store (memory)...
-    this.store.dispatch(clearAllObjects());
-    // ...and also in permanent storage.
-    Storage.clear();
+    // Delete everything in permanent storage.
+    await Storage.clear();
+    // ...except these.
+    Storage.setItem(Persist.cacheKey('currentUser'), '' + this.store.getState().currentUser);
+    this.saveFiles();
+
+    this.store.dispatch(clearAllDownloads());
 
     // Save everything we received (includes the user object)
     this.updateLastRead(objects);
     this.saveObjects(objects);
-    this.dispatchObjects(objects);
+    this.dispatchObjects(objects, true); // This deletes every object in the store (memory) before saving the new ones.
   }
 
-  async dispatchObject(type: ObjectType, id: number, object: {}) {
-    this.dispatchObjects({[type]: {[id]: object}});
-  }
+  // async dispatchObject(type: ObjectType, id: number, object: {}) {
+  //   this.dispatchObjects({[type]: {[id]: object}});
+  // }
 
-  async dispatchObjects(objects: Objects) {
-    this.store.dispatch(setObjects(objects));
+  async dispatchObjects(objects: Objects, replaceAll: boolean = false) {
+    this.store.dispatch(setObjects(objects, replaceAll));
   }
 
   /**

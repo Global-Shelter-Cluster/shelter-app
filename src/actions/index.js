@@ -21,9 +21,10 @@ export const setCurrentUser = (id: number | null) => ({
 });
 
 export const SET_OBJECTS = 'SET_OBJECTS';
-export const setObjects = (objects: Objects) => ({
+export const setObjects = (objects: Objects, replaceAll: boolean = false) => ({
   type: SET_OBJECTS,
   objects,
+  replaceAll,
 });
 
 export const CLEAR_ALL_OBJECTS = 'CLEAR_ALL_OBJECTS';

@@ -100,5 +100,5 @@ export default class Model {
 export const getObject = createCachedSelector(
   (state, type) => state.objects[type],
   (state, type, id) => id,
-  (objects, id) => objects[id],
+  (objects, id) => objects[id] || null,
 )((state, type, id) => [type, id].join(':')); // group:123
