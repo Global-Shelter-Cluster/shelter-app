@@ -64,7 +64,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     });
   else if (group.recent_documents && group.recent_documents.length > 0)
     blocks.push({
-      title: 'Documents',
+      title: 'All\nDocuments',
       icon: 'file-o',
       action: () => navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });

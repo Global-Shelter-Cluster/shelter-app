@@ -29,8 +29,6 @@ export default ({online, document, loaded, refresh, loading, lastError}: {
   if (!loaded)
     return <Loading/>;
 
-  console.log('doc desc', document.description);
-
   return <View style={{flex: 1}}>
     <ScrollView
       style={{flex: 1}}

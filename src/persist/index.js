@@ -154,10 +154,8 @@ class Persist {
   generateLocalFilename(url: string): string {
     let extension = getExtension(url);
 
-    console.log(url, extension);
     if (!extension && /^https?:\/\/maps\.googleapis\.com\/maps\/api\/staticmap/.test(url))
       extension = '.png';
-    console.log(url, extension);
 
     return md5(url) + extension;
   }

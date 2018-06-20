@@ -18,6 +18,9 @@ const Tabs = ({tabs, current, changeTab}: {
   current: string,
   changeTab: (tab: string) => {},
 }) => {
+  if (tabs[current] === undefined)
+    current = Object.keys(tabs)[0];
+
   const renderTab = (key, i) => {
     const tabStyle = [styles.tab];
     if (current === key)

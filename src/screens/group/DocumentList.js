@@ -37,11 +37,11 @@ export default ({online, loading, tab, group, refresh, changeTab}: {
     "key": {label: "Key"},
   };
 
-  if (group.recent_documents.length === 0)
+  if (group.recent_documents === undefined || group.recent_documents.length === 0)
     delete tabs.recent;
-  if (group.featured_documents.length === 0)
+  if (group.featured_documents === undefined || group.featured_documents.length === 0)
     delete tabs.featured;
-  if (group.key_documents.length === 0)
+  if (group.key_documents === undefined || group.key_documents.length === 0)
     delete tabs.key;
 
   return <View style={{flex: 1}}>

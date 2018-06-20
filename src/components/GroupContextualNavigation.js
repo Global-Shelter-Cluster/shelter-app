@@ -45,8 +45,6 @@ export default ({group}: { group: PublicGroupObject }) => {
     }
   }
 
-  console.log('GCN', group)
-
   if (group.regions) {
     groupCount += group.regions.length;
     sections.push({title: "Regions", data: group.regions});

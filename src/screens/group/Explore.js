@@ -28,21 +28,12 @@ export default ({online, loading, tab, global, user, changeTab, refreshGlobal, r
     "regions": {label: "Regions"},
   };
 
-  if (user.groups === undefined || user.groups.length === 0) {
+  if (user.groups === undefined || user.groups.length === 0)
     delete tabs.followed;
-    if (tab === 'followed')
-      tab = 'featured';
-  }
-  if (global.featured_groups === undefined || global.featured_groups.length === 0) {
+  if (global.featured_groups === undefined || global.featured_groups.length === 0)
     delete tabs.featured;
-    if (tab === 'featured')
-      tab = 'followed';
-  }
-  if (global.top_regions === undefined || global.top_regions.length === 0) {
+  if (global.top_regions === undefined || global.top_regions.length === 0)
     delete tabs.regions;
-    if (tab === 'regions')
-      tab = 'featured';
-  }
 
   switch (tab) {
     case "followed":
