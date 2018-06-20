@@ -6,7 +6,7 @@ import moment from 'moment';
 import createCachedSelector from 're-reselect';
 import {getCurrentUser} from "./user";
 
-type GroupType = "response" | "geographic_region" | "hub" | "strategic_advisory" | "working_group";
+type GroupType = "response" | "geographic_region" | "hub" | "strategic_advisory" | "working_group" | "community_of_practice";
 
 // export type PrivateGroupObject = {
 //   _last_read?: number,
@@ -41,6 +41,12 @@ export type PublicResponseGroupObject = {
   key_documents?: Array<number>,
   recent_documents?: Array<number>,
   upcoming_events?: Array<number>,
+  hubs?: Array<number>,
+  responses?: Array<number>,
+  working_groups?: Array<number>,
+  regions?: Array<number>,
+  communities_of_practice?: Array<number>,
+  strategic_advisory?: number,
 }
 
 export type PublicGeographicRegionGroupObject = {
@@ -51,6 +57,7 @@ export type PublicGeographicRegionGroupObject = {
   id: number,
   title: string,
   url: string,
+  region_type?: string,
   image?: string,
   parent_region?: number,
   latest_factsheet?: number,
@@ -58,6 +65,12 @@ export type PublicGeographicRegionGroupObject = {
   key_documents: Array<number>,
   recent_documents: Array<number>,
   upcoming_events: Array<number>,
+  hubs?: Array<number>,
+  responses?: Array<number>,
+  working_groups?: Array<number>,
+  regions?: Array<number>,
+  communities_of_practice?: Array<number>,
+  strategic_advisory?: number,
 }
 
 export type PublicHubGroupObject = {
@@ -76,6 +89,12 @@ export type PublicHubGroupObject = {
   key_documents: Array<number>,
   recent_documents: Array<number>,
   upcoming_events: Array<number>,
+  hubs?: Array<number>,
+  responses?: Array<number>,
+  working_groups?: Array<number>,
+  regions?: Array<number>,
+  communities_of_practice?: Array<number>,
+  strategic_advisory?: number,
 }
 
 export type PublicStrategicAdvisoryGroupObject = {
@@ -94,6 +113,12 @@ export type PublicStrategicAdvisoryGroupObject = {
   key_documents: Array<number>,
   recent_documents: Array<number>,
   upcoming_events: Array<number>,
+  hubs?: Array<number>,
+  responses?: Array<number>,
+  working_groups?: Array<number>,
+  regions?: Array<number>,
+  communities_of_practice?: Array<number>,
+  strategic_advisory?: number,
 }
 
 export type PublicWorkingGroupObject = {
@@ -112,6 +137,36 @@ export type PublicWorkingGroupObject = {
   key_documents: Array<number>,
   recent_documents: Array<number>,
   upcoming_events: Array<number>,
+  hubs?: Array<number>,
+  responses?: Array<number>,
+  working_groups?: Array<number>,
+  regions?: Array<number>,
+  communities_of_practice?: Array<number>,
+  strategic_advisory?: number,
+}
+
+export type PublicCommunityOfPracticeObject = {
+  _last_read?: number,
+  _mode: "public",
+  _persist?: true,
+  type: "community_of_practice",
+  id: number,
+  title: string,
+  url: string,
+  image?: string,
+  parent_response?: number,
+  parent_region?: number,
+  latest_factsheet?: number,
+  featured_documents: Array<number>,
+  key_documents: Array<number>,
+  recent_documents: Array<number>,
+  upcoming_events: Array<number>,
+  hubs?: Array<number>,
+  responses?: Array<number>,
+  working_groups?: Array<number>,
+  regions?: Array<number>,
+  communities_of_practice?: Array<number>,
+  strategic_advisory?: number,
 }
 
 export type StubPlusGroupObject = {
@@ -121,6 +176,7 @@ export type StubPlusGroupObject = {
   type: GroupType,
   id: number,
   title: string,
+  region_type?: string,
   image?: string,
   latest_factsheet?: number,
 }
@@ -139,7 +195,8 @@ export type PublicGroupObject =
   | PublicGeographicRegionGroupObject
   | PublicHubGroupObject
   | PublicStrategicAdvisoryGroupObject
-  | PublicWorkingGroupObject;
+  | PublicWorkingGroupObject
+  | PublicCommunityOfPracticeObject;
 
 export type GroupObject = StubGroupObject | StubPlusGroupObject | PublicGroupObject;
 

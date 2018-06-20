@@ -38,8 +38,11 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
       if (group.upcoming_events !== undefined && group.upcoming_events.length > 0)
         badges.push(<Badge key="upcomingEvents" icon="calendar" value={group.upcoming_events.length} color="white"/>);
 
+      const typeLabel = group.region_type !== undefined
+        ? group.region_type.toUpperCase()
+        : group.type.toUpperCase().replace(/_/g, ' ');
       const contents = [
-        <Text key="type" style={styles.typeLabel}>{group.type.toUpperCase().replace(/_/g, ' ')}</Text>,
+        <Text key="type" style={styles.typeLabel}>{typeLabel}</Text>,
         <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>,
       ];
 
