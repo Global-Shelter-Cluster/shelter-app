@@ -18,8 +18,8 @@ const Tabs = ({tabs, current, changeTab}: {
   current: string,
   changeTab: (tab: string) => {},
 }) => {
-  if (tabs[current] === undefined)
-    current = Object.keys(tabs)[0];
+  if (tabs[current] === undefined && Object.keys(tabs).length > 0)
+    setTimeout(() => changeTab(Object.keys(tabs)[0]), 0);
 
   const renderTab = (key, i) => {
     const tabStyle = [styles.tab];
