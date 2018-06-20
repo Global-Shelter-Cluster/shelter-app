@@ -7,7 +7,6 @@ import Button from "./Button";
 import {Constants, MapView} from "expo";
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
-import {Marker} from "react-native-maps";
 import moment from "moment/moment";
 
 type Props = {
@@ -60,7 +59,7 @@ export default class EventActions extends React.Component<Props, State> {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}>
-          <Marker
+          <MapView.Marker
             coordinate={{latitude: event.geo.lat, longitude: event.geo.lon}}
             title={event.title}
             description={moment(event.date).format('D MMM YYYY, h:mm a')}
