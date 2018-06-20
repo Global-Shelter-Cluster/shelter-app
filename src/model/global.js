@@ -10,13 +10,17 @@ export type GlobalObject = {
   _persist: true,
   id: 1,
   featured_groups: Array<number>,
+  top_regions: Array<number>,
 }
 
 export default class Global {
   static getRelated(global: GlobalObject): Array<ObjectRequest> {
     const ret = [];
 
-    ret.push(...global.featured_groups.map(id => ({type: "group", id: id})));
+    if (global.featured_groups !== undefined)
+      ret.push(...global.featured_groups.map(id => ({type: "group", id: id})));
+    if (global.top_regions !== undefined)
+      ret.push(...global.top_regions.map(id => ({type: "group", id: id})));
 
     return ret;
   }
