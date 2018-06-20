@@ -12,7 +12,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
 
   if (isFollowing(state, group.id))
     blocks.push({
-      title: 'Un-follow this\n' + group.type.replace('_', ' '),
+      title: 'Un-follow this\n' + group.type.replace(/_/g, ' '),
       icon: 'sign-out',
       action: unfollow,
     });
@@ -24,7 +24,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     });
   else
     blocks.push({
-      title: 'Follow this\n' + group.type.replace('_', ' '),
+      title: 'Follow this\n' + group.type.replace(/_/g, ' '),
       icon: 'sign-in',
       action: follow,
     });
