@@ -46,9 +46,13 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
       if (badges.length > 0)
         contents.unshift(<View key="badges" style={styles.badges}>{badges}</View>);
 
+      let image = factsheet ? {uri: factsheet.image} : null;
+      if (image === null && group.image !== undefined)
+        image = {uri: group.image};
+
       return link
         ? <ImageBackground
-          source={factsheet ? {uri: factsheet.image} : null}
+          source={image}
           style={styles.fullContainer}
         >
           <TouchableOpacity
@@ -60,7 +64,7 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
           </TouchableOpacity>
         </ImageBackground>
         : <ImageBackground
-          source={factsheet ? {uri: factsheet.image} : null}
+          source={image}
           style={styles.fullContainer}
         >
           <View style={styles.fullInnerContainer}>

@@ -1,6 +1,6 @@
 // @flow
 
-import type {ObjectRequest} from "../persist";
+import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {getObject} from "./index";
 import moment from 'moment';
 import createCachedSelector from 're-reselect';
@@ -15,6 +15,8 @@ type GroupType = "response" | "geographic_region" | "hub" | "strategic_advisory"
 //   type: GroupType,
 //   id: number,
 //   title: string,
+//   url: string,
+//   image?: string,
 //   associated_regions: Array<number>,
 //   parent_response: number,
 //   latest_factsheet: number,
@@ -31,6 +33,7 @@ export type PublicResponseGroupObject = {
   id: number,
   title: string,
   url: string,
+  image?: string,
   associated_regions?: Array<number>,
   parent_response?: number,
   latest_factsheet?: number,
@@ -48,6 +51,7 @@ export type PublicGeographicRegionGroupObject = {
   id: number,
   title: string,
   url: string,
+  image?: string,
   parent_region?: number,
   latest_factsheet?: number,
   featured_documents: Array<number>,
@@ -64,6 +68,7 @@ export type PublicHubGroupObject = {
   id: number,
   title: string,
   url: string,
+  image?: string,
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
@@ -81,6 +86,7 @@ export type PublicStrategicAdvisoryGroupObject = {
   id: number,
   title: string,
   url: string,
+  image?: string,
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
@@ -98,6 +104,7 @@ export type PublicWorkingGroupObject = {
   id: number,
   title: string,
   url: string,
+  image?: string,
   parent_response?: number,
   parent_region?: number,
   latest_factsheet?: number,
@@ -114,6 +121,7 @@ export type StubPlusGroupObject = {
   type: GroupType,
   id: number,
   title: string,
+  image?: string,
   latest_factsheet?: number,
 }
 
@@ -161,8 +169,13 @@ export default class Group {
     return ret;
   }
 
-  static getFiles(): [] {
-    return [];
+  static getFiles(group: GroupObject): Array<ObjectFileDescription> {
+    const files = [];
+
+    if (group.image !== undefined)
+      files.push({type: "group", id: group.id, property: "image", url: group.image});
+
+    return files;
   }
 }
 
