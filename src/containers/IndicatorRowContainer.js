@@ -3,7 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {changeFlag} from '../actions';
-import Test from '../components/Test';
+import IndicatorRow from '../components/IndicatorRow';
 
 const mapStateToProps = state => ({
   isOnline: state.flags.online,
@@ -12,12 +12,12 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => {
   return {
-    doIt: newValue => {
+    setOnline: newValue => {
       dispatch(changeFlag('online', newValue));
     },
   };
 };
 
-const TestContainer = connect(mapStateToProps, mapDispatchToProps)(Test);
+const IndicatorRowContainer = connect(mapStateToProps, mapDispatchToProps)(IndicatorRow);
 
-export default TestContainer;
+export default IndicatorRowContainer;
