@@ -10,11 +10,13 @@ export type PublicFactsheetObject = {
   groups: Array<number>,
   date: string, // TODO: proper date?
   image: string,
+  full_image?: string,
   prev?: number,
   next?: number,
   highlights: string, // HTML
   photo_credit?: string,
   map?: string,
+  full_map?: string,
   need_analysis?: string, // HTML
   response?: string, // HTML
   gaps_challenges?: string, // HTML
