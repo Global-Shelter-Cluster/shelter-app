@@ -6,7 +6,13 @@ import moment from 'moment';
 import createCachedSelector from 're-reselect';
 import {getCurrentUser} from "./user";
 
-type GroupType = "response" | "geographic_region" | "hub" | "strategic_advisory" | "working_group" | "community_of_practice";
+type GroupType =
+  "response"
+  | "geographic_region"
+  | "hub"
+  | "strategic_advisory"
+  | "working_group"
+  | "community_of_practice";
 
 // export type PrivateGroupObject = {
 //   _last_read?: number,
@@ -25,142 +31,24 @@ type GroupType = "response" | "geographic_region" | "hub" | "strategic_advisory"
 //   recent_documents: Array<number>,
 // }
 
-export type PublicResponseGroupObject = {
+export type PublicGroupObject = {
   _last_read?: number,
   _mode: "public",
   _persist?: true,
-  type: "response",
-  id: number,
-  title: string,
-  url: string,
-  image?: string,
-  associated_regions?: Array<number>,
-  parent_response?: number,
-  latest_factsheet?: number,
-  featured_documents?: Array<number>,
-  key_documents?: Array<number>,
-  recent_documents?: Array<number>,
-  upcoming_events?: Array<number>,
-  hubs?: Array<number>,
-  responses?: Array<number>,
-  working_groups?: Array<number>,
-  regions?: Array<number>,
-  communities_of_practice?: Array<number>,
-  strategic_advisory?: number,
-}
-
-export type PublicGeographicRegionGroupObject = {
-  _last_read?: number,
-  _mode: "public",
-  _persist?: true,
-  type: "geographic_region",
+  type: GroupType,
   id: number,
   title: string,
   url: string,
   region_type?: string,
   image?: string,
   parent_region?: number,
-  latest_factsheet?: number,
-  featured_documents: Array<number>,
-  key_documents: Array<number>,
-  recent_documents: Array<number>,
-  upcoming_events: Array<number>,
-  hubs?: Array<number>,
-  responses?: Array<number>,
-  working_groups?: Array<number>,
-  regions?: Array<number>,
-  communities_of_practice?: Array<number>,
-  strategic_advisory?: number,
-}
-
-export type PublicHubGroupObject = {
-  _last_read?: number,
-  _mode: "public",
-  _persist?: true,
-  type: "hub",
-  id: number,
-  title: string,
-  url: string,
-  image?: string,
   parent_response?: number,
-  parent_region?: number,
+  associated_regions?: Array<number>,
   latest_factsheet?: number,
-  featured_documents: Array<number>,
-  key_documents: Array<number>,
-  recent_documents: Array<number>,
-  upcoming_events: Array<number>,
-  hubs?: Array<number>,
-  responses?: Array<number>,
-  working_groups?: Array<number>,
-  regions?: Array<number>,
-  communities_of_practice?: Array<number>,
-  strategic_advisory?: number,
-}
-
-export type PublicStrategicAdvisoryGroupObject = {
-  _last_read?: number,
-  _mode: "public",
-  _persist?: true,
-  type: "strategic_advisory",
-  id: number,
-  title: string,
-  url: string,
-  image?: string,
-  parent_response?: number,
-  parent_region?: number,
-  latest_factsheet?: number,
-  featured_documents: Array<number>,
-  key_documents: Array<number>,
-  recent_documents: Array<number>,
-  upcoming_events: Array<number>,
-  hubs?: Array<number>,
-  responses?: Array<number>,
-  working_groups?: Array<number>,
-  regions?: Array<number>,
-  communities_of_practice?: Array<number>,
-  strategic_advisory?: number,
-}
-
-export type PublicWorkingGroupObject = {
-  _last_read?: number,
-  _mode: "public",
-  _persist?: true,
-  type: "working_group",
-  id: number,
-  title: string,
-  url: string,
-  image?: string,
-  parent_response?: number,
-  parent_region?: number,
-  latest_factsheet?: number,
-  featured_documents: Array<number>,
-  key_documents: Array<number>,
-  recent_documents: Array<number>,
-  upcoming_events: Array<number>,
-  hubs?: Array<number>,
-  responses?: Array<number>,
-  working_groups?: Array<number>,
-  regions?: Array<number>,
-  communities_of_practice?: Array<number>,
-  strategic_advisory?: number,
-}
-
-export type PublicCommunityOfPracticeObject = {
-  _last_read?: number,
-  _mode: "public",
-  _persist?: true,
-  type: "community_of_practice",
-  id: number,
-  title: string,
-  url: string,
-  image?: string,
-  parent_response?: number,
-  parent_region?: number,
-  latest_factsheet?: number,
-  featured_documents: Array<number>,
-  key_documents: Array<number>,
-  recent_documents: Array<number>,
-  upcoming_events: Array<number>,
+  featured_documents?: Array<number>,
+  key_documents?: Array<number>,
+  recent_documents?: Array<number>,
+  upcoming_events?: Array<number>,
   hubs?: Array<number>,
   responses?: Array<number>,
   working_groups?: Array<number>,
@@ -190,26 +78,30 @@ export type StubGroupObject = {
   title: string,
 }
 
-export type PublicGroupObject =
-  PublicResponseGroupObject
-  | PublicGeographicRegionGroupObject
-  | PublicHubGroupObject
-  | PublicStrategicAdvisoryGroupObject
-  | PublicWorkingGroupObject
-  | PublicCommunityOfPracticeObject;
-
 export type GroupObject = StubGroupObject | StubPlusGroupObject | PublicGroupObject;
 
 export default class Group {
   static getRelated(group: GroupObject): Array<ObjectRequest> {
     const ret = [];
 
-    ret.push(...group.associated_regions !== undefined
-      ? group.associated_regions.map(id => ({type: "group", id: id}))
-      : []);
+    [
+      'associated_regions',
+      'hubs',
+      'responses',
+      'working_groups',
+      'regions',
+      'communities_of_practice',
+    ].map(key => ret.push(...group[key] !== undefined
+      ? group[key].map(id => ({type: "group", id: id}))
+      : []));
 
-    if (group.parent_response !== undefined)
-      ret.push({type: "group", id: group.parent_response});
+    [
+      'strategic_advisory',
+      'parent_response',
+    ].map(key => {
+      if (group[key] !== undefined)
+        ret.push({type: "group", id: group[key]});
+    });
 
     if (group.latest_factsheet !== undefined)
       ret.push({type: "factsheet", id: group.latest_factsheet});
