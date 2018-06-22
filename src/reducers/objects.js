@@ -22,6 +22,14 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
 
       const newState = Object.assign({}, state); // copies references to the actual objects
 
+      const filterFn = (id, existingObjects, newObjects) => (
+        existingObjects[id] === undefined // Object didn't exist, we copy it (return true)
+        || !( // Don't replace non-stub objects with stubs
+          (newObjects[id]._mode === OBJECT_MODE_STUB || newObjects[id]._mode === OBJECT_MODE_STUBPLUS)
+          && (existingObjects[id]._mode !== OBJECT_MODE_STUB && existingObjects[id]._mode !== OBJECT_MODE_STUBPLUS)
+        )
+      );
+
       if (action.objects)
         for (const type in state) {
           // Don't replace non-stub objects with stubs (see OBJECT_MODE_* consts in model/index.js).
@@ -34,24 +42,19 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
           // const existingObjects: { [string]: { _mode: string } } = state[type];
           // const newObjects: { [string]: { _mode: string } } = action.objects[type];
 
-          const newObjectsFiltered = Object.keys(newObjects) // This converts {[id]:{}} to Array<id>
-            .filter(id => (
-              existingObjects[id] === undefined // Object didn't exist, we copy it (return true)
-              || !( // Don't replace non-stub objects with stubs
-                (newObjects[id]._mode === OBJECT_MODE_STUB || newObjects[id]._mode === OBJECT_MODE_STUBPLUS)
-                && (existingObjects[id]._mode !== OBJECT_MODE_STUB && existingObjects[id]._mode !== OBJECT_MODE_STUBPLUS)
-              )
-            ))
-            .reduce((ret, id) => {
-              // If a new object comes without the "_persist" flag, but an existing one has it, we add it so we don't lose
-              // the object on garbage collection.
-              const addPersistFlag = existingObjects[id] && existingObjects[id]._persist && !newObjects[id]._persist;
+          const filteredIds = Object.keys(newObjects) // This converts {[id]:{}} to Array<id>
+            .filter(filterFn, existingObjects, newObjects)
 
-              return Object.assign(
-                ret,
-                {[id]: Object.assign({}, newObjects[id], addPersistFlag ? {_persist: true} : null)}
-              );
-            }, {}); // Converted Array<id> back to {[id]:{}}
+          const newObjectsFiltered = {};
+          for (const id of filteredIds) {
+            newObjectsFiltered[id] = clone(newObjects[id]);
+            if (
+              existingObjects[id] !== undefined
+              && (existingObjects[id]._persist !== undefined && existingObjects[id]._persist)
+              && (newObjects[id]._persist === undefined || !newObjects[id]._persist)
+            )
+              newObjectsFiltered[id]._persist = true;
+          }
 
           newState[type] = Object.assign({}, existingObjects, newObjectsFiltered);
         }
