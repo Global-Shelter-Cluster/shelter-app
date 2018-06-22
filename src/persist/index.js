@@ -209,10 +209,10 @@ class Persist {
     await Storage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
   }
 
-  clearAll() {
+  clearAll(force: boolean = false) {
     Storage.clear();
     console.debug('Cleared storage');
-    if (config.deleteFilesOnLogout) {
+    if (force || config.deleteFilesOnLogout) {
       FileSystem.deleteAsync(this.directory, {idempotent: true}).then(
         () => this.initDirectory(this.directory)
       );

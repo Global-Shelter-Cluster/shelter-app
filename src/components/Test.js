@@ -14,7 +14,7 @@ const Test = ({isOnline, doIt, downloadProgress}: { isOnline: boolean, doIt: (bo
     {downloadIndicator}
     <Text>{isOnline ? 'online' : 'offline'}</Text>
     <Button onPress={() => doIt(!isOnline)} title="toggle"/>
-    <Button onPress={() => persist.clearAll()} title="clear all"/>
+    <Button onPress={() => persist.clearAll(true)} title="clear all"/>
   </View>;
 };
 
