@@ -15,7 +15,7 @@ import type {Objects, ObjectType} from "../model";
 import Model, {detailLevels, expirationLimitsByObjectType, OBJECT_MODE_PRIVATE, OBJECT_MODE_PUBLIC} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
-import Storage from "./storage_sqlite";
+import Storage from "./storage_async";
 import config from "../config";
 import clone from 'clone';
 import {GLOBAL_OBJECT_ID} from "../model/global";
