@@ -1,9 +1,20 @@
 // @flow
 
 import React from 'react';
-import {Image, Linking, RefreshControl, ScrollView, Share, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  Linking,
+  RefreshControl,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import type {PublicFactsheetObject} from "../../model/factsheet";
 import ContextualNavigation from "../../components/ContextualNavigation";
+import ExpandableFitImageContainer from "../../containers/ExpandableFitImageContainer";
 import FactsheetNavigationContainer from "../../containers/FactsheetNavigationContainer";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
@@ -11,7 +22,6 @@ import Button from "../../components/Button";
 import vars from "../../vars";
 import HTML from 'react-native-render-html';
 import Loading from "../../components/Loading";
-import FitImage from 'react-native-fit-image';
 import Collapsible from "../../components/Collapsible";
 
 export default ({online, factsheet, loaded, refresh, loading, lastError}: {
@@ -38,14 +48,14 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
       <FactsheetNavigationContainer factsheet={factsheet}/>
       <ContextualNavigation object={factsheet}/>
       <View>
-        <FitImage source={{uri: factsheet.image}}/>
+        <ExpandableFitImageContainer source={{uri: factsheet.image}} full={factsheet.full_image}/>
         {factsheet.photo_credit !== undefined && <Text style={styles.photo_credit}>{factsheet.photo_credit}</Text>}
       </View>
       <View style={styles.highlights}>
         <HTML html={factsheet.highlights}/>
       </View>
       {factsheet.map !== undefined && <Collapsible title="Map" separatorAndMargins>
-        <FitImage source={{uri: factsheet.map}}/>
+        <ExpandableFitImageContainer source={{uri: factsheet.map}} full={factsheet.full_map}/>
       </Collapsible>}
       {factsheet.need_analysis !== undefined && <Collapsible title="Need analysis" separatorAndMargins>
         <HTML html={factsheet.need_analysis}/>
