@@ -122,7 +122,8 @@ class Persist {
       }
     }
 
-    Storage.multiSet(data);
+    if (data.length > 0)
+      Storage.multiSet(data);
 
     this.downloadFilesForObjects(objects);
   }
