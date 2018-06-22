@@ -156,3 +156,8 @@ export const isFollowing = createCachedSelector(
     return false;
   }
 )((state, groupId) => groupId);
+
+export const getGroupTypeLabel = (group: GroupObject) =>
+  group.region_type !== undefined
+    ? group.region_type.toLowerCase()
+    : group.type.replace(/_/g, ' ');

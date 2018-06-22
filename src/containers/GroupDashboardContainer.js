@@ -2,7 +2,7 @@
 
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
-import {getRecentDocumentsCount, isFollowing} from "../model/group";
+import {getGroupTypeLabel, getRecentDocumentsCount, isFollowing} from "../model/group";
 import GroupDashboard from "../components/GroupDashboard";
 import type {DashboardBlockType} from "../components/DashboardBlock";
 import {getCurrentUser} from "../model/user";
@@ -18,7 +18,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     });
   else if (isFollowing(state, group.id))
     blocks.push({
-      title: 'Un-follow this\n' + group.type.replace(/_/g, ' '),
+      title: 'Un-follow this\n' + getGroupTypeLabel(group),
       icon: 'sign-out',
       action: unfollow,
     });
@@ -30,7 +30,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     });
   else
     blocks.push({
-      title: 'Follow this\n' + group.type.replace(/_/g, ' '),
+      title: 'Follow this\n' + getGroupTypeLabel(group),
       icon: 'sign-in',
       action: follow,
     });
