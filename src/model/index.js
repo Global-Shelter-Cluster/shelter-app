@@ -36,7 +36,7 @@ export const expirationLimitsByObjectType = { // 3600 = 1 hour
   "factsheet": 3600 * 24,
   "document": 3600 * 24,
   "event": 3600 * 24,
-  "kobo_form": 3600 * 24 * 7,
+  "kobo_form": 3600 * 6,
 };
 
 export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject | KoboFormObject;
