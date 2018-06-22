@@ -78,10 +78,14 @@ export const detailLevels: { [ObjectMode]: number } = {
   [OBJECT_MODE_PUBLIC]: 2,
   [OBJECT_MODE_STUBPLUS]: 1,
   [OBJECT_MODE_STUB]: 0,
+  '': -1,
 };
 
 export default class Model {
   static getRelated(type: ObjectType, object: Object): Array<ObjectRequest> {
+    if (object === null)
+      return [];
+
     if (!mapTypesToClasses[type])
       throw new Error("unknown type: " + type);
 
@@ -89,6 +93,9 @@ export default class Model {
   }
 
   static getFiles(type: ObjectType, object: Object): Array<ObjectFileDescription> {
+    if (object === null)
+      return [];
+
     if (!mapTypesToClasses[type])
       throw new Error("unknown type: " + type);
 
@@ -100,5 +107,5 @@ export default class Model {
 export const getObject = createCachedSelector(
   (state, type) => state.objects[type],
   (state, type, id) => id,
-  (objects, id) => objects[id] || null,
+  (objects, id) => objects[id] === undefined ? {id, _mode: ''} : objects[id],
 )((state, type, id) => [type, id].join(':')); // group:123

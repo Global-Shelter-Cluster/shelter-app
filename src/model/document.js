@@ -51,10 +51,10 @@ export default class Document {
   static getFiles(document: DocumentObject): Array<ObjectFileDescription> {
     const files = [];
 
-    if (document.preview)
+    if (document.preview !== undefined)
       files.push({type: "document", id: document.id, property: "preview", url: document.preview});
 
-    if (document.file !== undefined && document.file)
+    if (document.file !== undefined)
       files.push({type: "document", id: document.id, property: "file", url: document.file});
 
     return files;
