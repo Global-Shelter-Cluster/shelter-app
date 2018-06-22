@@ -10,7 +10,13 @@ import {getCurrentUser} from "../model/user";
 const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
   const blocks: Array<DashboardBlockType> = [];
 
-  if (isFollowing(state, group.id))
+  if (state.flags.following)
+    blocks.push({
+      title: 'Loading...',
+      icon: 'sign-in',
+      disabledIcon: 'refresh',
+    });
+  else if (isFollowing(state, group.id))
     blocks.push({
       title: 'Un-follow this\n' + group.type.replace(/_/g, ' '),
       icon: 'sign-out',
