@@ -2,7 +2,7 @@
 
 import {CLEAR_ALL_OBJECTS, SET_OBJECTS} from "../actions";
 import type {Objects} from "../model";
-import {initialObjectsState, OBJECT_MODE_STUB, OBJECT_MODE_STUBPLUS} from "../model";
+import {detailLevels, initialObjectsState, OBJECT_MODE_PUBLIC} from "../model";
 import clone from 'clone';
 
 const objects = (state: Objects = initialObjectsState, action: { type: string, objects?: Objects, replaceAll?: boolean }) => {
@@ -22,14 +22,6 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
 
       const newState = Object.assign({}, state); // copies references to the actual objects
 
-      const filterFn = (id, existingObjects, newObjects) => (
-        existingObjects[id] === undefined // Object didn't exist, we copy it (return true)
-        || !( // Don't replace non-stub objects with stubs
-          (newObjects[id]._mode === OBJECT_MODE_STUB || newObjects[id]._mode === OBJECT_MODE_STUBPLUS)
-          && (existingObjects[id]._mode !== OBJECT_MODE_STUB && existingObjects[id]._mode !== OBJECT_MODE_STUBPLUS)
-        )
-      );
-
       if (action.objects)
         for (const type in state) {
           // Don't replace non-stub objects with stubs (see OBJECT_MODE_* consts in model/index.js).
@@ -38,15 +30,16 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
           if (!newObjects)
             continue;
 
-          // For some reason these two lines, with the types, makes the whole thing crash.
-          // const existingObjects: { [string]: { _mode: string } } = state[type];
-          // const newObjects: { [string]: { _mode: string } } = action.objects[type];
-
-          const filteredIds = Object.keys(newObjects) // This converts {[id]:{}} to Array<id>
-            .filter(filterFn, existingObjects, newObjects)
-
           const newObjectsFiltered = {};
-          for (const id of filteredIds) {
+          for (const id of Object.keys(newObjects)) {
+            console.log('id objmode', id, newObjects[id]);
+            if (
+              detailLevels[newObjects[id]._mode] < detailLevels[OBJECT_MODE_PUBLIC]
+              && existingObjects[id] !== undefined
+              && detailLevels[newObjects[id]._mode] < detailLevels[existingObjects[id]._mode]
+            )
+              continue;
+
             newObjectsFiltered[id] = clone(newObjects[id]);
             if (
               existingObjects[id] !== undefined

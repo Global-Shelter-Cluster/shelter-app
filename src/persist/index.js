@@ -1,14 +1,6 @@
 // @flow
 
-import {
-  clearAllDownloads,
-  clearAllObjects,
-  downloadFiles,
-  setCurrentUser,
-  setFile,
-  setFiles,
-  setObjects
-} from "../actions";
+import {clearAllDownloads, downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects, ObjectType} from "../model";
@@ -119,7 +111,8 @@ class Persist {
           continue;
 
         if (
-          storedObjects[type][id] !== undefined
+          detailLevels[objects[type][id]._mode] < detailLevels[OBJECT_MODE_PUBLIC]
+          && storedObjects[type][id] !== undefined
           && detailLevels[objects[type][id]._mode] < detailLevels[storedObjects[type][id]._mode]
         )
         // Don't store, for example, the current user if it's a stub.
