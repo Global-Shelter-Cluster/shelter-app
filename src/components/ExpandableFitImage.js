@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {Linking, Modal, Platform, Share, StyleSheet, TouchableOpacity, View, WebView} from 'react-native';
+import {Image, Modal, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Constants} from "expo";
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
@@ -31,10 +31,6 @@ export default class ExpandableFitImage extends React.Component<Props, State> {
     if (!online || !full)
       return <FitImage source={source}/>;
 
-    const modal = this.state.isOpen
-      ? <WebView style={{marginTop: Constants.statusBarHeight}} source={{uri: full}}/>
-      : null;
-
     return <View>
       <TouchableOpacity onPress={() => this.setState({isOpen: true})}>
         <FitImage source={source}/>
@@ -44,7 +40,12 @@ export default class ExpandableFitImage extends React.Component<Props, State> {
         visible={this.state.isOpen}
         onRequestClose={() => this.setState({isOpen: false})}
       >
-        {modal}
+        <ScrollView
+          maximumZoomScale={5} minimumZoomScale={1}
+          style={{marginTop: Constants.statusBarHeight}}
+        >
+          <FitImage source={{uri: full}}/>
+        </ScrollView>
         <TouchableOpacity
           style={styles.closeButton}
           onPress={() => this.setState({isOpen: false})}
