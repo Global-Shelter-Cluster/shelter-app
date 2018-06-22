@@ -3,7 +3,7 @@
 import React from 'react';
 import {Platform, StyleSheet, Text} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
-import {Hourglasses} from '../hourglasses';
+import Hourglasses from '../hourglasses';
 import vars from "../vars";
 
 const NavTitle = ({online, title, downloading}: {
