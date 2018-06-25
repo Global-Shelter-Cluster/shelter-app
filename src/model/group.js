@@ -14,22 +14,32 @@ type GroupType =
   | "working_group"
   | "community_of_practice";
 
-// export type PrivateGroupObject = {
-//   _last_read?: number,
-//   _mode: "private",
-//   _persist?: true,
-//   type: GroupType,
-//   id: number,
-//   title: string,
-//   url: string,
-//   image?: string,
-//   associated_regions: Array<number>,
-//   parent_response: number,
-//   latest_factsheet: number,
-//   featured_documents: Array<number>,
-//   key_documents: Array<number>,
-//   recent_documents: Array<number>,
-// }
+export type PrivateGroupObject = {
+  _last_read?: number,
+  _mode: "public",
+  _persist?: true,
+  type: GroupType,
+  id: number,
+  title: string,
+  url: string,
+  region_type?: string,
+  image?: string,
+  parent_region?: number,
+  parent_response?: number,
+  associated_regions?: Array<number>,
+  latest_factsheet?: number,
+  featured_documents?: Array<number>,
+  key_documents?: Array<number>,
+  recent_documents?: Array<number>,
+  upcoming_events?: Array<number>,
+  hubs?: Array<number>,
+  responses?: Array<number>,
+  working_groups?: Array<number>,
+  regions?: Array<number>,
+  communities_of_practice?: Array<number>,
+  strategic_advisory?: number,
+  kobo_forms?: Array<number>,
+}
 
 export type PublicGroupObject = {
   _last_read?: number,
@@ -78,7 +88,7 @@ export type StubGroupObject = {
   title: string,
 }
 
-export type GroupObject = StubGroupObject | StubPlusGroupObject | PublicGroupObject;
+export type GroupObject = StubGroupObject | StubPlusGroupObject | PublicGroupObject | PrivateGroupObject;
 
 export default class Group {
   static getRelated(group: GroupObject): Array<ObjectRequest> {
@@ -114,6 +124,9 @@ export default class Group {
 
     if (group.upcoming_events !== undefined)
       ret.push(...group.upcoming_events.map(id => ({type: "event", id: id})));
+
+    if (group.kobo_forms !== undefined)
+      ret.push(...group.kobo_forms.map(id => ({type: "kobo_form", id: id})));
 
     return ret;
   }
