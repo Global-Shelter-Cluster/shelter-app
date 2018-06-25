@@ -3,37 +3,16 @@
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
 
-export type PrivateKoboFormObject = {
+export type KoboFormObject = {
   _last_read?: number,
   _mode: "private",
   _persist?: true,
   id: number,
+  groups?: Array<number>,
   title: string,
-  description: string,
+  description: string, // HTML
   kobo_form_url: string,
-  groups?: Array<number>,
 }
-
-export type PublicKoboFormObject = {
-  _last_read?: number,
-  _mode: "public",
-  _persist?: true,
-  id: number,
-  title: string,
-  description: string,
-  groups?: Array<number>,
-}
-
-export type StubKoboFormObject = {
-  _last_read?: number,
-  _mode: "stub",
-  _persist?: true,
-  id: number,
-  title: string,
-  descirption: string,
-}
-
-export type KoboFormObject = PrivateKoboFormObject | PublicKoboFormObject | StubKoboFormObject;
 
 export default class KoboForm {
   static getRelated(kobo_form: KoboFormObject): Array<ObjectRequest> {
@@ -45,7 +24,7 @@ export default class KoboForm {
     return ret;
   }
 
-  static getFiles(kobo_form: KoboFormObject): Array<ObjectFileDescription> {
+  static getFiles(): [] {
     return [];
   }
 }
