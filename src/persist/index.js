@@ -1,21 +1,13 @@
 // @flow
 
-import {
-  clearAllDownloads,
-  clearAllObjects,
-  downloadFiles,
-  setCurrentUser,
-  setFile,
-  setFiles,
-  setObjects
-} from "../actions";
+import {clearAllDownloads, downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {Objects, ObjectType} from "../model";
 import Model, {detailLevels, expirationLimitsByObjectType, OBJECT_MODE_PRIVATE, OBJECT_MODE_PUBLIC} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
-import Storage from "./storage_sqlite";
+import Storage from "./storage_async";
 import config from "../config";
 import clone from 'clone';
 import {GLOBAL_OBJECT_ID} from "../model/global";
@@ -119,7 +111,8 @@ class Persist {
           continue;
 
         if (
-          storedObjects[type][id] !== undefined
+          detailLevels[objects[type][id]._mode] < detailLevels[OBJECT_MODE_PUBLIC]
+          && storedObjects[type][id] !== undefined
           && detailLevels[objects[type][id]._mode] < detailLevels[storedObjects[type][id]._mode]
         )
         // Don't store, for example, the current user if it's a stub.
@@ -129,7 +122,8 @@ class Persist {
       }
     }
 
-    Storage.multiSet(data);
+    if (data.length > 0)
+      Storage.multiSet(data);
 
     this.downloadFilesForObjects(objects);
   }
@@ -209,10 +203,10 @@ class Persist {
     await Storage.setItem(Persist.cacheKey('files'), JSON.stringify(files));
   }
 
-  clearAll() {
+  clearAll(force: boolean = false) {
     Storage.clear();
     console.debug('Cleared storage');
-    if (config.deleteFilesOnLogout) {
+    if (force || config.deleteFilesOnLogout) {
       FileSystem.deleteAsync(this.directory, {idempotent: true}).then(
         () => this.initDirectory(this.directory)
       );

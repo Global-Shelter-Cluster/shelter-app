@@ -7,6 +7,7 @@ export type flagsType = {
   online: boolean,
   loggingIn: boolean,
   loading: boolean,
+  following: boolean, // or un-following
 }
 
 const initialFlags = {
@@ -14,9 +15,10 @@ const initialFlags = {
   online: false,
   loggingIn: false,
   loading: false,
+  following: false,
 };
 
-export type flags = "initializing" | "online" | "loggingIn" | "loading";
+export type flags = "initializing" | "online" | "loggingIn" | "loading" | "following";
 
 const initializing = (state: flagsType = initialFlags, action: { type: string, flag: flags, value: boolean }) => {
   switch (action.type) {

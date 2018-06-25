@@ -6,6 +6,7 @@ export type configType = {
   deleteFilesOnLogout: boolean,
   reduxLogger: boolean,
   persistFiles: boolean,
+  debugOnlineIndicator: boolean, // allows toggling online/offline and clearing cache with a "long press" on the indicator
 };
 
 const config: { [string]: configType } = {
@@ -15,6 +16,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: false,
     reduxLogger: true,
     persistFiles: false,
+    debugOnlineIndicator: true,
   },
   dev: {
     baseUrl: 'http://dev.sheltercluster.org',
@@ -22,6 +24,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: false,
     reduxLogger: true,
     persistFiles: true,
+    debugOnlineIndicator: false,
   },
   stage: {
     baseUrl: 'http://stage.sheltercluster.org',
@@ -29,6 +32,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: true,
     reduxLogger: false,
     persistFiles: true,
+    debugOnlineIndicator: false,
   },
   prod: {
     baseUrl: 'https://www.sheltercluster.org',
@@ -36,6 +40,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: true,
     reduxLogger: false,
     persistFiles: true,
+    debugOnlineIndicator: false,
   }
 };
 

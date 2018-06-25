@@ -35,11 +35,11 @@ export default ({online, loading, tab, group, refresh, changeTab}: {
       changeTab={changeTab}
       tabs={tabs}
     />
-    <FlatList
+    {ids !== undefined && <FlatList
       key={tab} // This makes the list scroll up when changing the tab.
       data={ids.map(id => ({key: '' + id, id: id}))}
       renderItem={({item}) => <EventListItemContainer id={item.id}/>}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
-    />
+    />}
   </View>;
 }

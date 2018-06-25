@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import TestContainer from '../../containers/TestContainer';
+import IndicatorRowContainer from '../../containers/IndicatorRowContainer';
 import {FlatList, RefreshControl, ScrollView, Text, View} from 'react-native';
 import type {PrivateUserObject} from "../../model/user";
 import UserContainer from "../../containers/UserContainer";
@@ -25,6 +25,6 @@ export default ({user, loading, refresh}: {
           <Text style={{textAlign: "center", padding: 40, width: "100%"}}>You're not following any responses yet.</Text>
       }
     </ScrollView>
-    <TestContainer/>
+    <IndicatorRowContainer/>
   </View>
 );
