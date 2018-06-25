@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "40%",
     margin: 10,
-    backgroundColor: "rgba(0,0,0,.05)",
+    backgroundColor: vars.VERY_LIGHT_GREY,
     padding: 10,
     borderRadius: 5,
     borderWidth: StyleSheet.hairlineWidth,

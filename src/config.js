@@ -18,6 +18,13 @@ const config: { [string]: configType } = {
     persistFiles: false,
     debugOnlineIndicator: true,
   },
+  local_jm: {
+    baseUrl: 'http://192.168.0.101:32776',
+    axiosExtra: {},
+    deleteFilesOnLogout: false,
+    reduxLogger: true,
+    persistFiles: false,
+  },
   dev: {
     baseUrl: 'http://dev.sheltercluster.org',
     axiosExtra: {},
@@ -47,6 +54,7 @@ const config: { [string]: configType } = {
 const channel = config[Expo.Constants.manifest.releaseChannel] !== undefined
   ? Expo.Constants.manifest.releaseChannel
   // : 'local';
-  : 'dev';
+  // : 'dev';
+  : 'local_jm';
 
 export default config[channel];

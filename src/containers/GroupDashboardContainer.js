@@ -90,6 +90,13 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       action: () => navigation.push('Factsheet', {factsheetId: group.latest_factsheet}),
     });
 
+  if (group.kobo_forms)
+    blocks.push({
+      title: 'Reporting',
+      icon: 'paper-plane-o',
+      action: () => navigation.push('ReportList', {groupId: group.id}),
+    });
+
   return {
     // group,
     blocks,
