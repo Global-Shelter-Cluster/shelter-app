@@ -43,10 +43,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    padding: 20,
   },
   label: {
     color: vars.MEDIUM_GREY,
     fontSize: 18,
+    textAlign: "center",
   },
   image: {
     width: 120,
