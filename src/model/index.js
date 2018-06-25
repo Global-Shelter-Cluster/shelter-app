@@ -14,8 +14,10 @@ import Document from "./document";
 import createCachedSelector from 're-reselect';
 import type {EventObject} from "./event";
 import Event from "./event";
+import type {KoboFormObject} from "./kobo_form";
+import KoboForm from "./kobo_form";
 
-export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet";
+export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet" | "kobo_form";
 
 export type Objects = {
   global?: { [id: string]: GlobalObject },
@@ -24,6 +26,7 @@ export type Objects = {
   factsheet?: { [id: string]: FactsheetObject },
   document?: { [id: string]: DocumentObject },
   event?: { [id: string]: EventObject },
+  kobo_form?: { [id: string]: KoboFormObject },
 }
 
 export const expirationLimitsByObjectType = { // 3600 = 1 hour
@@ -33,9 +36,10 @@ export const expirationLimitsByObjectType = { // 3600 = 1 hour
   "factsheet": 3600 * 24,
   "document": 3600 * 24,
   "event": 3600 * 24,
+  "kobo_form": 3600 * 6,
 };
 
-export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject;
+export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject | KoboFormObject;
 
 export const initialObjectsState: Objects = {
   global: {
@@ -51,6 +55,7 @@ export const initialObjectsState: Objects = {
   factsheet: {},
   document: {},
   event: {},
+  kobo_form: {},
 };
 
 const mapTypesToClasses = {
@@ -60,6 +65,7 @@ const mapTypesToClasses = {
   'factsheet': Factsheet,
   'document': Document,
   'event': Event,
+  'kobo_form': KoboForm,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.
