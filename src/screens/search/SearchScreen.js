@@ -9,6 +9,7 @@ import {GLOBAL_OBJECT_ID} from "../../model/global";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import Error from "../../components/Error";
+import Search from "./Search";
 
 type Props = {
   online: boolean,
@@ -73,7 +74,7 @@ class SearchScreen extends React.Component<Props, State> {
         description={"You must be online\nfor search to work."}
       />;
     else
-      return <Error description={"Not implemented yet."}/>;
+      return <Search {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
   }
 }
 

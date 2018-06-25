@@ -9,8 +9,11 @@ export type GlobalObject = {
   _mode: "public",
   _persist: true,
   id: 1,
-  featured_groups: Array<number>,
-  top_regions: Array<number>,
+  featured_groups?: Array<number>,
+  top_regions?: Array<number>,
+  algolia_app_id?: string,
+  algolia_search_key?: string,
+  algolia_prefix?: string,
 }
 
 export default class Global {
