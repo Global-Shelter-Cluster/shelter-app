@@ -54,7 +54,7 @@ const config: { [string]: configType } = {
 const channel = config[Expo.Constants.manifest.releaseChannel] !== undefined
   ? Expo.Constants.manifest.releaseChannel
   // : 'local';
-  // : 'dev';
-  : 'local_jm';
+  : 'dev';
+  // : 'local_jm';
 
 export default config[channel];
