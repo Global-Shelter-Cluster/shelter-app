@@ -10,7 +10,7 @@ import ExploreScreen from "./screens/group/ExploreScreen";
 import WebsiteViewerScreen from "./screens/misc/WebsiteViewerScreen";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "./vars";
-import TempReportingScreen from "./screens/reporting/TempReportingScreen";
+import ReportGroupsScreen from "./screens/reporting/ReportGroupsScreen";
 import ReportListScreen from "./screens/reporting/ReportListScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
 import EventListScreen from "./screens/group/EventListScreen";
@@ -32,14 +32,14 @@ const ExploreStack = createStackNavigator({
   EventList: EventListScreen,
   Event: EventScreen,
   Factsheet: FactsheetScreen,
-  ReportList: ReportListScreen,
-  Reporting: WebsiteViewerScreen,
 });
 // const ChatStack = createSwitchNavigator({
 //   Chat: TempBlankScreen,
 // });
-const ReportingStack = createSwitchNavigator({
-  Report: ReportListScreen,
+const ReportingStack = createStackNavigator({
+  Report: ReportGroupsScreen,
+  ReportList: ReportListScreen,
+  Reporting: WebsiteViewerScreen,
 });
 const UserStack = createStackNavigator({
   Dashboard: DashboardScreen,

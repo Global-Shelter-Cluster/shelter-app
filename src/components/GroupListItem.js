@@ -34,6 +34,9 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
     case 'full':
       const badges = [];
 
+      if (group.kobo_forms !== undefined && group.kobo_forms.length > 0)
+        badges.push(<Badge key="koboForms" icon="paper-plane-o" value={group.kobo_forms.length} color="white"/>);
+
       if (recentDocs && recentDocs > 0)
         badges.push(<Badge key="recentDocs" icon="file-o" value={recentDocs} color="white"/>);
 
