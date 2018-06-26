@@ -2,6 +2,7 @@
 
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import HTML from 'react-native-render-html';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import {hairlineWidth} from "../util";
@@ -11,10 +12,11 @@ export default ({kobo_form, enter}: {
   enter: () => {},
 }) => {
 
+  console.log(kobo_form.description);
   const contents = [
     <View key="info" style={styles.info}>
       <Text numberOfLines={4} ellipsizeMode="tail" style={styles.title}>{kobo_form.title}</Text>
-      <Text numberOfLines={4} ellipsizeMode="tail" style={styles.secondary}>{kobo_form.description}</Text>
+      <HTML html={kobo_form.description}/>
     </View>,
   ];
 
