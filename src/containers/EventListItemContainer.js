@@ -10,12 +10,13 @@ import type {EventObject} from "../model/event";
 
 const mapStateToProps = (state, props) => {
   const event: EventObject = convertFiles(state, 'event', getObject(state, 'event', props.id));
+  const hasLink = state.flags.online || detailLevels[event._mode] >= detailLevels[OBJECT_MODE_PUBLIC];
 
-  return {
-    event: event,
-    link: state.flags.online || detailLevels[event._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
-    enter: (id: number) => props.navigation.push('Event', {eventId: id}),
-  };
+  const ret = {event};
+  if (hasLink)
+    ret.enter = () => props.navigation.push('Event', {eventId: event.id});
+
+  return ret;
 };
 
 export default withNavigation(connect(mapStateToProps)(EventListItem));

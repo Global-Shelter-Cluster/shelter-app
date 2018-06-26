@@ -12,6 +12,7 @@ import vars from "../../vars";
 import HTML from 'react-native-render-html';
 import moment from "moment/moment";
 import Loading from "../../components/Loading";
+import {hairlineWidth} from "../../util";
 
 export default ({online, event, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     resizeMode: "cover",
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: hairlineWidth,
     borderColor: vars.SHELTER_GREY,
     marginLeft: 10,
   },

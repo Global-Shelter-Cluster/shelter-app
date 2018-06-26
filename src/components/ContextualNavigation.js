@@ -9,6 +9,7 @@ import Collapsible from "./Collapsible";
 import vars from "../vars";
 import type {PublicEventObject} from "../model/event";
 import type {PublicFactsheetObject} from "../model/factsheet";
+import {hairlineWidth} from "../util";
 
 export default ContextualNavigation = ({object}: { object: PublicDocumentObject | PublicEventObject | PublicFactsheetObject }) => {
   if (!object.groups)
@@ -51,8 +52,8 @@ export default ContextualNavigation = ({object}: { object: PublicDocumentObject 
 const styles = StyleSheet.create({
   mainContainer: {
     borderColor: vars.LIGHT_GREY,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: hairlineWidth,
+    borderTopWidth: hairlineWidth,
   },
   container: {
     marginTop: 10

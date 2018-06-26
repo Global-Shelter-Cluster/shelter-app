@@ -14,7 +14,7 @@ const mapStateToProps = (state, props) => {
   const ret = {
     group: group,
     link: props.noLink ? false : (state.flags.online || detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC]),
-    enter: (id: number) => props.navigation.push('Group', {groupId: id}),
+    enter: () => props.navigation.push('Group', {groupId: group.id}),
   };
 
   if (props.display === 'full') {

@@ -6,11 +6,11 @@ import {FontAwesome} from '@expo/vector-icons';
 import type {EventObject} from "../model/event";
 import vars from "../vars";
 import moment from "moment/moment";
+import {hairlineWidth} from "../util";
 
-export default ({event, link, enter}: {
+export default ({event, enter}: {
   event: EventObject,
-  link: boolean,
-  enter: (id: number) => {},
+  enter: () => {},
 }) => {
   const map = event.map
     ? <Image key="map" style={styles.map} source={{uri: event.map}}/>
@@ -24,10 +24,10 @@ export default ({event, link, enter}: {
     map,
   ];
 
-  return link
+  return enter !== undefined
     ? <TouchableOpacity
       style={styles.container}
-      onPress={() => enter(event.id)}
+      onPress={enter}
     >
       {contents}
       <FontAwesome
@@ -50,13 +50,13 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     resizeMode: "cover",
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: hairlineWidth,
     borderColor: vars.SHELTER_GREY,
   },
   mapBlank: {
     width: 120,
     height: 120,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: hairlineWidth,
     borderColor: vars.SHELTER_GREY,
   },
   info: {

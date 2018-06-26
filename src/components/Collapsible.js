@@ -4,6 +4,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
+import {hairlineWidth} from "../util";
 
 type Props = {
   title: React$Element<*> | string | null,
@@ -77,7 +78,7 @@ export default class Collapsible extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   border: {
     borderColor: vars.LIGHT_GREY,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: hairlineWidth,
   },
   textTitle: {
     padding: 10,

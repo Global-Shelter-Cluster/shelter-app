@@ -8,6 +8,7 @@ import type {GlobalObject} from "../../model/global";
 import {InstantSearch} from 'react-instantsearch/native';
 import {connectHighlight, connectInfiniteHits, connectSearchBox} from 'react-instantsearch/connectors';
 import vars from "../../vars";
+import {hairlineWidth} from "../../util";
 
 const Highlight = connectHighlight(
   ({highlight, attribute, hit}) => {
@@ -71,7 +72,7 @@ const SearchBox = connectSearchBox(({refine, currentRefinement}) => {
   const styles = {
     fontSize: 22,
     height: 45,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: hairlineWidth,
     borderTopWidth: 0,
     borderColor: vars.SHELTER_DARK_BLUE,
     padding: 10,

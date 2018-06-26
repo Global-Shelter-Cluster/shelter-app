@@ -2,6 +2,7 @@
 
 import moment from "moment/moment";
 import equal from 'deep-equal';
+import {Platform, StyleSheet} from "react-native";
 
 export const timeAgo = (date: string, limitDays: number = 7) => {
   const daysDiff = moment().diff(date, "days");
@@ -39,3 +40,7 @@ export const propEqual = (a: {}, b: {}, shallowProps: Array<string>, deepProps: 
       return false;
   return true;
 };
+
+export const hairlineWidth = Platform.OS === 'ios'
+  ? StyleSheet.hairlineWidth
+  : 1; // hairlineWidth gives inconsistent results on Android

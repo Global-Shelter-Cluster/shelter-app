@@ -6,7 +6,6 @@ import type {PublicGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import type tabs from "./ReportList";
 import ReportList from "./ReportList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";

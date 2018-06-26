@@ -5,6 +5,7 @@ import {StyleSheet, TouchableOpacity, View} from "react-native";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import SingleLineText from "./SingleLineText";
+import {hairlineWidth} from "../util";
 
 export type tabsDefinition = {
   [tab: string]: {
@@ -97,17 +98,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: vars.SHELTER_LIGHT_BLUE,
     padding: 8,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: hairlineWidth,
+    borderBottomWidth: hairlineWidth,
     borderColor: vars.SHELTER_GREY,
   },
   tabFirst: {
-    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderLeftWidth: hairlineWidth,
     borderTopLeftRadius: 3,
     borderBottomLeftRadius: 3,
   },
   tabLast: {
-    borderRightWidth: StyleSheet.hairlineWidth,
+    borderRightWidth: hairlineWidth,
     borderTopRightRadius: 3,
     borderBottomRightRadius: 3,
   },

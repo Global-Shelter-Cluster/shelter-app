@@ -5,11 +5,11 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 import type {DocumentObject} from "../model/document";
 import vars from "../vars";
-import {timeAgo} from "../util";
+import {hairlineWidth, timeAgo} from "../util";
 
 export default ({document, enter}: {
   document: DocumentObject,
-  enter?: (id: number) => {},
+  enter?: () => {},
 }) => {
   const preview = document.preview
     ? <Image key="preview" style={styles.preview} source={{uri: document.preview}}/>
@@ -26,7 +26,7 @@ export default ({document, enter}: {
   return enter !== undefined
     ? <TouchableOpacity
       style={styles.container}
-      onPress={() => enter(document.id)}
+      onPress={enter}
     >
       {contents}
       <FontAwesome
@@ -49,13 +49,13 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     resizeMode: "cover",
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: hairlineWidth,
     borderColor: vars.SHELTER_GREY,
   },
   previewBlank: {
     width: 120,
     height: 120,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: hairlineWidth,
     borderColor: vars.SHELTER_GREY,
   },
   info: {

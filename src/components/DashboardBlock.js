@@ -4,6 +4,7 @@ import React from 'react';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {hairlineWidth} from "../util";
 
 export type DashboardBlockType = {
   title: string,
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     backgroundColor: vars.VERY_LIGHT_GREY,
     padding: 10,
     borderRadius: 5,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: hairlineWidth,
   },
   disabledContainer: {
     backgroundColor: "rgba(0,0,0,.02)",

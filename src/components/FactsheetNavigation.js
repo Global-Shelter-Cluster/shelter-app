@@ -7,6 +7,7 @@ import type {FactsheetObject} from "../model/factsheet";
 import SingleLineText from "./SingleLineText";
 import {FontAwesome} from '@expo/vector-icons';
 import moment from "moment/moment";
+import {hairlineWidth} from "../util";
 
 export default FactsheetNavigation = ({prev, next, enter}: {
   prev?: FactsheetObject,
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     borderColor: vars.LIGHT_GREY,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: hairlineWidth,
   },
   linkContainer: {
     flex: 1,

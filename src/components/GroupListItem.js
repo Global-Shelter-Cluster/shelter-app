@@ -9,6 +9,7 @@ import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import SingleLineText from "./SingleLineText";
 import Badge from "./Badge";
+import {hairlineWidth} from "../util";
 
 export default ({group, link, display, factsheet, recentDocs, enter}: {
   group: GroupObject,
@@ -16,12 +17,12 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
   display: "full" | "text-only",
   factsheet?: FactsheetObject,
   recentDocs?: number,
-  enter: (id: number) => {},
+  enter: () => {},
 }) => {
   switch (display) {
     case 'text-only':
       return link
-        ? <TouchableOpacity onPress={() => enter(group.id)} style={styles.textOnlyContainer}>
+        ? <TouchableOpacity onPress={enter} style={styles.textOnlyContainer}>
           <SingleLineText style={[styles.textOnlyLabel, {flex: 1}]}>{group.title}</SingleLineText>
           <FontAwesome
             name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
@@ -60,7 +61,7 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
           <TouchableOpacity
             style={styles.fullInnerContainer}
             activeOpacity={0}
-            onPress={() => enter(group.id)}
+            onPress={enter}
           >
             {contents}
           </TouchableOpacity>
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
   },
   fullContainer: {
     height: 100,
-    marginBottom: StyleSheet.hairlineWidth,
+    marginBottom: hairlineWidth,
   },
   fullInnerContainer: {
     padding: 10,

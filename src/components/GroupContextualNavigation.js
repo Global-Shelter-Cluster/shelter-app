@@ -7,6 +7,7 @@ import GroupListItemContainer from "../containers/GroupListItemContainer";
 import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemContainer";
 import Collapsible from "./Collapsible";
 import vars from "../vars";
+import {hairlineWidth} from "../util";
 
 export default ({group}: { group: PublicGroupObject }) => {
   let groupCount = 0;
@@ -134,8 +135,8 @@ export default ({group}: { group: PublicGroupObject }) => {
 const styles = StyleSheet.create({
   mainContainer: {
     borderColor: vars.LIGHT_GREY,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: hairlineWidth,
+    borderTopWidth: hairlineWidth,
   },
   container: {
     marginTop: 10

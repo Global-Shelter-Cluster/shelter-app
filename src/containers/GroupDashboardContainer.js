@@ -92,7 +92,8 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
 
   if (group.kobo_forms)
     blocks.push({
-      title: 'Reporting',
+      title: 'Assessment\nforms',
+      badge: group.kobo_forms.length,
       icon: 'paper-plane-o',
       action: () => navigation.push('ReportList', {groupId: group.id}),
     });

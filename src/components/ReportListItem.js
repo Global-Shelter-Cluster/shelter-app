@@ -3,13 +3,12 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
-import type {KoboFormObject} from "../model/kobo_form";
 import vars from "../vars";
-import moment from "moment/moment";
+import {hairlineWidth} from "../util";
 
 export default ({kobo_form, enter}: {
   kobo_form: KoboFromObject,
-  enter: (id: number) => {},
+  enter: () => {},
 }) => {
 
   const contents = [
@@ -20,26 +19,23 @@ export default ({kobo_form, enter}: {
   ];
 
   return <TouchableOpacity
-      style={styles.container}
-      onPress={() => enter(kobo_form.id)}
-    >
-      {contents}
-      <FontAwesome
-        name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
-        style={styles.rightArrow}
-      />
-    </TouchableOpacity>
+    style={styles.container}
+    onPress={enter}
+  >
+    {contents}
+    <FontAwesome
+      name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
+      style={styles.rightArrow}
+    />
+  </TouchableOpacity>
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: vars.VERY_LIGHT_GREY,
-    borderRadius: 5,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: vars.LIGHT_GREY,
+    borderBottomWidth: hairlineWidth,
     flexDirection: "row",
-    margin: 5,
     padding: 10,
-    paddingTop: 0,
   },
   info: {
     flex: 1,

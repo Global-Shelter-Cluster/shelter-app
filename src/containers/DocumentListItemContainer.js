@@ -14,7 +14,7 @@ const mapStateToProps = (state, props) => {
 
   const ret = {document};
   if (hasLink)
-    ret.enter = (id: number) => props.navigation.push('Document', {documentId: id});
+    ret.enter = () => props.navigation.push('Document', {documentId: document.id});
 
   return ret;
 };
