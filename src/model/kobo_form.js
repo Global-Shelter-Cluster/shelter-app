@@ -1,11 +1,11 @@
 // @flow
 
-import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import type {ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
 
 export type KoboFormObject = {
   _last_read?: number,
-  _mode: "private",
+  _mode: "public",
   _persist?: true,
   id: number,
   groups?: Array<number>,

@@ -39,6 +39,7 @@ export type PrivateGroupObject = {
   communities_of_practice?: Array<number>,
   strategic_advisory?: number,
   kobo_forms?: Array<number>,
+  alerts?: Array<number>,
 }
 
 export type PublicGroupObject = {
@@ -127,6 +128,9 @@ export default class Group {
 
     if (group.kobo_forms !== undefined)
       ret.push(...group.kobo_forms.map(id => ({type: "kobo_form", id: id})));
+
+    if (group.alerts !== undefined)
+      ret.push(...group.alerts.map(id => ({type: "alert", id: id})));
 
     return ret;
   }

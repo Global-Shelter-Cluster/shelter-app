@@ -16,8 +16,10 @@ import type {EventObject} from "./event";
 import Event from "./event";
 import type {KoboFormObject} from "./kobo_form";
 import KoboForm from "./kobo_form";
+import type {AlertObject} from "./alert";
+import Alert from "./alert";
 
-export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet" | "kobo_form";
+export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet" | "kobo_form" | "alert";
 
 export type Objects = {
   global?: { [id: string]: GlobalObject },
@@ -27,6 +29,7 @@ export type Objects = {
   document?: { [id: string]: DocumentObject },
   event?: { [id: string]: EventObject },
   kobo_form?: { [id: string]: KoboFormObject },
+  alert?: { [id: string]: AlertObject },
 }
 
 export const expirationLimitsByObjectType = { // 3600 = 1 hour
@@ -37,9 +40,10 @@ export const expirationLimitsByObjectType = { // 3600 = 1 hour
   "document": 3600 * 24,
   "event": 3600 * 24,
   "kobo_form": 3600 * 6,
+  "alert": 3600 * 24,
 };
 
-export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject | KoboFormObject;
+export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject | KoboFormObject | AlertObject;
 
 export const initialObjectsState: Objects = {
   global: {
@@ -56,6 +60,7 @@ export const initialObjectsState: Objects = {
   document: {},
   event: {},
   kobo_form: {},
+  alert: {},
 };
 
 const mapTypesToClasses = {
@@ -66,6 +71,7 @@ const mapTypesToClasses = {
   'document': Document,
   'event': Event,
   'kobo_form': KoboForm,
+  'alert': Alert,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.

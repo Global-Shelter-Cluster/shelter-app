@@ -77,6 +77,7 @@ class Persist {
       ], true);
       await this.store.dispatch(setCurrentUser(id));
     } catch (e) {
+      console.log('Error during initialization', e);
     }
   }
 

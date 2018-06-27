@@ -48,6 +48,22 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       disabledIcon: 'wifi',
     });
 
+  if (group.alerts)
+    blocks.push({
+      title: 'Alerts',
+      badge: group.alerts.length,
+      icon: 'bell-o',
+      action: () => navigation.push('ReportList', {groupId: group.id}),
+    });
+
+  if (group.kobo_forms)
+    blocks.push({
+      title: 'Assessment\nforms',
+      badge: group.kobo_forms.length,
+      icon: 'paper-plane-o',
+      action: () => navigation.push('ReportList', {groupId: group.id}),
+    });
+
   const recentDocs = getRecentDocumentsCount(state, group.id);
   if (recentDocs > 0)
     blocks.push({
@@ -88,14 +104,6 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       title: 'Latest\nfactsheet',
       icon: 'bar-chart',
       action: () => navigation.push('Factsheet', {factsheetId: group.latest_factsheet}),
-    });
-
-  if (group.kobo_forms)
-    blocks.push({
-      title: 'Assessment\nforms',
-      badge: group.kobo_forms.length,
-      icon: 'paper-plane-o',
-      action: () => navigation.push('ReportList', {groupId: group.id}),
     });
 
   return {
