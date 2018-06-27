@@ -46,7 +46,7 @@ const Hits = connectInfiniteHits(({hits, hasMore, refine}) => {
       keyExtractor={item => item.objectID}
       renderItem={({item}) => {
         if (item.objectID === null)
-          return <View style={{height: 300}}/>
+          return <View style={{height: 300}}/>;
         // console.log(item);
 
         return (
@@ -86,11 +86,12 @@ const SearchBox = connectSearchBox(({refine, currentRefinement}) => {
       style={styles}
       onChangeText={text => refine(text)}
       value={currentRefinement}
-      placeholder={'Search...'}
-      clearButtonMode={'always'}
+      placeholder="Search..."
+      clearButtonMode="always"
       spellCheck={false}
       autoCorrect={false}
-      autoCapitalize={'none'}
+      autoCapitalize="none"
+      underlineColorAndroid="transparent"
     />
   );
 });
