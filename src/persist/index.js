@@ -1,9 +1,17 @@
 // @flow
 
-import {clearAllDownloads, downloadFiles, setCurrentUser, setFile, setFiles, setObjects} from "../actions";
+import {
+  addSeenObject,
+  clearAllDownloads,
+  downloadFiles, replaceAllSeenObjects,
+  setCurrentUser,
+  setFile,
+  setFiles,
+  setObjects
+} from "../actions";
 import type {Store} from "redux";
 import Remote from "./remote";
-import type {Objects, ObjectType} from "../model";
+import type {ObjectIds, Objects, ObjectType} from "../model";
 import Model, {detailLevels, expirationLimitsByObjectType, OBJECT_MODE_PRIVATE, OBJECT_MODE_PUBLIC} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
@@ -69,6 +77,12 @@ class Persist {
       if (filesString !== null) {
         const files: Files = JSON.parse(filesString);
         await this.store.dispatch(setFiles(files));
+      }
+
+      const seenString: string | null = await Storage.getItem(Persist.cacheKey('seen'));
+      if (seenString !== null) {
+        const seen: ObjectIds = JSON.parse(seenString);
+        await this.store.dispatch(replaceAllSeenObjects(seen));
       }
 
       await this.loadObjects([
@@ -402,6 +416,11 @@ class Persist {
       await this.dispatchObjects(newObjects);
       this.saveObjects(newObjects);
     }
+  }
+
+  async saveSeen() {
+    const seen = this.store.getState().seen;
+    await Storage.setItem(Persist.cacheKey('seen'), JSON.stringify(seen));
   }
 
   /**

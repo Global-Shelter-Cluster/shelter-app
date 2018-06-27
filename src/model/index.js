@@ -32,6 +32,17 @@ export type Objects = {
   alert?: { [id: string]: AlertObject },
 }
 
+export type ObjectIds = {
+  global?: Array<number>,
+  user?: Array<number>,
+  group?: Array<number>,
+  factsheet?: Array<number>,
+  document?: Array<number>,
+  event?: Array<number>,
+  kobo_form?: Array<number>,
+  alert?: Array<number>,
+}
+
 export const expirationLimitsByObjectType = { // 3600 = 1 hour
   "global": 3600 * 24 * 7,
   "user": 3600 * 24 * 7,
@@ -61,6 +72,17 @@ export const initialObjectsState: Objects = {
   event: {},
   kobo_form: {},
   alert: {},
+};
+
+export const initialObjectIdsState: ObjectIds = {
+  global: [],
+  user: [],
+  group: [],
+  factsheet: [],
+  document: [],
+  event: [],
+  kobo_form: [],
+  alert: [],
 };
 
 const mapTypesToClasses = {

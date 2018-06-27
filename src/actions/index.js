@@ -3,7 +3,7 @@
 import type {Files, ObjectFileDescription} from "../persist";
 import persist, {ObjectRequest} from "../persist";
 import {NetInfo} from 'react-native';
-import type {Objects, ObjectType} from "../model";
+import type {ObjectIds, Objects, ObjectType} from "../model";
 import config from "../config";
 import type {flags} from "../reducers/flags";
 
@@ -85,6 +85,24 @@ export const unfollowGroup = (id: number) => async dispatch => {
   }
   dispatch(changeFlag('following', false));
 };
+
+export const markSeen = (objectType: ObjectType, id: number) => async dispatch => {
+  dispatch(addSeenObject(objectType, id));
+  await persist.saveSeen();
+};
+
+export const ADD_SEEN_OBJECT = 'ADD_SEEN_OBJECT';
+export const addSeenObject = (objectType: ObjectType, id: number) => ({
+  type: ADD_SEEN_OBJECT,
+  objectType: objectType,
+  id,
+});
+
+export const REPLACE_ALL_SEEN_OBJECTS = 'REPLACE_ALL_SEEN_OBJECTS';
+export const replaceAllSeenObjects = (objectIds: ObjectIds) => ({
+  type: REPLACE_ALL_SEEN_OBJECTS,
+  objectIds,
+});
 
 export const SET_LAST_ERROR = 'SET_LAST_ERROR';
 export const setLastError = (type: string, data: {}) => ({

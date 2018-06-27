@@ -9,16 +9,19 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
 import {clearLastError, loadCurrentUser} from "../../actions";
 import {propEqual} from "../../util";
+import {getUnseenAlertIds} from "../../model/alert";
 
 type Props = {
-  user: PrivateUserObject,
   loading: boolean,
+  user: PrivateUserObject,
+  unseenAlerts: Array<number>,
   refresh: () => {},
 }
 
 const mapStateToProps = state => ({
-  user: getCurrentUser(state),
   loading: state.flags.loading,
+  user: getCurrentUser(state),
+  unseenAlerts: getUnseenAlertIds(state),
 });
 
 const mapDispatchToProps = dispatch => ({

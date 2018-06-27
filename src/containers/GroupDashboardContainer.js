@@ -6,6 +6,7 @@ import {getGroupTypeLabel, getRecentDocumentsCount, isFollowing} from "../model/
 import GroupDashboard from "../components/GroupDashboard";
 import type {DashboardBlockType} from "../components/DashboardBlock";
 import {getCurrentUser} from "../model/user";
+import {getUnseenAlertIdsForGroup} from "../model/alert";
 
 const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
   const blocks: Array<DashboardBlockType> = [];
@@ -48,12 +49,19 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       disabledIcon: 'wifi',
     });
 
-  if (group.alerts)
+  const unseenAlerts = getUnseenAlertIdsForGroup(state, group.id);
+  if (unseenAlerts > 0)
     blocks.push({
       title: 'Alerts',
-      badge: group.alerts.length,
+      badge: unseenAlerts,
       icon: 'bell-o',
-      action: () => navigation.push('ReportList', {groupId: group.id}),
+      action: () => navigation.push('AlertList', {groupId: group.id}),
+    });
+  else if (group.alerts !== undefined && group.alerts.length > 0)
+    blocks.push({
+      title: 'Alerts',
+      icon: 'bell-o',
+      action: () => navigation.push('AlertList', {groupId: group.id}),
     });
 
   if (group.kobo_forms)

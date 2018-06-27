@@ -11,12 +11,13 @@ import SingleLineText from "./SingleLineText";
 import Badge from "./Badge";
 import {hairlineWidth} from "../util";
 
-export default ({group, link, display, factsheet, recentDocs, enter}: {
+export default ({group, link, display, factsheet, recentDocs, unseenAlerts, enter}: {
   group: GroupObject,
   link: boolean,
   display: "full" | "text-only",
   factsheet?: FactsheetObject,
   recentDocs?: number,
+  unseenAlerts?: number,
   enter: () => {},
 }) => {
   switch (display) {
@@ -33,6 +34,9 @@ export default ({group, link, display, factsheet, recentDocs, enter}: {
 
     case 'full':
       const badges = [];
+
+      if (unseenAlerts && unseenAlerts > 0)
+        badges.push(<Badge key="unseenAlerts" icon="bell-o" value={unseenAlerts} color="white"/>);
 
       if (group.kobo_forms !== undefined && group.kobo_forms.length > 0)
         badges.push(<Badge key="koboForms" icon="paper-plane-o" value={group.kobo_forms.length} color="white"/>);
