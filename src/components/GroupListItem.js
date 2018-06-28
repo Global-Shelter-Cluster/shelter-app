@@ -48,9 +48,18 @@ export default ({group, link, display, factsheet, recentDocs, unseenAlerts, ente
         badges.push(<Badge key="upcomingEvents" icon="calendar" value={group.upcoming_events.length} color="white"/>);
 
       const typeLabel = getGroupTypeLabel(group).toUpperCase();
+      const titleRow = link
+        ? <View key="title" style={{flexDirection: "row"}}>
+          <SingleLineText style={[styles.fullLabel, {flex: 1}]}>{group.title}</SingleLineText>
+          <FontAwesome
+            name={"angle-right"} size={18} color="rgba(255,255,255,.5)"
+            style={styles.fullIcon}
+          />
+        </View>
+        : <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>;
       const contents = [
         <Text key="type" style={styles.typeLabel}>{typeLabel}</Text>,
-        <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>,
+        titleRow,
       ];
 
       if (badges.length > 0)
@@ -95,6 +104,10 @@ const styles = StyleSheet.create({
   },
   textOnlyIcon: {
     paddingHorizontal: 10,
+    paddingTop: 2,
+  },
+  fullIcon: {
+    paddingLeft: 10,
     paddingTop: 2,
   },
   fullContainer: {
