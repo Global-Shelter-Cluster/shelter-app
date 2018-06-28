@@ -19,7 +19,7 @@ export default ({loading, user, unseenAlerts, refresh}: {
   const sections: Array<{ title: string, data: Array<{ type: string, id: number }> }> = [];
 
   if (unseenAlerts.length > 0)
-    sections.push({title: "Alerts", data: unseenAlerts.map(id => ({type: 'alert', id}))});
+    sections.push({title: "New alerts", data: unseenAlerts.map(id => ({type: 'alert', id}))});
 
   if (user.groups !== undefined && user.groups.length > 0)
     sections.push({title: "Followed", data: user.groups.map(id => ({type: 'group', id}))});
