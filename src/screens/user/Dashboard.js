@@ -6,6 +6,7 @@ import {FlatList, RefreshControl, ScrollView, SectionList, StyleSheet, Text, Vie
 import type {PrivateUserObject} from "../../model/user";
 import UserContainer from "../../containers/UserContainer";
 import GroupListItemContainer from '../../containers/GroupListItemContainer';
+import AlertListItemContainer from '../../containers/AlertListItemContainer';
 import vars from "../../vars";
 import {hairlineWidth} from "../../util";
 
@@ -15,7 +16,7 @@ export default ({loading, user, unseenAlerts, refresh}: {
   unseenAlerts: Array<number>,
   refresh: () => {},
 }) => {
-  const sections: Array<{ title: string, data: Array<{type: string, id: number}> }> = [];
+  const sections: Array<{ title: string, data: Array<{ type: string, id: number }> }> = [];
 
   if (unseenAlerts.length > 0)
     sections.push({title: "Alerts", data: unseenAlerts.map(id => ({type: 'alert', id}))});
@@ -25,11 +26,12 @@ export default ({loading, user, unseenAlerts, refresh}: {
 
   const sectionList = <SectionList
     sections={sections}
-    renderSectionHeader={({section}) => sections.length > 1 ? <Text style={styles.sectionHeader}>{section.title}</Text> : null}
+    renderSectionHeader={({section}) => sections.length > 1 ?
+      <Text style={styles.sectionHeader}>{section.title}</Text> : null}
     renderItem={({item}) => {
       switch (item.type) {
         case 'alert':
-          return <Text>alert</Text>;
+          return <AlertListItemContainer id={item.id} showGroupAndSkipMarkingAsSeen/>;
         case 'group':
           return <GroupListItemContainer display="full" id={item.id}/>;
       }
@@ -44,12 +46,6 @@ export default ({loading, user, unseenAlerts, refresh}: {
     >
       <UserContainer user={user} showEdit={true}/>
       {sectionList}
-      {/*
-        user.groups !== undefined
-          ? user.groups.map(id => <GroupListItemContainer key={'' + id} display="full" id={id}/>)
-          :
-          <Text style={{textAlign: "center", padding: 40, width: "100%"}}>You're not following any responses yet.</Text>
-      */}
       {user.groups === undefined
       && <Text style={{textAlign: "center", padding: 40, width: "100%"}}>You're not following any responses yet.</Text>}
     </ScrollView>
@@ -64,7 +60,7 @@ const styles = StyleSheet.create({
     borderTopWidth: hairlineWidth,
   },
   container: {
-    marginTop: 10
+    marginTop: 20
   },
   sectionHeader: {
     paddingTop: 2,

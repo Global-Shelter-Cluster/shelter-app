@@ -38,7 +38,7 @@ class DashboardScreen extends React.Component<Props> {
   };
 
   shouldComponentUpdate(nextProps) {
-    return !propEqual(this.props, nextProps, ['loading'], ['user']);
+    return !propEqual(this.props, nextProps, ['loading'], ['user', 'unseenAlerts']);
   }
 
   componentWillMount() {

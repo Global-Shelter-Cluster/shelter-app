@@ -4,15 +4,15 @@ import moment from "moment/moment";
 import equal from 'deep-equal';
 import {Platform, StyleSheet} from "react-native";
 
-export const timeAgo = (date: string, limitDays: number = 7) => {
+export const timeAgo = (date: string, limitDays: number = 7, includeTime: boolean = false) => {
   const daysDiff = moment().diff(date, "days");
 
-  if (daysDiff === 0)
+  if (!includeTime && daysDiff === 0)
     return "today";
-  else if (daysDiff > 0 && daysDiff <= limitDays)
-    return moment(date).from(moment().format('YYYY-MM-DD'));
+  else if (daysDiff >= 0 && daysDiff <= limitDays)
+    return moment(date).from(includeTime ? moment() : moment().format('YYYY-MM-DD'));
   else
-    return moment(date).format('D MMM YYYY');
+    return moment(date).format(includeTime ? 'D MMM YYYY, h:mm a' : 'D MMM YYYY');
 };
 
 // getExtension() function adapted from https://stackoverflow.com/a/6997591/368864

@@ -50,10 +50,10 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     });
 
   const unseenAlerts = getUnseenAlertIdsForGroup(state, group.id);
-  if (unseenAlerts > 0)
+  if (unseenAlerts.length > 0)
     blocks.push({
       title: 'Alerts',
-      badge: unseenAlerts,
+      badge: unseenAlerts.length,
       icon: 'bell-o',
       action: () => navigation.push('AlertList', {groupId: group.id}),
     });

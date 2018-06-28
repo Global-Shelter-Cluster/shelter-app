@@ -1,9 +1,9 @@
 // @flow
 
 import {
-  addSeenObject,
   clearAllDownloads,
-  downloadFiles, replaceAllSeenObjects,
+  downloadFiles,
+  replaceAllSeenObjects,
   setCurrentUser,
   setFile,
   setFiles,
@@ -12,7 +12,13 @@ import {
 import type {Store} from "redux";
 import Remote from "./remote";
 import type {ObjectIds, Objects, ObjectType} from "../model";
-import Model, {detailLevels, expirationLimitsByObjectType, OBJECT_MODE_PRIVATE, OBJECT_MODE_PUBLIC} from "../model";
+import Model, {
+  detailLevels,
+  expirationLimitsByObjectType,
+  initialObjectIdsState,
+  OBJECT_MODE_PRIVATE,
+  OBJECT_MODE_PUBLIC
+} from "../model";
 import {FileSystem} from "expo";
 import md5 from "md5";
 import Storage from "./storage_async";
@@ -220,6 +226,7 @@ class Persist {
 
   clearAll(force: boolean = false) {
     Storage.clear();
+    this.store.dispatch(replaceAllSeenObjects(initialObjectIdsState));
     console.debug('Cleared storage');
     if (force || config.deleteFilesOnLogout) {
       FileSystem.deleteAsync(this.directory, {idempotent: true}).then(

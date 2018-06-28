@@ -25,7 +25,7 @@ const mapStateToProps = (state, props) => {
   if (props.display === 'full') {
     ret.factsheet = group.latest_factsheet ? convertFiles(state, 'factsheet', getObject(state, 'factsheet', group.latest_factsheet)) : null;
     ret.recentDocs = getRecentDocumentsCount(state, props.id);
-    ret.unseenAlerts = getUnseenAlertIdsForGroup(state, props.id);
+    ret.unseenAlerts = getUnseenAlertIdsForGroup(state, props.id).length;
   }
 
   return ret;
