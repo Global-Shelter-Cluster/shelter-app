@@ -16,7 +16,7 @@ const mapStateToProps = (state, props) => {
   const ret = {
     alert,
     isSeen: isObjectSeen(state, 'alert', alert.id),
-    showGroupAndSkipMarkingAsSeen: alert.groups !== undefined && props.showGroupAndSkipMarkingAsSeen,
+    isTeaser: alert.groups !== undefined && props.isTeaser,
     group: alert.groups !== undefined ? convertFiles(state, 'group', getObject(state, 'group', alert.groups[0])) : null,
   };
 
@@ -40,7 +40,7 @@ const mapStateToProps = (state, props) => {
     ret.enter = () => props.navigation.push('WebsiteViewer', {title: alert.title, url: alert.url});
   }
 
-  if (alert.groups !== undefined && props.showGroupAndSkipMarkingAsSeen) {
+  if (alert.groups !== undefined && props.isTeaser) {
     ret.enter = () => props.navigation.push('AlertList', {groupId: alert.groups[0]});
   }
 

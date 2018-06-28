@@ -9,16 +9,16 @@ import {hairlineWidth, timeAgo} from "../util";
 import HTML from 'react-native-render-html';
 import type {GroupObject} from "../model/group";
 
-export default ({alert, group, isSeen, markSeen, enter, linkType, showGroupAndSkipMarkingAsSeen}: {
+export default ({alert, group, isSeen, markSeen, enter, linkType, isTeaser}: {
   alert: AlertObject,
   group: GroupObject,
   isSeen: boolean,
   markSeen: () => {},
   enter?: () => {},
   linkType?: 'document' | 'event' | 'factsheet' | 'kobo_form' | 'group' | 'url',
-  showGroupAndSkipMarkingAsSeen: boolean,
+  isTeaser: boolean,
 }) => {
-  const groupLabel = showGroupAndSkipMarkingAsSeen
+  const groupLabel = isTeaser
     ? <Text style={styles.group}>{group.title.toUpperCase()}</Text>
     : null;
 
@@ -28,7 +28,7 @@ export default ({alert, group, isSeen, markSeen, enter, linkType, showGroupAndSk
       <Text numberOfLines={4} ellipsizeMode="tail"
             style={[styles.title, isSeen ? null : styles.unseen]}>{alert.title}</Text>
       <Text style={styles.secondary}>{timeAgo(alert.created, 4, true)}</Text>
-      {alert.description !== undefined && alert.description && <HTML html={alert.description}/>}
+      {!isTeaser && alert.description !== undefined && alert.description && <HTML html={alert.description}/>}
     </View>,
   ];
 
@@ -41,7 +41,7 @@ export default ({alert, group, isSeen, markSeen, enter, linkType, showGroupAndSk
     'url': "globe",
   };
 
-  const linkTypeIcon = !showGroupAndSkipMarkingAsSeen && linkType !== undefined && icons[linkType] !== undefined
+  const linkTypeIcon = !isTeaser && linkType !== undefined && icons[linkType] !== undefined
     ? <FontAwesome
       name={icons[linkType]} size={18} color={vars.MEDIUM_GREY}
       style={styles.rightArrow}
@@ -55,7 +55,7 @@ export default ({alert, group, isSeen, markSeen, enter, linkType, showGroupAndSk
     ? <TouchableOpacity
       style={[styles.container, isSeen ? null : styles.containerUnseen]}
       onPress={() => {
-        if (!showGroupAndSkipMarkingAsSeen)
+        if (!isTeaser)
           markSeen();
         if (enter !== undefined) enter();
       }}

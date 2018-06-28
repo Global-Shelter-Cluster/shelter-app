@@ -31,7 +31,7 @@ export default ({loading, user, unseenAlerts, refresh}: {
     renderItem={({item}) => {
       switch (item.type) {
         case 'alert':
-          return <AlertListItemContainer id={item.id} showGroupAndSkipMarkingAsSeen/>;
+          return <AlertListItemContainer id={item.id} isTeaser/>;
         case 'group':
           return <GroupListItemContainer display="full" id={item.id}/>;
       }
