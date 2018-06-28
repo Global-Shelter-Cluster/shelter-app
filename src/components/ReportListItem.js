@@ -16,7 +16,7 @@ export default ({kobo_form, enter}: {
   const contents = [
     <View key="info" style={styles.info}>
       <Text numberOfLines={4} ellipsizeMode="tail" style={styles.title}>{kobo_form.title}</Text>
-      <HTML html={kobo_form.description}/>
+      {kobo_form.description !== undefined && <HTML html={kobo_form.description}/>}
     </View>,
   ];
 
