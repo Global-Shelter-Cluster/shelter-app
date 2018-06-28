@@ -10,11 +10,14 @@ import type tabs from "./AlertList";
 import AlertList from "./AlertList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
+import {isObjectSeen} from "../../model/alert";
 
 type Props = {
   online: boolean,
   loading: boolean,
   group: PublicGroupObject,
+  seen: Array<number>,
+  unseen: Array<number>,
   navigation: { setParams: ({}) => {} },
   refresh: () => {},
 }
@@ -26,10 +29,18 @@ type State = {
 const mapStateToProps = (state, props) => {
   const group: PublicGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
 
+  const seen: Array<number> = [];
+  const unseen: Array<number> = [];
+
+  if (group.alerts !== undefined)
+    group.alerts.map(id => isObjectSeen(state, 'alert', id) ? seen.push(id) : unseen.push(id));
+
   return {
     online: state.flags.online,
     loading: state.flags.loading,
-    group: group,
+    group,
+    seen,
+    unseen,
   };
 };
 
@@ -54,7 +65,7 @@ class AlertListScreen extends React.Component<Props, State> {
 
   shouldComponentUpdate(nextProps, nextState) {
     return !propEqual(this.state, nextState, ['tab'])
-      || !propEqual(this.props, nextProps, ['online', 'loading'], ['group']);
+      || !propEqual(this.props, nextProps, ['online', 'loading'], ['group', 'seen', 'unseen']);
   }
 
   componentWillMount() {
