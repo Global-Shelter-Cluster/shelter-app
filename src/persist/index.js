@@ -238,7 +238,8 @@ class Persist {
 
   async login(user: string, pass: string) {
     // Always get user data from remote on login
-    const objects = await this.remote.login(user, pass);
+    const results = await this.remote.login(user, pass);
+    const objects = results.objects;
 
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);
@@ -410,7 +411,9 @@ class Persist {
         loadImmediately.push(...expired); // Might as well load the expired objects in the same call
         skipLoadingExpiredObjects = true; // Flag to stop from doing this twice
 
-        const newObjects: Objects = await this.remote.loadObjects(loadImmediately);
+        const result = await this.remote.loadObjects(loadImmediately);
+        const newObjects = result.objects;
+
         this.updateLastRead(newObjects);
         await this.dispatchObjects(newObjects);
         this.saveObjects(newObjects);

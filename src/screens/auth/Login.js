@@ -17,7 +17,7 @@ export default ({login, online, loggingIn}: {
   else if (loggingIn)
     button = <Text style={styles.text}>Logging in...</Text>;
   else
-    button = <Button primary onPress={() => login("myuser", "mypwd")} title="Log in"/>;
+    button = <Button primary onPress={() => login("Camilo", "test")} title="Log in"/>;
 
   return (
     <View style={styles.container}>
