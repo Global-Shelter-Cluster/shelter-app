@@ -63,7 +63,7 @@ class FactsheetScreen extends React.Component<Props> {
   }
 
   title(date) {
-    return moment(date).format('MMM YYYY') + ' Factsheet';
+    return moment(date).utc().format('MMM YYYY') + ' Factsheet';
   }
 
   render() {

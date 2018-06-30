@@ -26,13 +26,13 @@ export default FactsheetNavigation = ({prev, next, enter}: {
         style={styles.icon}
       />
       <SingleLineText
-        style={styles.label}>{moment(prev.date).format('MMM YYYY')}</SingleLineText>
+        style={styles.label}>{moment(prev.date).utc().format('MMM YYYY')}</SingleLineText>
     </TouchableOpacity>);
 
   if (next)
     links.push(<TouchableOpacity key="next" onPress={() => enter(next.id)} style={styles.linkContainer}>
       <SingleLineText
-        style={[styles.label, {textAlign: "right"}]}>{moment(next.date).format('MMM YYYY')}</SingleLineText>
+        style={[styles.label, {textAlign: "right"}]}>{moment(next.date).utc().format('MMM YYYY')}</SingleLineText>
       <FontAwesome
         name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
         style={styles.icon}

@@ -62,7 +62,7 @@ export default class EventActions extends React.Component<Props, State> {
           <MapView.Marker
             coordinate={{latitude: event.geo.lat, longitude: event.geo.lon}}
             title={event.title}
-            description={moment(event.date).format('D MMM YYYY, h:mm a')}
+            description={moment(event.date).utc().format('D MMM YYYY, h:mm a')}
           />
         </MapView>;
         break;
