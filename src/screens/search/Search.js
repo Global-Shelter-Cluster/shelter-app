@@ -6,31 +6,16 @@ import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 import type {GlobalObject} from "../../model/global";
 import {InstantSearch} from 'react-instantsearch/native';
-import {connectHighlight, connectInfiniteHits, connectSearchBox} from 'react-instantsearch/connectors';
+import {connectInfiniteHits, connectSearchBox} from 'react-instantsearch/connectors';
 import vars from "../../vars";
 import {hairlineWidth} from "../../util";
+import DocumentResult from "../../components/search/DocumentResult";
+import EventResult from "../../components/search/EventResult";
+import GroupResult from "../../components/search/GroupResult";
+import PageResult from "../../components/search/PageResult";
+import ResultHighlight from "../../components/search/ResultHighlight";
 
-const Highlight = connectHighlight(
-  ({highlight, attribute, hit}) => {
-    const parsedHit = highlight({
-      attribute,
-      hit,
-      highlightProperty: '_highlightResult',
-    });
-    const highlightedHit = parsedHit.map((part, idx) => {
-      if (part.isHighlighted)
-        return (
-          <Text key={idx} style={{fontWeight: 'bold'}}>
-            {part.value}
-          </Text>
-        );
-      return part.value;
-    });
-    return <Text>{highlightedHit}</Text>;
-  }
-);
-
-const Hits = connectInfiniteHits(({hits, hasMore, refine}) => {
+const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   const onEndReached = function () {
     if (hasMore)
       refine();
@@ -49,18 +34,19 @@ const Hits = connectInfiniteHits(({hits, hasMore, refine}) => {
           return <View style={{height: 300}}/>;
         // console.log(item);
 
-        return (
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{flex: 1}}>
-              <Text>
-                <Highlight attribute="title" hit={item}/>
-              </Text>
-              <Text>
-                {item.type}
-              </Text>
-            </View>
-          </View>
-        );
+        return renderItem(item);
+        // return (
+        //   <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        //     <View style={{flex: 1}}>
+        //       <Text>
+        //         <Highlight attribute="title" hit={item}/>
+        //       </Text>
+        //       <Text>
+        //         {item.type}
+        //       </Text>
+        //     </View>
+        //   </View>
+        // );
       }}
     />
   );
@@ -77,6 +63,7 @@ const SearchBox = connectSearchBox(({refine, currentRefinement}) => {
     borderColor: vars.SHELTER_DARK_BLUE,
     padding: 10,
     marginHorizontal: 20,
+    marginBottom: 10,
     borderBottomLeftRadius: 3,
     borderBottomRightRadius: 3,
   };
@@ -96,19 +83,62 @@ const SearchBox = connectSearchBox(({refine, currentRefinement}) => {
   );
 });
 
-export default ({online, loading, tab, global, changeTab}: {
+export default ({online, loading, tab, global, changeTab, navigation}: {
   online: boolean,
   loading: boolean,
   tab: tabs,
   global: GlobalObject,
   changeTab: (tab: string) => {},
+  navigation: { push: (string, {}) => {} },
 }) => {
   const tabs: tabsDefinition = {
-    "documents": {label: "Documents", icon: "file-o"},
-    "events": {label: "Events", icon: "calendar"},
-    "groups": {label: "Groups", icon: "users"},
-    "pages": {label: "Pages", icon: "globe"},
-    "contacts": {label: "Contacts", icon: "address-card-o"},
+    "documents": {
+      label: "Documents",
+      icon: "file-o",
+      renderSearchResult: item => <DocumentResult
+        result={item} enter={() => navigation.push('Document', {documentId: parseInt(item.objectID, 10)})}
+      />,
+    },
+    "events": {
+      label: "Events",
+      icon: "calendar",
+      renderSearchResult: item => <EventResult
+        result={item} enter={() => navigation.push('Event', {eventId: parseInt(item.objectID, 10)})}
+      />,
+    },
+    "groups": {
+      label: "Groups",
+      icon: "users",
+      renderSearchResult: item => <GroupResult
+        result={item} enter={() => navigation.push('Group', {groupId: parseInt(item.objectID, 10)})}
+      />,
+    },
+    "pages": {
+      label: "Pages",
+      icon: "globe",
+      renderSearchResult: item => {
+        const plainTitle = item._highlightResult.title.value.replace(/<[^>]*>/g, '');
+        return <PageResult
+          result={item} enter={() => navigation.push('WebsiteViewer', {url: item.url, title: plainTitle})}
+        />;
+      },
+    },
+    // "contacts": {
+    //   label: "Contacts",
+    //   icon: "address-card-o",
+    //   renderSearchResult: item => (
+    //     <View style={{flexDirection: 'row', alignItems: 'center'}}>
+    //       <View style={{flex: 1}}>
+    //         <Text>
+    //           <ResultHighlight attribute="title" hit={item}/>
+    //         </Text>
+    //         <Text>
+    //           {item.type}
+    //         </Text>
+    //       </View>
+    //     </View>
+    //   ),
+    // },
   };
 
   const indexName = global.algolia_prefix + tab.charAt(0).toUpperCase() + tab.substr(1);
@@ -126,7 +156,7 @@ export default ({online, loading, tab, global, changeTab}: {
       appId={global.algolia_app_id} apiKey={global.algolia_search_key} indexName={indexName}
     >
       <SearchBox/>
-      <Hits/>
+      <Hits renderItem={tabs[tab] !== undefined ? tabs[tab].renderSearchResult : () => null}/>
     </InstantSearch>
   </View>;
 }
