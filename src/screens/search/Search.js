@@ -13,7 +13,7 @@ import DocumentResult from "../../components/search/DocumentResult";
 import EventResult from "../../components/search/EventResult";
 import GroupResult from "../../components/search/GroupResult";
 import PageResult from "../../components/search/PageResult";
-import ResultHighlight from "../../components/search/ResultHighlight";
+import searchResultStyles from "../../styles/searchResultStyles";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   const onEndReached = function () {
@@ -22,7 +22,8 @@ const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   };
 
   hits = hits.filter(item => item.objectID !== null);
-  hits.push({objectID: null});
+  if (hits.length > 0)
+    hits.push({objectID: null});
 
   return (
     <FlatList
@@ -31,22 +32,9 @@ const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
       keyExtractor={item => item.objectID}
       renderItem={({item}) => {
         if (item.objectID === null)
-          return <View style={{height: 300}}/>;
-        // console.log(item);
+          return <View style={[{height: 300}, searchResultStyles.container]}/>;
 
         return renderItem(item);
-        // return (
-        //   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        //     <View style={{flex: 1}}>
-        //       <Text>
-        //         <Highlight attribute="title" hit={item}/>
-        //       </Text>
-        //       <Text>
-        //         {item.type}
-        //       </Text>
-        //     </View>
-        //   </View>
-        // );
       }}
     />
   );

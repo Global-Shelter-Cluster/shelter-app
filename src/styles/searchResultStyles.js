@@ -7,7 +7,7 @@ import {hairlineWidth} from "../util";
 export default searchResultStyles = StyleSheet.create({
   container: {
     borderColor: vars.LIGHT_GREY,
-    borderBottomWidth: hairlineWidth,
+    borderTopWidth: hairlineWidth,
     padding: 10,
   },
   title: {
