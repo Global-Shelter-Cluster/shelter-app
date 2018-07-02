@@ -35,7 +35,13 @@ export const clearAllObjects = () => ({
 export const login = (user: string, pass: string) => async dispatch => {
   dispatch(changeFlag("loggingIn", true));
   try {
-    await persist.login(user, pass);
+    let result = await persist.login(user, pass);
+
+    if (result && result.authorization.code != '200') {
+      let error_data = result.authorization;
+      dispatch(setLastError('login-error', {type: 'user', error_data}));
+      console.log("Error on login");
+    }
   } catch (e) {
     console.error("Error on login:", e);
   }

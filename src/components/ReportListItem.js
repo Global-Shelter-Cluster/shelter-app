@@ -12,7 +12,6 @@ export default ({kobo_form, enter}: {
   enter: () => {},
 }) => {
 
-  console.log(kobo_form.description);
   const contents = [
     <View key="info" style={styles.info}>
       <Text numberOfLines={4} ellipsizeMode="tail" style={styles.title}>{kobo_form.title}</Text>

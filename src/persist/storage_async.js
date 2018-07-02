@@ -8,4 +8,5 @@ export default Storage = {
   multiGet: AsyncStorage.multiGet.bind(AsyncStorage),
   multiSet: AsyncStorage.multiSet.bind(AsyncStorage),
   clear: AsyncStorage.clear.bind(AsyncStorage),
+  removeItem: AsyncStorage.removeItem.bind(AsyncStorage),
 }

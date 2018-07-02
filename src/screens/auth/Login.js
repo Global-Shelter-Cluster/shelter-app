@@ -5,6 +5,8 @@ import {ImageBackground, StatusBar, StyleSheet, Text, TextInput, View, KeyboardA
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
+import type {lastErrorType} from "../../reducers/lastError";
+import equal from 'deep-equal';
 
 const Form = t.form.Form;
 
@@ -12,12 +14,16 @@ type Props = {
   login: () => {},
   online: boolean,
   loggingIn: boolean,
+  lastError: lastErrorType,
 }
 
 export default class Login extends React.Component<Props> {
   render() {
-    const {login, online, loggingIn} = this.props;
-
+    const {login, online, loggingIn, lastError} = this.props;
+    let error;
+    if (lastError.data) {
+      error = <Text style={styles.text}>{lastError.data.error_data.error_description}</Text>;
+    }
     let button;
     if (!online)
       button = <Text style={styles.text}>No internet connection detected.</Text>;
@@ -38,6 +44,7 @@ export default class Login extends React.Component<Props> {
         </ImageBackground>
         <View style={styles.innerContainer}>
           <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
+          {error}
           {online && !loggingIn && <Form ref="form" type={formFields} options={formOptions}/>}
           {button}
         </View>

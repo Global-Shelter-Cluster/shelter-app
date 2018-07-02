@@ -74,10 +74,12 @@ class Persist {
     await this.initDirectory(FileSystem.documentDirectory + 'persisted');
 
     try {
-      //// TODO for JM
-      // const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
-      // if (authString)
-      //   this.remote.auth = JSON.parse(authString);
+      const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
+      if (authString) {
+        console.log('Persist says authString: ', authString);
+        this.remote.auth = JSON.parse(authString);
+        console.log(this.remote.auth);
+      }
 
       const currentUserId: string | null = await Storage.getItem(Persist.cacheKey('currentUser'));
       if (currentUserId === null)
@@ -231,6 +233,10 @@ class Persist {
 
   clearAll(force: boolean = false) {
     Storage.clear();
+    // @TODO This does not seem to work.
+    Storage.removeItem(Persist.cacheKey('auth'));
+
+    this.saveAuthTokens(null);
     this.store.dispatch(replaceAllSeenObjects(initialObjectIdsState));
     console.debug('Cleared storage');
     if (force || config.deleteFilesOnLogout) {
@@ -241,20 +247,26 @@ class Persist {
     }
   }
 
-  //// TODO for JM
-  // async saveAuthTokens(token1, token2) {
-  //   await Storage.setItem(Persist.cacheKey('auth'), JSON.stringify({token1, token2});
-  // }
+  async saveAuthTokens(token) {
+    console.log('persist::saveAuthTokens: ', token);
+    if (token && token.code == '200') {
+      await Storage.setItem(Persist.cacheKey('auth'), JSON.stringify(token));
+    }
+  }
+
+  async deleteAuthTokens() {
+    await Storage.removeItem(Persist.cacheKey('auth'));
+  }
 
   async login(user: string, pass: string) {
     // Always get user data from remote on login
     const results = await this.remote.login(user, pass);
+
+    if (results.authorization.code != '200') {
+      return results;
+    }
     const objects = results.objects;
 
-    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&', '\n', results);
-
-
-    console.log('*************************************************', '\n', '\n');
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);
     this.saveObjects(objects);

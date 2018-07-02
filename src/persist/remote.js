@@ -32,21 +32,41 @@ const axios = axiosLib.create({
  * Is not allowed to talk to the redux store or the app itself.
  */
 class Remote {
-  //// TODO for JM
-  // auth: {token1: string, token2: string} = null;
+  auth: {access_token: string, expires_in: string, expires_at: string, scope: string, refresh_token: string, token_type: string} = null;
 
   async _post(path: string, data = null) {
     //console.debug('Axios POST request', path, data);
     try {
-      // @TODO Augment data with appropriate credentials according to access_token expiry
-      // or prensence of 'credentials' key in data.
-      //// TODO for JM
-      // if (this.auth) {
-      //   console.log(this.auth.token1);
-      //   console.log(this.auth.token2);
-      // }
+
+      // TODO match with authorization header.
+      let axiosConfigs = config.axiosExtra;
+
+      if (this.auth) {
+        console.log('this.auth: ', this.auth);
+        // Add access token to authorization header.
+        const now = Math.floor(Date.now() / 1000);
+        if (this.auth.expires_at > now) {
+          // console.log(config.axiosExtra);
+          axiosConfigs = {
+            headers: {'Authorization': "Bearer " + this.auth.access_token}
+          };
+        }
+
+        // Try to use resfresh token.
+        else {
+          data.credentials = {
+            'type': 'refresh_token',
+            'refresh_token': this.auth.refresh_token,
+            'client_id': 'shelter-client',
+            'scope': 'response',
+          }
+        }
+      }
+
       data = data ? JSON.stringify(data) : null;
-      const response = await axios.post(path, data, config.axiosExtra);
+
+      const response = await axios.post(path, data, axiosConfigs);
+
       //console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
 
       //console.debug('Axios response', response.data);
@@ -70,7 +90,7 @@ class Remote {
   }
 
   async login(username: string, password: string): Objects {
-    const data = this._post('/get-objects', {
+    const data = await this._post('/get-objects', {
       'objects': [{type: 'global', id: 1}],
       'credentials': {
         'type': 'password',
@@ -81,15 +101,15 @@ class Remote {
       }
     });
 
-    //// TODO for JM
-    // persist.saveAuthTokens(token1, token2);
-    // this.auth = {token1, token2};
+    console.log('remote::login: ', data.authorization);
+    persist.saveAuthTokens(data.authorization);
+    this.auth = data.authorization;
 
     return data;
   }
 
   async loadObjects(requests: Array<ObjectRequest>): Objects {
-    return this._post('/get-objects', {'objects': requests});
+    return this._post('/get-objects', {objects: requests});
   }
 
   async followGroup(id: number): Objects {
