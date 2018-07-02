@@ -241,6 +241,10 @@ class Persist {
     const results = await this.remote.login(user, pass);
     const objects = results.objects;
 
+    console.log('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&', '\n', results);
+
+
+    console.log('*************************************************', '\n', '\n');
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);
     this.saveObjects(objects);

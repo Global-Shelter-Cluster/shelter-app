@@ -1,9 +1,14 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, StyleSheet, Text, View, StatusBar} from 'react-native';
+import {ImageBackground, StyleSheet, Text, View, StatusBar, TextInput} from 'react-native';
 import Button from "../../components/Button";
 import vars from "../../vars";
+
+let creds = {
+  'password': '',
+  'username': '',
+}
 
 export default ({login, online, loggingIn}: {
   login: () => {},
@@ -11,13 +16,29 @@ export default ({login, online, loggingIn}: {
   loggingIn: boolean,
 }) => {
   let button;
+  let inputs;
 
   if (!online)
     button = <Text style={styles.text}>No internet connection detected.</Text>;
   else if (loggingIn)
     button = <Text style={styles.text}>Logging in...</Text>;
-  else
-    button = <Button primary onPress={() => login("Camilo", "test")} title="Log in"/>;
+  else {
+    button = <Button primary onPress={() => login(creds.username, creds.password)} title="Log in"/>;
+    inputs = (
+      <View>
+        <Text>Username:</Text>
+        <TextInput
+          style={styles.textinput}
+          onChangeText={(text) => creds.username = text}
+        />
+        <Text>Password:</Text>
+        <TextInput
+          style={styles.textinput}
+          onChangeText={(text) => creds.password = text}
+        />
+        </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -27,6 +48,7 @@ export default ({login, online, loggingIn}: {
       <ImageBackground style={styles.image} source={require('../../../assets/login.jpg')}/>
       <View style={styles.innerContainer}>
         <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
+        {inputs}
         {button}
       </View>
     </View>
@@ -40,7 +62,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "100%",
+    height: "55%",
     flexShrink: 1,
   },
   innerContainer: {
@@ -60,4 +82,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "white",
   },
+  textinput: {
+    height: 40,
+  }
 });
