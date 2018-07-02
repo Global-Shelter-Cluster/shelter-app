@@ -74,6 +74,11 @@ class Persist {
     await this.initDirectory(FileSystem.documentDirectory + 'persisted');
 
     try {
+      //// TODO for JM
+      // const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
+      // if (authString)
+      //   this.remote.auth = JSON.parse(authString);
+
       const currentUserId: string | null = await Storage.getItem(Persist.cacheKey('currentUser'));
       if (currentUserId === null)
         return;
@@ -235,6 +240,11 @@ class Persist {
       console.debug('Deleted all files');
     }
   }
+
+  //// TODO for JM
+  // async saveAuthTokens(token1, token2) {
+  //   await Storage.setItem(Persist.cacheKey('auth'), JSON.stringify({token1, token2});
+  // }
 
   async login(user: string, pass: string) {
     // Always get user data from remote on login

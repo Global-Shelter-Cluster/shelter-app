@@ -2,9 +2,9 @@
 
 import type {Objects} from "../model";
 import type {ObjectRequest} from "./index";
+import persist from "./index";
 import axiosLib from 'axios';
 import config from "../config";
-import {getCurrentUser} from "../model/user";
 
 const axios = axiosLib.create({
   baseURL: config.baseUrl + '/api-v1',
@@ -32,11 +32,19 @@ const axios = axiosLib.create({
  * Is not allowed to talk to the redux store or the app itself.
  */
 class Remote {
+  //// TODO for JM
+  // auth: {token1: string, token2: string} = null;
+
   async _post(path: string, data = null) {
     //console.debug('Axios POST request', path, data);
     try {
       // @TODO Augment data with appropriate credentials according to access_token expiry
       // or prensence of 'credentials' key in data.
+      //// TODO for JM
+      // if (this.auth) {
+      //   console.log(this.auth.token1);
+      //   console.log(this.auth.token2);
+      // }
       data = data ? JSON.stringify(data) : null;
       const response = await axios.post(path, data, config.axiosExtra);
       //console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
@@ -62,7 +70,7 @@ class Remote {
   }
 
   async login(username: string, password: string): Objects {
-    return this._post('/get-objects', {
+    const data = this._post('/get-objects', {
       'objects': [{type: 'global', id: 1}],
       'credentials': {
         'type': 'password',
@@ -72,6 +80,12 @@ class Remote {
         'scope': 'response',
       }
     });
+
+    //// TODO for JM
+    // persist.saveAuthTokens(token1, token2);
+    // this.auth = {token1, token2};
+
+    return data;
   }
 
   async loadObjects(requests: Array<ObjectRequest>): Objects {
