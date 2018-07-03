@@ -34,7 +34,7 @@ export default ({user, showEdit, edit}: {
     <View style={{flexShrink: 1}}>
       <Text style={styles.name}>{user.name}</Text>
       {org_role}
-      {showEdit && <Button primary onPress={edit} title="Edit" icon="pencil"/>}
+      {/*showEdit && <Button primary onPress={edit} title="Edit" icon="pencil"/>*/}
     </View>
     <Image key={user.picture} style={styles.photo} source={{uri: user.picture}}/>
   </View>;
