@@ -34,42 +34,54 @@ const axios = axiosLib.create({
 class Remote {
   auth: {access_token: string, expires_in: string, expires_at: string, scope: string, refresh_token: string, token_type: string} = null;
 
+  getAuthSettings() {
+    let update_token, axiosConfigs, data;
+
+    if (this.auth) {
+      //console.log('this.auth: ', this.auth);
+      // Add access token to authorization header.
+      const now = Math.floor(Date.now() / 1000);
+      if (this.auth.expires_at > now) {
+        // console.log(config.axiosExtra);
+        axiosConfigs = {
+          headers: {'Authorization': "Bearer " + this.auth.access_token}
+        };
+      }
+
+      // Access token is expired, try to use resfresh token.
+      else {
+        data.credentials = {
+          'type': 'refresh_token',
+          'refresh_token': this.auth.refresh_token,
+          'client_id': 'shelter-client',
+          'scope': 'response',
+        }
+        update_token = true;
+      }
+    }
+
+    return {update_token, axiosConfigs, data};
+  }
+
   async _post(path: string, data = null) {
     let update_token = false;
     //console.debug('Axios POST request', path, data);
     try {
 
-      // TODO match with authorization header.
-      let axiosConfigs = config.axiosExtra;
-      if (this.auth) {
-        //console.log('this.auth: ', this.auth);
-        // Add access token to authorization header.
-        const now = Math.floor(Date.now() / 1000);
-        if (this.auth.expires_at > now) {
-          // console.log(config.axiosExtra);
-          axiosConfigs = {
-            headers: {'Authorization': "Bearer " + this.auth.access_token}
-          };
-        }
+      // TODO decide if we want to maintain basic auth on dev and exclude service routes.
+      // config.axiosExtra;
+      const authSettings = this.getAuthSettings();
 
-        // Access token is expired, try to use resfresh token.
-        else {
-          data.credentials = {
-            'type': 'refresh_token',
-            'refresh_token': this.auth.refresh_token,
-            'client_id': 'shelter-client',
-            'scope': 'response',
-          }
-          update_token = true;
-        }
+      if (authSettings.data) {
+        data.credentials = authSettings.data.credentials;
       }
 
       data = data ? JSON.stringify(data) : null;
 
-      const response = await axios.post(path, data, axiosConfigs);
+      const response = await axios.post(path, data, authSettings.axiosConfigs);
 
       // Update token after using refresh_token.
-      if (update_token && response.status == '200' && response.data.authorization.code == '200') {
+      if (authSettings.update_token && response.status == '200' && response.data.authorization.code == '200') {
         persist.saveAuthTokens(response.data.authorization);
         this.auth = response.data.authorization;
       }
@@ -79,18 +91,6 @@ class Remote {
       //console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
 
       //console.debug('Axios response', response.data);
-      return response.data;
-    } catch (e) {
-      //console.error('Axios error', e);
-      throw e;
-    }
-  }
-
-  async _delete(path: string) {
-    //console.debug('Axios DELETE request', path);
-    try {
-      const response = await axios.delete(path, config.axiosExtra);
-      //console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
       return response.data;
     } catch (e) {
       //console.error('Axios error', e);
@@ -122,11 +122,11 @@ class Remote {
   }
 
   async followGroup(id: number): Objects {
-    return this._post('/follow/' + id);
+    return this._post('/follow/' + id, {'action': 'follow'});
   }
 
   async unfollowGroup(id: number): Objects {
-    return this._delete('/follow/' + id);
+    return this._post('/follow/' + id, {'action': 'unfollow'});
   }
 }
 
