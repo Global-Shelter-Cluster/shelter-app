@@ -5,6 +5,8 @@ import {Button, Text, TouchableOpacity, View} from 'react-native';
 import type {downloadProgressType} from "../reducers/downloadProgress";
 import persist from "../persist";
 import config from "../config";
+import {hairlineWidth} from "../util";
+import vars from "../vars";
 
 const IndicatorRow = ({isOnline, setOnline, downloadProgress}: {
   isOnline: boolean,
@@ -33,6 +35,8 @@ const IndicatorRow = ({isOnline, setOnline, downloadProgress}: {
     width: "100%",
     alignItems: "center",
     padding: 10,
+    borderColor: vars.LIGHT_GREY,
+    borderTopWidth: hairlineWidth,
   }}>
     {downloadIndicator}
     {onlineIndicator}

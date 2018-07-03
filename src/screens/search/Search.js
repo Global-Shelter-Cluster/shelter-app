@@ -1,7 +1,18 @@
 // @flow
 
 import React from 'react';
-import {FlatList, Image, RefreshControl, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  Linking,
+  Platform,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 import type {GlobalObject} from "../../model/global";
@@ -139,12 +150,32 @@ export default ({online, loading, tab, global, changeTab, navigation}: {
       changeTab={changeTab}
       tabs={tabs}
     />
-    <InstantSearch
-      key={tab}
-      appId={global.algolia_app_id} apiKey={global.algolia_search_key} indexName={indexName}
-    >
-      <SearchBox/>
-      <Hits renderItem={tabs[tab] !== undefined ? tabs[tab].renderSearchResult : () => null}/>
-    </InstantSearch>
+    <View style={{flex: 1}}>
+      <InstantSearch
+        key={tab}
+        appId={global.algolia_app_id} apiKey={global.algolia_search_key} indexName={indexName}
+      >
+        <SearchBox/>
+        <Hits renderItem={tabs[tab] !== undefined ? tabs[tab].renderSearchResult : () => null}/>
+      </InstantSearch>
+    </View>
+    <TouchableOpacity onPress={() => Linking.openURL('https://algolia.com')} style={styles.algoliaContainer}>
+      <Image source={require('../../../assets/algolia.png')} style={styles.algoliaLogo}/>
+    </TouchableOpacity>
   </View>;
 }
+
+const styles = StyleSheet.create({
+  algoliaContainer: {
+    width: "100%",
+    padding: 10,
+    alignItems: "center",
+    backgroundColor: "#E9E9EF",
+    borderColor: vars.LIGHT_GREY,
+    borderTopWidth: hairlineWidth,
+  },
+  algoliaLogo: {
+    width: 130,
+    height: 19,
+  },
+});
