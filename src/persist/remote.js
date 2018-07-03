@@ -102,9 +102,10 @@ class Remote {
     });
 
     console.log('remote::login: ', data.authorization);
-    persist.saveAuthTokens(data.authorization);
-    this.auth = data.authorization;
-
+    if (data.authorization.code == '200' && data.authorization.access_token) {
+      persist.saveAuthTokens(data.authorization);
+      this.auth = data.authorization;
+    }
     return data;
   }
 

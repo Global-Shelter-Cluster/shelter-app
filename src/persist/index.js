@@ -236,7 +236,7 @@ class Persist {
     // @TODO This does not seem to work.
     Storage.removeItem(Persist.cacheKey('auth'));
 
-    this.saveAuthTokens(null);
+    Storage.setItem(Persist.cacheKey('auth'), null);
     this.store.dispatch(replaceAllSeenObjects(initialObjectIdsState));
     console.debug('Cleared storage');
     if (force || config.deleteFilesOnLogout) {
@@ -249,7 +249,7 @@ class Persist {
 
   async saveAuthTokens(token) {
     console.log('persist::saveAuthTokens: ', token);
-    if (token && token.code == '200') {
+    if (token && token.code == '200' && token.access_token) {
       await Storage.setItem(Persist.cacheKey('auth'), JSON.stringify(token));
     }
   }
