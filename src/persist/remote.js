@@ -35,14 +35,14 @@ class Remote {
   auth: {access_token: string, expires_in: string, expires_at: string, scope: string, refresh_token: string, token_type: string} = null;
 
   async _post(path: string, data = null) {
+    let update_token = false;
     //console.debug('Axios POST request', path, data);
     try {
 
       // TODO match with authorization header.
       let axiosConfigs = config.axiosExtra;
-
       if (this.auth) {
-        console.log('this.auth: ', this.auth);
+        //console.log('this.auth: ', this.auth);
         // Add access token to authorization header.
         const now = Math.floor(Date.now() / 1000);
         if (this.auth.expires_at > now) {
@@ -52,7 +52,7 @@ class Remote {
           };
         }
 
-        // Try to use resfresh token.
+        // Access token is expired, try to use resfresh token.
         else {
           data.credentials = {
             'type': 'refresh_token',
@@ -60,12 +60,21 @@ class Remote {
             'client_id': 'shelter-client',
             'scope': 'response',
           }
+          update_token = true;
         }
       }
 
       data = data ? JSON.stringify(data) : null;
 
       const response = await axios.post(path, data, axiosConfigs);
+
+      // Update token after using refresh_token.
+      if (update_token && response.status == '200' && response.data.authorization.code == '200') {
+        persist.saveAuthTokens(response.data.authorization);
+        this.auth = response.data.authorization;
+      }
+
+      // @TODO handle failure.
 
       //console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
 
@@ -101,7 +110,6 @@ class Remote {
       }
     });
 
-    console.log('remote::login: ', data.authorization);
     if (data.authorization.code == '200' && data.authorization.access_token) {
       persist.saveAuthTokens(data.authorization);
       this.auth = data.authorization;
