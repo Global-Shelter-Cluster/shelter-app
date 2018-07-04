@@ -19,7 +19,7 @@ export default ({event, enter}: {
   const contents = [
     <View key="info" style={styles.info}>
       <Text numberOfLines={4} ellipsizeMode="tail" style={styles.title}>{event.title}</Text>
-      <Text style={styles.secondary}>{moment(event.date).format('D MMM YYYY')}</Text>
+      <Text style={styles.secondary}>{moment(event.date).utc().format('D MMM YYYY')}</Text>
     </View>,
     map,
   ];

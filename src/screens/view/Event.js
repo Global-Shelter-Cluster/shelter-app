@@ -36,7 +36,7 @@ export default ({online, event, loaded, refresh, loading, lastError}: {
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     >
       <Text style={styles.title}>{event.title}</Text>
-      <Text style={styles.secondary}>{moment(event.date).format('D MMM YYYY, h:mm a')}</Text>
+      <Text style={styles.secondary}>{moment(event.date).utc().format('D MMM YYYY, h:mm a')}</Text>
       <ContextualNavigation object={event}/>
       <View style={styles.info}>
         <View style={{flex: 1}}>

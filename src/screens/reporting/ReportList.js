@@ -6,6 +6,8 @@ import type {PrivateGroupObject} from "../../model/group";
 import ReportListItemContainer from "../../containers/ReportListItemContainer";
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
+import {hairlineWidth} from "../../util";
+import vars from "../../vars";
 
 export default ({loading, group, refresh}: {
   loading: boolean,
@@ -17,6 +19,11 @@ export default ({loading, group, refresh}: {
   };
   const tab = 'all';
 
+  const ids = group.kobo_forms !== undefined ? group.kobo_forms.filter(item => !!item) : [];
+  if (ids.length > 0)
+    ids.push(null);
+  console.log('ids',ids);
+
   return <View style={{flex: 1}}>
     <Tabs
       current={tab}
@@ -24,8 +31,17 @@ export default ({loading, group, refresh}: {
       tabs={tabs}
     />
     {group.kobo_forms !== undefined && <FlatList
-      data={group.kobo_forms.map(id => ({key: '' + id, id: id}))}
-      renderItem={({item}) => <ReportListItemContainer id={item.id}/>}
+      data={ids}
+      keyExtractor={item => item ? '' + item : 'end'}
+      renderItem={({item}) => {
+        if (item === null)
+          return <View style={{
+            borderColor: vars.LIGHT_GREY,
+            borderTopWidth: hairlineWidth,
+          }}/>;
+
+        return <ReportListItemContainer id={item}/>;
+      }}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     />}
   </View>;

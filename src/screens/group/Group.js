@@ -9,6 +9,7 @@ import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import GroupDashboardContainer from "../../containers/GroupDashboardContainer";
 import Loading from "../../components/Loading";
+import Error from "../../components/Error";
 
 export default ({online, group, loaded, factsheet, refresh, follow, unfollow, loading, lastError}: {
   online: boolean,
@@ -22,9 +23,10 @@ export default ({online, group, loaded, factsheet, refresh, follow, unfollow, lo
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'group', id: group.id}}))
-    return <Button
-      onPress={refresh}
-      title="Error loading, please check your connection and try again"
+    return <Error
+      action={refresh}
+      buttonLabel="Try again"
+      description="Error loading data, please check your connection"
     />;
   if (!loaded)
     return <Loading/>;

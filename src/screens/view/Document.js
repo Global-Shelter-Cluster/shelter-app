@@ -36,7 +36,7 @@ export default ({online, document, loaded, refresh, loading, lastError}: {
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     >
       <Text style={styles.title}>{document.title}</Text>
-      <Text style={styles.secondary}>{moment(document.date).format('D MMM YYYY')}</Text>
+      <Text style={styles.secondary}>{moment(document.date).utc().format('D MMM YYYY')}</Text>
       <ContextualNavigation object={document}/>
       <View style={styles.info}>
         {document.preview !== undefined && document.preview &&

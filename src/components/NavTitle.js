@@ -17,9 +17,6 @@ const NavTitle = ({online, title, downloading}: {
     icon = <FontAwesome key="online" name="wifi" size={20} color={vars.ACCENT_RED}/>;
   else if (downloading.total > 0) {
     const downloadingIcons = [
-      // 'hourglass-start',
-      // 'hourglass-half',
-      // 'hourglass-end',
       'hourglass-01',
       'hourglass-02',
       'hourglass-03',

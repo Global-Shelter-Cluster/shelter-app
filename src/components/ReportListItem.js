@@ -34,7 +34,7 @@ export default ({kobo_form, enter}: {
 const styles = StyleSheet.create({
   container: {
     borderColor: vars.LIGHT_GREY,
-    borderBottomWidth: hairlineWidth,
+    borderTopWidth: hairlineWidth,
     flexDirection: "row",
     padding: 10,
   },
