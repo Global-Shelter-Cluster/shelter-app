@@ -28,6 +28,7 @@ import {GLOBAL_OBJECT_ID} from "../model/global";
 import {getExtension} from "../util";
 import type {PrivateUserObject} from "../model/user";
 import {getCurrentUser} from "../model/user";
+import {getPushToken} from "../push.js";
 
 export type ObjectRequest = {
   type: ObjectType,
@@ -76,9 +77,7 @@ class Persist {
     try {
       const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
       if (authString) {
-        console.log('Persist says authString: ', authString);
         this.remote.auth = JSON.parse(authString);
-        console.log(this.remote.auth);
       }
 
       const currentUserId: string | null = await Storage.getItem(Persist.cacheKey('currentUser'));
@@ -249,7 +248,6 @@ class Persist {
   }
 
   async saveAuthTokens(token) {
-    console.log('persist::saveAuthTokens: ', token);
     if (token && token.code == '200' && token.access_token) {
       await Storage.setItem(Persist.cacheKey('auth'), JSON.stringify(token));
     }
@@ -261,7 +259,8 @@ class Persist {
 
   async login(user: string, pass: string) {
     // Always get user data from remote on login
-    const results = await this.remote.login(user, pass);
+    const pushToken = await getPushToken();
+    const results = await this.remote.login(user, pass, pushToken);
 
     if (results.authorization.code != '200') {
       return results;

@@ -37,6 +37,10 @@ export default class Login extends React.Component<Props> {
       }} title="Log in"/>;
     }
 
+    let register = <Button onPress={async () => {
+      console.log('Work in progress');
+    }} title="Register"/>;
+
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <StatusBar barStyle="light-content"/>
@@ -47,6 +51,7 @@ export default class Login extends React.Component<Props> {
           {error}
           {online && !loggingIn && <Form ref="form" type={formFields} options={formOptions}/>}
           {button}
+          {register}
         </View>
       </KeyboardAvoidingView>
     );

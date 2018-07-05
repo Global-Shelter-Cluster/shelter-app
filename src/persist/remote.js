@@ -35,7 +35,7 @@ class Remote {
   auth: {access_token: string, expires_in: string, expires_at: string, scope: string, refresh_token: string, token_type: string} = null;
 
   getAuthSettings() {
-    let update_token, axiosConfigs, data;
+    let update_token = axiosConfigs = data = {};
 
     if (this.auth) {
       //console.log('this.auth: ', this.auth);
@@ -68,6 +68,7 @@ class Remote {
     //console.debug('Axios POST request', path, data);
     try {
 
+      data = data ? JSON.stringify(data) : null;
       // TODO decide if we want to maintain basic auth on dev and exclude service routes.
       // config.axiosExtra;
       const authSettings = this.getAuthSettings();
@@ -75,8 +76,6 @@ class Remote {
       if (authSettings.data) {
         data.credentials = authSettings.data.credentials;
       }
-
-      data = data ? JSON.stringify(data) : null;
 
       const response = await axios.post(path, data, authSettings.axiosConfigs);
 
@@ -98,7 +97,7 @@ class Remote {
     }
   }
 
-  async login(username: string, password: string): Objects {
+  async login(username: string, password: string, pushNotificationToken: string): Objects {
     const data = await this._post('/get-objects', {
       'objects': [{type: 'global', id: 1}],
       'credentials': {
@@ -107,9 +106,11 @@ class Remote {
         'password': password,
         'client_id': 'shelter-client',
         'scope': 'response',
-      }
+      },
+      'pushNotificationToken' = pushNotificationToken,
     });
 
+    console.log(pushNotificationToken);
     if (data.authorization.code == '200' && data.authorization.access_token) {
       persist.saveAuthTokens(data.authorization);
       this.auth = data.authorization;

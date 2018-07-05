@@ -11,8 +11,7 @@ export async function getPushToken(): string|null {
   // only ask if permissions have not already been determined, because
   // iOS won't necessarily prompt the user a second time.
   if (existingStatus !== 'granted') {
-    // Android remote notification permissions are granted during the app
-    // install, so this will only ask on iOS
+    // On android this permission is granted by default and not opt-in.
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     finalStatus = status;
   }
@@ -24,7 +23,6 @@ export async function getPushToken(): string|null {
 
   // Get the token that uniquely identifies this device
   const token = await Notifications.getExpoPushTokenAsync();
-
   return token;
 }
 
