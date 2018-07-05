@@ -5,6 +5,9 @@ import {Button, Platform, StyleSheet, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 
 const NavButton = props => {
+  if (props.hidden !== undefined && props.hidden)
+    return null;
+  
   if (props.right && Platform.OS !== 'ios')
     return <View style={{marginRight: 10}}>
       <Button {...props}/>
