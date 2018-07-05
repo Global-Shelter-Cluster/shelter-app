@@ -25,6 +25,16 @@ const axios = axiosLib.create({
 //   return Promise.reject(error);
 // });
 
+export type authType = {
+  access_token: string,
+  code: "200",
+  expires_at: number,
+  expires_in: string, // seconds
+  refresh_token: string,
+  scope: string, // e.g. "response"
+  token_type: string, // e.g. "Bearer"
+}
+
 /**
  * Class Remote.
  *
@@ -32,64 +42,62 @@ const axios = axiosLib.create({
  * Is not allowed to talk to the redux store or the app itself.
  */
 class Remote {
-  auth: {access_token: string, expires_in: string, expires_at: string, scope: string, refresh_token: string, token_type: string} = null;
+  auth: null | authType = null;
 
-  getAuthSettings() {
-    let update_token = axiosConfigs = data = {};
+  async _post(path: string, data: { credentials?: {}, pushNotificationToken?: string | null } = {}): Promise<{ objects?: Objects, authorization?: authType }> {
+    console.debug('Axios POST request', path, data, this.auth);
 
-    if (this.auth) {
-      //console.log('this.auth: ', this.auth);
-      // Add access token to authorization header.
-      const now = Math.floor(Date.now() / 1000);
-      if (this.auth.expires_at > now) {
-        // console.log(config.axiosExtra);
-        axiosConfigs = {
-          headers: {'Authorization': "Bearer " + this.auth.access_token}
-        };
-      }
-
-      // Access token is expired, try to use resfresh token.
-      else {
-        data.credentials = {
-          'type': 'refresh_token',
-          'refresh_token': this.auth.refresh_token,
-          'client_id': 'shelter-client',
-          'scope': 'response',
-        }
-        update_token = true;
-      }
-    }
-
-    return {update_token, axiosConfigs, data};
-  }
-
-  async _post(path: string, data = null) {
-    let update_token = false;
-    //console.debug('Axios POST request', path, data);
     try {
-
-      data = data ? JSON.stringify(data) : null;
       // TODO decide if we want to maintain basic auth on dev and exclude service routes.
-      // config.axiosExtra;
-      const authSettings = this.getAuthSettings();
+      let axiosConfigs = {}; // config.axiosExtra;
 
-      if (authSettings.data) {
-        data.credentials = authSettings.data.credentials;
+      let shouldSaveAuthTokens = data.credentials !== undefined;
+
+      if (this.auth !== null) {
+        // Add access token to authorization header.
+        const now = Math.floor(Date.now() / 1000);
+        if (this.auth.expires_at > now) {
+          axiosConfigs = {
+            headers: {'Authorization': "Bearer " + this.auth.access_token}
+          };
+        } else if (data.credentials === undefined) {
+          // Access token is expired, try to use refresh token.
+          data.credentials = {
+            'type': 'refresh_token',
+            'refresh_token': this.auth.refresh_token,
+            'client_id': 'shelter-client',
+            'scope': 'response',
+          };
+          shouldSaveAuthTokens = true;
+        }
       }
 
-      const response = await axios.post(path, data, authSettings.axiosConfigs);
+      const response = await axios.post(path, JSON.stringify(data), axiosConfigs);
+      console.debug('Axios response', response.data);
 
       // Update token after using refresh_token.
-      if (authSettings.update_token && response.status == '200' && response.data.authorization.code == '200') {
+      if (
+        shouldSaveAuthTokens
+        && response.status === 200
+        && response.data.authorization
+        && response.data.authorization.code === '200'
+        && response.data.authorization.access_token
+      ) {
         persist.saveAuthTokens(response.data.authorization);
         this.auth = response.data.authorization;
       }
 
-      // @TODO handle failure.
+      if (
+        response.data.authorization
+        && response.data.authorization.code !== '200'
+      ) {
+        const message = response.data.authorization.error_description
+          ? response.data.authorization.error_description
+          : 'Unknown error, please try again';
+        throw new Error(message);
+      }
 
       //console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
-
-      //console.debug('Axios response', response.data);
       return response.data;
     } catch (e) {
       //console.error('Axios error', e);
@@ -97,7 +105,7 @@ class Remote {
     }
   }
 
-  async login(username: string, password: string, pushNotificationToken: string): Objects {
+  async login(username: string, password: string, pushNotificationToken: string | null): Promise<Objects> {
     const data = await this._post('/get-objects', {
       'objects': [{type: 'global', id: 1}],
       'credentials': {
@@ -107,27 +115,25 @@ class Remote {
         'client_id': 'shelter-client',
         'scope': 'response',
       },
-      'pushNotificationToken': pushNotificationToken,
+      pushNotificationToken,
     });
 
-    console.log(pushNotificationToken);
-    if (data.authorization.code == '200' && data.authorization.access_token) {
-      persist.saveAuthTokens(data.authorization);
-      this.auth = data.authorization;
-    }
-    return data;
+    return data.objects !== undefined ? data.objects : {};
   }
 
-  async loadObjects(requests: Array<ObjectRequest>): Objects {
-    return this._post('/get-objects', {objects: requests});
+  async loadObjects(requests: Array<ObjectRequest>): Promise<Objects> {
+    const data = await this._post('/get-objects', {objects: requests});
+    return data.objects !== undefined ? data.objects : {};
   }
 
-  async followGroup(id: number): Objects {
-    return this._post('/follow/' + id, {'action': 'follow'});
+  async followGroup(id: number): Promise<Objects> {
+    const data = await this._post('/follow/' + id, {action: 'follow'});
+    return data.objects !== undefined ? data.objects : {};
   }
 
-  async unfollowGroup(id: number): Objects {
-    return this._post('/follow/' + id, {'action': 'unfollow'});
+  async unfollowGroup(id: number): Promise<Objects> {
+    const data = await this._post('/follow/' + id, {action: 'unfollow'});
+    return data.objects !== undefined ? data.objects : {};
   }
 }
 

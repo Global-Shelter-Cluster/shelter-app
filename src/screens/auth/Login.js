@@ -1,12 +1,11 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, StatusBar, StyleSheet, Text, TextInput, View, KeyboardAvoidingView} from 'react-native';
+import {ImageBackground, KeyboardAvoidingView, StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
 import type {lastErrorType} from "../../reducers/lastError";
-import equal from 'deep-equal';
 
 const Form = t.form.Form;
 
@@ -20,24 +19,25 @@ type Props = {
 export default class Login extends React.Component<Props> {
   render() {
     const {login, online, loggingIn, lastError} = this.props;
-    let error;
-    if (lastError.data) {
-      error = <Text style={styles.text}>{lastError.data.error_data.error_description}</Text>;
-    }
-    let button;
+
+    const errorMessage = lastError.type === 'login-error'
+      ? <Text style={styles.error}>{lastError.data.message}</Text>
+      : null;
+
+    let loginButton;
     if (!online)
-      button = <Text style={styles.text}>No internet connection detected.</Text>;
+      loginButton = <Text style={styles.text}>No internet connection detected.</Text>;
     else if (loggingIn)
-      button = <Text style={styles.text}>Logging in...</Text>;
+      loginButton = <Text style={styles.text}>Logging in...</Text>;
     else {
-      button = <Button primary onPress={() => {
+      loginButton = <Button primary onPress={() => {
         const value = this.refs.form.getValue();
         if (value)
           login(value.username, value.password)
       }} title="Log in"/>;
     }
 
-    let register = <Button onPress={async () => {
+    const registerButton = <Button onPress={async () => {
       console.log('Work in progress');
     }} title="Register"/>;
 
@@ -48,10 +48,10 @@ export default class Login extends React.Component<Props> {
         </ImageBackground>
         <View style={styles.innerContainer}>
           <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
-          {error}
+          {errorMessage}
           {online && !loggingIn && <Form ref="form" type={formFields} options={formOptions}/>}
-          {button}
-          {register}
+          {loginButton}
+          {registerButton}
         </View>
       </KeyboardAvoidingView>
     );
@@ -88,6 +88,13 @@ const styles = StyleSheet.create({
     color: "black",
     marginBottom: 0,
   },
+  error: {
+    fontSize: 16,
+    textAlign: "center",
+    color: vars.SHELTER_RED,
+    marginBottom: 20,
+    marginHorizontal: 20,
+  },
 });
 
 const formStyles = {
@@ -96,7 +103,7 @@ const formStyles = {
     ...Form.stylesheet.textbox,
     normal: {
       ...Form.stylesheet.textbox.normal,
-      borderColor: vars.SHELTER_RED,
+      borderColor: vars.SHELTER_GREY,
       borderRadius: 2,
     },
     error: {

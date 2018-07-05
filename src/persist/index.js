@@ -10,6 +10,7 @@ import {
   setObjects
 } from "../actions";
 import type {Store} from "redux";
+import type {authType} from "./remote";
 import Remote from "./remote";
 import type {ObjectIds, Objects, ObjectType} from "../model";
 import Model, {
@@ -232,10 +233,7 @@ class Persist {
 
   clearAll(force: boolean = false) {
     Storage.clear();
-    // @TODO This does not seem to work.
-    Storage.removeItem(Persist.cacheKey('auth'));
-
-    Storage.setItem(Persist.cacheKey('auth'), null);
+    this.deleteAuthTokens();
     this.store.dispatch(replaceAllSeenObjects(initialObjectIdsState));
     this.remote.auth = null;
     console.debug('Cleared storage');
@@ -247,8 +245,8 @@ class Persist {
     }
   }
 
-  async saveAuthTokens(token) {
-    if (token && token.code == '200' && token.access_token) {
+  async saveAuthTokens(token: authType) {
+    if (token.access_token) {
       await Storage.setItem(Persist.cacheKey('auth'), JSON.stringify(token));
     }
   }
@@ -260,12 +258,7 @@ class Persist {
   async login(user: string, pass: string) {
     // Always get user data from remote on login
     const pushToken = await getPushToken();
-    const results = await this.remote.login(user, pass, pushToken);
-
-    if (results.authorization.code != '200') {
-      return results;
-    }
-    const objects = results.objects;
+    const objects = await this.remote.login(user, pass, pushToken);
 
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);
@@ -437,9 +430,8 @@ class Persist {
         loadImmediately.push(...expired); // Might as well load the expired objects in the same call
         skipLoadingExpiredObjects = true; // Flag to stop from doing this twice
 
-        const result = await this.remote.loadObjects(loadImmediately);
-        const newObjects = result.objects;
-
+        const newObjects = await this.remote.loadObjects(loadImmediately);
+        console.log('persist::loadObjects', newObjects);
         this.updateLastRead(newObjects);
         await this.dispatchObjects(newObjects);
         this.saveObjects(newObjects);
@@ -447,7 +439,7 @@ class Persist {
     }
 
     if (isOnline && !skipLoadingExpiredObjects && expired.length) {
-      const newObjects: Objects = await this.remote.loadObjects(expired);
+      const newObjects = await this.remote.loadObjects(expired);
       this.updateLastRead(newObjects);
       await this.dispatchObjects(newObjects);
       this.saveObjects(newObjects);
