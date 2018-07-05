@@ -107,7 +107,7 @@ class Remote {
         'client_id': 'shelter-client',
         'scope': 'response',
       },
-      'pushNotificationToken' = pushNotificationToken,
+      'pushNotificationToken': pushNotificationToken,
     });
 
     console.log(pushNotificationToken);
