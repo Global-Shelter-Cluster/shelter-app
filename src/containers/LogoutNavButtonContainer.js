@@ -6,6 +6,7 @@ import {logout} from "../actions";
 import {withNavigation} from 'react-navigation';
 
 const mapStateToProps = (state, props) => ({
+  hidden: !state.flags.online,
   right: true,
   title: "Log out",
   navigation: props.navigation,
