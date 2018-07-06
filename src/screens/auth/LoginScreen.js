@@ -5,11 +5,25 @@ import {login} from '../../actions';
 import {connect} from 'react-redux';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import Login from "./Login";
+import {propEqual} from "../../util";
+import type {lastErrorType} from "../../reducers/lastError";
 
-class LoginScreen extends React.Component {
+type Props = {
+  loggedIn: boolean,
+  online: boolean,
+  loggingIn: boolean,
+  lastError: lastErrorType,
+  login: () => {},
+}
+
+class LoginScreen extends React.Component<Props> {
   static navigationOptions = {
     headerTitle: <NavTitleContainer title="Log in"/>,
   };
+
+  shouldComponentUpdate(nextProps) {
+    return !propEqual(this.props, nextProps, ['loggedIn', 'online', 'loggingIn'], ['lastError']);
+  }
 
   componentDidMount() {
     if (this.props.loggedIn)

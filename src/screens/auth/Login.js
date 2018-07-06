@@ -6,6 +6,7 @@ import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
 import type {lastErrorType} from "../../reducers/lastError";
+import {propEqual} from "../../util";
 
 const Form = t.form.Form;
 
@@ -16,7 +17,24 @@ type Props = {
   lastError: lastErrorType,
 }
 
-export default class Login extends React.Component<Props> {
+type State = {
+  formValues: { username: string, password: string },
+}
+
+export default class Login extends React.Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      formValues: {username: "", password: ""},
+    };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !propEqual(this.state, nextState, [], ['formValues'])
+      || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
+  }
+
   render() {
     const {login, online, loggingIn, lastError} = this.props;
 
@@ -30,11 +48,10 @@ export default class Login extends React.Component<Props> {
     else if (loggingIn)
       loginButton = <Text style={styles.text}>Logging in...</Text>;
     else {
-      loginButton = <Button primary onPress={() => {
-        const value = this.refs.form.getValue();
-        if (value)
-          login(value.username, value.password)
-      }} title="Log in"/>;
+      loginButton = <Button
+        primary title="Log in"
+        onPress={() => login(this.state.formValues.username, this.state.formValues.password)}
+      />;
     }
 
     const registerButton = <Button onPress={async () => {
@@ -49,9 +66,12 @@ export default class Login extends React.Component<Props> {
         <View style={styles.innerContainer}>
           <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
           {errorMessage}
-          {online && !loggingIn && <Form ref="form" type={formFields} options={formOptions}/>}
+          {online && !loggingIn && <Form
+            type={formFields} options={formOptions}
+            onChange={formValues => this.setState({formValues})} value={this.state.formValues}
+          />}
           {loginButton}
-          {registerButton}
+          {/*{registerButton}*/}
         </View>
       </KeyboardAvoidingView>
     );
