@@ -121,6 +121,21 @@ class Remote {
     return data.objects !== undefined ? data.objects : {};
   }
 
+  async signup(email: string, password: string, pushNotificationToken: string | null): Promise<Objects> {
+    const data = await this._post('/signup', {
+      'objects': [{type: 'global', id: 1}],
+      'credentials': {
+        'email': email,
+        'password': password,
+        'client_id': 'shelter-client',
+        'scope': 'signup',
+      },
+      pushNotificationToken,
+    });
+
+    return data.objects !== undefined ? data.objects : {};
+  }
+
   async loadObjects(requests: Array<ObjectRequest>): Promise<Objects> {
     const data = await this._post('/get-objects', {objects: requests});
     return data.objects !== undefined ? data.objects : {};

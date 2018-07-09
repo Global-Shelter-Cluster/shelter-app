@@ -280,6 +280,31 @@ class Persist {
     throw new Error("No user returned by login call")
   }
 
+  async signup(email: string, pass: string) {
+    // Always get user data from remote on login
+    const pushToken = await getPushToken();
+    const objects = await this.remote.signup(email, pass, pushToken);
+
+    // Save everything we received (user object, groups, etc.)
+    this.updateLastRead(objects);
+    this.saveObjects(objects);
+    this.dispatchObjects(objects);
+
+    // Now set the current user id (the only one returned as OBJECT_MODE_PRIVATE).
+    for (const id in objects.user) {
+      if (objects.user[id]._mode === OBJECT_MODE_PRIVATE) {
+        this.store.dispatch(setCurrentUser(parseInt(id, 10)));
+        console.debug('Saving current user id...', id);
+        await Storage.setItem(Persist.cacheKey('currentUser'), '' + id);
+        console.debug('Saving current user id... done.');
+        return;
+      }
+    }
+
+    // No private user returned, something's wrong
+    throw new Error("No user returned by login call")
+  }
+
   async followGroup(id: number) {
     // Remote returns the group and related objects
     const objects = await this.remote.followGroup(id);

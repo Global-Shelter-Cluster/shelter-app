@@ -43,6 +43,18 @@ export const login = (user: string, pass: string) => async dispatch => {
   dispatch(changeFlag("loggingIn", false));
 };
 
+export const signup = (email: string, pass: string) => async dispatch => {
+  console.log('Into action');
+  dispatch(clearLastError());
+  dispatch(changeFlag("loggingIn", true));
+  try {
+    await persist.signup(email, pass);
+  } catch (e) {
+    dispatch(setLastError('login-error', {message: e.message}));
+  }
+  dispatch(changeFlag("loggingIn", false));
+};
+
 export const loadObject = (type: ObjectType, id: number, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
   dispatch(changeFlag('loading', true));
   try {

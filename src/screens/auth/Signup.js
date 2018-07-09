@@ -11,22 +11,22 @@ import {propEqual} from "../../util";
 const Form = t.form.Form;
 
 type Props = {
-  login: () => {},
+  signup: () => {},
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
 }
 
 type State = {
-  formValues: { username: string, password: string },
+  formValues: { email: string, password: string },
 }
 
-export default class Login extends React.Component<Props, State> {
+export default class Signup extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      formValues: {username: "", password: ""},
+      formValues: {email: "", password: ""},
     };
   }
 
@@ -36,27 +36,26 @@ export default class Login extends React.Component<Props, State> {
   }
 
   render() {
-    const {login, online, loggingIn, lastError} = this.props;
+    const {signup, online, loggingIn, lastError} = this.props;
 
     const errorMessage = lastError.type === 'login-error'
       ? <Text style={styles.error}>{lastError.data.message}</Text>
       : null;
 
-    let loginButton;
+    let signupButton;
     if (!online)
-      loginButton = <Text style={styles.text}>No internet connection detected.</Text>;
+      signupButton = <Text style={styles.text}>No internet connection detected.</Text>;
     else if (loggingIn)
-      loginButton = <Text style={styles.text}>Logging in...</Text>;
+      signupButton = <Text style={styles.text}>Logging in...</Text>;
     else {
-      loginButton = <Button
-        primary title="Log in"
-        onPress={() => login(this.state.formValues.username, this.state.formValues.password)}
+      signupButton = <Button
+        primary title="Signup"
+        onPress={() => signup(this.state.formValues.email, this.state.formValues.password)}
       />;
     }
-
-    const signupButton = <Button onPress={async () => {
-      this.props.navigation.navigate('Signup');;
-    }} title="Signup"/>;
+    const backToLoginButton = <Button onPress={async () => {
+      this.props.navigation.navigate('Login');;
+    }} title="Back to login form"/>;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -70,8 +69,8 @@ export default class Login extends React.Component<Props, State> {
             type={formFields} options={formOptions}
             onChange={formValues => this.setState({formValues})} value={this.state.formValues}
           />}
-          {loginButton}
           {signupButton}
+          {backToLoginButton}
         </View>
       </KeyboardAvoidingView>
     );
@@ -135,7 +134,7 @@ const formStyles = {
 };
 
 const formFields = t.struct({
-  username: t.String,
+  email: t.String,
   password: t.String,
 });
 

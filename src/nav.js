@@ -3,6 +3,7 @@
 import React from "react";
 import {createBottomTabNavigator, createStackNavigator, createSwitchNavigator} from "react-navigation";
 import LoginScreen from "./screens/auth/LoginScreen";
+import SignupScreen from "./screens/auth/SignupScreen";
 import DashboardScreen from "./screens/user/DashboardScreen";
 import EditScreen from "./screens/user/EditScreen";
 import GroupScreen from "./screens/group/GroupScreen";
@@ -22,6 +23,7 @@ import AlertListScreen from "./screens/group/AlertListScreen";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
+  Signup: SignupScreen,
 });
 
 const ExploreStack = createStackNavigator({
