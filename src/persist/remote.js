@@ -132,7 +132,6 @@ class Remote {
       },
       pushNotificationToken,
     });
-
     return data.objects !== undefined ? data.objects : {};
   }
 

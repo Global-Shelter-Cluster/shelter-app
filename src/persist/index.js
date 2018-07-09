@@ -235,7 +235,9 @@ class Persist {
     Storage.clear();
     this.deleteAuthTokens();
     this.store.dispatch(replaceAllSeenObjects(initialObjectIdsState));
-    this.remote.auth = null;
+    if (this.remote) {
+      this.remote.auth = null;
+    }
     console.debug('Cleared storage');
     if (force || config.deleteFilesOnLogout) {
       FileSystem.deleteAsync(this.directory, {idempotent: true}).then(
