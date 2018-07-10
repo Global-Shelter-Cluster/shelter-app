@@ -260,8 +260,7 @@ class Persist {
   async logout() {
     // Always get user data from remote on login
     const pushToken = await getPushToken();
-    console.log('made it to persist!');
-    return await this.remote.logout(pushToken);
+    this.remote.logout(pushToken);
   }
 
   async login(user: string, pass: string) {

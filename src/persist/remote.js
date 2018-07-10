@@ -134,9 +134,8 @@ class Remote {
     return data.objects !== undefined ? data.objects : {};
   }
 
-  async logout(pushNotificationToken: string | null) {
-    console.log('made it here!');
-    return await this._post('/logout', {
+  logout(pushNotificationToken: string | null) {
+    return this._post('/logout', {
       pushNotificationToken,
     });
   }

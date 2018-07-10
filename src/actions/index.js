@@ -135,7 +135,6 @@ export const logout = () => async dispatch => {
   dispatch(changeFlag('loggingIn', false));
 
   try {
-    console.log('made it to action!');
     await persist.logout();
   } catch (e) {
     dispatch(setLastError('logout-error', {message: e.message}));
