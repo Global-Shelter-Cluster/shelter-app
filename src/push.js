@@ -4,6 +4,10 @@ import {Notifications, Permissions} from "expo";
 import config from "./config";
 
 export async function getPushToken(): Promise<string | null> {
+  if (config.localConfigs && config.localConfigs.bypassPushNotification) {
+    return;
+  }
+
   const {status: existingStatus} = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );

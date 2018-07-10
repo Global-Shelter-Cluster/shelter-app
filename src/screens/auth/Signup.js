@@ -26,13 +26,19 @@ export default class Signup extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      formValues: {email: "", password: ""},
+      formValues: {first_name: "", name:"", organization:"", email: "", password: ""},
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !propEqual(this.state, nextState, [], ['formValues'])
       || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
+  }
+
+  onPress() {
+    if (this.refs.form.getValue()) {
+      this.props.signup(this.state.formValues);
+    }
   }
 
   render() {
@@ -50,7 +56,7 @@ export default class Signup extends React.Component<Props, State> {
     else {
       signupButton = <Button
         primary title="Signup"
-        onPress={() => signup(this.state.formValues.email, this.state.formValues.password)}
+        onPress={this.onPress.bind(this)}
       />;
     }
     const backToLoginButton = <Button onPress={async () => {
@@ -60,12 +66,12 @@ export default class Signup extends React.Component<Props, State> {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <StatusBar barStyle="light-content"/>
-        <ImageBackground style={styles.image} source={require('../../../assets/login.jpg')}>
-        </ImageBackground>
         <View style={styles.innerContainer}>
           <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
+          <Text style={styles.text}>{"Create your account to signup"}</Text>
           {errorMessage}
           {online && !loggingIn && <Form
+            ref="form"
             type={formFields} options={formOptions}
             onChange={formValues => this.setState({formValues})} value={this.state.formValues}
           />}
@@ -134,6 +140,8 @@ const formStyles = {
 };
 
 const formFields = t.struct({
+  name: t.String,
+  organization: t.String,
   email: t.String,
   password: t.String,
 });

@@ -43,12 +43,12 @@ export const login = (user: string, pass: string) => async dispatch => {
   dispatch(changeFlag("loggingIn", false));
 };
 
-export const signup = (email: string, pass: string) => async dispatch => {
-  console.log('Into action');
+// @TODO define type for formValues
+export const signup = (formValues) => async dispatch => {
   dispatch(clearLastError());
   dispatch(changeFlag("loggingIn", true));
   try {
-    await persist.signup(email, pass);
+    await persist.signup(formValues);
   } catch (e) {
     dispatch(setLastError('login-error', {message: e.message}));
   }
@@ -133,6 +133,14 @@ export const logout = () => async dispatch => {
   dispatch(clearAllObjects());
   dispatch(clearAllDownloads());
   dispatch(changeFlag('loggingIn', false));
+
+  try {
+    console.log('made it to action!');
+    await persist.logout();
+  } catch (e) {
+    dispatch(setLastError('logout-error', {message: e.message}));
+  }
+
   if (config.deleteFilesOnLogout)
     dispatch(setFiles({}));
   persist.clearAll();

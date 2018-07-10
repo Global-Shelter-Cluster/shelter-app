@@ -257,6 +257,13 @@ class Persist {
     await Storage.removeItem(Persist.cacheKey('auth'));
   }
 
+  async logout() {
+    // Always get user data from remote on login
+    const pushToken = await getPushToken();
+    console.log('made it to persist!');
+    return await this.remote.logout(pushToken);
+  }
+
   async login(user: string, pass: string) {
     // Always get user data from remote on login
     const pushToken = await getPushToken();
@@ -282,10 +289,10 @@ class Persist {
     throw new Error("No user returned by login call")
   }
 
-  async signup(email: string, pass: string) {
+  async signup(formValues) {
     // Always get user data from remote on login
     const pushToken = await getPushToken();
-    const objects = await this.remote.signup(email, pass, pushToken);
+    const objects = await this.remote.signup(formValues, pushToken);
 
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);
