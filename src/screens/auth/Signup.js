@@ -44,7 +44,7 @@ export default class Signup extends React.Component<Props, State> {
   render() {
     const {signup, online, loggingIn, lastError} = this.props;
 
-    const errorMessage = lastError.type === 'login-error'
+    const errorMessage = lastError.type === 'signup-error'
       ? <Text style={styles.error}>{lastError.data.message}</Text>
       : null;
 

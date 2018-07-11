@@ -50,7 +50,7 @@ export const signup = (formValues) => async dispatch => {
   try {
     await persist.signup(formValues);
   } catch (e) {
-    dispatch(setLastError('login-error', {message: e.message}));
+    dispatch(setLastError('signup-error', {message: e.message}));
   }
   dispatch(changeFlag("loggingIn", false));
 };
