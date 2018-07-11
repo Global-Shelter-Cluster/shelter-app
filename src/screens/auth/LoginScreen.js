@@ -13,7 +13,7 @@ type Props = {
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
-  login: () => {},
+  login: (username: string, password: string) => {},
 }
 
 class LoginScreen extends React.Component<Props> {

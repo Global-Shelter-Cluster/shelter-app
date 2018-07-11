@@ -30,6 +30,7 @@ import {getExtension} from "../util";
 import type {PrivateUserObject} from "../model/user";
 import {getCurrentUser} from "../model/user";
 import {getPushToken} from "../push.js";
+import type {newAccountValues} from "../screens/auth/Signup";
 
 export type ObjectRequest = {
   type: ObjectType,
@@ -288,10 +289,10 @@ class Persist {
     throw new Error("No user returned by login call")
   }
 
-  async signup(formValues) {
+  async signup(accountValues: newAccountValues) {
     // Always get user data from remote on login
     const pushToken = await getPushToken();
-    const objects = await this.remote.signup(formValues, pushToken);
+    const objects = await this.remote.signup(accountValues, pushToken);
 
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);

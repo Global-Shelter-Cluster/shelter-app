@@ -18,7 +18,7 @@ type Props = {
 }
 
 type State = {
-  formValues: { email: string, password: string },
+  formValues: newAccountValues,
 }
 
 export default class Signup extends React.Component<Props, State> {
@@ -26,7 +26,7 @@ export default class Signup extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      formValues: {first_name: "", name:"", organization:"", email: "", password: ""},
+      formValues: {name: "", organization: "", email: "", password: ""},
     };
   }
 
@@ -35,14 +35,14 @@ export default class Signup extends React.Component<Props, State> {
       || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
   }
 
-  onPress() {
+  signup() {
     if (this.refs.form.getValue()) {
       this.props.signup(this.state.formValues);
     }
   }
 
   render() {
-    const {signup, online, loggingIn, lastError} = this.props;
+    const {online, loggingIn, lastError} = this.props;
 
     const errorMessage = lastError.type === 'signup-error'
       ? <Text style={styles.error}>{lastError.data.message}</Text>
@@ -52,23 +52,22 @@ export default class Signup extends React.Component<Props, State> {
     if (!online)
       signupButton = <Text style={styles.text}>No internet connection detected.</Text>;
     else if (loggingIn)
-      signupButton = <Text style={styles.text}>Logging in...</Text>;
+      signupButton = <Text style={styles.text}>Creating your account...</Text>;
     else {
       signupButton = <Button
         primary title="Signup"
-        onPress={this.onPress.bind(this)}
+        onPress={this.signup.bind(this)}
       />;
     }
     const backToLoginButton = <Button onPress={async () => {
-      this.props.navigation.navigate('Login');;
+      this.props.navigation.navigate('Login');
     }} title="Back to login form"/>;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <StatusBar barStyle="light-content"/>
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
-          <Text style={styles.text}>{"Create your account to signup"}</Text>
+          <Text style={styles.banner}>{"Create a Shelter Cluster account"}</Text>
           {errorMessage}
           {online && !loggingIn && <Form
             ref="form"
@@ -87,31 +86,24 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: vars.SHELTER_DARK_BLUE,
     flex: 1,
-  },
-  image: {
-    flex: 1,
-    padding: 20,
     justifyContent: "flex-end",
   },
   innerContainer: {
-    // flexShrink: 1,
     padding: 20,
     paddingBottom: 30,
-    // height: 165,
     justifyContent: "space-between",
-  },
-  title: {
-    fontSize: 24,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: vars.SHELTER_RED,
-    marginBottom: 20,
   },
   text: {
     fontSize: 18,
     textAlign: "center",
     color: "black",
     marginBottom: 0,
+  },
+  banner: {
+    fontSize: 18,
+    textAlign: "center",
+    color: vars.SHELTER_RED,
+    marginBottom: 20,
   },
   error: {
     fontSize: 16,
@@ -139,6 +131,13 @@ const formStyles = {
   },
 };
 
+export type newAccountValues = {
+  name: string,
+  organization: string,
+  email: string,
+  password: string,
+}
+
 const formFields = t.struct({
   name: t.String,
   organization: t.String,
@@ -151,6 +150,9 @@ const formOptions = {
   auto: "placeholders",
   stylesheet: formStyles,
   fields: {
+    email: {
+      keyboardType: "email-address",
+    },
     password: {
       password: true,
       secureTextEntry: true,

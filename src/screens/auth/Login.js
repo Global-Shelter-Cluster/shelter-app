@@ -11,7 +11,7 @@ import {propEqual} from "../../util";
 const Form = t.form.Form;
 
 type Props = {
-  login: () => {},
+  login: (username: string, password: string) => {},
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,

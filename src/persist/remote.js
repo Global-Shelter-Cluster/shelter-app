@@ -5,6 +5,7 @@ import type {ObjectRequest} from "./index";
 import persist from "./index";
 import axiosLib from 'axios';
 import config from "../config";
+import type {newAccountValues} from "../screens/auth/Signup";
 
 const axios = axiosLib.create({
   baseURL: config.baseUrl + '/api-v1',
@@ -79,6 +80,7 @@ class Remote {
       if (
         shouldSaveAuthTokens
         && response.status === 200
+        && response.data
         && response.data.authorization
         && response.data.authorization.code === '200'
         && response.data.authorization.access_token
@@ -88,7 +90,8 @@ class Remote {
       }
 
       if (
-        response.data.authorization
+        response.data
+        && response.data.authorization
         && response.data.authorization.code !== '200'
       ) {
         const message = response.data.authorization.error_description
@@ -121,11 +124,11 @@ class Remote {
     return data.objects !== undefined ? data.objects : {};
   }
 
-  async signup(formValues, pushNotificationToken: string | null): Promise<Objects> {
+  async signup(accountValues: newAccountValues, pushNotificationToken: string | null): Promise<Objects> {
     const data = await this._post('/signup', {
       'objects': [{type: 'global', id: 1}],
       'credentials': {
-        'account_values': formValues,
+        'account_values': accountValues,
         'client_id': 'shelter-client',
         'scope': 'signup',
       },
