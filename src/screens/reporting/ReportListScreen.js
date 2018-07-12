@@ -2,23 +2,24 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import type {PublicGroupObject} from "../../model/group";
+import type {PrivateGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import ReportList from "./ReportList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 type Props = {
   loading: boolean,
-  group: PublicGroupObject,
-  navigation: { setParams: ({}) => {} },
-  refresh: () => {},
+  group: PrivateGroupObject,
+  navigation: navigation,
+  refresh: () => void,
 }
 
 const mapStateToProps = (state, props) => {
-  const group: PublicGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
+  const group: PrivateGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
   return {
     loading: state.flags.loading,
     group: group,
@@ -37,7 +38,7 @@ class ReportListScreen extends React.Component<Props> {
     headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
   });
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: Props) {
     return !propEqual(this.props, nextProps, ['online', 'loading'], ['group']);
   }
 

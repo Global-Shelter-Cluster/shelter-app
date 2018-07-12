@@ -7,6 +7,7 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import Signup from "./Signup";
 import {propEqual} from "../../util";
 import type {lastErrorType} from "../../reducers/lastError";
+import type {navigation} from "../../nav";
 
 type Props = {
   loggedIn: boolean,
@@ -14,6 +15,7 @@ type Props = {
   loggingIn: boolean,
   lastError: lastErrorType,
   signup: () => {},
+  navigation: navigation,
 }
 
 class SignupScreen extends React.Component<Props> {
@@ -48,7 +50,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  signup: (email, pass) => dispatch(signup(email, pass)),
+  signup: values => dispatch(signup(values)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignupScreen)

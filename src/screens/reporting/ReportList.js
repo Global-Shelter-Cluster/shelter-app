@@ -12,17 +12,17 @@ import vars from "../../vars";
 export default ({loading, group, refresh}: {
   loading: boolean,
   group: PrivateGroupObject,
-  refresh: () => {},
+  refresh: () => void,
 }) => {
   const tabs: tabsDefinition = {
     "all": {label: "Assessment forms"},
   };
   const tab = 'all';
 
-  const ids = group.kobo_forms !== undefined ? group.kobo_forms.filter(item => !!item) : [];
+  const ids = group.kobo_forms ? group.kobo_forms.filter(item => !!item) : [];
   if (ids.length > 0)
-    ids.push(null);
-  console.log('ids',ids);
+    ids.push(-1);
+  console.log('ids', ids);
 
   return <View style={{flex: 1}}>
     <Tabs
@@ -34,7 +34,7 @@ export default ({loading, group, refresh}: {
       data={ids}
       keyExtractor={item => item ? '' + item : 'end'}
       renderItem={({item}) => {
-        if (item === null)
+        if (item === -1)
           return <View style={{
             borderColor: vars.LIGHT_GREY,
             borderTopWidth: hairlineWidth,

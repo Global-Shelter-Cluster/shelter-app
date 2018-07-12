@@ -10,12 +10,14 @@ import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import Error from "../../components/Error";
 import Search from "./Search";
+import type {navigation} from "../../nav";
+import type {tabs} from "./Search";
 
 type Props = {
   online: boolean,
   loading: boolean,
   global: GlobalObject,
-  navigation: { setParams: ({}) => {} },
+  navigation: navigation,
   refreshGlobal: () => {},
 }
 
@@ -44,7 +46,7 @@ class SearchScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tab: "followed",
+      tab: "documents",
     };
   }
 
@@ -56,7 +58,7 @@ class SearchScreen extends React.Component<Props, State> {
   componentWillMount() {
     const tab = this.props.navigation.getParam('which', this.state.tab);
     if (this.state.tab !== tab)
-      this.setState({tab: tab});
+      this.setState({tab});
   }
 
   render() {
@@ -74,7 +76,7 @@ class SearchScreen extends React.Component<Props, State> {
         description={"You must be online\nfor search to work."}
       />;
     else
-      return <Search {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
+      return <Search {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
   }
 }
 

@@ -7,7 +7,7 @@ import GroupListItemContainer from '../../containers/GroupListItemContainer';
 export default ({groups, loading, refresh}: {
   groups: Array<number>,
   loading: boolean,
-  refresh: () => {},
+  refresh: () => void,
 }) => (
   <ScrollView
     style={{flex: 1}}

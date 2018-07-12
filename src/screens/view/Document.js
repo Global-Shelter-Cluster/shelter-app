@@ -19,7 +19,7 @@ export default ({online, document, loaded, refresh, loading, lastError}: {
   loading: boolean,
   document: PublicDocumentObject,
   loaded: boolean,
-  refresh: () => {},
+  refresh: () => void,
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'document', id: document.id}}))

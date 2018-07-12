@@ -15,7 +15,7 @@ type Props = {
   loading: boolean,
   user: PrivateUserObject,
   unseenAlerts: Array<number>,
-  refresh: () => {},
+  refresh: () => void,
 }
 
 const mapStateToProps = state => ({

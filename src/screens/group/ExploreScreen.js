@@ -8,17 +8,20 @@ import Explore from "./Explore";
 import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import {getObject} from "../../model";
+import type {GlobalObject} from "../../model/global";
 import {GLOBAL_OBJECT_ID} from "../../model/global";
 import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 type Props = {
   online: boolean,
   loading: boolean,
+  global: GlobalObject,
   user: PrivateUserObject,
-  navigation: { setParams: ({}) => {} },
-  refreshGlobal: () => {},
-  refreshUser: () => {},
+  navigation: navigation,
+  refreshGlobal: () => void,
+  refreshUser: () => void,
 }
 
 type State = {
@@ -63,11 +66,11 @@ class ExploreScreen extends React.Component<Props, State> {
   componentWillMount() {
     const tab = this.props.navigation.getParam('which', this.state.tab);
     if (this.state.tab !== tab)
-      this.setState({tab: tab});
+      this.setState({tab});
   }
 
   render() {
-    return <Explore {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
+    return <Explore {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
   }
 }
 

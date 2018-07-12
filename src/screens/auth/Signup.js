@@ -7,14 +7,16 @@ import vars from "../../vars";
 import t from 'tcomb-form-native';
 import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 const Form = t.form.Form;
 
 type Props = {
-  signup: () => {},
+  signup: (newAccountValues) => {},
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
+  navigation: navigation,
 }
 
 type State = {
@@ -30,13 +32,13 @@ export default class Signup extends React.Component<Props, State> {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
     return !propEqual(this.state, nextState, [], ['formValues'])
       || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
   }
 
   signup() {
-    if (this.refs.form.getValue()) {
+    if (this.refs.form.validate().isValid()) {
       this.props.signup(this.state.formValues);
     }
   }
@@ -56,11 +58,11 @@ export default class Signup extends React.Component<Props, State> {
     else {
       signupButton = <Button
         primary title="Signup"
-        onPress={this.signup.bind(this)}
+        onPress={() => this.signup()}
       />;
     }
     const backToLoginButton = !loggingIn
-      ? <Button onPress={async () => {
+      ? <Button onPress={() => {
         this.props.navigation.navigate('Login');
       }} title="Back to login form"/>
       : null;
@@ -79,8 +81,12 @@ export default class Signup extends React.Component<Props, State> {
             type={t.struct({
               name: t.String,
               organization: t.String,
-              email: t.String,
-              password: t.String,
+              email: t.refinement(t.String, email => {
+                // valid email address
+                const reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+                return reg.test(email);
+              }),
+              password: t.refinement(t.String, value => value.length >= 8), // 8 chars minimum length
             })}
             options={{
               label: null,

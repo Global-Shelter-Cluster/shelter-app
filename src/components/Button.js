@@ -7,7 +7,7 @@ import vars from "../vars";
 import SingleLineText from "./SingleLineText";
 
 export default ({onPress, primary, title, icon, disabledIcon, style}: {
-  onPress?: () => {},
+  onPress?: () => void,
   primary?: boolean,
   title: string,
   icon?: string,

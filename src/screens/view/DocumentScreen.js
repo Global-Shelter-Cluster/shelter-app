@@ -10,14 +10,15 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 type Props = {
   online: boolean,
   loading: boolean,
   document: PublicDocumentObject,
   loaded: boolean,
-  navigation: { setParams: ({}) => {}, getParam: (string) => string },
-  refresh: () => {},
+  navigation: navigation,
+  refresh: () => void,
   lastError: lastErrorType,
 }
 

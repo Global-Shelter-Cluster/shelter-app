@@ -5,13 +5,14 @@ import {FontAwesome} from '@expo/vector-icons';
 import {Text, WebView} from 'react-native';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import Loading from "../../components/Loading";
+import type {navigation} from "../../nav";
 
 type Props = {
-  navigation: { setParams: ({}) => {} },
+  navigation: navigation,
 }
 
 export default class WebsiteViewerScreen extends React.Component<Props> {
-  static navigationOptions = ({navigation}) => ({
+  static navigationOptions = ({navigation}: { navigation: navigation }) => ({
     headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
   });
 

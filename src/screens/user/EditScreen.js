@@ -3,7 +3,9 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-class EditScreen extends React.Component {
+type Props = {}
+
+class EditScreen extends React.Component<Props> {
   render() {
     return <View>
       <Text>Edit user</Text>

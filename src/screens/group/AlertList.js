@@ -15,8 +15,8 @@ export default ({online, loading, tab, seen, unseen, refresh, changeTab}: {
   tab: tabs,
   seen: Array<number>,
   unseen: Array<number>,
-  refresh: () => {},
-  changeTab: (tab: string) => {},
+  refresh: () => void,
+  changeTab: (tab: tabs) => void,
 }) => {
   const sections: Array<{ title: string | null, data: Array<number> }> = [];
 

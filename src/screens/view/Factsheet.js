@@ -29,7 +29,7 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
   loading: boolean,
   factsheet: PublicFactsheetObject,
   loaded: boolean,
-  refresh: () => {},
+  refresh: () => void,
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'factsheet', id: factsheet.id}}))

@@ -6,17 +6,18 @@ import type {PublicGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import type tabs from "./DocumentList";
+import type {tabs} from "./DocumentList";
 import DocumentList from "./DocumentList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 type Props = {
   online: boolean,
   loading: boolean,
   group: PublicGroupObject,
-  navigation: { setParams: ({}) => {} },
-  refresh: () => {},
+  navigation: navigation,
+  refresh: () => void,
 }
 
 type State = {
@@ -61,7 +62,7 @@ class DocumentListScreen extends React.Component<Props, State> {
     this.props.navigation.setParams({title: this.props.group.title});
     const tab = this.props.navigation.getParam('which', this.state.tab);
     if (this.state.tab !== tab)
-      this.setState({tab: tab});
+      this.setState({tab});
   }
 
   componentDidUpdate() {
@@ -70,7 +71,7 @@ class DocumentListScreen extends React.Component<Props, State> {
   }
 
   render() {
-    return <DocumentList {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
+    return <DocumentList {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
   }
 }
 

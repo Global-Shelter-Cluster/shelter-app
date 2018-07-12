@@ -1,11 +1,12 @@
 // @flow
 
-import type {Files, ObjectFileDescription} from "../persist";
-import persist, {ObjectRequest} from "../persist";
+import type {Files, ObjectFileDescription, ObjectRequest} from "../persist";
+import persist from "../persist";
 import {NetInfo} from 'react-native';
 import type {ObjectIds, Objects, ObjectType} from "../model";
 import config from "../config";
 import type {flags} from "../reducers/flags";
+import type {newAccountValues} from "../screens/auth/Signup";
 
 export const CHANGE_FLAG = 'CHANGE_FLAG';
 export const changeFlag = (flag: flags, value: boolean) => ({
@@ -43,12 +44,11 @@ export const login = (user: string, pass: string) => async dispatch => {
   dispatch(changeFlag("loggingIn", false));
 };
 
-// @TODO define type for formValues
-export const signup = (formValues) => async dispatch => {
+export const signup = (newAccountValues: newAccountValues) => async dispatch => {
   dispatch(clearLastError());
   dispatch(changeFlag("loggingIn", true));
   try {
-    await persist.signup(formValues);
+    await persist.signup(newAccountValues);
   } catch (e) {
     dispatch(setLastError('signup-error', {message: e.message}));
   }

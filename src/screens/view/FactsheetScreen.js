@@ -11,14 +11,15 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import moment from "moment/moment";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 type Props = {
   online: boolean,
   loading: boolean,
   factsheet: PublicFactsheetObject,
   loaded: boolean,
-  navigation: { setParams: ({}) => {}, getParam: (string) => string },
-  refresh: () => {},
+  navigation: navigation,
+  refresh: () => void,
   lastError: lastErrorType,
 }
 

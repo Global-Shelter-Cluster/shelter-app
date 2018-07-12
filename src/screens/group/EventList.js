@@ -14,14 +14,14 @@ export default ({online, loading, tab, group, refresh, changeTab}: {
   loading: boolean,
   tab: tabs,
   group: PublicGroupObject,
-  refresh: () => {},
-  changeTab: (tab: string) => {},
+  refresh: () => void,
+  changeTab: (tab: tabs) => void,
 }) => {
   let ids: Array<number> = [];
 
   switch (tab) {
     case "upcoming":
-      ids = group.upcoming_events;
+      ids = group.upcoming_events ? group.upcoming_events : [];
       break;
   }
 

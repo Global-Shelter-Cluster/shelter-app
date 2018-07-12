@@ -11,6 +11,7 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 type Props = {
   online: boolean,
@@ -18,10 +19,10 @@ type Props = {
   group: PublicGroupObject,
   loaded: boolean,
   factsheet: FactsheetObject,
-  navigation: { setParams: ({}) => {}, getParam: (string) => string },
-  refresh: () => {},
-  follow: () => {},
-  unfollow: () => {},
+  navigation: navigation,
+  refresh: () => void,
+  follow: () => void,
+  unfollow: () => void,
   lastError: lastErrorType,
 }
 
@@ -43,12 +44,6 @@ const mapDispatchToProps = (dispatch, props) => ({
   refresh: () => {
     dispatch(clearLastError());
     dispatch(loadObject('group', props.navigation.getParam('groupId'), false, true));
-    // try {
-    //   dispatch(action);
-    // } catch (e) {
-    //   console.log('refresh err', e);
-    // }
-    // return action;
   },
   follow: () => {
     dispatch(followGroup(props.navigation.getParam('groupId')));

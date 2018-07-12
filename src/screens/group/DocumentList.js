@@ -14,20 +14,20 @@ export default ({online, loading, tab, group, refresh, changeTab}: {
   loading: boolean,
   tab: tabs,
   group: PublicGroupObject,
-  refresh: () => {},
-  changeTab: (tab: string) => {},
+  refresh: () => void,
+  changeTab: (tab: tabs) => void,
 }) => {
   let ids: Array<number> = [];
 
   switch (tab) {
     case "recent":
-      ids = group.recent_documents;
+      ids = group.recent_documents ? group.recent_documents : [];
       break;
     case "featured":
-      ids = group.featured_documents;
+      ids = group.featured_documents ? group.featured_documents : [];
       break;
     case "key":
-      ids = group.key_documents;
+      ids = group.key_documents ? group.key_documents : [];
       break;
   }
 

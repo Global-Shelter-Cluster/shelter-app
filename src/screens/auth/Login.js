@@ -7,6 +7,7 @@ import vars from "../../vars";
 import t from 'tcomb-form-native';
 import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
+import type {navigation} from "../../nav";
 
 const Form = t.form.Form;
 
@@ -15,6 +16,7 @@ type Props = {
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
+  navigation: navigation,
 }
 
 type State = {
@@ -30,17 +32,19 @@ export default class Login extends React.Component<Props, State> {
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
     return !propEqual(this.state, nextState, [], ['formValues'])
       || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
   }
 
   login() {
-    this.props.login(this.state.formValues.username, this.state.formValues.password);
+    if (this.refs.form.validate().isValid()) {
+      this.props.login(this.state.formValues.username, this.state.formValues.password);
+    }
   }
 
   render() {
-    const {login, online, loggingIn, lastError} = this.props;
+    const {online, loggingIn, lastError} = this.props;
 
     const errorMessage = lastError.type === 'login-error'
       ? <Text style={styles.error}>{lastError.data.message}</Text>
@@ -54,12 +58,12 @@ export default class Login extends React.Component<Props, State> {
     else {
       loginButton = <Button
         primary title="Log in"
-        onPress={login}
+        onPress={() => this.login()}
       />;
     }
 
     const signupButton = !loggingIn && online
-      ? <Button onPress={async () => {
+      ? <Button onPress={() => {
         this.props.navigation.navigate('Signup');
       }} title="Signup"/>
       : null;

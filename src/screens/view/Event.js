@@ -19,7 +19,7 @@ export default ({online, event, loaded, refresh, loading, lastError}: {
   loading: boolean,
   event: PublicEventObject,
   loaded: boolean,
-  refresh: () => {},
+  refresh: () => void,
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'event', id: event.id}}))

@@ -111,7 +111,7 @@ class Persist {
 
   async initDirectory(directory: string) {
     this.directory = directory;
-    const dirInfo = await FileSystem.getInfoAsync(this.directory);
+    const dirInfo: {exists: boolean, isDirectory: boolean} = await FileSystem.getInfoAsync(this.directory);
 
     if (!dirInfo.exists)
       await FileSystem.makeDirectoryAsync(this.directory);
@@ -316,7 +316,7 @@ class Persist {
 
   async followGroup(id: number) {
     // Remote returns the group and related objects
-    const objects = await this.remote.followGroup(id);
+    const objects: Objects = await this.remote.followGroup(id);
 
     const user: PrivateUserObject = clone(getCurrentUser(this.store.getState()));
     if (user.groups === undefined)
@@ -324,7 +324,7 @@ class Persist {
     user.groups.push(id);
     if (objects.user === undefined)
       objects.user = {};
-    objects.user[user.id] = user;
+    objects.user['' + user.id] = user;
 
     // Save everything we received
     this.updateLastRead(objects);

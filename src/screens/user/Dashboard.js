@@ -14,7 +14,7 @@ export default ({loading, user, unseenAlerts, refresh}: {
   loading: boolean,
   user: PrivateUserObject,
   unseenAlerts: Array<number>,
-  refresh: () => {},
+  refresh: () => void,
 }) => {
   const sections: Array<{ title: string, data: Array<{ type: string, id: number }> }> = [];
 

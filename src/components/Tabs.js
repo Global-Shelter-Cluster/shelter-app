@@ -18,7 +18,7 @@ export type tabsDefinition = {
 const Tabs = ({tabs, current, changeTab, labelOnlyOnActive, startsVisualGroup}: {
   tabs: tabsDefinition,
   current: string,
-  changeTab: (tab: string) => {},
+  changeTab: (tab: string) => void,
   labelOnlyOnActive?: true,
   startsVisualGroup?: true, // border radius is 0 on the bottom side, and there's no bottom margin
 }) => {

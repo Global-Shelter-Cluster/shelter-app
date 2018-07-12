@@ -93,3 +93,10 @@ const MainNavigator = createSwitchNavigator(
 );
 
 export default MainNavigator;
+
+export type navigation = {
+  push: (string, {}) => {},
+  navigate: (string) => {},
+  setParams: ({}) => {},
+  getParam: (name: string, defaultValue?: string | null) => string | null,
+}

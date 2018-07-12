@@ -13,7 +13,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 import type {GlobalObject} from "../../model/global";
 import {InstantSearch} from 'react-instantsearch/native';
@@ -25,6 +24,7 @@ import EventResult from "../../components/search/EventResult";
 import GroupResult from "../../components/search/GroupResult";
 import PageResult from "../../components/search/PageResult";
 import searchResultStyles from "../../styles/searchResultStyles";
+import type {navigation} from "../../nav";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   const onEndReached = function () {
@@ -82,13 +82,22 @@ const SearchBox = connectSearchBox(({refine, currentRefinement}) => {
   );
 });
 
+type tabsDefinition = {
+  [tab: string]: {
+    label: string,
+    icon?: string,
+    disabledIcon?: string,
+    renderSearchResult: (item: {}) => React$Element<*>,
+  },
+};
+
 export default ({online, loading, tab, global, changeTab, navigation}: {
   online: boolean,
   loading: boolean,
   tab: tabs,
   global: GlobalObject,
-  changeTab: (tab: string) => {},
-  navigation: { push: (string, {}) => {} },
+  changeTab: (tab: tabs) => void,
+  navigation: navigation,
 }) => {
   const tabs: tabsDefinition = {
     "documents": {
@@ -139,6 +148,9 @@ export default ({online, loading, tab, global, changeTab, navigation}: {
     //   ),
     // },
   };
+
+  if (!global.algolia_prefix)
+    return null;
 
   const indexName = global.algolia_prefix + tab.charAt(0).toUpperCase() + tab.substr(1);
 

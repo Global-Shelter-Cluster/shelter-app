@@ -2,7 +2,6 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import ReportGroups from './ReportGroups';
 import NavTitleContainer from "../../containers/NavTitleContainer";
@@ -11,9 +10,9 @@ import {propEqual} from "../../util";
 import {getObject} from "../../model";
 
 type Props = {
-  user: PrivateUserObject,
+  groups: Array<number>,
   loading: boolean,
-  refresh: () => {},
+  refresh: () => void,
 }
 
 const mapStateToProps = state => {

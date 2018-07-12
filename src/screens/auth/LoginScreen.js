@@ -7,6 +7,7 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import Login from "./Login";
 import {propEqual} from "../../util";
 import type {lastErrorType} from "../../reducers/lastError";
+import type {navigation} from "../../nav";
 
 type Props = {
   loggedIn: boolean,
@@ -14,6 +15,7 @@ type Props = {
   loggingIn: boolean,
   lastError: lastErrorType,
   login: (username: string, password: string) => {},
+  navigation: navigation,
 }
 
 class LoginScreen extends React.Component<Props> {

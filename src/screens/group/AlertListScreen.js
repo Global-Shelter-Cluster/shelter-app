@@ -2,15 +2,16 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import type {PublicGroupObject} from "../../model/group";
+import type {PrivateGroupObject, PublicGroupObject} from "../../model/group";
 import {getObject} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import type tabs from "./AlertList";
+import type {tabs} from "./AlertList";
 import AlertList from "./AlertList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import {isObjectSeen} from "../../model/alert";
+import type {navigation} from "../../nav";
 
 type Props = {
   online: boolean,
@@ -18,8 +19,8 @@ type Props = {
   group: PublicGroupObject,
   seen: Array<number>,
   unseen: Array<number>,
-  navigation: { setParams: ({}) => {} },
-  refresh: () => {},
+  navigation: navigation,
+  refresh: () => void,
 }
 
 type State = {
@@ -27,7 +28,7 @@ type State = {
 }
 
 const mapStateToProps = (state, props) => {
-  const group: PublicGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
+  const group: PrivateGroupObject = getObject(state, 'group', props.navigation.getParam('groupId'));
 
   const seen: Array<number> = [];
   const unseen: Array<number> = [];
@@ -59,7 +60,7 @@ class AlertListScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tab: "upcoming",
+      tab: "new",
     };
   }
 
@@ -81,7 +82,7 @@ class AlertListScreen extends React.Component<Props, State> {
   }
 
   render() {
-    return <AlertList {...this.props} tab={this.state.tab} changeTab={(tab: string) => this.setState({tab: tab})}/>;
+    return <AlertList {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
   }
 }
 

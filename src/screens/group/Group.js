@@ -17,9 +17,9 @@ export default ({online, group, loaded, factsheet, refresh, follow, unfollow, lo
   group: PublicGroupObject,
   loaded: boolean,
   factsheet?: FactsheetObject,
-  refresh: () => {},
-  follow: () => {},
-  unfollow: () => {},
+  refresh: () => void,
+  follow: () => void,
+  unfollow: () => void,
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'group', id: group.id}}))

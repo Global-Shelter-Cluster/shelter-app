@@ -16,9 +16,9 @@ export default ({online, loading, tab, global, user, changeTab, refreshGlobal, r
   tab: tabs,
   global: GlobalObject,
   user: PrivateUserObject,
-  changeTab: (tab: string) => {},
-  refreshGlobal: () => {},
-  refreshUser: () => {},
+  changeTab: (tab: tabs) => void,
+  refreshGlobal: () => void,
+  refreshUser: () => void,
 }) => {
   let ids: Array<number> = [];
 
@@ -40,10 +40,10 @@ export default ({online, loading, tab, global, user, changeTab, refreshGlobal, r
       ids = user.groups !== undefined ? user.groups : [];
       break;
     case "featured":
-      ids = global.featured_groups;
+      ids = global.featured_groups ? global.featured_groups : [];
       break;
     case "regions":
-      ids = global.top_regions;
+      ids = global.top_regions ? global.top_regions : [];
       break;
   }
 
