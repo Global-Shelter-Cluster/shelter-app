@@ -35,6 +35,10 @@ export default class Login extends React.Component<Props, State> {
       || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
   }
 
+  login() {
+    this.props.login(this.state.formValues.username, this.state.formValues.password);
+  }
+
   render() {
     const {login, online, loggingIn, lastError} = this.props;
 
@@ -50,13 +54,15 @@ export default class Login extends React.Component<Props, State> {
     else {
       loginButton = <Button
         primary title="Log in"
-        onPress={() => login(this.state.formValues.username, this.state.formValues.password)}
+        onPress={login}
       />;
     }
 
-    const signupButton = <Button onPress={async () => {
-      this.props.navigation.navigate('Signup');;
-    }} title="Signup"/>;
+    const signupButton = !loggingIn && online
+      ? <Button onPress={async () => {
+        this.props.navigation.navigate('Signup');
+      }} title="Signup"/>
+      : null;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -67,7 +73,30 @@ export default class Login extends React.Component<Props, State> {
           <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
           {errorMessage}
           {online && !loggingIn && <Form
-            type={formFields} options={formOptions}
+            ref="form"
+            type={t.struct({
+              username: t.String,
+              password: t.String,
+            })}
+            options={{
+              label: null,
+              auto: "placeholders",
+              stylesheet: formStyles,
+              fields: {
+                username: {
+                  textContentType: "username",
+                  onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
+                  returnKeyType: "next",
+                },
+                password: {
+                  textContentType: "password",
+                  password: true,
+                  secureTextEntry: true,
+                  onSubmitEditing: () => this.login(),
+                  returnKeyType: "go",
+                },
+              },
+            }}
             onChange={formValues => this.setState({formValues})} value={this.state.formValues}
           />}
           {loginButton}
@@ -130,23 +159,6 @@ const formStyles = {
       ...Form.stylesheet.textbox.error,
       borderColor: vars.ACCENT_RED,
       borderRadius: 2,
-    },
-  },
-};
-
-const formFields = t.struct({
-  username: t.String,
-  password: t.String,
-});
-
-const formOptions = {
-  label: null,
-  auto: "placeholders",
-  stylesheet: formStyles,
-  fields: {
-    password: {
-      password: true,
-      secureTextEntry: true,
     },
   },
 };

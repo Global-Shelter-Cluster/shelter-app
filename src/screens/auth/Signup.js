@@ -59,19 +59,59 @@ export default class Signup extends React.Component<Props, State> {
         onPress={this.signup.bind(this)}
       />;
     }
-    const backToLoginButton = <Button onPress={async () => {
-      this.props.navigation.navigate('Login');
-    }} title="Back to login form"/>;
+    const backToLoginButton = !loggingIn
+      ? <Button onPress={async () => {
+        this.props.navigation.navigate('Login');
+      }} title="Back to login form"/>
+      : null;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <StatusBar barStyle="light-content"/>
         <View style={styles.innerContainer}>
-          <Text style={styles.banner}>{"Create a Shelter Cluster account"}</Text>
+          {!loggingIn
+            ? <Text style={styles.banner}>{"Create a Shelter Cluster account"}</Text>
+            : null
+          }
           {errorMessage}
           {online && !loggingIn && <Form
             ref="form"
-            type={formFields} options={formOptions}
+            type={t.struct({
+              name: t.String,
+              organization: t.String,
+              email: t.String,
+              password: t.String,
+            })}
+            options={{
+              label: null,
+              auto: "placeholders",
+              stylesheet: formStyles,
+              fields: {
+                name: {
+                  textContentType: "name",
+                  onSubmitEditing: () => this.refs.form.getComponent('organization').refs.input.focus(),
+                  returnKeyType: "next",
+                },
+                organization: {
+                  textContentType: "organizationName",
+                  onSubmitEditing: () => this.refs.form.getComponent('email').refs.input.focus(),
+                  returnKeyType: "next",
+                },
+                email: {
+                  textContentType: "emailAddress",
+                  keyboardType: "email-address",
+                  onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
+                  returnKeyType: "next",
+                },
+                password: {
+                  textContentType: "password",
+                  password: true,
+                  secureTextEntry: true,
+                  onSubmitEditing: () => this.signup(),
+                  returnKeyType: "go",
+                },
+              },
+            }}
             onChange={formValues => this.setState({formValues})} value={this.state.formValues}
           />}
           {signupButton}
@@ -137,25 +177,3 @@ export type newAccountValues = {
   email: string,
   password: string,
 }
-
-const formFields = t.struct({
-  name: t.String,
-  organization: t.String,
-  email: t.String,
-  password: t.String,
-});
-
-const formOptions = {
-  label: null,
-  auto: "placeholders",
-  stylesheet: formStyles,
-  fields: {
-    email: {
-      keyboardType: "email-address",
-    },
-    password: {
-      password: true,
-      secureTextEntry: true,
-    },
-  },
-};
