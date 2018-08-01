@@ -65,6 +65,7 @@ export default class IndicatorRow extends React.Component<Props, State> {
           <Text style={{fontWeight: "bold"}}>Shelter Cluster mobile app</Text>
           <Text>Expo version: {Expo.Constants.expoVersion}</Text>
           <Text>App version: {Expo.Constants.manifest.version}</Text>
+          <Text>Environment: {Expo.Constants.manifest.releaseChannel ? Expo.Constants.manifest.releaseChannel : '<none>'}</Text>
           <Text>Connectivity: {onlineIndicator}</Text>
         </View>
         <TouchableOpacity

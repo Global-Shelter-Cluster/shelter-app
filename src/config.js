@@ -35,7 +35,7 @@ const config: { [string]: configType } = {
   },
   stage: {
     baseUrl: 'http://stage.sheltercluster.org',
-    axiosExtra: {auth: {username: "shelter", password: "cluster"}},
+    axiosExtra: {},
     deleteFilesOnLogout: true,
     reduxLogger: false,
     persistFiles: true,
@@ -50,6 +50,8 @@ const config: { [string]: configType } = {
     debugOnlineIndicator: false,
   }
 };
+
+config.default = config.prod;
 
 const channel = config[Expo.Constants.manifest.releaseChannel] !== undefined
   ? Expo.Constants.manifest.releaseChannel
