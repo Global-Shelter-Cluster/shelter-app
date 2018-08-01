@@ -5,7 +5,7 @@ import {withNavigation} from 'react-navigation';
 import {getGroupTypeLabel, getRecentDocumentsCount, isFollowing} from "../model/group";
 import GroupDashboard from "../components/GroupDashboard";
 import type {DashboardBlockType} from "../components/DashboardBlock";
-import {getCurrentUser} from "../model/user";
+import {getCurrentUser, MAX_FOLLOWED_GROUPS} from "../model/user";
 import {getUnseenAlertIdsForGroup} from "../model/alert";
 
 const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
@@ -23,7 +23,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       icon: 'sign-out',
       action: unfollow,
     });
-  else if (getCurrentUser(state).groups !== undefined && getCurrentUser(state).groups.length >= 5)
+  else if (getCurrentUser(state).groups !== undefined && getCurrentUser(state).groups.length >= MAX_FOLLOWED_GROUPS)
     blocks.push({
       title: 'Can\'t follow\n(too many)',
       icon: 'sign-in',

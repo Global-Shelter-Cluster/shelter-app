@@ -3,6 +3,8 @@
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
 
+export const MAX_FOLLOWED_GROUPS = 10;
+
 export type PrivateUserObject = {
   _last_read?: number,
   _mode: "private",
