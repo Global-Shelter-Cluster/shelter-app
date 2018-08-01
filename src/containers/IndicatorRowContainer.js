@@ -6,7 +6,7 @@ import {changeFlag} from '../actions';
 import IndicatorRow from '../components/IndicatorRow';
 
 const mapStateToProps = state => ({
-  isOnline: state.flags.online,
+  online: state.flags.online,
   downloadProgress: state.downloadProgress,
 });
 
