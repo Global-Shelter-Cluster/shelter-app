@@ -54,11 +54,11 @@ const SearchStack = createStackNavigator({
 });
 
 const TabScreens = createBottomTabNavigator({
-  Search: SearchStack,
+  User: UserStack,
   Explore: ExploreStack,
   // Chat: ChatStack, //TODO: hide this for now
   Reporting: ReportingStack,
-  User: UserStack,
+  Search: SearchStack,
 }, {
   navigationOptions: ({navigation}) => ({
     tabBarIcon: ({focused, tintColor}) => {
