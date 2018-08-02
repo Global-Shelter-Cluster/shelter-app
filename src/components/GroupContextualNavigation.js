@@ -5,7 +5,7 @@ import {SectionList, StyleSheet, Text, View} from 'react-native';
 import type {PublicGroupObject} from "../model/group";
 import GroupListItemContainer from "../containers/GroupListItemContainer";
 import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemContainer";
-import Collapsible from "./Collapsible";
+import NavCollapsible from "./NavCollapsible";
 import vars from "../vars";
 import {hairlineWidth} from "../util";
 
@@ -125,9 +125,9 @@ export default ({group}: { group: PublicGroupObject }) => {
 
   return <View style={styles.mainContainer}>
     {groupCount === 1 ? sectionList :
-      <Collapsible title={collapsibleTitle} hideTitleWhenOpen>
+      <NavCollapsible title={collapsibleTitle}>
         {sectionList}
-      </Collapsible>
+      </NavCollapsible>
     }
   </View>;
 }

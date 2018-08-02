@@ -5,7 +5,7 @@ import {SectionList, StyleSheet, Text, View} from 'react-native';
 import type {PublicDocumentObject} from "../model/document";
 import GroupListItemContainer from "../containers/GroupListItemContainer";
 import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemContainer";
-import Collapsible from "./Collapsible";
+import NavCollapsible from "./NavCollapsible";
 import vars from "../vars";
 import type {PublicEventObject} from "../model/event";
 import type {PublicFactsheetObject} from "../model/factsheet";
@@ -42,9 +42,9 @@ export default ContextualNavigation = ({object}: { object: PublicDocumentObject 
 
   return <View style={styles.mainContainer}>
     {groupCount === 1 ? sectionList :
-      <Collapsible title={collapsibleTitle} hideTitleWhenOpen>
+      <NavCollapsible title={collapsibleTitle}>
         {sectionList}
-      </Collapsible>
+      </NavCollapsible>
     }
   </View>;
 }

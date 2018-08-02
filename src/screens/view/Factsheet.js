@@ -54,16 +54,16 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
       <View style={styles.highlights}>
         <HTML html={factsheet.highlights}/>
       </View>
-      {factsheet.map !== undefined && <Collapsible title="Map" separatorAndMargins>
+      {factsheet.map !== undefined && <Collapsible title="Map">
         <ExpandableFitImageContainer source={{uri: factsheet.map}} full={factsheet.full_map}/>
       </Collapsible>}
-      {factsheet.need_analysis !== undefined && <Collapsible title="Need analysis" separatorAndMargins>
+      {factsheet.need_analysis !== undefined && <Collapsible title="Need analysis">
         <HTML html={factsheet.need_analysis}/>
       </Collapsible>}
-      {factsheet.response !== undefined && <Collapsible title="Response" separatorAndMargins>
+      {factsheet.response !== undefined && <Collapsible title="Response">
         <HTML html={factsheet.response}/>
       </Collapsible>}
-      {factsheet.gaps_challenges !== undefined && <Collapsible title="Gaps / challenges" separatorAndMargins>
+      {factsheet.gaps_challenges !== undefined && <Collapsible title="Gaps / challenges">
         <HTML html={factsheet.gaps_challenges}/>
       </Collapsible>}
     </ScrollView>
