@@ -14,7 +14,7 @@ type State = {
   open: boolean,
 }
 
-export default class Collapsible extends React.Component<Props, State> {
+export default class NavCollapsible extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {

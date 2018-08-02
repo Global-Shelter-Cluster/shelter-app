@@ -7,6 +7,9 @@ import {FontAwesome} from '@expo/vector-icons';
 type Props = {
   title: React$Element<*> | string | null,
   children: React$Element<*>,
+  isOpen?: true,
+  noHorizontalMargins?: true,
+  badge?: string, // Only works when title is a string
 }
 
 type State = {
@@ -17,7 +20,7 @@ export default class Collapsible extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      open: false,
+      open: props.isOpen ? true : false,
     };
   }
 
@@ -29,7 +32,9 @@ export default class Collapsible extends React.Component<Props, State> {
 
     const title = typeof this.props.title === 'string'
       ? <Text style={styles.textTitle}>
-        <Text style={styles.monospace}>{this.state.open ? '-' : '+'}</Text> {this.props.title.toUpperCase()}
+        <Text style={styles.monospace}>{this.state.open ? '-' : '+'}</Text>
+        {' ' + this.props.title.toUpperCase()}
+        {this.props.badge && !this.state.open ? ' (' + this.props.badge + ')' : null}
       </Text>
       : this.props.title;
 
@@ -38,7 +43,7 @@ export default class Collapsible extends React.Component<Props, State> {
         <TouchableOpacity style={styles.titleWrapperOpen} {...buttonProps}>
           {title}
         </TouchableOpacity>
-        <View style={styles.contentMargin}>
+        <View style={this.props.noHorizontalMargins ? styles.contentMarginNoHorizontal : styles.contentMargin}>
           {this.props.children}
         </View>
       </View>;
@@ -85,5 +90,8 @@ const styles = StyleSheet.create({
   contentMargin: {
     margin: 10,
     marginLeft: 40,
+  },
+  contentMarginNoHorizontal: {
+    marginVertical: 10,
   },
 });
