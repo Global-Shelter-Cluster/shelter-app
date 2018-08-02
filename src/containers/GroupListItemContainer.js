@@ -8,13 +8,16 @@ import type {PublicGroupObject} from "../model/group";
 import {getRecentDocumentsCount} from "../model/group";
 import {convertFiles} from "../model/file";
 import {getUnseenAlertIdsForGroup} from "../model/alert";
+import {getCurrentUser} from "../model/user";
 
 const mapStateToProps = (state, props) => {
   const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', props.id));
+  const followedGroups: Array<number> = getCurrentUser(state).groups !== undefined ? getCurrentUser(state).groups : [];
 
   const ret = {
     group: group,
     link: props.noLink ? false : (state.flags.online || detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC]),
+    isFollowed: props.hideFollowedIndicator ? false : followedGroups.includes(group.id),
   };
 
   if (props.enterForms === undefined)

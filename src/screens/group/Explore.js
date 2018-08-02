@@ -54,7 +54,7 @@ export default ({online, loading, tab, global, user, changeTab, refreshGlobal, r
       list = <FlatList
         key={tab} // This makes the list scroll up when changing the tab.
         data={ids.map(id => ({key: '' + id, id: id}))}
-        renderItem={({item}) => <GroupListItemContainer display="full" id={item.id}/>}
+        renderItem={({item}) => <GroupListItemContainer display="full" id={item.id} hideFollowedIndicator/>}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
       />;
       break;

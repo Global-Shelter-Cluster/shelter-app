@@ -11,9 +11,10 @@ import SingleLineText from "./SingleLineText";
 import Badge from "./Badge";
 import {hairlineWidth} from "../util";
 
-export default ({group, link, display, factsheet, recentDocs, unseenAlerts, enter}: {
+export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, enter}: {
   group: GroupObject,
   link: boolean,
+  isFollowed: boolean,
   display: "full" | "text-only",
   factsheet?: FactsheetObject,
   recentDocs?: number,
@@ -21,18 +22,30 @@ export default ({group, link, display, factsheet, recentDocs, unseenAlerts, ente
   enter: () => {},
 }) => {
   switch (display) {
-    case 'text-only':
+    case 'text-only': {
+      const followedIcon = isFollowed
+        ? <FontAwesome name="sign-in" size={18} style={{marginLeft: 10, marginTop: 2}}/>
+        : null;
+
       return link
         ? <TouchableOpacity onPress={enter} style={styles.textOnlyContainer}>
+          {followedIcon}
           <SingleLineText style={[styles.textOnlyLabel, {flex: 1}]}>{group.title}</SingleLineText>
           <FontAwesome
             name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
             style={styles.textOnlyIcon}
           />
         </TouchableOpacity>
-        : <SingleLineText style={styles.textOnlyLabel}>{group.title}</SingleLineText>;
+        : <View style={styles.textOnlyContainer}>
+          {followedIcon}
+          <SingleLineText style={styles.textOnlyLabel}>{group.title}</SingleLineText>
+        </View>;
+    }
+    case 'full': {
+      const followedIcon = isFollowed
+        ? <FontAwesome name="sign-in" color="white" size={18} style={{marginLeft: 10, marginTop: 2}}/>
+        : null;
 
-    case 'full':
       const badges = [];
 
       if (unseenAlerts && unseenAlerts > 0)
@@ -50,13 +63,17 @@ export default ({group, link, display, factsheet, recentDocs, unseenAlerts, ente
       const typeLabel = getGroupTypeLabel(group).toUpperCase();
       const titleRow = link
         ? <View key="title" style={{flexDirection: "row"}}>
+          {followedIcon}
           <SingleLineText style={[styles.fullLabel, {flex: 1}]}>{group.title}</SingleLineText>
           <FontAwesome
             name={"angle-right"} size={18} color="rgba(255,255,255,.5)"
             style={styles.fullIcon}
           />
         </View>
-        : <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>;
+        : <View style={{flexDirection: "row"}}>
+          {followedIcon}
+          <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>
+        </View>;
       const contents = [
         <Text key="type" style={styles.typeLabel}>{typeLabel}</Text>,
         titleRow,
@@ -90,6 +107,7 @@ export default ({group, link, display, factsheet, recentDocs, unseenAlerts, ente
             {contents}
           </View>
         </ImageBackground>;
+    }
   }
 }
 

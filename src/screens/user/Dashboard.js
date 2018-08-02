@@ -24,10 +24,10 @@ export default ({loading, user, unseenAlerts, refresh}: {
   const groups = user.groups !== undefined && user.groups.length > 0
     ? alerts === null
       ? <Collapsible title="Followed" badge={user.groups.length} isOpen noHorizontalMargins>
-        {user.groups.map(id => <GroupListItemContainer display="full" id={id} key={id}/>)}
+        {user.groups.map(id => <GroupListItemContainer display="full" id={id} key={id} hideFollowedIndicator/>)}
       </Collapsible>
       : <Collapsible title="Followed" badge={user.groups.length} noHorizontalMargins>
-        {user.groups.map(id => <GroupListItemContainer display="full" id={id} key={id}/>)}
+        {user.groups.map(id => <GroupListItemContainer display="full" id={id} key={id} hideFollowedIndicator/>)}
       </Collapsible>
     : null;
 
