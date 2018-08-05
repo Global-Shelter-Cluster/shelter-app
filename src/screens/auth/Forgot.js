@@ -12,7 +12,7 @@ import type {navigation} from "../../nav";
 const Form = t.form.Form;
 
 type Props = {
-  submit: (username: string, password: string) => {},
+  submit: (value: string) => {},
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
@@ -20,15 +20,17 @@ type Props = {
 }
 
 type State = {
-  formValues: { username: string, password: string },
+  formValues: {value: string},
+  submitted: boolean,
 }
 
-export default class Login extends React.Component<Props, State> {
+export default class Forgot extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
     this.state = {
-      formValues: {username: "", password: ""},
+      formValues: {value: ""},
+      submitted: false,
     };
   }
 
@@ -37,83 +39,79 @@ export default class Login extends React.Component<Props, State> {
       || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
   }
 
-  login() {
+  submit() {
     if (this.refs.form.validate().isValid()) {
-      this.props.submit(this.state.formValues.username, this.state.formValues.password);
+      this.props.submit(this.state.formValues.value);
+      this.setState({submitted: true});
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.state.submitted
+      && nextProps.lastError
+      && nextProps.lastError.type === 'request-new-password-error'
+    )
+      this.setState({submitted: false});
   }
 
   render() {
     const {online, loggingIn, lastError} = this.props;
+    const {submitted} = this.state;
 
-    const errorMessage = lastError.type === 'login-error'
+    const errorMessage = lastError.type === 'request-new-password-error'
       ? <Text style={styles.error}>{lastError.data.message}</Text>
       : null;
 
-    let loginButton;
-    if (!online)
-      loginButton = <Text style={styles.text}>No internet connection detected.</Text>;
+    let requestButton;
+    if (submitted && errorMessage === null && !loggingIn)
+      requestButton = <Text style={styles.text}>Further instructions have been sent to your e-mail address.</Text>;
+    else if (!online)
+      requestButton = <Text style={styles.text}>No internet connection detected.</Text>;
     else if (loggingIn)
-      loginButton = <Text style={styles.text}>Logging in...</Text>;
+      requestButton = <Text style={styles.text}>Requesting a new password for your account...</Text>;
     else {
-      loginButton = <Button
-        primary title="Log in"
-        onPress={() => this.login()}
+      requestButton = <Button
+        primary title="Request password"
+        onPress={() => this.submit()}
       />;
     }
-
-    const signupButton = !loggingIn && online
+    const backToLoginButton = !loggingIn
       ? <Button onPress={() => {
-        this.props.navigation.navigate('Signup');
-      }} title="Sign up"/>
-      : null;
-
-    const forgotButton = !loggingIn && online
-      ? <Button
-        dimmed style={{marginTop: 5}}
-        onPress={() => {
-          this.props.navigation.navigate('Forgot');
-        }} title="Forgot your password?"/>
+        this.props.navigation.navigate('Login');
+      }} title="Back to Log in"/>
       : null;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <StatusBar barStyle="light-content"/>
-        <ImageBackground style={styles.image} source={require('../../../assets/login.jpg')}>
-        </ImageBackground>
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
+          {!loggingIn && !submitted
+            ? <Text style={styles.banner}>{"Request a new password for your Shelter\u00A0Cluster\u00A0account"}</Text>
+            : null
+          }
           {errorMessage}
-          {online && !loggingIn && <Form
+          {online && !loggingIn && !submitted && <Form
             ref="form"
             type={t.struct({
-              username: t.String,
-              password: t.String,
+              value: t.String,
             })}
             options={{
               label: null,
               auto: "placeholders",
               stylesheet: formStyles,
               fields: {
-                username: {
-                  textContentType: "username",
-                  onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
-                  returnKeyType: "next",
-                },
-                password: {
-                  textContentType: "password",
-                  password: true,
-                  secureTextEntry: true,
-                  onSubmitEditing: () => this.login(),
+                value: {
+                  placeholder: "Username or e-mail address",
+                  onSubmitEditing: () => this.submit(),
                   returnKeyType: "go",
                 },
               },
             }}
             onChange={formValues => this.setState({formValues})} value={this.state.formValues}
           />}
-          {loginButton}
-          {signupButton}
-          {forgotButton}
+          {requestButton}
+          {backToLoginButton}
         </View>
       </KeyboardAvoidingView>
     );
@@ -124,31 +122,24 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: vars.SHELTER_DARK_BLUE,
     flex: 1,
-  },
-  image: {
-    flex: 1,
-    padding: 20,
     justifyContent: "flex-end",
   },
   innerContainer: {
-    // flexShrink: 1,
     padding: 20,
     paddingBottom: 30,
-    // height: 165,
     justifyContent: "space-between",
-  },
-  title: {
-    fontSize: 24,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: vars.SHELTER_RED,
-    marginBottom: 20,
   },
   text: {
     fontSize: 18,
     textAlign: "center",
     color: "black",
     marginBottom: 0,
+  },
+  banner: {
+    fontSize: 18,
+    textAlign: "center",
+    color: vars.SHELTER_RED,
+    marginBottom: 20,
   },
   error: {
     fontSize: 16,

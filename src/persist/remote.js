@@ -104,6 +104,9 @@ class Remote {
       return response.data;
     } catch (e) {
       //console.error('Axios error', e);
+      if (e.response && e.response.data && typeof e.response.data[0] === 'string')
+        // We have an error message, show it instead of the default Axios message
+        throw new Error(e.response.data[0]);
       throw e;
     }
   }
@@ -135,6 +138,10 @@ class Remote {
       pushNotificationToken,
     });
     return data.objects !== undefined ? data.objects : {};
+  }
+
+  async requestNewPassword(value: string): Promise<Objects> {
+    await this._post('/forgot', {value});
   }
 
   logout(pushNotificationToken: string | null) {

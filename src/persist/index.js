@@ -314,6 +314,10 @@ class Persist {
     throw new Error("No user returned by login call")
   }
 
+  async requestNewPassword(value: string) {
+    await this.remote.requestNewPassword(value);
+  }
+
   async followGroup(id: number) {
     // Remote returns the group and related objects
     const objects: Objects = await this.remote.followGroup(id);

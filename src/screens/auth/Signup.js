@@ -12,7 +12,7 @@ import type {navigation} from "../../nav";
 const Form = t.form.Form;
 
 type Props = {
-  signup: (newAccountValues) => {},
+  submit: (newAccountValues) => {},
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
@@ -39,7 +39,7 @@ export default class Signup extends React.Component<Props, State> {
 
   signup() {
     if (this.refs.form.validate().isValid()) {
-      this.props.signup(this.state.formValues);
+      this.props.submit(this.state.formValues);
     }
   }
 
@@ -57,14 +57,14 @@ export default class Signup extends React.Component<Props, State> {
       signupButton = <Text style={styles.text}>Creating your account...</Text>;
     else {
       signupButton = <Button
-        primary title="Signup"
+        primary title="Sign up"
         onPress={() => this.signup()}
       />;
     }
     const backToLoginButton = !loggingIn
       ? <Button onPress={() => {
         this.props.navigation.navigate('Login');
-      }} title="Back to login form"/>
+      }} title="Back to Log in"/>
       : null;
 
     return (
@@ -104,6 +104,7 @@ export default class Signup extends React.Component<Props, State> {
                   returnKeyType: "next",
                 },
                 email: {
+                  placeholder: "E-mail address",
                   textContentType: "emailAddress",
                   keyboardType: "email-address",
                   onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),

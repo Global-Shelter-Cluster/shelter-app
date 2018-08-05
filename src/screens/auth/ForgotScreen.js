@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react';
-import {login} from '../../actions';
+import {requestNewPassword} from '../../actions';
 import {connect} from 'react-redux';
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import Login from "./Login";
+import Forgot from "./Forgot";
 import {propEqual} from "../../util";
 import type {lastErrorType} from "../../reducers/lastError";
 import type {navigation} from "../../nav";
@@ -14,11 +14,11 @@ type Props = {
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
-  submit: (username: string, password: string) => {},
+  submit: (value: string) => {},
   navigation: navigation,
 }
 
-class LoginScreen extends React.Component<Props> {
+class ForgotScreen extends React.Component<Props> {
   static navigationOptions = {
     headerTitle: <NavTitleContainer title="Log in"/>,
   };
@@ -38,7 +38,7 @@ class LoginScreen extends React.Component<Props> {
   }
 
   render() {
-    return <Login {...this.props}/>;
+    return <Forgot {...this.props}/>;
   }
 }
 
@@ -50,7 +50,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  submit: (user, pass) => dispatch(login(user, pass)),
+  submit: value => dispatch(requestNewPassword(value)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotScreen)

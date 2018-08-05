@@ -55,6 +55,17 @@ export const signup = (newAccountValues: newAccountValues) => async dispatch => 
   dispatch(changeFlag("loggingIn", false));
 };
 
+export const requestNewPassword = (value: string) => async dispatch => {
+  dispatch(clearLastError());
+  dispatch(changeFlag("loggingIn", true)); // We use this flag here even if it doesn't make much sense.
+  try {
+    await persist.requestNewPassword(value);
+  } catch (e) {
+    dispatch(setLastError('request-new-password-error', {message: e.message}));
+  }
+  dispatch(changeFlag("loggingIn", false));
+};
+
 export const loadObject = (type: ObjectType, id: number, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
   dispatch(changeFlag('loading', true));
   try {

@@ -4,6 +4,7 @@ import React from 'react';
 import {signup} from '../../actions';
 import {connect} from 'react-redux';
 import NavTitleContainer from "../../containers/NavTitleContainer";
+import type {newAccountValues} from "./Signup";
 import Signup from "./Signup";
 import {propEqual} from "../../util";
 import type {lastErrorType} from "../../reducers/lastError";
@@ -14,7 +15,7 @@ type Props = {
   online: boolean,
   loggingIn: boolean,
   lastError: lastErrorType,
-  signup: () => {},
+  submit: (newAccountValues) => {},
   navigation: navigation,
 }
 
@@ -50,7 +51,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  signup: values => dispatch(signup(values)),
+  submit: values => dispatch(signup(values)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignupScreen)
