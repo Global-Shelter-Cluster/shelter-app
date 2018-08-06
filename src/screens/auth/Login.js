@@ -79,8 +79,10 @@ export default class Login extends React.Component<Props, State> {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         {/*<StatusBar barStyle="light-content"/>*/}
-        <ImageBackground style={styles.image} source={require('../../../assets/splash.png')}>
-        </ImageBackground>
+        <ImageBackground
+          style={{flex: 1}}
+          imageStyle={{maxWidth: 400, maxHeight: 400}}
+          source={require('../../../assets/splash.png')}/>
         <View style={styles.innerContainer}>
           <Text style={styles.title}>App Prototype</Text>
           {errorMessage}
@@ -123,9 +125,6 @@ export default class Login extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: vars.BG_GREY,
-    flex: 1,
-  },
-  image: {
     flex: 1,
   },
   innerContainer: {
