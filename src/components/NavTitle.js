@@ -1,14 +1,16 @@
 // @flow
 
 import React from 'react';
-import {Platform, StyleSheet, Text} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 import Hourglasses from '../hourglasses';
 import vars from "../vars";
+import SingleLineText from "./SingleLineText";
 
-const NavTitle = ({online, title, downloading}: {
+const NavTitle = ({online, title, subtitle, downloading}: {
   online: boolean,
   title: string,
+  subtitle?: string | null,
   downloading: { value: number, total: number },
 }) => {
   let icon = null;
@@ -51,13 +53,21 @@ const NavTitle = ({online, title, downloading}: {
     icon = <Hourglasses key="downloading" name={downloadingIcon} size={20}/>;
   }
 
-  if (icon === null)
-    return <Text style={[styles.title, styles.container]} numberOfLines={1} ellipsizeMode="tail">{title}</Text>;
-  else
-    return <Text style={styles.container} numberOfLines={1}>
+  const titleLine = icon === null
+    ? <Text style={[styles.title, styles.container]} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
+    : <Text style={styles.container} numberOfLines={1}>
       {icon}
       <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{" " + title}</Text>
     </Text>;
+
+  if (subtitle !== undefined && subtitle !== null) {
+    return <View style={{alignItems: "center"}}>
+      {titleLine}
+      <SingleLineText style={styles.subtitle}>{subtitle}</SingleLineText>
+    </View>;
+  } else {
+    return titleLine;
+  }
 };
 
 export default NavTitle;
@@ -77,4 +87,8 @@ const styles = StyleSheet.create({
       color: "rgba(0,0,0,.9)",
       fontWeight: "500",
     },
+  subtitle: {
+    color: vars.SHELTER_GREY,
+    fontSize: 10,
+  }
 });

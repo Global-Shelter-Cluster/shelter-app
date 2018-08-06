@@ -3,6 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import type {PublicGroupObject} from "../../model/group";
+import {getGroupTinyDescription, getGroupTypeLabel} from "../../model/group";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
 import Group from './Group';
 import type {FactsheetObject} from "../../model/factsheet";
@@ -55,8 +56,22 @@ const mapDispatchToProps = (dispatch, props) => ({
 
 class GroupScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => ({
-    headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
+    headerTitle: <NavTitleContainer
+      title={navigation.getParam('title', 'Loading...')}
+      subtitle={navigation.getParam('subtitle', null)}
+    />,
   });
+
+  renderSubtitle() {
+    if (!this.props.loaded)
+      return null;
+
+    return [
+      getGroupTypeLabel(this.props.group).toUpperCase(),
+      getGroupTinyDescription(this.props.group),
+    ].filter(text => text !== '' && text !== null)
+      .join(' • ');
+  }
 
   shouldComponentUpdate(nextProps) {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['group', 'factsheet', 'lastError']);
@@ -66,12 +81,17 @@ class GroupScreen extends React.Component<Props> {
     if (!this.props.loaded)
       this.props.refresh();
 
-    this.props.navigation.setParams({title: this.props.group.title});
+    this.props.navigation.setParams({title: this.props.group.title, subtitle: this.renderSubtitle()});
   }
 
   componentDidUpdate() {
-    if (this.props.group.title !== this.props.navigation.getParam('title'))
-      this.props.navigation.setParams({title: this.props.group.title});
+    const subtitle = this.renderSubtitle();
+    if (
+      this.props.group.title !== this.props.navigation.getParam('title')
+      || subtitle !== this.props.navigation.getParam('subtitle')
+    ) {
+      this.props.navigation.setParams({title: this.props.group.title, subtitle: subtitle});
+    }
   }
 
   render() {

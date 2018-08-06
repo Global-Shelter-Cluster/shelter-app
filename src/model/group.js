@@ -178,3 +178,31 @@ export const getGroupTypeLabel = (group: GroupObject) =>
   group.region_type !== undefined
     ? group.region_type.toLowerCase()
     : group.type.replace(/_/g, ' ');
+
+export const getGroupTinyDescription = (group: GroupObject) => {
+  const plural = (value, singular, plural) => value === 1
+    ? value + ' ' + singular
+    : value + ' ' + plural;
+
+  const ret = [];
+
+  if (group.responses !== undefined)
+    ret.push(plural(group.responses.length, 'response', 'responses'));
+
+  if (group.regions !== undefined)
+    ret.push(plural(group.regions.length, 'region', 'regions'));
+
+  if (group.hubs !== undefined)
+    ret.push(plural(group.hubs.length, 'hub', 'hubs'));
+
+  if (group.working_groups !== undefined)
+    ret.push(plural(group.working_groups.length, 'working group', 'working groups'));
+
+  if (group.communities_of_practice !== undefined)
+    ret.push(plural(group.communities_of_practice.length, 'CoP', 'CoPs'));
+
+  if (group.strategic_advisory !== undefined)
+    ret.push('1 SAG');
+
+  return ret.join(', ');
+};
