@@ -78,11 +78,11 @@ export default class Login extends React.Component<Props, State> {
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <StatusBar barStyle="light-content"/>
-        <ImageBackground style={styles.image} source={require('../../../assets/login.jpg')}>
+        {/*<StatusBar barStyle="light-content"/>*/}
+        <ImageBackground style={styles.image} source={require('../../../assets/splash.png')}>
         </ImageBackground>
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>{"Shelter Cluster\nApp Prototype"}</Text>
+          <Text style={styles.title}>App Prototype</Text>
           {errorMessage}
           {online && !loggingIn && <Form
             ref="form"
@@ -122,13 +122,11 @@ export default class Login extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: vars.SHELTER_DARK_BLUE,
+    backgroundColor: vars.BG_GREY,
     flex: 1,
   },
   image: {
     flex: 1,
-    padding: 20,
-    justifyContent: "flex-end",
   },
   innerContainer: {
     // flexShrink: 1,

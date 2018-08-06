@@ -14,4 +14,5 @@ export default {
   VERY_LIGHT_GREY: 'rgba(0,0,0,.05)',
   LIGHT_GREY: 'rgba(0,0,0,.3)',
   MEDIUM_GREY: 'rgba(0,0,0,.5)',
+  BG_GREY: '#EEEEEE',
 }

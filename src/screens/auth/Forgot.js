@@ -120,7 +120,7 @@ export default class Forgot extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: vars.SHELTER_DARK_BLUE,
+    backgroundColor: vars.BG_GREY,
     flex: 1,
     justifyContent: "flex-end",
   },
