@@ -13,104 +13,116 @@ export default ({group}: { group: PublicGroupObject }) => {
   let groupCount = 0;
 
   const sections: Array<{ title: string, data: Array<number> }> = [];
-  let collapsibleTitle: React$Element<*> | null = null;
+
+  let collapsedTitle: string | null = null;
+  let collapsedContentRow: React$Element<*> | null = null;
+  const collapsedSubtitleParts: Array<string> = []; // We comma-separate them later
+
+  // Some helpers
+  const plural = (count: number, singularLabel: string, pluralLabel: string) =>
+    count === 1 ? '1 ' + singularLabel : count + ' ' + pluralLabel;
+  const addCount = (title: string, count: number) =>
+    count > 1 ? title + ' (' + count + ')' : title;
+  const commaSeparated = (items: Array<string>) => {
+    if (items.length === 1)
+      return items[0];
+
+    return items.slice(0, -1).join(', ') + ' and ' + items.pop();
+  };
 
   if (group.parent_region) {
     groupCount++;
     sections.push({title: "In", data: [group.parent_region]});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>In</Text>
-        <GroupListItemContainer display="text-only" id={group.parent_region} noLink/>
-      </View>;
+    if (!collapsedTitle) {
+      collapsedTitle = 'In';
+      collapsedContentRow = <GroupListItemContainer display="text-only" id={group.parent_region} noLink/>;
     }
   } else if (group.associated_regions) {
     groupCount += group.associated_regions.length;
     sections.push({title: "In", data: group.associated_regions});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>In</Text>
-        <MultipleGroupListItemContainer ids={group.associated_regions}/>
-      </View>;
+    if (!collapsedTitle) {
+      collapsedTitle = addCount('In', group.associated_regions.length);
+      collapsedContentRow = <MultipleGroupListItemContainer ids={group.associated_regions}/>;
     }
   }
 
   if (group.parent_response) {
     groupCount++;
     sections.push({title: "Related to", data: [group.parent_response]});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Related to</Text>
-        <GroupListItemContainer display="text-only" id={group.parent_response} noLink/>
-      </View>;
+    if (!collapsedTitle) {
+      collapsedTitle = 'Related to';
+      collapsedContentRow = <GroupListItemContainer display="text-only" id={group.parent_response} noLink/>;
     }
   }
 
   if (group.regions) {
     groupCount += group.regions.length;
     sections.push({title: "Regions", data: group.regions});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Regions</Text>
-        <MultipleGroupListItemContainer ids={group.regions}/>
-      </View>;
-    }
+    if (!collapsedTitle) {
+      collapsedTitle = addCount('Regions', group.regions.length);
+      collapsedContentRow = <MultipleGroupListItemContainer ids={group.regions}/>;
+    } else
+      collapsedSubtitleParts.push(plural(group.regions.length, 'region', 'regions'));
   }
 
   if (group.responses) {
     groupCount += group.responses.length;
     sections.push({title: "Responses", data: group.responses});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Responses</Text>
-        <MultipleGroupListItemContainer ids={group.responses}/>
-      </View>;
-    }
+    if (!collapsedTitle) {
+      collapsedTitle = addCount('Responses', group.responses.length);
+      collapsedContentRow = <MultipleGroupListItemContainer ids={group.responses}/>;
+    } else
+      collapsedSubtitleParts.push(plural(group.responses.length, 'response', 'responses'));
   }
 
   if (group.hubs) {
     groupCount += group.hubs.length;
     sections.push({title: "Hubs", data: group.hubs});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Hubs</Text>
-        <MultipleGroupListItemContainer ids={group.hubs}/>
-      </View>;
-    }
+    if (!collapsedTitle) {
+      collapsedTitle = addCount('Hubs', group.hubs.length);
+      collapsedContentRow = <MultipleGroupListItemContainer ids={group.hubs}/>;
+    } else
+      collapsedSubtitleParts.push(plural(group.hubs.length, 'hub', 'hubs'));
   }
 
   if (group.working_groups) {
     groupCount += group.working_groups.length;
     sections.push({title: "Working groups", data: group.working_groups});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Working groups</Text>
-        <MultipleGroupListItemContainer ids={group.working_groups}/>
-      </View>;
-    }
+    if (!collapsedTitle) {
+      collapsedTitle = addCount('Working groups', group.working_groups.length);
+      collapsedContentRow = <MultipleGroupListItemContainer ids={group.working_groups}/>;
+    } else
+      collapsedSubtitleParts.push(plural(group.working_groups.length, 'working group', 'working groups'));
   }
 
   if (group.communities_of_practice) {
     groupCount += group.communities_of_practice.length;
     sections.push({title: "Communities of Practice", data: group.communities_of_practice});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Communities of practice</Text>
-        <MultipleGroupListItemContainer ids={group.communities_of_practice}/>
-      </View>;
-    }
+    if (!collapsedTitle) {
+      collapsedTitle = addCount('Communities of practice', group.communities_of_practice.length);
+      collapsedContentRow = <MultipleGroupListItemContainer ids={group.communities_of_practice}/>;
+    } else
+      collapsedSubtitleParts.push(plural(group.communities_of_practice.length, 'community of practice', 'communities of practice'));
   }
 
   if (group.strategic_advisory) {
     groupCount++;
     sections.push({title: "Strategic Advisory Group", data: [group.strategic_advisory]});
-    if (!collapsibleTitle) {
-      collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>Strategic advisory group</Text>
-        <GroupListItemContainer display="text-only" id={group.strategic_advisory} noLink/>
-      </View>;
-    }
+    if (!collapsedTitle) {
+      collapsedTitle = 'Strategic advisory group';
+      collapsedContentRow = <GroupListItemContainer display="text-only" id={group.strategic_advisory} noLink/>;
+    } else
+      collapsedSubtitleParts.push('1 strategic advisory group');
   }
+
+  const collapsibleTitle = <View style={styles.container}>
+    <Text style={styles.sectionHeader}>{collapsedTitle}</Text>
+    {collapsedContentRow}
+    {collapsedSubtitleParts.length > 0 ?
+      <Text style={styles.sectionHeader}>+ {commaSeparated(collapsedSubtitleParts)}</Text>
+      : null
+    }
+  </View>;
 
   if (groupCount === 0)
     return null;

@@ -62,17 +62,6 @@ class GroupScreen extends React.Component<Props> {
     />,
   });
 
-  renderSubtitle() {
-    if (!this.props.loaded)
-      return null;
-
-    return [
-      getGroupTypeLabel(this.props.group).toUpperCase(),
-      getGroupTinyDescription(this.props.group),
-    ].filter(text => text !== '' && text !== null)
-      .join(' • ');
-  }
-
   shouldComponentUpdate(nextProps) {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['group', 'factsheet', 'lastError']);
   }
@@ -81,11 +70,11 @@ class GroupScreen extends React.Component<Props> {
     if (!this.props.loaded)
       this.props.refresh();
 
-    this.props.navigation.setParams({title: this.props.group.title, subtitle: this.renderSubtitle()});
+    this.props.navigation.setParams({title: this.props.group.title, subtitle: getGroupTypeLabel(this.props.group).toUpperCase()});
   }
 
   componentDidUpdate() {
-    const subtitle = this.renderSubtitle();
+    const subtitle = getGroupTypeLabel(this.props.group).toUpperCase();
     if (
       this.props.group.title !== this.props.navigation.getParam('title')
       || subtitle !== this.props.navigation.getParam('subtitle')
