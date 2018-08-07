@@ -61,9 +61,9 @@ const NavTitle = ({online, title, subtitle, downloading}: {
     </Text>;
 
   if (subtitle !== undefined && subtitle !== null) {
-    return <View style={{alignItems: "center"}}>
+    return <View style={styles.containerWithSubtitle}>
       {titleLine}
-      <SingleLineText style={styles.subtitle}>{subtitle}</SingleLineText>
+      <SingleLineText style={[styles.subtitle, styles.container]}>{subtitle}</SingleLineText>
     </View>;
   } else {
     return titleLine;
@@ -76,6 +76,11 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
   },
+  containerWithSubtitle: Platform.OS === 'ios'
+    ? {
+      alignItems: "center",
+    }
+    : null,
   title: Platform.OS === 'ios'
     ? {
       fontSize: 17,
