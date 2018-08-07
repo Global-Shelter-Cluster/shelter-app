@@ -112,6 +112,8 @@ class Remote {
   }
 
   async login(username: string, password: string, pushNotificationToken: string | null): Promise<Objects> {
+    this.auth = null;
+    
     const data = await this._post('/get-objects', {
       'objects': [{type: 'global', id: 1}],
       'credentials': {
