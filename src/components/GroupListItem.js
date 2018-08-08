@@ -11,7 +11,7 @@ import SingleLineText from "./SingleLineText";
 import Badge from "./Badge";
 import {hairlineWidth} from "../util";
 
-export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, enter}: {
+export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, enter, ellipsizeMode}: {
   group: GroupObject,
   link: boolean,
   isFollowed: boolean,
@@ -20,30 +20,37 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
   recentDocs?: number,
   unseenAlerts?: number,
   enter: () => {},
+  ellipsizeMode?: string,
 }) => {
+  const textStyles = ellipsizeMode !== undefined ? {ellipsizeMode} : {};
+
   switch (display) {
     case 'text-only': {
       const followedIcon = isFollowed
-        ? <FontAwesome name="sign-in" size={18} style={{marginLeft: 10, marginTop: 2}}/>
+        ? <FontAwesome name="sign-in" size={18} style={{paddingTop: 2}}/>
         : null;
+
+      const titleContainerStyle = followedIcon
+        ? [styles.textOnlyContainer, {marginRight: 20}]
+        : styles.textOnlyContainer;
+      const title = <View style={titleContainerStyle}>
+        <SingleLineText style={styles.textOnlyLabel} {...textStyles}>{group.title}</SingleLineText>
+        {followedIcon}
+      </View>;
 
       return link
         ? <TouchableOpacity onPress={enter} style={styles.textOnlyContainer}>
-          {followedIcon}
-          <SingleLineText style={[styles.textOnlyLabel, {flex: 1}]}>{group.title}</SingleLineText>
+          {title}
           <FontAwesome
             name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
             style={styles.textOnlyIcon}
           />
         </TouchableOpacity>
-        : <View style={styles.textOnlyContainer}>
-          {followedIcon}
-          <SingleLineText style={styles.textOnlyLabel}>{group.title}</SingleLineText>
-        </View>;
+        : title;
     }
     case 'full': {
       const followedIcon = isFollowed
-        ? <FontAwesome name="sign-in" color="white" size={18} style={{marginLeft: 10, marginTop: 2}}/>
+        ? <FontAwesome name="sign-in" color="white" size={18} style={{paddingTop: 2}}/>
         : null;
 
       const badges = [];
@@ -61,19 +68,27 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
         badges.push(<Badge key="upcomingEvents" icon="calendar" value={group.upcoming_events.length} color="white"/>);
 
       const typeLabel = getGroupTypeLabel(group).toUpperCase();
+
+      const titleContainerStyle = followedIcon
+        ? {flex: 1, flexDirection: "row", marginRight: 20}
+        : (link
+            ? {flex: 1, flexDirection: "row"}
+            : {flexDirection: "row"}
+        );
+      const title = <View key="title" style={titleContainerStyle}>
+        <SingleLineText style={styles.fullLabel} {...textStyles}>{group.title}</SingleLineText>
+        {followedIcon}
+      </View>;
+
       const titleRow = link
         ? <View key="title" style={{flexDirection: "row"}}>
-          {followedIcon}
-          <SingleLineText style={[styles.fullLabel, {flex: 1}]}>{group.title}</SingleLineText>
+          {title}
           <FontAwesome
             name={"angle-right"} size={18} color="rgba(255,255,255,.5)"
             style={styles.fullIcon}
           />
         </View>
-        : <View style={{flexDirection: "row"}}>
-          {followedIcon}
-          <SingleLineText key="title" style={styles.fullLabel}>{group.title}</SingleLineText>
-        </View>;
+        : title;
       const contents = [
         <Text key="type" style={styles.typeLabel}>{typeLabel}</Text>,
         titleRow,
@@ -113,11 +128,13 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
 
 const styles = StyleSheet.create({
   textOnlyContainer: {
+    flex: 1,
     flexDirection: "row",
   },
   textOnlyLabel: {
     padding: 10,
     paddingTop: 0,
+    paddingLeft: 20,
     fontSize: 18,
   },
   textOnlyIcon: {

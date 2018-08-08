@@ -28,6 +28,7 @@ const mapStateToProps = (state, props) => {
     link: false,
     factsheet: null,
     enter: null,
+    ellipsizeMode: "tail",
   };
 };
 

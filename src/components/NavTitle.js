@@ -54,10 +54,10 @@ const NavTitle = ({online, title, subtitle, downloading}: {
   }
 
   const titleLine = icon === null
-    ? <Text style={[styles.title, styles.container]} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
+    ? <Text style={[styles.title, styles.container]} numberOfLines={1} ellipsizeMode="middle">{title}</Text>
     : <Text style={styles.container} numberOfLines={1}>
       {icon}
-      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{" " + title}</Text>
+      <Text style={styles.title} numberOfLines={1} ellipsizeMode="middle">{" " + title}</Text>
     </Text>;
 
   if (subtitle !== undefined && subtitle !== null) {
