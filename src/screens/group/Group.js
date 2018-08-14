@@ -11,7 +11,7 @@ import GroupDashboardContainer from "../../containers/GroupDashboardContainer";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 
-export default ({online, group, loaded, factsheet, refresh, follow, unfollow, loading, lastError}: {
+export default ({online, group, loaded, factsheet, refresh, follow, unfollow, loading, lastError, areAllSubregionsCountries}: {
   online: boolean,
   loading: boolean,
   group: PublicGroupObject,
@@ -21,6 +21,7 @@ export default ({online, group, loaded, factsheet, refresh, follow, unfollow, lo
   follow: () => void,
   unfollow: () => void,
   lastError: lastErrorType,
+  areAllSubregionsCountries: boolean,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'group', id: group.id}}))
     return <Error
@@ -34,7 +35,7 @@ export default ({online, group, loaded, factsheet, refresh, follow, unfollow, lo
   return <ScrollView
     refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
   >
-    <GroupContextualNavigation group={group}/>
+    <GroupContextualNavigation group={group} areAllSubregionsCountries={areAllSubregionsCountries}/>
     <GroupDashboardContainer group={group} follow={follow} unfollow={unfollow}/>
   </ScrollView>;
 }

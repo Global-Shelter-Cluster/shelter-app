@@ -23,6 +23,7 @@ export type PrivateGroupObject = {
   title: string,
   url: string,
   region_type?: string,
+  response_status?: "active" | "archived",
   image?: string,
   parent_region?: number,
   parent_response?: number,
@@ -32,10 +33,11 @@ export type PrivateGroupObject = {
   key_documents?: Array<number>,
   recent_documents?: Array<number>,
   upcoming_events?: Array<number>,
-  hubs?: Array<number>,
-  responses?: Array<number>,
-  working_groups?: Array<number>,
+  response_region_hierarchy?: Array<{region: number, responses: Array<number>}>,
   regions?: Array<number>,
+  responses?: Array<number>,
+  hubs?: Array<number>,
+  working_groups?: Array<number>,
   communities_of_practice?: Array<number>,
   strategic_advisory?: number,
   kobo_forms?: Array<number>,
@@ -51,6 +53,7 @@ export type PublicGroupObject = {
   title: string,
   url: string,
   region_type?: string,
+  response_status?: "active" | "archived",
   image?: string,
   parent_region?: number,
   parent_response?: number,
@@ -60,10 +63,11 @@ export type PublicGroupObject = {
   key_documents?: Array<number>,
   recent_documents?: Array<number>,
   upcoming_events?: Array<number>,
-  hubs?: Array<number>,
-  responses?: Array<number>,
-  working_groups?: Array<number>,
+  response_region_hierarchy?: Array<{region: number, responses: Array<number>}>,
   regions?: Array<number>,
+  responses?: Array<number>,
+  hubs?: Array<number>,
+  working_groups?: Array<number>,
   communities_of_practice?: Array<number>,
   strategic_advisory?: number,
 }
@@ -76,6 +80,7 @@ export type StubPlusGroupObject = {
   id: number,
   title: string,
   region_type?: string,
+  response_status?: "active" | "archived",
   image?: string,
   latest_factsheet?: number,
 }
@@ -87,6 +92,8 @@ export type StubGroupObject = {
   type: GroupType,
   id: number,
   title: string,
+  region_type?: string,
+  response_status?: "active" | "archived",
 }
 
 export type GroupObject = StubGroupObject | StubPlusGroupObject | PublicGroupObject | PrivateGroupObject;
@@ -160,6 +167,23 @@ export const getRecentDocumentsCount = createCachedSelector(
       : 0
   }
 )((state, groupId) => [groupId, moment().format('YYYY-MM-DD')].join(':')); // e.g. "12345:2018-06-08"
+
+export const areAllSubregionsCountries = createCachedSelector(
+  state => state,
+  (state, groupId) => groupId,
+  (state, groupId) => {
+    if (state.objects.group[groupId].regions === undefined)
+      return false;
+
+    for (let id of state.objects.group[groupId].regions) {
+      const child: GroupObject = getObject(state, 'group', id);
+      if (child.region_type === undefined || child.region_type !== 'Country')
+        return false;
+    }
+
+    return true;
+  }
+)((state, groupId) => groupId);
 
 export const isFollowing = createCachedSelector(
   state => getCurrentUser(state),

@@ -3,7 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import type {PublicGroupObject} from "../../model/group";
-import {getGroupTinyDescription, getGroupTypeLabel} from "../../model/group";
+import {areAllSubregionsCountries, getGroupTypeLabel} from "../../model/group";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
 import Group from './Group';
 import type {FactsheetObject} from "../../model/factsheet";
@@ -38,6 +38,7 @@ const mapStateToProps = (state, props) => {
     group: group,
     loaded: detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
     factsheet: factsheet,
+    areAllSubregionsCountries: areAllSubregionsCountries(state, group.id),
   };
 };
 
@@ -66,15 +67,29 @@ class GroupScreen extends React.Component<Props> {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['group', 'factsheet', 'lastError']);
   }
 
+  generateSubtitle() {
+    const ret = [getGroupTypeLabel(this.props.group).toUpperCase()];
+
+    if (this.props.group.response_status !== undefined)
+      console.log(this.props.group.response_status);
+    if (this.props.group.response_status !== undefined && this.props.group.response_status === 'archived')
+      ret.push('archived');
+
+    return ret.join(' • ');
+  }
+
   componentWillMount() {
     if (!this.props.loaded)
       this.props.refresh();
 
-    this.props.navigation.setParams({title: this.props.group.title, subtitle: getGroupTypeLabel(this.props.group).toUpperCase()});
+    this.props.navigation.setParams({
+      title: this.props.group.title,
+      subtitle: this.generateSubtitle(),
+    });
   }
 
   componentDidUpdate() {
-    const subtitle = getGroupTypeLabel(this.props.group).toUpperCase();
+    const subtitle = this.generateSubtitle();
     if (
       this.props.group.title !== this.props.navigation.getParam('title')
       || subtitle !== this.props.navigation.getParam('subtitle')

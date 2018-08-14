@@ -9,7 +9,7 @@ import NavCollapsible from "./NavCollapsible";
 import vars from "../vars";
 import {hairlineWidth} from "../util";
 
-export default ({group}: { group: PublicGroupObject }) => {
+export default ({group, areAllSubregionsCountries}: { group: PublicGroupObject, areAllSubregionsCountries: boolean }) => {
   let groupCount = 0;
 
   const sections: Array<{ title: string, data: Array<number> }> = [];
@@ -55,24 +55,66 @@ export default ({group}: { group: PublicGroupObject }) => {
     }
   }
 
-  if (group.regions) {
-    groupCount += group.regions.length;
-    sections.push({title: "Regions", data: group.regions});
-    if (!collapsedTitle) {
-      collapsedTitle = addCount('Regions', group.regions.length);
-      collapsedContentRow = <MultipleGroupListItemContainer ids={group.regions}/>;
-    } else
-      collapsedSubtitleParts.push(plural(group.regions.length, 'region', 'regions'));
-  }
+  const subregionsLabel = areAllSubregionsCountries ? "Countries" : "Regions";
+  if (group.response_region_hierarchy && group.regions && group.responses) {
+    const section = {title: subregionsLabel + " / responses", data: []};
+    const rawIds = [];
 
-  if (group.responses) {
-    groupCount += group.responses.length;
-    sections.push({title: "Responses", data: group.responses});
-    if (!collapsedTitle) {
-      collapsedTitle = addCount('Responses', group.responses.length);
-      collapsedContentRow = <MultipleGroupListItemContainer ids={group.responses}/>;
-    } else
-      collapsedSubtitleParts.push(plural(group.responses.length, 'response', 'responses'));
+    for (let id of group.responses) {
+      let found = false;
+      for (let data of group.response_region_hierarchy) {
+        if (data.responses.includes(id)) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        section.data.push({id, indent: true});
+        rawIds.push(id);
+      }
+    }
+
+    group.response_region_hierarchy.map(data => {
+      section.data.push(data.region);
+      rawIds.push(data.region);
+      data.responses.map(id => {
+        section.data.push({id, indent: true});
+        rawIds.push(id);
+      });
+    });
+
+    if (section.data) {
+      groupCount += section.data.length;
+      sections.push(section);
+      if (!collapsedTitle) {
+        collapsedTitle = addCount(subregionsLabel, group.regions.length) + ' / ' + addCount('responses', group.responses.length);
+        collapsedContentRow = <MultipleGroupListItemContainer ids={rawIds}/>;
+      } else {
+        collapsedSubtitleParts.push(plural(group.regions.length, areAllSubregionsCountries ? 'country' : 'region', areAllSubregionsCountries ? 'countries' : 'regions'));
+        collapsedSubtitleParts.push(plural(group.responses.length, 'response', 'responses'));
+      }
+    }
+
+  } else {
+    if (group.regions) {
+      groupCount += group.regions.length;
+      sections.push({title: subregionsLabel, data: group.regions});
+      if (!collapsedTitle) {
+        collapsedTitle = addCount(subregionsLabel, group.regions.length);
+        collapsedContentRow = <MultipleGroupListItemContainer ids={group.regions}/>;
+      } else
+        collapsedSubtitleParts.push(plural(group.regions.length, areAllSubregionsCountries ? 'country' : 'region', areAllSubregionsCountries ? 'countries' : 'regions'));
+    }
+
+    if (group.responses) {
+      groupCount += group.responses.length;
+      sections.push({title: "Responses", data: group.responses});
+      if (!collapsedTitle) {
+        collapsedTitle = addCount('Responses', group.responses.length);
+        collapsedContentRow = <MultipleGroupListItemContainer ids={group.responses}/>;
+      } else
+        collapsedSubtitleParts.push(plural(group.responses.length, 'response', 'responses'));
+    }
   }
 
   if (group.hubs) {
@@ -131,7 +173,12 @@ export default ({group}: { group: PublicGroupObject }) => {
     style={styles.container}
     sections={sections}
     renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-    renderItem={({item}) => <GroupListItemContainer display="text-only" id={item}/>}
+    renderItem={({item}) => {
+      if (typeof item === 'object')
+        return <GroupListItemContainer display="text-only" {...item}/>
+      else
+        return <GroupListItemContainer display="text-only" id={item}/>
+    }}
     keyExtractor={(item, index) => index}
   />;
 

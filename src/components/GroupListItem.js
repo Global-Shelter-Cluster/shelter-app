@@ -11,7 +11,7 @@ import SingleLineText from "./SingleLineText";
 import Badge from "./Badge";
 import {hairlineWidth} from "../util";
 
-export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, enter, ellipsizeMode}: {
+export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, enter, ellipsizeMode, indent}: {
   group: GroupObject,
   link: boolean,
   isFollowed: boolean,
@@ -21,6 +21,7 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
   unseenAlerts?: number,
   enter: () => {},
   ellipsizeMode?: string,
+  indent?: true, // only used when display === "text-only"
 }) => {
   const textStyles = ellipsizeMode !== undefined ? {ellipsizeMode} : {};
 
@@ -34,7 +35,7 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
         ? [styles.textOnlyContainer, {marginRight: 20}]
         : styles.textOnlyContainer;
       const title = <View style={titleContainerStyle}>
-        <SingleLineText style={styles.textOnlyLabel} {...textStyles}>{group.title}</SingleLineText>
+        <SingleLineText style={[styles.textOnlyLabel, group.response_status === 'archived' ? styles.dimmed : null]} {...textStyles}>{indent ? "   " : null}{group.title}</SingleLineText>
         {followedIcon}
       </View>;
 
@@ -136,6 +137,9 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     paddingLeft: 20,
     fontSize: 18,
+  },
+  dimmed: {
+    opacity: .6,
   },
   textOnlyIcon: {
     paddingHorizontal: 10,
