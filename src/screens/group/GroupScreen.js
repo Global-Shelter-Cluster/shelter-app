@@ -70,8 +70,6 @@ class GroupScreen extends React.Component<Props> {
   generateSubtitle() {
     const ret = [getGroupTypeLabel(this.props.group).toUpperCase()];
 
-    if (this.props.group.response_status !== undefined)
-      console.log(this.props.group.response_status);
     if (this.props.group.response_status !== undefined && this.props.group.response_status === 'archived')
       ret.push('archived');
 
