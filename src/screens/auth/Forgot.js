@@ -105,6 +105,7 @@ export default class Forgot extends React.Component<Props, State> {
                   placeholder: "Username or e-mail address",
                   onSubmitEditing: () => this.submit(),
                   returnKeyType: "go",
+                  autoCapitalize: "none",
                 },
               },
             }}

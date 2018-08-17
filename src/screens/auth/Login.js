@@ -101,6 +101,7 @@ export default class Login extends React.Component<Props, State> {
                   textContentType: "username",
                   onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
                   returnKeyType: "next",
+                  autoCapitalize: "none",
                 },
                 password: {
                   textContentType: "password",

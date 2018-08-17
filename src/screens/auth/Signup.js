@@ -97,6 +97,7 @@ export default class Signup extends React.Component<Props, State> {
                   textContentType: "name",
                   onSubmitEditing: () => this.refs.form.getComponent('organization').refs.input.focus(),
                   returnKeyType: "next",
+                  autoCapitalize: "none",
                 },
                 organization: {
                   textContentType: "organizationName",
