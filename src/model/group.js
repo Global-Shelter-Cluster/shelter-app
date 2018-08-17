@@ -6,6 +6,8 @@ import moment from 'moment';
 import createCachedSelector from 're-reselect';
 import {getCurrentUser} from "./user";
 
+const RECENT_DOCS_MAX_DAYS = 30; // how many days ago are docs still considered "recent"
+
 type GroupType =
   "response"
   | "geographic_region"
@@ -151,8 +153,6 @@ export default class Group {
     return files;
   }
 }
-
-const RECENT_DOCS_MAX_DAYS = 7; // how many days ago are docs still considered "recent"
 
 export const getRecentDocumentsCount = createCachedSelector(
   state => state,

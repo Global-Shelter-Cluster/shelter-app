@@ -6,6 +6,8 @@ import {getCurrentUser} from "./user";
 import {getObject} from "./index";
 import moment from 'moment';
 
+const UNSEEN_ALERTS_MAX_DAYS = 14; // if alerts are unseen but older than this number of days, don't count them
+
 export type AlertObject = {
   _last_read?: number,
   _mode: "public",
@@ -61,7 +63,13 @@ export const getUnseenAlertIdsForGroup = createSelector(
   (state, groupId) => getObject(state, 'group', groupId),
   (state, seenAlerts, group) => group.alerts === undefined
     ? []
-    : group.alerts.filter(alertId => seenAlerts.indexOf(alertId) === -1)
+    : group.alerts
+      .filter(alertId => seenAlerts.indexOf(alertId) === -1)
+      .filter(alertId => {
+        const now = moment();
+        const a:AlertObject = getObject(state, 'alert', alertId);
+        return (a && now.diff(a.created, 'days') <= UNSEEN_ALERTS_MAX_DAYS)
+      })
 );
 
 export const getUnseenAlertIds = createSelector(
