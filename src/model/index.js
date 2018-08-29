@@ -18,8 +18,10 @@ import type {KoboFormObject} from "./kobo_form";
 import KoboForm from "./kobo_form";
 import type {AlertObject} from "./alert";
 import Alert from "./alert";
+import type {ContactObject} from "./contact";
+import Contact from "./contact";
 
-export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet" | "kobo_form" | "alert";
+export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet" | "kobo_form" | "alert" | "contact";
 
 export type Objects = {
   global?: { [id: string]: GlobalObject },
@@ -30,6 +32,7 @@ export type Objects = {
   event?: { [id: string]: EventObject },
   kobo_form?: { [id: string]: KoboFormObject },
   alert?: { [id: string]: AlertObject },
+  contact?: { [id: string]: ContactObject },
 }
 
 export type ObjectIds = {
@@ -41,20 +44,24 @@ export type ObjectIds = {
   event?: Array<number>,
   kobo_form?: Array<number>,
   alert?: Array<number>,
+  contact?: Array<number>,
 }
 
-export const expirationLimitsByObjectType = { // 3600 = 1 hour
-  "global": 3600 * 24 * 7,
-  "user": 3600 * 24 * 7,
-  "group": 3600,
-  "factsheet": 3600 * 24,
-  "document": 3600 * 24,
-  "event": 3600 * 24,
-  "kobo_form": 3600 * 6,
-  "alert": 3600 * 24,
+const hour = 3600;
+
+export const expirationLimitsByObjectType = {
+  "global": hour * 24 * 7,
+  "user": hour * 24 * 7,
+  "group": hour,
+  "factsheet": hour * 24,
+  "document": hour * 24,
+  "event": hour * 24,
+  "kobo_form": hour * 6,
+  "alert": hour * 24,
+  "contact": hour * 24,
 };
 
-export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject | KoboFormObject | AlertObject;
+export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject | KoboFormObject | AlertObject | ContactObject;
 
 export const initialObjectsState: Objects = {
   global: {
@@ -72,6 +79,7 @@ export const initialObjectsState: Objects = {
   event: {},
   kobo_form: {},
   alert: {},
+  contact: {},
 };
 
 export const initialObjectIdsState: ObjectIds = {
@@ -83,6 +91,7 @@ export const initialObjectIdsState: ObjectIds = {
   event: [],
   kobo_form: [],
   alert: [],
+  contact: [],
 };
 
 const mapTypesToClasses = {
@@ -94,6 +103,7 @@ const mapTypesToClasses = {
   'event': Event,
   'kobo_form': KoboForm,
   'alert': Alert,
+  'contact': Contact,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.
