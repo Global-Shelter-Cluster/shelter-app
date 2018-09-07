@@ -1,6 +1,7 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import {html2text} from "../util";
 
 export type PublicContactObject = {
   _last_read?: number,
@@ -54,4 +55,32 @@ export default class Contact {
 
     return files;
   }
+}
+
+export function createExpoContact(contact: ContactObject): Expo.Contacts.Contact {
+  const f = Expo.Contacts.Fields;
+  const ret = {
+    [f.FirstName]: contact.name,
+  };
+
+  if (contact.org !== undefined)
+    ret[f.Company] = contact.org;
+
+  if (contact.role !== undefined)
+    ret[f.JobTitle] = contact.role;
+
+  if (contact.mail !== undefined)
+    ret[f.Emails] = contact.mail.map(email => ({email}));
+
+  if (contact.phone !== undefined)
+    ret[f.PhoneNumbers] = contact.phone.map(number => ({number}));
+
+  if (contact.picture !== undefined && contact.picture.startsWith("file://"))
+  // Only works with local files
+    ret[f.Image] = {uri: contact.picture};
+
+  if (contact.bio !== undefined)
+    ret[f.Note] = html2text(contact.bio);
+
+  return ret;
 }
