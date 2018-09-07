@@ -35,7 +35,7 @@ export type PrivateGroupObject = {
   key_documents?: Array<number>,
   recent_documents?: Array<number>,
   upcoming_events?: Array<number>,
-  response_region_hierarchy?: Array<{region: number, responses: Array<number>}>,
+  response_region_hierarchy?: Array<{ region: number, responses: Array<number> }>,
   regions?: Array<number>,
   responses?: Array<number>,
   hubs?: Array<number>,
@@ -65,7 +65,7 @@ export type PublicGroupObject = {
   key_documents?: Array<number>,
   recent_documents?: Array<number>,
   upcoming_events?: Array<number>,
-  response_region_hierarchy?: Array<{region: number, responses: Array<number>}>,
+  response_region_hierarchy?: Array<{ region: number, responses: Array<number> }>,
   regions?: Array<number>,
   responses?: Array<number>,
   hubs?: Array<number>,
@@ -141,6 +141,9 @@ export default class Group {
     if (group.alerts !== undefined)
       ret.push(...group.alerts.map(id => ({type: "alert", id: id})));
 
+    if (group.contacts !== undefined)
+      ret.push(...group.contacts.map(id => ({type: "contact", id: id})));
+
     return ret;
   }
 
@@ -172,6 +175,8 @@ export const areAllSubregionsCountries = createCachedSelector(
   state => state,
   (state, groupId) => groupId,
   (state, groupId) => {
+    if (state.objects.group[groupId] === undefined)
+      return false;
     if (state.objects.group[groupId].regions === undefined)
       return false;
 
@@ -198,10 +203,12 @@ export const isFollowing = createCachedSelector(
   }
 )((state, groupId) => groupId);
 
-export const getGroupTypeLabel = (group: GroupObject) =>
-  group.region_type !== undefined
+export const getGroupTypeLabel = (group: GroupObject) => {
+  console.log('CAMM', group);
+  return group.region_type !== undefined
     ? group.region_type.toLowerCase()
     : group.type.replace(/_/g, ' ');
+};
 
 export const getGroupTinyDescription = (group: GroupObject) => {
   const plural = (value, singular, plural) => value === 1

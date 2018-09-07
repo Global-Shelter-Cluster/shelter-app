@@ -15,7 +15,6 @@ export type PublicContactObject = {
   mail?: Array<string>,
   phone?: Array<string>,
   bio?: string, // HTML
-  weight: number,
 }
 
 export type StubContactObject = {
@@ -30,7 +29,6 @@ export type StubContactObject = {
   mail?: Array<string>,
   phone?: Array<string>,
   bio?: string, // HTML
-  weight: number,
 }
 
 export type ContactObject = PublicContactObject | StubContactObject;
