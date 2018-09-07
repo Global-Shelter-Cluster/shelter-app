@@ -204,7 +204,6 @@ export const isFollowing = createCachedSelector(
 )((state, groupId) => groupId);
 
 export const getGroupTypeLabel = (group: GroupObject) => {
-  console.log('CAMM', group);
   return group.region_type !== undefined
     ? group.region_type.toLowerCase()
     : group.type.replace(/_/g, ' ');
