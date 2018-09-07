@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {Button, RefreshControl, ScrollView, Text} from 'react-native';
+import {Button, FlatList, RefreshControl, ScrollView, Text, View} from 'react-native';
 import type {PublicGroupObject} from "../../model/group";
 import GroupContextualNavigation from "../../components/GroupContextualNavigation";
 import type {FactsheetObject} from "../../model/factsheet";
@@ -10,6 +10,8 @@ import type {lastErrorType} from "../../reducers/lastError";
 import GroupDashboardContainer from "../../containers/GroupDashboardContainer";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
+import Collapsible from "../../components/Collapsible";
+import ContactListItemContainer from "../../containers/ContactListItemContainer";
 
 export default ({online, group, loaded, factsheet, refresh, follow, unfollow, loading, lastError, areAllSubregionsCountries}: {
   online: boolean,
@@ -37,5 +39,11 @@ export default ({online, group, loaded, factsheet, refresh, follow, unfollow, lo
   >
     <GroupContextualNavigation group={group} areAllSubregionsCountries={areAllSubregionsCountries}/>
     <GroupDashboardContainer group={group} follow={follow} unfollow={unfollow}/>
+    {group.contacts !== undefined
+      ? <Collapsible title="Contacts" noHorizontalMargins isOpen badge={group.contacts.length}>
+        {group.contacts.map(id => <ContactListItemContainer key={id} id={id}/>)}
+      </Collapsible>
+      : null
+    }
   </ScrollView>;
 }
