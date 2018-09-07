@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
   picture: {
     width: 120,
     height: 120,
+    borderRadius: 60,
     resizeMode: "cover",
     borderWidth: hairlineWidth,
     borderColor: vars.SHELTER_GREY,

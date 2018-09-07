@@ -3,6 +3,7 @@
 import moment from "moment/moment";
 import equal from 'deep-equal';
 import {Platform, StyleSheet} from "react-native";
+import htmlparser from "htmlparser2";
 
 export const timeAgo = (date: string, limitDays: number = 7, includeTime: boolean = false) => {
   const daysDiff = moment().diff(date, "days");
@@ -44,3 +45,36 @@ export const propEqual = (a: {}, b: {}, shallowProps: Array<string>, deepProps: 
 export const hairlineWidth = Platform.OS === 'ios'
   ? StyleSheet.hairlineWidth
   : 1; // hairlineWidth gives inconsistent results on Android
+
+export const html2text = html => {
+  let ret = '';
+  let skip: boolean = false;
+
+  const parser = new htmlparser.Parser({
+    onopentag: function (name, attribs) {
+      switch (name) {
+        case "script":
+          skip = true;
+          break;
+        case "br":
+        case "p":
+          ret += "\n";
+          break;
+      }
+    },
+    ontext: function (text) {
+      if (!skip)
+        ret += text;
+    },
+    onclosetag: function (tagname) {
+      if (tagname === "script") {
+        skip = false;
+      }
+    }
+  }, {decodeEntities: true});
+
+  parser.write(html);
+  parser.end();
+
+  return ret.trim();
+};

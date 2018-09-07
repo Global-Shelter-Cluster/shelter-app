@@ -3,8 +3,8 @@
 import React from 'react';
 import {Linking, Modal, Platform, Share, StyleSheet, TouchableOpacity, View, WebView} from 'react-native';
 import type {ContactObject} from "../model/contact";
+import {createExpoContact} from "../model/contact";
 import Button from "./Button";
-import {FontAwesome} from '@expo/vector-icons';
 
 type Props = {
   contact: ContactObject,
@@ -55,24 +55,11 @@ export default class ContactActions extends React.Component<Props, State> {
         shareMessage.push(number);
       });
 
-    // buttons.push(<Button
-    //   primary style={styles.button}
-    //   key="add" title="Add contact to phone" icon="plus" onPress={async () => {
-    //   const contact = {
-    //     [Expo.Contacts.Fields.FirstName]: "Bird",
-    //     [Contacts.Fields.LastName]: "Man",
-    //     [Contacts.Fields.Company]: "Young Money",
-    //   };
-    //   const contactId = await Contacts.addContactAsync(contact);
-    // }}
-    // />);
-    //
-    // buttons.push(<Button
-    //   style={styles.button}
-    //   key="share" title="Share" icon="share" onPress={() => {
-    //   Share.share({title: contact.name, message: shareMessage.join("\n")})
-    // }}
-    // />);
+    buttons.push(<Button
+      primary style={styles.button}
+      key="contact" title="Contact" icon="address-card-o"
+      onPress={() => Expo.Contacts.presentFormAsync(null, createExpoContact(contact))}
+    />);
 
     return <View style={styles.container}>
       {buttons}
