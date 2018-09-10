@@ -84,3 +84,33 @@ export function createExpoContact(contact: ContactObject): Expo.Contacts.Contact
 
   return ret;
 }
+
+export function contactFromAlgoliaResult(item: {}): StubContactObject {
+  const stripTags = string => string.replace(/<[^>]*>/g, '');
+
+  const ret = {
+    _mode: "stub",
+    id: parseInt(item.objectID, 10),
+    name: stripTags(item._highlightResult.title.value),
+  };
+
+  if (item['field_image:file:url'])
+    ret.picture = item['field_image:file:url'];
+
+  if (item._highlightResult.field_organisation_name)
+    ret.org = item._highlightResult.field_organisation_name.map(data => stripTags(data.value));
+
+  if (item._highlightResult.field_role_or_title)
+    ret.role = item._highlightResult.field_role_or_title.map(data => stripTags(data.value));
+
+  if (item._highlightResult.field_email)
+    ret.mail = item._highlightResult.field_email.map(data => stripTags(data.value));
+
+  if (item._highlightResult.field_phone_number)
+    ret.phone = item._highlightResult.field_phone_number.map(data => stripTags(data.value));
+
+  if (item._highlightResult['body:value'])
+    ret.bio = item._highlightResult['body:value'].map(data => stripTags(data.value));
+
+  return ret;
+}

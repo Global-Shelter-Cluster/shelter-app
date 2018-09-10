@@ -1,18 +1,7 @@
 // @flow
 
 import React from 'react';
-import {
-  FlatList,
-  Image,
-  Linking,
-  Platform,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import {FlatList, Image, Linking, StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import Tabs from "../../components/Tabs";
 import type {GlobalObject} from "../../model/global";
 import {InstantSearch} from 'react-instantsearch/native';
@@ -23,8 +12,11 @@ import DocumentResult from "../../components/search/DocumentResult";
 import EventResult from "../../components/search/EventResult";
 import GroupResult from "../../components/search/GroupResult";
 import PageResult from "../../components/search/PageResult";
+import ContactResult from "../../components/search/ContactResult";
 import searchResultStyles from "../../styles/searchResultStyles";
 import type {navigation} from "../../nav";
+import persist from "../../persist";
+import {contactFromAlgoliaResult} from "../../model/contact";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   const onEndReached = function () {
@@ -131,22 +123,17 @@ export default ({online, loading, tab, global, changeTab, navigation}: {
         />;
       },
     },
-    // "contacts": {
-    //   label: "Contacts",
-    //   icon: "address-card-o",
-    //   renderSearchResult: item => (
-    //     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    //       <View style={{flex: 1}}>
-    //         <Text>
-    //           <ResultHighlight attribute="title" hit={item}/>
-    //         </Text>
-    //         <Text>
-    //           {item.type}
-    //         </Text>
-    //       </View>
-    //     </View>
-    //   ),
-    // },
+    "contacts": {
+      label: "Contacts",
+      icon: "address-card-o",
+      renderSearchResult: item => <ContactResult
+        result={item} enter={async () => {
+        const objects = {contact: {[item.objectID]: contactFromAlgoliaResult(item)}};
+        persist.dispatchObjects(objects);
+        navigation.push('Contact', {contactId: parseInt(item.objectID, 10)});
+      }}
+      />,
+    },
   };
 
   if (!global.algolia_prefix)
