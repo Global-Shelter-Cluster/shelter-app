@@ -10,11 +10,12 @@ export type DashboardBlockType = {
   title: string,
   icon: string,
   badge?: string,
+  isBadgeHighlighted?: true,
   action?: () => {},
   disabledIcon?: string,
 };
 
-const DashboardBlock = ({title, icon, badge, action, disabledIcon}: DashboardBlockType) => {
+const DashboardBlock = ({title, icon, badge, isBadgeHighlighted, action, disabledIcon}: DashboardBlockType) => {
   if (disabledIcon !== undefined)
     return <View style={[styles.container, styles.disabledContainer]}>
       <FontAwesome name={icon} size={40} style={[styles.icon, styles.disabled]}/>
@@ -26,7 +27,7 @@ const DashboardBlock = ({title, icon, badge, action, disabledIcon}: DashboardBlo
       onPress={action} style={styles.container}>
       <FontAwesome name={icon} size={40} style={styles.icon}/>
       <Text style={styles.label}>{title}</Text>
-      {badge !== undefined && <View style={styles.badge}>
+      {badge !== undefined && <View style={[styles.badge, isBadgeHighlighted ? styles.highlightedBadge : null]}>
         <Text style={styles.badgeText}>{badge}</Text>
       </View>}
     </TouchableOpacity>;
@@ -62,12 +63,15 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     borderRadius: 11,
-    backgroundColor: vars.SHELTER_RED,
     padding: 4,
     height: 22,
     minWidth: 22,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: vars.SHELTER_GREY,
+  },
+  highlightedBadge: {
+    backgroundColor: vars.SHELTER_RED,
   },
   badgeText: {
     fontSize: 12,

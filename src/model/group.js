@@ -18,7 +18,7 @@ type GroupType =
 
 export type PrivateGroupObject = {
   _last_read?: number,
-  _mode: "public",
+  _mode: "private",
   _persist?: true,
   type: GroupType,
   id: number,
@@ -44,6 +44,7 @@ export type PrivateGroupObject = {
   strategic_advisory?: number,
   kobo_forms?: Array<number>,
   alerts?: Array<number>,
+  followers: Array<number>,
 }
 
 export type PublicGroupObject = {
@@ -143,6 +144,9 @@ export default class Group {
 
     if (group.contacts !== undefined)
       ret.push(...group.contacts.map(id => ({type: "contact", id: id})));
+
+    if (group.followers !== undefined)
+      ret.push(...group.followers.map(id => ({type: "user", id: id})));
 
     return ret;
   }

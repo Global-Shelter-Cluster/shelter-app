@@ -54,14 +54,24 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     blocks.push({
       title: 'Alerts',
       badge: unseenAlerts.length,
+      isBadgeHighlighted: true,
       icon: 'bell-o',
       action: () => navigation.push('AlertList', {groupId: group.id}),
     });
   else if (group.alerts !== undefined && group.alerts.length > 0)
     blocks.push({
       title: 'Alerts',
+      badge: group.alerts.length,
       icon: 'bell-o',
       action: () => navigation.push('AlertList', {groupId: group.id}),
+    });
+
+  if (group.followers !== undefined && group.followers.length > 0)
+    blocks.push({
+      title: 'Followers',
+      badge: group.followers.length,
+      icon: 'users',
+      action: () => navigation.push('UserList', {groupId: group.id}),
     });
 
   if (group.kobo_forms)
@@ -77,6 +87,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     blocks.push({
       title: 'Recent\ndocuments',
       badge: recentDocs,
+      isBadgeHighlighted: true,
       icon: 'file-o',
       action: () => navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });
@@ -103,6 +114,7 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
     blocks.push({
       title: 'Upcoming\nevents',
       badge: group.upcoming_events.length,
+      isBadgeHighlighted: true,
       icon: 'calendar',
       action: () => navigation.push('EventList', {groupId: group.id}),
     });

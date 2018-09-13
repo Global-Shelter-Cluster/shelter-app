@@ -22,6 +22,8 @@ import FactsheetScreen from "./screens/view/FactsheetScreen";
 import SearchScreen from "./screens/search/SearchScreen";
 import AlertListScreen from "./screens/group/AlertListScreen";
 import ContactScreen from "./screens/view/ContactScreen";
+import UserListScreen from "./screens/group/UserListScreen";
+import UserScreen from "./screens/view/UserScreen";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
@@ -40,6 +42,8 @@ const ExploreStack = createStackNavigator({
   Factsheet: FactsheetScreen,
   AlertList: AlertListScreen,
   Contact: ContactScreen,
+  UserList: UserListScreen,
+  User: UserScreen,
 });
 // const ChatStack = createSwitchNavigator({
 //   Chat: TempBlankScreen,
