@@ -10,8 +10,9 @@ import vars from "../vars";
 import type {PublicEventObject} from "../model/event";
 import type {PublicFactsheetObject} from "../model/factsheet";
 import {hairlineWidth} from "../util";
+import type {ContactObject} from "../model/contact";
 
-export default ContextualNavigation = ({object}: { object: PublicDocumentObject | PublicEventObject | PublicFactsheetObject }) => {
+export default ContextualNavigation = ({object}: { object: PublicDocumentObject | PublicEventObject | PublicFactsheetObject | ContactObject }) => {
   if (!object.groups)
     return null;
 
