@@ -22,7 +22,6 @@ export default ({loading, group, refresh}: {
   const ids = group.kobo_forms ? group.kobo_forms.filter(item => !!item) : [];
   if (ids.length > 0)
     ids.push(-1);
-  console.log('ids', ids);
 
   return <View style={{flex: 1}}>
     <Tabs

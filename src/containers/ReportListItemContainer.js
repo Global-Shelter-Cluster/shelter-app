@@ -13,7 +13,8 @@ const mapStateToProps = (state, props) => {
 
   return {
     kobo_form,
-    enter: () => props.navigation.push('Reporting', {title: kobo_form.title, url: kobo_form.kobo_form_url}),
+    enter: () => Expo.WebBrowser.openBrowserAsync(kobo_form.kobo_form_url),
+    // enter: () => props.navigation.push('Reporting', {title: kobo_form.title, url: kobo_form.kobo_form_url}),
   };
 };
 
