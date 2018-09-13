@@ -40,7 +40,7 @@ export default ({online, group, loaded, factsheet, refresh, follow, unfollow, lo
     <GroupContextualNavigation group={group} areAllSubregionsCountries={areAllSubregionsCountries}/>
     <GroupDashboardContainer group={group} follow={follow} unfollow={unfollow}/>
     {group.contacts !== undefined
-      ? <Collapsible title="Contacts" noHorizontalMargins isOpen badge={group.contacts.length}>
+      ? <Collapsible title="Coordination team" noHorizontalMargins isOpen badge={group.contacts.length}>
         {group.contacts.map(id => <ContactListItemContainer key={id} id={id}/>)}
       </Collapsible>
       : null
