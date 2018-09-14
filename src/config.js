@@ -24,6 +24,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: false,
     reduxLogger: true,
     persistFiles: false,
+    debugOnlineIndicator: true,
   },
   dev: {
     baseUrl: 'http://dev.sheltercluster.org',
@@ -31,7 +32,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: false,
     reduxLogger: true,
     persistFiles: true,
-    debugOnlineIndicator: false,
+    debugOnlineIndicator: true,
   },
   stage: {
     baseUrl: 'http://stage.sheltercluster.org',
