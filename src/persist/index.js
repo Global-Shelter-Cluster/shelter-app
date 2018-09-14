@@ -360,6 +360,11 @@ class Persist {
   // }
 
   async dispatchObjects(objects: Objects, replaceAll: boolean = false) {
+    // Check if we're trying to store the current user as anything other than "mode:private", and remove it if it is.
+    const currentUser = this.store.getState().currentUser;
+    if (currentUser && objects.user[currentUser] !== undefined && objects.user[currentUser]._mode !== "private")
+      delete objects.user[currentUser];
+
     this.store.dispatch(setObjects(objects, replaceAll));
   }
 
