@@ -53,7 +53,7 @@ const ReportingStack = createStackNavigator({
   ReportList: ReportListScreen,
   Reporting: WebsiteViewerScreen,
 });
-const UserStack = createStackNavigator({
+const MeStack = createStackNavigator({
   Dashboard: DashboardScreen,
   Edit: EditScreen,
 });
@@ -62,7 +62,12 @@ const SearchStack = createStackNavigator({
 });
 
 const TabScreens = createBottomTabNavigator({
-  User: UserStack,
+  Me: {
+    screen: MeStack,
+    navigationOptions: {
+      tabBarLabel: "User",
+    },
+  },
   Explore: ExploreStack,
   // Chat: ChatStack, //TODO: hide this for now
   Reporting: ReportingStack,
@@ -77,7 +82,7 @@ const TabScreens = createBottomTabNavigator({
         'Explore': "globe",
         'Chat': "comments",
         'Reporting': "paper-plane",
-        'User': "user",
+        'Me': "user",
       };
 
       return <FontAwesome

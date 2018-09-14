@@ -29,12 +29,12 @@ class ForgotScreen extends React.Component<Props> {
 
   componentDidMount() {
     if (this.props.loggedIn)
-      this.props.navigation.navigate('User');
+      this.props.navigation.navigate('Me');
   }
 
   componentDidUpdate() {
     if (this.props.loggedIn)
-      this.props.navigation.navigate('User');
+      this.props.navigation.navigate('Me');
   }
 
   render() {
