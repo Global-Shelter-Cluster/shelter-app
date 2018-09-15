@@ -84,7 +84,7 @@ export default class Login extends React.Component<Props, State> {
           imageStyle={{maxWidth: 400, maxHeight: 400}}
           source={require('../../../assets/splash.png')}/>
         <View style={styles.innerContainer}>
-          <Text style={styles.title}>App Prototype</Text>
+          <Text style={styles.title}>ShelterCluster.org</Text>
           {errorMessage}
           {online && !loggingIn && <Form
             ref="form"
