@@ -8,20 +8,19 @@ import type {FactsheetObject} from "../../model/factsheet";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import GroupDashboardContainer from "../../containers/GroupDashboardContainer";
+import GroupActionsContainer from "../../containers/GroupActionsContainer";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 import Collapsible from "../../components/Collapsible";
 import ContactListItemContainer from "../../containers/ContactListItemContainer";
 
-export default ({online, group, loaded, factsheet, refresh, follow, unfollow, loading, lastError, areAllSubregionsCountries}: {
+export default ({online, group, loaded, factsheet, refresh, loading, lastError, areAllSubregionsCountries}: {
   online: boolean,
   loading: boolean,
   group: PublicGroupObject,
   loaded: boolean,
   factsheet?: FactsheetObject,
   refresh: () => void,
-  follow: () => void,
-  unfollow: () => void,
   lastError: lastErrorType,
   areAllSubregionsCountries: boolean,
 }) => {
@@ -34,16 +33,20 @@ export default ({online, group, loaded, factsheet, refresh, follow, unfollow, lo
   if (!loaded)
     return <Loading/>;
 
-  return <ScrollView
-    refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
-  >
-    <GroupContextualNavigation group={group} areAllSubregionsCountries={areAllSubregionsCountries}/>
-    <GroupDashboardContainer group={group} follow={follow} unfollow={unfollow}/>
-    {group.contacts !== undefined
-      ? <Collapsible title="Coordination team" noHorizontalMargins isOpen badge={group.contacts.length}>
-        {group.contacts.map(id => <ContactListItemContainer key={id} id={id}/>)}
-      </Collapsible>
-      : null
-    }
-  </ScrollView>;
+  return <View style={{flex: 1}}>
+    <ScrollView
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
+    >
+      <GroupContextualNavigation group={group} areAllSubregionsCountries={areAllSubregionsCountries}/>
+      <GroupDashboardContainer group={group}/>
+      {group.contacts !== undefined
+        ? <Collapsible title="Coordination team" noHorizontalMargins isOpen badge={group.contacts.length}>
+          {group.contacts.map(id => <ContactListItemContainer key={id} id={id}/>)}
+        </Collapsible>
+        : null
+      }
+    </ScrollView>
+    <GroupActionsContainer group={group}/>
+  </View>
+    ;
 }

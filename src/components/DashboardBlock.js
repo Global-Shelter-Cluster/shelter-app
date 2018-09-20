@@ -16,11 +16,14 @@ export type DashboardBlockType = {
 };
 
 const DashboardBlock = ({title, icon, badge, isBadgeHighlighted, action, disabledIcon}: DashboardBlockType) => {
-  if (disabledIcon !== undefined)
+  if (disabledIcon !== undefined || action === undefined)
     return <View style={[styles.container, styles.disabledContainer]}>
       <FontAwesome name={icon} size={28} style={[styles.icon, styles.disabled]}/>
       <Text style={[styles.label, styles.disabled]}>{title}</Text>
-      <FontAwesome style={styles.iconBadge} name={disabledIcon} size={20} color={vars.ACCENT_RED}/>
+      {disabledIcon !== undefined
+        ? <FontAwesome style={styles.iconBadge} name={disabledIcon} size={20} color={vars.ACCENT_RED}/>
+        : null
+      }
     </View>;
   else
     return <TouchableOpacity

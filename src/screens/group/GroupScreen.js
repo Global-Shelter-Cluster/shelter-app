@@ -7,7 +7,7 @@ import {areAllSubregionsCountries, getGroupTypeLabel} from "../../model/group";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
 import Group from './Group';
 import type {FactsheetObject} from "../../model/factsheet";
-import {clearLastError, followGroup, loadObject, unfollowGroup} from "../../actions";
+import {clearLastError, loadObject} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
@@ -22,8 +22,6 @@ type Props = {
   factsheet: FactsheetObject,
   navigation: navigation,
   refresh: () => void,
-  follow: () => void,
-  unfollow: () => void,
   lastError: lastErrorType,
 }
 
@@ -46,12 +44,6 @@ const mapDispatchToProps = (dispatch, props) => ({
   refresh: () => {
     dispatch(clearLastError());
     dispatch(loadObject('group', props.navigation.getParam('groupId'), false, true));
-  },
-  follow: () => {
-    dispatch(followGroup(props.navigation.getParam('groupId')));
-  },
-  unfollow: () => {
-    dispatch(unfollowGroup(props.navigation.getParam('groupId')));
   },
 });
 

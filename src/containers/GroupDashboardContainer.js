@@ -2,52 +2,51 @@
 
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
-import {getGroupTypeLabel, getRecentDocumentsCount, isFollowing} from "../model/group";
+import {getRecentDocumentsCount, isDashboardBlockVisibleByDefault} from "../model/group";
 import GroupDashboard from "../components/GroupDashboard";
 import type {DashboardBlockType} from "../components/DashboardBlock";
-import {getCurrentUser, MAX_FOLLOWED_GROUPS} from "../model/user";
 import {getUnseenAlertIdsForGroup} from "../model/alert";
 
-const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
+const mapStateToProps = (state, {group, navigation}) => {
   const blocks: Array<DashboardBlockType> = [];
-
-  if (state.flags.following)
-    blocks.push({
-      title: 'Loading...',
-      icon: 'sign-in',
-      disabledIcon: 'refresh',
-    });
-  else if (isFollowing(state, group.id))
-    blocks.push({
-      title: 'Un-follow this\n' + getGroupTypeLabel(group),
-      icon: 'sign-out',
-      action: unfollow,
-    });
-  else if (getCurrentUser(state).groups !== undefined && getCurrentUser(state).groups.length >= MAX_FOLLOWED_GROUPS)
-    blocks.push({
-      title: 'Can\'t follow\n(too many)',
-      icon: 'sign-in',
-      disabledIcon: 'ban',
-    });
-  else
-    blocks.push({
-      title: 'Follow this\n' + getGroupTypeLabel(group),
-      icon: 'sign-in',
-      action: follow,
-    });
-
-  if (state.flags.online)
-    blocks.push({
-      title: 'View on\nwebsite',
-      icon: 'external-link',
-      action: () => navigation.push('WebsiteViewer', {title: group.title, url: group.url}),
-    });
-  else
-    blocks.push({
-      title: 'View on\nwebsite',
-      icon: 'external-link',
-      disabledIcon: 'wifi',
-    });
+  //
+  // if (state.flags.following)
+  //   blocks.push({
+  //     title: 'Loading...',
+  //     icon: 'sign-in',
+  //     disabledIcon: 'refresh',
+  //   });
+  // else if (isFollowing(state, group.id))
+  //   blocks.push({
+  //     title: 'Un-follow this\n' + getGroupTypeLabel(group),
+  //     icon: 'sign-out',
+  //     action: unfollow,
+  //   });
+  // else if (getCurrentUser(state).groups !== undefined && getCurrentUser(state).groups.length >= MAX_FOLLOWED_GROUPS)
+  //   blocks.push({
+  //     title: 'Can\'t follow\n(too many)',
+  //     icon: 'sign-in',
+  //     disabledIcon: 'ban',
+  //   });
+  // else
+  //   blocks.push({
+  //     title: 'Follow this\n' + getGroupTypeLabel(group),
+  //     icon: 'sign-in',
+  //     action: follow,
+  //   });
+  //
+  // if (state.flags.online)
+  //   blocks.push({
+  //     title: 'View on\nwebsite',
+  //     icon: 'external-link',
+  //     action: () => navigation.push('WebsiteViewer', {title: group.title, url: group.url}),
+  //   });
+  // else
+  //   blocks.push({
+  //     title: 'View on\nwebsite',
+  //     icon: 'external-link',
+  //     disabledIcon: 'wifi',
+  //   });
 
   const unseenAlerts = getUnseenAlertIdsForGroup(state, group.id);
   if (unseenAlerts.length > 0)
@@ -65,6 +64,11 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       icon: 'bell-o',
       action: () => navigation.push('AlertList', {groupId: group.id}),
     });
+  else if (isDashboardBlockVisibleByDefault(group, 'alerts'))
+    blocks.push({
+      title: 'Alerts',
+      icon: 'bell-o',
+    });
 
   if (group.followers !== undefined && group.followers.length > 0)
     blocks.push({
@@ -73,6 +77,11 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       icon: 'users',
       action: () => navigation.push('UserList', {groupId: group.id}),
     });
+  else if (isDashboardBlockVisibleByDefault(group, 'followers'))
+    blocks.push({
+      title: 'Followers',
+      icon: 'users',
+    });
 
   if (group.kobo_forms)
     blocks.push({
@@ -80,6 +89,11 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       badge: group.kobo_forms.length,
       icon: 'paper-plane-o',
       action: () => navigation.push('ReportList', {groupId: group.id}),
+    });
+  else if (isDashboardBlockVisibleByDefault(group, 'assessment_forms'))
+    blocks.push({
+      title: 'Assessment\nforms',
+      icon: 'paper-plane-o',
     });
 
   const recentDocs = getRecentDocumentsCount(state, group.id);
@@ -109,6 +123,11 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       icon: 'file-o',
       action: () => navigation.push('DocumentList', {groupId: group.id, which: "recent"}),
     });
+  else if (isDashboardBlockVisibleByDefault(group, 'documents'))
+    blocks.push({
+      title: 'Documents',
+      icon: 'file-o',
+    });
 
   if (group.upcoming_events && group.upcoming_events.length > 0)
     blocks.push({
@@ -118,12 +137,22 @@ const mapStateToProps = (state, {group, navigation, follow, unfollow}) => {
       icon: 'calendar',
       action: () => navigation.push('EventList', {groupId: group.id}),
     });
+  else if (isDashboardBlockVisibleByDefault(group, 'events'))
+    blocks.push({
+      title: 'Events',
+      icon: 'calendar',
+    });
 
   if (group.latest_factsheet)
     blocks.push({
       title: 'Latest\nfactsheet',
       icon: 'bar-chart',
       action: () => navigation.push('Factsheet', {factsheetId: group.latest_factsheet}),
+    });
+  else if (isDashboardBlockVisibleByDefault(group, 'factsheets'))
+    blocks.push({
+      title: 'Factsheets',
+      icon: 'bar-chart',
     });
 
   return {

@@ -24,7 +24,7 @@ export type PrivateGroupObject = {
   id: number,
   title: string,
   url: string,
-  region_type?: string,
+  region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
   image?: string,
   parent_region?: number,
@@ -55,7 +55,7 @@ export type PublicGroupObject = {
   id: number,
   title: string,
   url: string,
-  region_type?: string,
+  region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
   image?: string,
   parent_region?: number,
@@ -82,7 +82,7 @@ export type StubPlusGroupObject = {
   type: GroupType,
   id: number,
   title: string,
-  region_type?: string,
+  region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
   image?: string,
   latest_factsheet?: number,
@@ -95,7 +95,7 @@ export type StubGroupObject = {
   type: GroupType,
   id: number,
   title: string,
-  region_type?: string,
+  region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
 }
 
@@ -239,4 +239,111 @@ export const getGroupTinyDescription = (group: GroupObject) => {
     ret.push('1 SAG');
 
   return ret.join(', ');
+};
+
+const dashboardBlocksVisibleByDefault: { [string]: { [dashboardBlock]: boolean } } = {
+  response: {
+    follow: true,
+    alerts: true,
+    followers: true,
+    assessment_forms: true,
+    documents: true,
+    events: true,
+    factsheets: true,
+  },
+  country: {
+    follow: false,
+    alerts: false,
+    followers: false,
+    assessment_forms: false,
+    documents: true,
+    events: true,
+    factsheets: false,
+  },
+  region: {
+    follow: false,
+    alerts: false,
+    followers: false,
+    assessment_forms: false,
+    documents: true,
+    events: true,
+    factsheets: false,
+  },
+  global: {
+    follow: true,
+    alerts: true,
+    followers: true,
+    assessment_forms: true,
+    documents: true,
+    events: true,
+    factsheets: false,
+  },
+  hub: {
+    follow: false,
+    alerts: false,
+    followers: false,
+    assessment_forms: false,
+    documents: true,
+    events: true,
+    factsheets: false,
+  },
+  strategic_advisory: {
+    follow: true,
+    alerts: true,
+    followers: true,
+    assessment_forms: true,
+    documents: true,
+    events: true,
+    factsheets: false,
+  },
+  working_group: {
+    follow: true,
+    alerts: true,
+    followers: true,
+    assessment_forms: true,
+    documents: true,
+    events: true,
+    factsheets: false,
+  },
+  community_of_practice: {
+    follow: false,
+    alerts: true,
+    followers: true,
+    assessment_forms: true,
+    documents: true,
+    events: true,
+    factsheets: false,
+  },
+};
+
+export type dashboardBlock =
+  "follow"
+  | "alerts"
+  | "followers"
+  | "assessment_forms"
+  | "documents"
+  | "events"
+  | "factsheets";
+
+export const isDashboardBlockVisibleByDefault = (group: GroupObject, block: dashboardBlock): boolean => {
+  let type = group.type;
+  if (group.type === "geographic_region") {
+    switch (group.region_type) {
+      case 'Country':
+        type = 'country';
+        break;
+      case 'Region':
+      // fall-through
+      default:
+        type = 'region';
+    }
+  }
+
+  if (dashboardBlocksVisibleByDefault[type] === undefined)
+    return false;
+
+  if (dashboardBlocksVisibleByDefault[type][block] === undefined)
+    return false;
+
+  return dashboardBlocksVisibleByDefault[type][block];
 };
