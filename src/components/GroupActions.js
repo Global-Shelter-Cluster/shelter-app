@@ -13,6 +13,7 @@ type Props = {
   online: boolean,
   changingFollowing: boolean,
   isFollowing: boolean,
+  groupTypeIsFollowable: boolean,
   cantFollow: boolean,
   viewOnWebsite: () => {},
   follow: () => {},
@@ -32,7 +33,7 @@ export default class GroupActions extends React.Component<Props, State> {
   }
 
   render() {
-    const {group, online, changingFollowing, isFollowing, cantFollow, viewOnWebsite, follow, unfollow} = this.props;
+    const {group, online, changingFollowing, isFollowing, groupTypeIsFollowable, cantFollow, viewOnWebsite, follow, unfollow} = this.props;
 
     const buttons = [];
 
@@ -43,9 +44,9 @@ export default class GroupActions extends React.Component<Props, State> {
         key="follow" primary title="Un-follow"
         icon="sign-out"
         onPress={unfollow}/>);
-    else if (cantFollow)
+    else if (cantFollow && groupTypeIsFollowable)
       buttons.push(<Button key="follow" disabledIcon="ban" title="Follow"/>);
-    else
+    else if (groupTypeIsFollowable)
       buttons.push(<Button
         key="follow" primary title="Follow"
         icon="sign-in"

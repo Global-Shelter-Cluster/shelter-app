@@ -306,7 +306,7 @@ const dashboardBlocksVisibleByDefault: { [string]: { [dashboardBlock]: boolean }
     factsheets: false,
   },
   community_of_practice: {
-    follow: false,
+    follow: true,
     alerts: true,
     followers: true,
     assessment_forms: true,
@@ -337,6 +337,10 @@ export const isDashboardBlockVisibleByDefault = (group: GroupObject, block: dash
       default:
         type = 'region';
     }
+
+    if (group.title === 'Global')
+      // TODO: this is clumsy and hacky, but to make it better we'd need to set some kind of signal on the backend.
+      type = 'global';
   }
 
   if (dashboardBlocksVisibleByDefault[type] === undefined)

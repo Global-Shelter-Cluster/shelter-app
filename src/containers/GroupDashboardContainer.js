@@ -9,44 +9,6 @@ import {getUnseenAlertIdsForGroup} from "../model/alert";
 
 const mapStateToProps = (state, {group, navigation}) => {
   const blocks: Array<DashboardBlockType> = [];
-  //
-  // if (state.flags.following)
-  //   blocks.push({
-  //     title: 'Loading...',
-  //     icon: 'sign-in',
-  //     disabledIcon: 'refresh',
-  //   });
-  // else if (isFollowing(state, group.id))
-  //   blocks.push({
-  //     title: 'Un-follow this\n' + getGroupTypeLabel(group),
-  //     icon: 'sign-out',
-  //     action: unfollow,
-  //   });
-  // else if (getCurrentUser(state).groups !== undefined && getCurrentUser(state).groups.length >= MAX_FOLLOWED_GROUPS)
-  //   blocks.push({
-  //     title: 'Can\'t follow\n(too many)',
-  //     icon: 'sign-in',
-  //     disabledIcon: 'ban',
-  //   });
-  // else
-  //   blocks.push({
-  //     title: 'Follow this\n' + getGroupTypeLabel(group),
-  //     icon: 'sign-in',
-  //     action: follow,
-  //   });
-  //
-  // if (state.flags.online)
-  //   blocks.push({
-  //     title: 'View on\nwebsite',
-  //     icon: 'external-link',
-  //     action: () => navigation.push('WebsiteViewer', {title: group.title, url: group.url}),
-  //   });
-  // else
-  //   blocks.push({
-  //     title: 'View on\nwebsite',
-  //     icon: 'external-link',
-  //     disabledIcon: 'wifi',
-  //   });
 
   const unseenAlerts = getUnseenAlertIdsForGroup(state, group.id);
   if (unseenAlerts.length > 0)
