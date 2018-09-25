@@ -1,13 +1,14 @@
 // @flow
 
 import React from 'react';
-import {Button, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import type {downloadProgressType} from "../reducers/downloadProgress";
 import persist from "../persist";
 import config from "../config";
 import {hairlineWidth} from "../util";
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
+import Collapsible from "./Collapsible";
 
 type Props = {
   online: boolean,
@@ -61,13 +62,27 @@ export default class IndicatorRow extends React.Component<Props, State> {
         visible={this.state.isModalOpen}
         onRequestClose={() => this.setState({isModalOpen: false})}
       >
-        <View style={{paddingHorizontal: 30, paddingVertical: 50}}>
-          <Text style={{fontWeight: "bold"}}>Shelter Cluster mobile app</Text>
-          <Text>Expo version: {Expo.Constants.expoVersion}</Text>
-          <Text>App version: {Expo.Constants.manifest.version}</Text>
-          <Text>Environment: {Expo.Constants.manifest.releaseChannel ? Expo.Constants.manifest.releaseChannel : '<none>'}</Text>
-          <Text>Connectivity: {onlineIndicator}</Text>
-        </View>
+        <ScrollView contentContainerStyle={{paddingVertical: 50}}>
+          <Text style={styles.text}>
+            PROGRAM/INITIATIVE/ACTIVITY UNDERTAKEN WITH THE FINANCIAL SUPPORT OF THE GOVERNMENT OF CANADA PROVIDED
+            THROUGH GLOBAL AFFAIRS CANADA (GAC)
+          </Text>
+          <Image style={styles.logo} source={require("../../assets/about/red-cross.png")}/>
+          <Image style={styles.logo} source={require("../../assets/about/gov-canada.png")}/>
+          <Text style={styles.text}>
+            THIS APP IS MADE POSSIBLE THROUGH THE FINANCIAL AND IN-KIND CONTRIBUTIONS OF:
+          </Text>
+          <Image style={styles.logo} source={require("../../assets/about/unhcr.png")}/>
+          <Image style={styles.logo} source={require("../../assets/about/international-federation-of-redcross.png")}/>
+          <Image style={styles.logo} source={require("../../assets/about/humanitarian-aid.png")}/>
+          <View style={{height: 50}}/>
+          <Collapsible title="Technical information" isOpen>
+            <Text>Expo version: {Expo.Constants.expoVersion}</Text>
+            <Text>App version: {Expo.Constants.manifest.version}</Text>
+            <Text>Environment: {Expo.Constants.manifest.releaseChannel ? Expo.Constants.manifest.releaseChannel : '<none>'}</Text>
+            <Text>Connectivity: {onlineIndicator}</Text>
+          </Collapsible>
+        </ScrollView>
         <TouchableOpacity
           style={styles.closeButton}
           onPress={() => this.setState({isModalOpen: false})}
@@ -95,5 +110,18 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: .5,
     elevation: 5, // Shadow works for iOS, elevation for Android
+  },
+  text: {
+    color: vars.SHELTER_GREY,
+    marginVertical: 30,
+    marginHorizontal: 20,
+    textAlign: "center",
+  },
+  logo: {
+    alignSelf: "center",
+    marginVertical: 20,
+    maxWidth: "90%",
+    resizeMode: "contain",
+    // height: "auto",
   },
 });
