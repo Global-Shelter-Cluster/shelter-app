@@ -73,7 +73,7 @@ export default class Login extends React.Component<Props, State> {
         dimmed style={{marginTop: 5}}
         onPress={() => {
           this.props.navigation.navigate('Forgot');
-        }} title="Forgot your password?"/>
+        }} title="Forgot your username/password?"/>
       : null;
 
     return (
