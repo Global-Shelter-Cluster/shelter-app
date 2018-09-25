@@ -2,9 +2,9 @@
 
 if [[ $1 =~ ^(dev|stage|prod)$ ]]; then
   if [[ $1 == prod ]]; then
-    exp publish --release-channel default
+    expo publish --release-channel default
   else
-    exp publish --release-channel $1
+    expo publish --release-channel $1
   fi
 else
   echo "Usage: ./publish.sh [dev|stage|prod]"
