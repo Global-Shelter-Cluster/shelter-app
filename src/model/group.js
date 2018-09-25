@@ -23,6 +23,7 @@ export type PrivateGroupObject = {
   type: GroupType,
   id: number,
   title: string,
+  is_global?: true,
   url: string,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
@@ -54,6 +55,7 @@ export type PublicGroupObject = {
   type: GroupType,
   id: number,
   title: string,
+  is_global?: true,
   url: string,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
@@ -82,6 +84,7 @@ export type StubPlusGroupObject = {
   type: GroupType,
   id: number,
   title: string,
+  is_global?: true,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
   image?: string,
@@ -95,6 +98,7 @@ export type StubGroupObject = {
   type: GroupType,
   id: number,
   title: string,
+  is_global?: true,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
 }
@@ -338,8 +342,7 @@ export const isDashboardBlockVisibleByDefault = (group: GroupObject, block: dash
         type = 'region';
     }
 
-    if (group.title === 'Global')
-      // TODO: this is clumsy and hacky, but to make it better we'd need to set some kind of signal on the backend.
+    if (group.is_global)
       type = 'global';
   }
 
