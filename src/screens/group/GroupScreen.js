@@ -13,6 +13,8 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   online: boolean,
@@ -78,6 +80,13 @@ class GroupScreen extends React.Component<Props> {
       title: this.props.group.title,
       subtitle: this.generateSubtitle(),
     });
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id)),
+    );
   }
 
   componentDidUpdate() {

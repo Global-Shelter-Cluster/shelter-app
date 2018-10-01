@@ -12,6 +12,8 @@ import Error from "../../components/Error";
 import Search from "./Search";
 import type {navigation} from "../../nav";
 import type {tabs} from "./Search";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   online: boolean,
@@ -59,6 +61,13 @@ class SearchScreen extends React.Component<Props, State> {
     const tab = this.props.navigation.getParam('which', this.state.tab);
     if (this.state.tab !== tab)
       this.setState({tab});
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName)),
+    );
   }
 
   render() {

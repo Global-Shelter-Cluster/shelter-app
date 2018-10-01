@@ -10,6 +10,8 @@ import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer"
 import {clearLastError, loadCurrentUser} from "../../actions";
 import {propEqual} from "../../util";
 import {getUnseenAlertIds} from "../../model/alert";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   loading: boolean,
@@ -43,6 +45,13 @@ class DashboardScreen extends React.Component<Props> {
 
   componentWillMount() {
     // this.props.navigation.push('Factsheet', {factsheetId: 13449}); //TODO: temporary!! redirects to an arbitrary screen, useful for development
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName)),
+    );
   }
 
   render() {

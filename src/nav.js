@@ -24,6 +24,7 @@ import AlertListScreen from "./screens/group/AlertListScreen";
 import ContactScreen from "./screens/view/ContactScreen";
 import UserListScreen from "./screens/group/UserListScreen";
 import UserScreen from "./screens/view/UserScreen";
+import analytics from "./analytics";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,

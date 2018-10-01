@@ -10,6 +10,8 @@ import ReportList from "./ReportList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   loading: boolean,
@@ -44,6 +46,13 @@ class ReportListScreen extends React.Component<Props> {
 
   componentWillMount() {
     this.props.navigation.setParams({title: this.props.group.title});
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id)),
+    );
   }
 
   componentDidUpdate() {

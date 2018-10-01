@@ -23,6 +23,7 @@
     "clone": "^2.1.1",
     "deep-equal": "^1.0.1",
     "expo": "^29.0.0",
+    "expo-analytics": "^1.0.7",
     "flow-bin": "^0.74.0",
     "htmlparser2": "^3.9.2",
     "md5": "^2.2.1",

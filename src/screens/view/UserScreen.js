@@ -11,6 +11,8 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   online: boolean,
@@ -53,6 +55,13 @@ class UserScreen extends React.Component<Props> {
   componentWillMount() {
     if (!this.props.loaded)
       this.props.refresh();
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.user.id)),
+    );
   }
 
   render() {

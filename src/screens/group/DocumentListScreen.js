@@ -11,6 +11,8 @@ import DocumentList from "./DocumentList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   online: boolean,
@@ -63,6 +65,13 @@ class DocumentListScreen extends React.Component<Props, State> {
     const tab = this.props.navigation.getParam('which', this.state.tab);
     if (this.state.tab !== tab)
       this.setState({tab});
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id)),
+    );
   }
 
   componentDidUpdate() {

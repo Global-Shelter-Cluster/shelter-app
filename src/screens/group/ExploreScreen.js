@@ -13,6 +13,8 @@ import {GLOBAL_OBJECT_ID} from "../../model/global";
 import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   online: boolean,
@@ -67,6 +69,18 @@ class ExploreScreen extends React.Component<Props, State> {
     const tab = this.props.navigation.getParam('which', this.state.tab);
     if (this.state.tab !== tab)
       this.setState({tab});
+  }
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.state.tab)),
+    );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.tab !== this.state.tab)
+      analytics.hit(new PageHit(this.props.navigation.state.routeName + '/' + this.state.tab));
   }
 
   render() {

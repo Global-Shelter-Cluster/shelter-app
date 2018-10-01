@@ -7,6 +7,7 @@ export type configType = {
   reduxLogger: boolean,
   persistFiles: boolean,
   debugOnlineIndicator: boolean, // allows toggling online/offline and clearing cache with a "long press" on the indicator
+  googleAnalyticsTrackingId: string,
 };
 
 const config: { [string]: configType } = {
@@ -17,6 +18,7 @@ const config: { [string]: configType } = {
     reduxLogger: true,
     persistFiles: false,
     debugOnlineIndicator: true,
+    googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   local_jm: {
     baseUrl: 'http://192.168.0.101:32776',
@@ -25,6 +27,7 @@ const config: { [string]: configType } = {
     reduxLogger: true,
     persistFiles: false,
     debugOnlineIndicator: true,
+    googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   dev: {
     baseUrl: 'http://dev.sheltercluster.org',
@@ -33,6 +36,7 @@ const config: { [string]: configType } = {
     reduxLogger: true,
     persistFiles: true,
     debugOnlineIndicator: true,
+    googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   stage: {
     baseUrl: 'http://stage.sheltercluster.org',
@@ -41,6 +45,7 @@ const config: { [string]: configType } = {
     reduxLogger: false,
     persistFiles: true,
     debugOnlineIndicator: false,
+    googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   prod: {
     baseUrl: 'https://www.sheltercluster.org',
@@ -49,6 +54,7 @@ const config: { [string]: configType } = {
     reduxLogger: false,
     persistFiles: true,
     debugOnlineIndicator: false,
+    googleAnalyticsTrackingId: 'UA-26890288-3',
   }
 };
 

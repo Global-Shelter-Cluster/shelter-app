@@ -8,6 +8,8 @@ import NavTitleContainer from "../../containers/NavTitleContainer";
 import {clearLastError, loadCurrentUser} from "../../actions";
 import {propEqual} from "../../util";
 import {getObject} from "../../model";
+import analytics from "../../analytics";
+import {PageHit} from "expo-analytics";
 
 type Props = {
   groups: Array<number>,
@@ -38,6 +40,13 @@ class ReportGroupsScreen extends React.Component<Props> {
   static navigationOptions = {
     headerTitle: <NavTitleContainer title="Reporting"/>,
   };
+
+  componentDidMount() {
+    this.props.navigation.addListener(
+      'didFocus',
+      payload => analytics.hit(new PageHit(payload.state.routeName)),
+    );
+  }
 
   shouldComponentUpdate(nextProps) {
     return !propEqual(this.props, nextProps, ['loading'], ['user']);

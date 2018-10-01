@@ -2957,6 +2957,10 @@ expect@^22.4.0:
     jest-message-util "^22.4.3"
     jest-regex-util "^22.4.3"
 
+expo-analytics@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/expo-analytics/-/expo-analytics-1.0.7.tgz#d78b4b9090ba359b2ec233fce35512b90ef392db"
+
 expo-asset@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-1.0.1.tgz#3d8c69187bb597185513509176d1136cbe40a581"
