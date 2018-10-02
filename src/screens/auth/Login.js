@@ -99,6 +99,7 @@ export default class Login extends React.Component<Props, State> {
               fields: {
                 username: {
                   textContentType: "username",
+                  placeholder: "Username or e-mail address",
                   onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
                   returnKeyType: "next",
                   autoCapitalize: "none",
