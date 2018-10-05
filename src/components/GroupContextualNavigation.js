@@ -8,11 +8,12 @@ import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemC
 import NavCollapsible from "./NavCollapsible";
 import vars from "../vars";
 import {hairlineWidth} from "../util";
+import Collapsible from "./Collapsible";
 
 export default ({group, areAllSubregionsCountries}: { group: PublicGroupObject, areAllSubregionsCountries: boolean }) => {
   let groupCount = 0;
 
-  const sections: Array<{ title: string, data: Array<number> }> = [];
+  const sections: Array<{ title: string, data: Array<number>, isOpen?:true }> = [];
 
   let collapsedTitle: string | null = null;
   let collapsedContentRow: React$Element<*> | null = null;
@@ -32,14 +33,14 @@ export default ({group, areAllSubregionsCountries}: { group: PublicGroupObject, 
 
   if (group.parent_region) {
     groupCount++;
-    sections.push({title: "In", data: [group.parent_region]});
+    sections.push({title: "In", isOpen: true, data: [group.parent_region]});
     if (!collapsedTitle) {
       collapsedTitle = 'In';
       collapsedContentRow = <GroupListItemContainer display="text-only" id={group.parent_region} noLink/>;
     }
   } else if (group.associated_regions) {
     groupCount += group.associated_regions.length;
-    sections.push({title: "In", data: group.associated_regions});
+    sections.push({title: "In", isOpen: true, data: group.associated_regions});
     if (!collapsedTitle) {
       collapsedTitle = addCount('In', group.associated_regions.length);
       collapsedContentRow = <MultipleGroupListItemContainer ids={group.associated_regions}/>;
@@ -169,33 +170,59 @@ export default ({group, areAllSubregionsCountries}: { group: PublicGroupObject, 
   if (groupCount === 0)
     return null;
 
-  const sectionList = <SectionList
-    style={styles.container}
-    sections={sections}
-    renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-    renderItem={({item}) => {
+  // const sectionList = <SectionList
+  //   style={styles.container}
+  //   sections={sections}
+  //   renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
+  //   renderItem={({item}) => {
+  //     if (typeof item === 'object')
+  //       return <GroupListItemContainer display="text-only" {...item}/>
+  //     else
+  //       return <GroupListItemContainer display="text-only" id={item}/>
+  //   }}
+  //   keyExtractor={(item, index) => index}
+  // />;
+  const sectionList = [];
+  for (const section of sections) {
+    console.log(section, section.title);
+    const groups = [];
+    for (const item of section.data) {
       if (typeof item === 'object')
-        return <GroupListItemContainer display="text-only" {...item}/>
+        groups.push(<GroupListItemContainer key={item.id} display="text-only" {...item}/>);
       else
-        return <GroupListItemContainer display="text-only" id={item}/>
-    }}
-    keyExtractor={(item, index) => index}
-  />;
+        groups.push(<GroupListItemContainer key={item} display="text-only" id={item}/>);
+    }
+
+    sectionList.push(<Collapsible
+      key={section.title} title={section.title}
+      noHorizontalMargins
+      badge={groups.length}
+      isOpen={section.isOpen || sections.length === 1}
+    >
+      <View style={{flexDirection: "column"}}>
+        {groups}
+      </View>
+    </Collapsible>);
+  }
 
   return <View style={styles.mainContainer}>
-    {groupCount === 1 ? sectionList :
-      <NavCollapsible title={collapsibleTitle}>
-        {sectionList}
-      </NavCollapsible>
-    }
+    {sectionList}
+    {/*{groupCount === 1 ? sectionList :*/}
+    {/*<NavCollapsible title={collapsibleTitle}>*/}
+    {/*{sectionList}*/}
+    {/*</NavCollapsible>*/}
+    {/*}*/}
   </View>;
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
-    borderColor: vars.LIGHT_GREY,
-    borderBottomWidth: hairlineWidth,
-    borderTopWidth: hairlineWidth,
+    // borderColor: vars.LIGHT_GREY,
+    // borderBottomWidth: hairlineWidth,
+    // borderTopWidth: hairlineWidth,
+    // flex: 1,
+    // backgroundColor: "yellow",
+    // flexDirection: "column",
   },
   container: {
     marginTop: 10

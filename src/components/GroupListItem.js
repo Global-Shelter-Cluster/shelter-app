@@ -28,14 +28,14 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
   switch (display) {
     case 'text-only': {
       const followedIcon = isFollowed
-        ? <FontAwesome name="sign-in" size={18} style={{paddingTop: 2}}/>
+        ? <FontAwesome name="sign-in" size={18} style={{paddingBottom: 9}}/>
         : null;
 
       const titleContainerStyle = followedIcon
         ? [styles.textOnlyContainer, {marginRight: 20}]
         : styles.textOnlyContainer;
       const title = <View style={titleContainerStyle}>
-        <SingleLineText style={[styles.textOnlyLabel, group.response_status === 'archived' ? styles.dimmed : null]} {...textStyles}>{indent ? "   " : null}{group.title}</SingleLineText>
+        <Text style={[styles.textOnlyLabel, group.response_status === 'archived' ? styles.dimmed : null, indent ? styles.indent : null]} {...textStyles}>{group.title}</Text>
         {followedIcon}
       </View>;
 
@@ -131,6 +131,8 @@ const styles = StyleSheet.create({
   textOnlyContainer: {
     flex: 1,
     flexDirection: "row",
+    paddingVertical: 3,
+    alignItems: "center",
   },
   textOnlyLabel: {
     padding: 10,
@@ -138,12 +140,15 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     fontSize: 18,
   },
+  indent: {
+    paddingLeft: 30,
+  },
   dimmed: {
     opacity: .6,
   },
   textOnlyIcon: {
     paddingHorizontal: 10,
-    paddingTop: 2,
+    paddingBottom: 10,
   },
   fullIcon: {
     paddingLeft: 10,
