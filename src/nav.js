@@ -8,7 +8,7 @@ import ForgotScreen from "./screens/auth/ForgotScreen";
 import DashboardScreen from "./screens/user/DashboardScreen";
 import EditScreen from "./screens/user/EditScreen";
 import GroupScreen from "./screens/group/GroupScreen";
-import ExploreScreen from "./screens/group/ExploreScreen";
+import OperationsScreen from "./screens/group/OperationsScreen";
 import WebsiteViewerScreen from "./screens/misc/WebsiteViewerScreen";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "./vars";
@@ -32,8 +32,8 @@ const AuthScreens = createSwitchNavigator({
   Forgot: ForgotScreen,
 });
 
-const ExploreStack = createStackNavigator({
-  Explore: ExploreScreen,
+const OperationsStack = createStackNavigator({
+  Operations: OperationsScreen,
   Group: GroupScreen,
   WebsiteViewer: WebsiteViewerScreen,
   DocumentList: DocumentListScreen,
@@ -69,7 +69,7 @@ const TabScreens = createBottomTabNavigator({
       tabBarLabel: "User",
     },
   },
-  Explore: ExploreStack,
+  Operations: OperationsStack,
   // Chat: ChatStack, //TODO: hide this for now
   Reporting: ReportingStack,
   Search: SearchStack,
@@ -80,7 +80,7 @@ const TabScreens = createBottomTabNavigator({
 
       const icons = {
         'Search': "search",
-        'Explore': "globe",
+        'Operations': "globe",
         'Chat': "comments",
         'Reporting': "paper-plane",
         'Me': "user",

@@ -3,8 +3,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import type {tabs} from "./Explore";
-import Explore from "./Explore";
+import type {tabs} from "./Operations";
+import Operations from "./Operations";
 import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import {getObject} from "../../model";
@@ -48,9 +48,9 @@ const mapDispatchToProps = dispatch => ({
   },
 });
 
-class ExploreScreen extends React.Component<Props, State> {
+class OperationsScreen extends React.Component<Props, State> {
   static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Explore"/>,
+    headerTitle: <NavTitleContainer title="Operations"/>,
   };
 
   constructor(props: Props) {
@@ -84,8 +84,8 @@ class ExploreScreen extends React.Component<Props, State> {
   }
 
   render() {
-    return <Explore {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
+    return <Operations {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExploreScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(OperationsScreen);
