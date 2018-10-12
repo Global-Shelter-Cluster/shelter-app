@@ -46,6 +46,7 @@ export type PrivateGroupObject = {
   kobo_forms?: Array<number>,
   alerts?: Array<number>,
   followers: Array<number>,
+  useful_links?: Array<{ url: string, title?: string }>,
 }
 
 export type PublicGroupObject = {
@@ -75,6 +76,7 @@ export type PublicGroupObject = {
   working_groups?: Array<number>,
   communities_of_practice?: Array<number>,
   strategic_advisory?: number,
+  useful_links?: Array<{ url: string, title?: string }>,
 }
 
 export type StubPlusGroupObject = {
