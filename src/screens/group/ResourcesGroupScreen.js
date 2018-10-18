@@ -15,6 +15,7 @@ import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
+import type {GlobalObject} from "../../model/global";
 
 type Props = {
   online: boolean,
@@ -28,8 +29,13 @@ type Props = {
 }
 
 const mapStateToProps = (state, props) => {
-  const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', props.navigation.getParam('groupId')));
-  const factsheet: FactsheetObject | null = group.latest_factsheet ? getObject(state, 'factsheet', group.latest_factsheet) : null;
+  const global: GlobalObject = convertFiles(state, 'global', getObject(state, 'global', 1));
+  console.log(global, "GLOB");
+  if (!global.resources_id) {
+    props.navigation.navigate('Operations');
+    return {group:{},loading:true};
+  }
+  const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', global.resources_id));
 
   return {
     online: state.flags.online,
@@ -37,19 +43,24 @@ const mapStateToProps = (state, props) => {
     lastError: state.lastError,
     group: group,
     loaded: detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
-    factsheet: factsheet,
     areAllSubregionsCountries: areAllSubregionsCountries(state, group.id),
   };
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  refresh: () => {
+  refreshInternal: (id) => {
     dispatch(clearLastError());
-    dispatch(loadObject('group', props.navigation.getParam('groupId'), false, true));
+    dispatch(loadObject('group', id, false, true));
   },
 });
 
-class GroupScreen extends React.Component<Props> {
+const mergeProps = (propsFromState, propsFromDispatch, props) => ({
+  refresh: () => propsFromDispatch.refreshInternal(propsFromState.group.id),
+  ...propsFromState,
+  ...props,
+});
+
+class ResourcesGroupScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}) => ({
     headerTitle: <NavTitleContainer
       title={navigation.getParam('title', 'Loading...')}
@@ -63,7 +74,7 @@ class GroupScreen extends React.Component<Props> {
 
   generateSubtitle() {
     const ret = [];
-    if (this.props.group.type !== undefined && getGroupTypeLabel(this.props.group))
+    if (this.props.group.type !== undefined)
       ret.push(getGroupTypeLabel(this.props.group).toUpperCase());
 
     if (this.props.group.response_status !== undefined && this.props.group.response_status === 'archived')
@@ -76,10 +87,12 @@ class GroupScreen extends React.Component<Props> {
     if (!this.props.loaded)
       this.props.refresh();
 
+    console.log('CAMa1', this.props);
     this.props.navigation.setParams({
       title: this.props.group.title,
       subtitle: this.generateSubtitle(),
     });
+    console.log('CAMa2', this.props);
   }
 
   componentDidMount() {
@@ -104,4 +117,4 @@ class GroupScreen extends React.Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupScreen);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(ResourcesGroupScreen);

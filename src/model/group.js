@@ -24,6 +24,7 @@ export type PrivateGroupObject = {
   id: number,
   title: string,
   is_global?: true,
+  is_resources?: true,
   url: string,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
@@ -56,6 +57,7 @@ export type PublicGroupObject = {
   id: number,
   title: string,
   is_global?: true,
+  is_resources?: true,
   url: string,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
@@ -85,6 +87,7 @@ export type StubPlusGroupObject = {
   id: number,
   title: string,
   is_global?: true,
+  is_resources?: true,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
   image?: string,
@@ -99,6 +102,7 @@ export type StubGroupObject = {
   id: number,
   title: string,
   is_global?: true,
+  is_resources?: true,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
 }
@@ -212,6 +216,9 @@ export const isFollowing = createCachedSelector(
 )((state, groupId) => groupId);
 
 export const getGroupTypeLabel = (group: GroupObject) => {
+  if (group.is_global || group.is_resources)
+    return '';
+
   return group.region_type !== undefined
     ? group.region_type.toLowerCase()
     : group.type.replace(/_/g, ' ');
@@ -282,6 +289,15 @@ const dashboardBlocksVisibleByDefault: { [string]: { [dashboardBlock]: boolean }
     events: true,
     factsheets: false,
   },
+  resources: {
+    follow: false,
+    alerts: false,
+    followers: false,
+    assessment_forms: false,
+    documents: true,
+    events: false,
+    factsheets: false,
+  },
   hub: {
     follow: false,
     alerts: false,
@@ -341,10 +357,13 @@ export const isDashboardBlockVisibleByDefault = (group: GroupObject, block: dash
       default:
         type = 'region';
     }
-
-    if (group.is_global)
-      type = 'global';
   }
+
+  if (group.is_global)
+    type = 'global';
+
+  if (group.is_resources)
+    type = 'resources';
 
   if (dashboardBlocksVisibleByDefault[type] === undefined)
     return false;

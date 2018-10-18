@@ -12,7 +12,7 @@ import OperationsScreen from "./screens/group/OperationsScreen";
 import WebsiteViewerScreen from "./screens/misc/WebsiteViewerScreen";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "./vars";
-import ReportGroupsScreen from "./screens/reporting/ReportGroupsScreen";
+import ResourcesGroupScreen from "./screens/group/ResourcesGroupScreen";
 import ReportListScreen from "./screens/reporting/ReportListScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
 import EventListScreen from "./screens/group/EventListScreen";
@@ -45,14 +45,14 @@ const OperationsStack = createStackNavigator({
   Contact: ContactScreen,
   UserList: UserListScreen,
   User: UserScreen,
+  ReportList: ReportListScreen,
+  Reporting: WebsiteViewerScreen,
 });
 // const ChatStack = createSwitchNavigator({
 //   Chat: TempBlankScreen,
 // });
-const ReportingStack = createStackNavigator({
-  Report: ReportGroupsScreen,
-  ReportList: ReportListScreen,
-  Reporting: WebsiteViewerScreen,
+const ResourcesStack = createStackNavigator({
+  ResourcesGroup: ResourcesGroupScreen,
 });
 const MeStack = createStackNavigator({
   Dashboard: DashboardScreen,
@@ -71,7 +71,7 @@ const TabScreens = createBottomTabNavigator({
   },
   Operations: OperationsStack,
   // Chat: ChatStack, //TODO: hide this for now
-  Reporting: ReportingStack,
+  Resources: ResourcesStack,
   Search: SearchStack,
 }, {
   navigationOptions: ({navigation}) => ({
@@ -82,7 +82,7 @@ const TabScreens = createBottomTabNavigator({
         'Search': "search",
         'Operations': "globe",
         'Chat': "comments",
-        'Reporting': "paper-plane",
+        'Resources': "cogs",
         'Me': "user",
       };
 
