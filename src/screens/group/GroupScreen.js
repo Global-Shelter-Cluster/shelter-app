@@ -16,7 +16,6 @@ import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import type {tabs} from "./Group";
-import DocumentList from "./DocumentList";
 
 type Props = {
   online: boolean,

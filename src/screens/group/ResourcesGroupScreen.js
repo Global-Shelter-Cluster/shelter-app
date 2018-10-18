@@ -16,6 +16,7 @@ import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import type {GlobalObject} from "../../model/global";
+import type {tabs} from "./Group";
 
 type Props = {
   online: boolean,
@@ -28,9 +29,12 @@ type Props = {
   lastError: lastErrorType,
 }
 
+type State = {
+  tab: tabs,
+}
+
 const mapStateToProps = (state, props) => {
   const global: GlobalObject = convertFiles(state, 'global', getObject(state, 'global', 1));
-  console.log(global, "GLOB");
   if (!global.resources_id) {
     props.navigation.navigate('Operations');
     return {group:{},loading:true};
@@ -68,13 +72,21 @@ class ResourcesGroupScreen extends React.Component<Props> {
     />,
   });
 
-  shouldComponentUpdate(nextProps) {
-    return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['group', 'factsheet', 'lastError']);
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      tab: "dashboard",
+    };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !propEqual(this.state, nextState, ['tab'])
+      || !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['group', 'factsheet', 'lastError']);
   }
 
   generateSubtitle() {
     const ret = [];
-    if (this.props.group.type !== undefined)
+    if (this.props.group.type !== undefined && getGroupTypeLabel(this.props.group))
       ret.push(getGroupTypeLabel(this.props.group).toUpperCase());
 
     if (this.props.group.response_status !== undefined && this.props.group.response_status === 'archived')
@@ -87,12 +99,14 @@ class ResourcesGroupScreen extends React.Component<Props> {
     if (!this.props.loaded)
       this.props.refresh();
 
-    console.log('CAMa1', this.props);
     this.props.navigation.setParams({
       title: this.props.group.title,
       subtitle: this.generateSubtitle(),
     });
-    console.log('CAMa2', this.props);
+
+    const tab = this.props.navigation.getParam('which', this.state.tab);
+    if (this.state.tab !== tab)
+      this.setState({tab});
   }
 
   componentDidMount() {
@@ -113,7 +127,7 @@ class ResourcesGroupScreen extends React.Component<Props> {
   }
 
   render() {
-    return <Group {...this.props}/>;
+    return <Group {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
   }
 }
 
