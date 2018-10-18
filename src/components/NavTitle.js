@@ -14,6 +14,8 @@ const NavTitle = ({online, title, subtitle, downloading}: {
   downloading: { value: number, total: number },
 }) => {
   let icon = null;
+  if (subtitle === '')
+    subtitle = null;
 
   if (!online)
     icon = <FontAwesome key="online" name="wifi" size={20} color={vars.ACCENT_RED}/>;
