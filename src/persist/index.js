@@ -99,11 +99,11 @@ class Persist {
         await this.store.dispatch(replaceAllSeenObjects(seen));
       }
 
+      await this.store.dispatch(setCurrentUser(id));
       await this.loadObjects([
         {type: "global", id: GLOBAL_OBJECT_ID},
         {type: "user", id: id},
       ], true);
-      await this.store.dispatch(setCurrentUser(id));
     } catch (e) {
       console.log('Error during initialization', e);
     }
