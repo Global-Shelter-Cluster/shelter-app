@@ -15,6 +15,8 @@ import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
+import type {tabs} from "./Group";
+import DocumentList from "./DocumentList";
 
 type Props = {
   online: boolean,
@@ -25,6 +27,10 @@ type Props = {
   navigation: navigation,
   refresh: () => void,
   lastError: lastErrorType,
+}
+
+type State = {
+  tab: tabs,
 }
 
 const mapStateToProps = (state, props) => {
@@ -49,7 +55,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   },
 });
 
-class GroupScreen extends React.Component<Props> {
+class GroupScreen extends React.Component<Props, State> {
   static navigationOptions = ({navigation}) => ({
     headerTitle: <NavTitleContainer
       title={navigation.getParam('title', 'Loading...')}
@@ -57,8 +63,16 @@ class GroupScreen extends React.Component<Props> {
     />,
   });
 
-  shouldComponentUpdate(nextProps) {
-    return !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['group', 'factsheet', 'lastError']);
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      tab: "dashboard",
+    };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !propEqual(this.state, nextState, ['tab'])
+      || !propEqual(this.props, nextProps, ['online', 'loading', 'loaded'], ['group', 'factsheet', 'lastError']);
   }
 
   generateSubtitle() {
@@ -80,6 +94,10 @@ class GroupScreen extends React.Component<Props> {
       title: this.props.group.title,
       subtitle: this.generateSubtitle(),
     });
+
+    const tab = this.props.navigation.getParam('which', this.state.tab);
+    if (this.state.tab !== tab)
+      this.setState({tab});
   }
 
   componentDidMount() {
@@ -100,7 +118,7 @@ class GroupScreen extends React.Component<Props> {
   }
 
   render() {
-    return <Group {...this.props}/>;
+    return <Group {...this.props} tab={this.state.tab} changeTab={(tab: tabs) => this.setState({tab})}/>;
   }
 }
 
