@@ -23,6 +23,7 @@ import Model, {
 import {FileSystem} from "expo";
 import md5 from "md5";
 import Storage from "./storage_async";
+// import Storage from "./storage_sqlite";
 import config from "../config";
 import clone from 'clone';
 import {GLOBAL_OBJECT_ID} from "../model/global";
@@ -111,7 +112,7 @@ class Persist {
 
   async initDirectory(directory: string) {
     this.directory = directory;
-    const dirInfo: {exists: boolean, isDirectory: boolean} = await FileSystem.getInfoAsync(this.directory);
+    const dirInfo: { exists: boolean, isDirectory: boolean } = await FileSystem.getInfoAsync(this.directory);
 
     if (!dirInfo.exists)
       await FileSystem.makeDirectoryAsync(this.directory);
