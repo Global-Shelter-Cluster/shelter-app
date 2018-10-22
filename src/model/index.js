@@ -1,17 +1,17 @@
 // @flow
 
+import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import createCachedSelector from 're-reselect';
 import type {UserObject} from "./user";
 import User from "./user";
 import type {GroupObject} from "./group";
 import Group from "./group";
-import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import type {FactsheetObject} from "./factsheet";
 import Factsheet from "./factsheet";
 import type {GlobalObject} from "./global";
 import Global from "./global";
 import type {DocumentObject} from "./document";
 import Document from "./document";
-import createCachedSelector from 're-reselect';
 import type {EventObject} from "./event";
 import Event from "./event";
 import type {KoboFormObject} from "./kobo_form";
@@ -20,8 +20,20 @@ import type {AlertObject} from "./alert";
 import Alert from "./alert";
 import type {ContactObject} from "./contact";
 import Contact from "./contact";
+import type {PageObject} from "./page";
+import Page from "./page";
 
-export type ObjectType = "global" | "group" | "user" | "document" | "event" | "factsheet" | "kobo_form" | "alert" | "contact";
+export type ObjectType =
+  "global"
+  | "group"
+  | "user"
+  | "document"
+  | "event"
+  | "factsheet"
+  | "kobo_form"
+  | "alert"
+  | "contact"
+  | "page";
 
 export type Objects = {
   global?: { [id: string]: GlobalObject },
@@ -33,6 +45,7 @@ export type Objects = {
   kobo_form?: { [id: string]: KoboFormObject },
   alert?: { [id: string]: AlertObject },
   contact?: { [id: string]: ContactObject },
+  page?: { [id: string]: PageObject },
 }
 
 export type ObjectIds = {
@@ -45,6 +58,7 @@ export type ObjectIds = {
   kobo_form?: Array<number>,
   alert?: Array<number>,
   contact?: Array<number>,
+  page?: Array<number>,
 }
 
 const hour = 3600;
@@ -59,9 +73,20 @@ export const expirationLimitsByObjectType = {
   "kobo_form": hour * 6,
   "alert": hour * 24,
   "contact": hour * 24,
+  "page": hour * 24,
 };
 
-export type Object = GlobalObject | UserObject | GroupObject | FactsheetObject | DocumentObject | EventObject | KoboFormObject | AlertObject | ContactObject;
+export type Object =
+  GlobalObject
+  | UserObject
+  | GroupObject
+  | FactsheetObject
+  | DocumentObject
+  | EventObject
+  | KoboFormObject
+  | AlertObject
+  | ContactObject
+  | PageObject;
 
 export const initialObjectsState: Objects = {
   global: {
@@ -80,6 +105,7 @@ export const initialObjectsState: Objects = {
   kobo_form: {},
   alert: {},
   contact: {},
+  page: {},
 };
 
 export const initialObjectIdsState: ObjectIds = {
@@ -92,6 +118,7 @@ export const initialObjectIdsState: ObjectIds = {
   kobo_form: [],
   alert: [],
   contact: [],
+  page: [],
 };
 
 const mapTypesToClasses = {
@@ -104,6 +131,7 @@ const mapTypesToClasses = {
   'kobo_form': KoboForm,
   'alert': Alert,
   'contact': Contact,
+  'page': Page,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.
