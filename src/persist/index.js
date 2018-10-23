@@ -41,8 +41,8 @@ export type ObjectRequest = {
 export type ObjectFileDescription = {
   type: ObjectType,
   id: number,
-  property?: string,
-  json_path?: string,
+  path?: string,
+  property: string,
   url: string,
 }
 

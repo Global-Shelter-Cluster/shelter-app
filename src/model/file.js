@@ -5,7 +5,7 @@ import type {ObjectFileDescription} from "../persist";
 import persist from "../persist";
 import Model from "./index";
 import clone from "clone";
-import jsonpath from "jsonpath";
+import JSPath from "jspath";
 
 export const convertFiles = createSelector(
   state => state.files,
@@ -17,15 +17,12 @@ export const convertFiles = createSelector(
       if (files[f.url] === undefined)
         return;
 
-      if (f.property !== undefined)
+      if (f.path !== undefined) {
+        const result = JSPath.apply(f.path, ret);
+        if (result)
+          result[f.property] = persist.directory + '/' + files[f.url].filename;
+      } else
         ret[f.property] = persist.directory + '/' + files[f.url].filename;
-
-      if (f.json_path !== undefined) {
-        console.log('CAM1', JSON.stringify(ret));
-        const temp = jsonpath.apply(ret, f.json_path, () => persist.directory + '/' + files[f.url].filename);
-        console.log('CAM2', JSON.stringify(ret));
-        console.log('CAM3', JSON.stringify(temp));
-      }
     });
     return ret;
   }
