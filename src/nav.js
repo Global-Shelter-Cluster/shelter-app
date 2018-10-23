@@ -19,6 +19,7 @@ import EventListScreen from "./screens/group/EventListScreen";
 import DocumentScreen from "./screens/view/DocumentScreen";
 import EventScreen from "./screens/view/EventScreen";
 import FactsheetScreen from "./screens/view/FactsheetScreen";
+import PhotoGalleryScreen from "./screens/view/PhotoGalleryScreen";
 import SearchScreen from "./screens/search/SearchScreen";
 import AlertListScreen from "./screens/group/AlertListScreen";
 import ContactScreen from "./screens/view/ContactScreen";
@@ -41,6 +42,7 @@ const OperationsStack = createStackNavigator({
   EventList: EventListScreen,
   Event: EventScreen,
   Factsheet: FactsheetScreen,
+  PhotoGallery: PhotoGalleryScreen,
   AlertList: AlertListScreen,
   Contact: ContactScreen,
   UserList: UserListScreen,

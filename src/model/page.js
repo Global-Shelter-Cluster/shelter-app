@@ -1,9 +1,13 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import createCachedSelector from "re-reselect";
+import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "./index";
+import type {GroupObject} from "./group";
+import type {navigation} from "../nav";
 
 type PageType =
-  "basic_page"
+  "page"
   | "library"
   | "arbitrary_library"
   | "photo_gallery";
@@ -13,7 +17,7 @@ export type PublicBasicPageObject = {
   _mode: "public",
   _persist?: true,
   groups: Array<number>,
-  type: "basic_page",
+  type: "page",
   id: number,
   title: string,
   url: string,
@@ -66,7 +70,7 @@ export type PublicPhotoGalleryPageObject = {
       url_full: string, // URL
       url_original: string, // URL
       author: string,
-      taken?: Date,
+      taken?: string, // date
       caption?: string, // plain text
     }>,
   }>,
@@ -79,6 +83,7 @@ export type StubPageObject = {
   type: PageType,
   id: number,
   title: string,
+  url: string,
 }
 
 export type PublicPageObject =
@@ -115,7 +120,8 @@ export default class Page {
             files.push({
               type: "page",
               id: page.id,
-              json_path: "$.sections[" + section_index + "].photos[" + photo_index + "].url_thumbnail",
+              path: ".sections[" + section_index + "].photos[" + photo_index + "]",
+              property: "url_thumbnail",
               url: photo.url_thumbnail,
             });
 
@@ -123,7 +129,8 @@ export default class Page {
             files.push({
               type: "page",
               id: page.id,
-              json_path: "$.sections[" + section_index + "].photos[" + photo_index + "].url_medium",
+              path: ".sections[" + section_index + "].photos[" + photo_index + "]",
+              property: "url_medium",
               url: photo.url_medium,
             });
         });
@@ -136,7 +143,7 @@ export default class Page {
 
 export const getPageTypeLabel = (page: PageObject) => {
   switch (page.type) {
-    case "basic_page":
+    case "page":
       return "Page";
     case "library":
       return "Library";
@@ -148,3 +155,37 @@ export const getPageTypeLabel = (page: PageObject) => {
       return '';
   }
 };
+
+export const getPageEnter = createCachedSelector(
+  state => state,
+  (state, pageId) => pageId,
+  (state, pageId, navigation) => navigation,
+  state => state.flags.online,
+  (state, pageId: number, navigation: navigation, online: boolean) => {
+    if (state.objects.page[pageId] === undefined)
+      return null;
+
+    const page: PageObject = state.objects.page[pageId];
+
+    switch (page.type) {
+      case "page":
+      case "library":
+      case "arbitrary_library":
+        if (!online)
+          return null;
+
+        return () => navigation.push('WebsiteViewer', {url: page.url, title: page.title});
+
+      case "photo_gallery":
+        const link = online || detailLevels[page._mode] >= detailLevels[OBJECT_MODE_PUBLIC];
+        if (!link)
+          return null;
+
+        console.log('CAMphotogallery', page, link);
+        return () => navigation.push('PhotoGallery', {pageId: page.id});
+
+      default:
+        return null;
+    }
+  }
+)((state, pageId) => pageId);

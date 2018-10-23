@@ -48,6 +48,9 @@ export type PrivateGroupObject = {
   alerts?: Array<number>,
   followers: Array<number>,
   useful_links?: Array<{ url: string, title?: string }>,
+  pages?: Array<number>, // top-level page ids
+  child_pages?: Array<number>, // all child page ids
+  all_child_pages?: {[string]: Array<number>}, // children for each parent page id
 }
 
 export type PublicGroupObject = {
@@ -79,6 +82,9 @@ export type PublicGroupObject = {
   communities_of_practice?: Array<number>,
   strategic_advisory?: number,
   useful_links?: Array<{ url: string, title?: string }>,
+  pages?: Array<number>, // top-level page ids
+  child_pages?: Array<number>, // all child page ids
+  all_child_pages?: {[string]: Array<number>}, // children for each parent page id
 }
 
 export type StubPlusGroupObject = {
@@ -157,6 +163,12 @@ export default class Group {
 
     if (group.followers !== undefined)
       ret.push(...group.followers.map(id => ({type: "user", id: id})));
+
+    if (group.pages !== undefined)
+      ret.push(...group.pages.map(id => ({type: "page", id: id})));
+
+    if (group.child_pages !== undefined)
+      ret.push(...group.child_pages.map(id => ({type: "page", id: id})));
 
     return ret;
   }

@@ -4,6 +4,7 @@ import React from 'react';
 import {Button, FlatList, RefreshControl, ScrollView, Text, View} from 'react-native';
 import type {PublicGroupObject} from "../../model/group";
 import GroupContextualNavigation from "../../components/GroupContextualNavigation";
+import GroupPagesNavigation from "../../components/GroupPagesNavigation";
 import type {FactsheetObject} from "../../model/factsheet";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
@@ -41,14 +42,22 @@ export default ({online, group, loaded, tab, changeTab, factsheet, refresh, load
 
   const tabs: tabsDefinition = {
     "dashboard": {label: "Dashboard"},
-    // "pages": {label: "Pages"}, // TODO: implement
+    "pages": {label: "Pages"},
     "nav": {label: "Navigation"},
   };
+
+  if (group.pages === undefined)
+    delete tabs.pages;
 
   let content;
 
   switch (tab) {
     case "pages":
+      content = <ScrollView
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
+      >
+        <GroupPagesNavigation group={group}/>
+      </ScrollView>;
       break;
 
     case "nav":
