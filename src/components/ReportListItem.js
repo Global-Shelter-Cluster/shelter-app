@@ -6,9 +6,10 @@ import HTML from 'react-native-render-html';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import {hairlineWidth} from "../util";
+import type {KoboFormObject} from "../model/kobo_form";
 
 export default ({kobo_form, enter}: {
-  kobo_form: KoboFromObject,
+  kobo_form: KoboFormObject,
   enter: () => {},
 }) => {
 
