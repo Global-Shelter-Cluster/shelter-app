@@ -22,6 +22,8 @@ import Loading from "../../components/Loading";
 import {hairlineWidth} from "../../util";
 import type {PublicPhotoGalleryPageObject} from "../../model/page";
 import Collapsible from "../../components/Collapsible";
+import moment from "moment";
+import ImagesWithSlideshow from "../../components/ImagesWithSlideshow";
 
 export default ({online, page, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -43,36 +45,26 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
 
   if (page.sections) {
     page.sections.map((section, sectionIndex) => {
-      const photos = [];
+      if (!section.photos)
+        return;
 
-      if (section.photos) {
-        section.photos.map((photo, photoIndex) => {
-          photos.push(<TouchableOpacity
-            key={photoIndex}
-            onPress={() => {
-            }}
-          >
-            <Image
-              style={styles.photo}
-              source={{uri: photo.url_thumbnail}}
-            />
-          </TouchableOpacity>);
-        });
-      }
-
-      const photosElement = <View style={styles.photos}>
-        {photos}
-      </View>;
+      const images = section.photos.map(photo => ({
+        title: photo.caption,
+        caption: photo.author + (photo.taken ? moment(photo.taken).utc().format(' • D MMM YYYY') : ''),
+        thumbnail: photo.url_thumbnail,
+        url: photo.url_medium,
+      }));
 
       if (section.title) {
-        sections.push(<Collapsible key={sectionIndex} title={section.title} isOpen noHorizontalMargins badge={section.photos ? section.photos.length : null}>
+        sections.push(<Collapsible key={sectionIndex} title={section.title} isOpen noHorizontalMargins
+                                   badge={section.photos ? section.photos.length : null}>
           {section.description ? <Text style={styles.description}>{section.description}</Text> : null}
-          {photosElement}
+          <ImagesWithSlideshow images={images}/>
         </Collapsible>)
       } else {
         sections.push(<View key={sectionIndex}>
           {section.description ? <Text style={styles.description}>{section.description}</Text> : null}
-          {photosElement}
+          <ImagesWithSlideshow images={images}/>
         </View>)
       }
     });
@@ -101,17 +93,6 @@ const styles = StyleSheet.create({
   },
   description: {
     marginHorizontal: 10,
-  },
-  photos: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    margin: 9,
-    position: "relative",
-  },
-  photo: {
-    width: 115,
-    height: 115,
-    margin: 1,
   },
   title: {
     fontSize: 20,
