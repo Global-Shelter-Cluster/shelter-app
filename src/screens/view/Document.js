@@ -47,8 +47,7 @@ export default ({online, document, loaded, refresh, loading, lastError}: {
       </View>
     </ScrollView>
     <DocumentActionsContainer document={document}/>
-  </View>
-    ;
+  </View>;
 }
 
 const styles = StyleSheet.create({

@@ -76,11 +76,11 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     >
       <Text style={styles.title}>{page.title}</Text>
-      {page.body !== undefined && page.body && <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>}
       <ContextualNavigation object={page}/>
-      <View style={styles.sections}>
-        {sections}
-      </View>
+      {page.body !== undefined && page.body
+        ? <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>
+        : null}
+      {sections}
     </ScrollView>
     {/*<DocumentActionsContainer document={document}/>*/}
   </View>
@@ -88,9 +88,6 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
 }
 
 const styles = StyleSheet.create({
-  sections: {
-    // margin: 10,
-  },
   description: {
     marginHorizontal: 10,
   },
@@ -98,7 +95,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     margin: 10,
-    marginBottom: 5,
+    marginBottom: 10,
     color: vars.SHELTER_RED,
   },
   secondary: {

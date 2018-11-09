@@ -2,10 +2,8 @@
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import createCachedSelector from "re-reselect";
-import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "./index";
-import type {GroupObject} from "./group";
+import {detailLevels, OBJECT_MODE_PUBLIC} from "./index";
 import type {navigation} from "../nav";
-import PageResult from "../components/search/PageResult";
 import React from "react";
 
 type PageType =
@@ -162,7 +160,12 @@ export const getPageEnterFromSearchResult = (navigation: navigation, result: { o
   const id = parseInt(result.objectID, 10);
   const plainTitle = result._highlightResult.title.value.replace(/<[^>]*>/g, '');
 
+  // We can assume we're online, since search only works while online
+
   switch (result.type) {
+    case "arbitrary_library":
+      return () => navigation.push('ArbitraryLibrary', {pageId: id});
+
     case "photo_gallery":
       return () => navigation.push('PhotoGallery', {pageId: id});
 
@@ -185,18 +188,21 @@ export const getPageEnter = createCachedSelector(
     switch (page.type) {
       case "page":
       case "library":
-      case "arbitrary_library":
         if (!online)
           return null;
 
         return () => navigation.push('WebsiteViewer', {url: page.url, title: page.title});
 
-      case "photo_gallery":
-        const link = online || detailLevels[page._mode] >= detailLevels[OBJECT_MODE_PUBLIC];
-        if (!link)
+      case "arbitrary_library":
+        if (!online && detailLevels[page._mode] < detailLevels[OBJECT_MODE_PUBLIC])
           return null;
 
-        console.log('CAMphotogallery', page, link);
+        return () => navigation.push('ArbitraryLibrary', {pageId: page.id});
+
+      case "photo_gallery":
+        if (!online && detailLevels[page._mode] < detailLevels[OBJECT_MODE_PUBLIC])
+          return null;
+
         return () => navigation.push('PhotoGallery', {pageId: page.id});
 
       default:
