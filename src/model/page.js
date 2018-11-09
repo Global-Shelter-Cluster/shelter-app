@@ -5,6 +5,8 @@ import createCachedSelector from "re-reselect";
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "./index";
 import type {GroupObject} from "./group";
 import type {navigation} from "../nav";
+import PageResult from "../components/search/PageResult";
+import React from "react";
 
 type PageType =
   "page"
@@ -153,6 +155,19 @@ export const getPageTypeLabel = (page: PageObject) => {
       return "Photo gallery";
     default:
       return '';
+  }
+};
+
+export const getPageEnterFromSearchResult = (navigation: navigation, result: { objectID: string, type: PageType, url: string, _highlightResult: { title: { value: string } } }) => {
+  const id = parseInt(result.objectID, 10);
+  const plainTitle = result._highlightResult.title.value.replace(/<[^>]*>/g, '');
+
+  switch (result.type) {
+    case "photo_gallery":
+      return () => navigation.push('PhotoGallery', {pageId: id});
+
+    default:
+      return () => navigation.push('WebsiteViewer', {url: result.url, title: plainTitle});
   }
 };
 

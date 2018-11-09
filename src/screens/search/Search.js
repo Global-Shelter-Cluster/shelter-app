@@ -17,6 +17,7 @@ import searchResultStyles from "../../styles/searchResultStyles";
 import type {navigation} from "../../nav";
 import persist from "../../persist";
 import {contactFromAlgoliaResult} from "../../model/contact";
+import {getPageEnterFromSearchResult} from "../../model/page";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   const onEndReached = function () {
@@ -117,9 +118,8 @@ export default ({online, loading, tab, global, changeTab, navigation}: {
       label: "Pages",
       icon: "globe",
       renderSearchResult: item => {
-        const plainTitle = item._highlightResult.title.value.replace(/<[^>]*>/g, '');
         return <PageResult
-          result={item} enter={() => navigation.push('WebsiteViewer', {url: item.url, title: plainTitle})}
+          result={item} enter={getPageEnterFromSearchResult(navigation, item)}
         />;
       },
     },
