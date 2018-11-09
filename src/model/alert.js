@@ -75,7 +75,7 @@ export const getUnseenAlertIdsForGroup = createSelector(
 export const getUnseenAlertIds = createSelector(
   state => state,
   state => getCurrentUser(state),
-  (state, user) => user.groups === undefined
+  (state, user) => !user || user.groups === undefined
     ? []
     : user.groups
       .reduce((all, groupId) => [...all, ...getUnseenAlertIdsForGroup(state, groupId)], [])
