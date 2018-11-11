@@ -35,7 +35,7 @@ export type PublicLibraryPageObject = {
   url: string,
   body?: string, // HTML
   is_global_library?: true,
-  // search: ? // algolia params based on taxonomy/lang/etc. filters defined in the library
+  search: { [string]: { [string]: true } }, // e.g. {"field_technical_support_design": {"Training materials": true, ...}, ...}
 }
 
 export type PublicArbitraryLibraryPageObject = {
@@ -163,6 +163,9 @@ export const getPageEnterFromSearchResult = (navigation: navigation, result: { o
   // We can assume we're online, since search only works while online
 
   switch (result.type) {
+    case "library":
+      return () => navigation.push('Library', {pageId: id});
+
     case "arbitrary_library":
       return () => navigation.push('ArbitraryLibrary', {pageId: id});
 
@@ -187,11 +190,16 @@ export const getPageEnter = createCachedSelector(
 
     switch (page.type) {
       case "page":
-      case "library":
         if (!online)
           return null;
 
         return () => navigation.push('WebsiteViewer', {url: page.url, title: page.title});
+
+      case "library":
+        if (!online) // We need to be online since libraries work with Algolia
+          return null;
+
+        return () => navigation.push('Library', {pageId: page.id});
 
       case "arbitrary_library":
         if (!online && detailLevels[page._mode] < detailLevels[OBJECT_MODE_PUBLIC])

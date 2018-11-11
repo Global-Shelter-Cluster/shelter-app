@@ -3,7 +3,7 @@
 import React from 'react';
 import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
 import DocumentListItemContainer from "../../containers/DocumentListItemContainer";
-import type {PublicArbitraryLibraryPageObject} from "../../model/page";
+import type {PublicLibraryPageObject} from "../../model/page";
 import HTML from "react-native-render-html";
 import type {lastErrorType} from "../../reducers/lastError";
 import equal from "deep-equal";
@@ -12,12 +12,41 @@ import Loading from "../../components/Loading";
 import vars from "../../vars";
 import ContextualNavigation from "../../components/ContextualNavigation";
 import {ScrollView} from "./PhotoGallery";
+import {connectInfiniteHits} from "react-instantsearch/connectors";
+import searchResultStyles from "../../styles/searchResultStyles";
+import type {GlobalObject} from "../../model/global";
 
-export default ({online, page, loaded, refresh, loading, lastError}: {
+const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
+  const onEndReached = function () {
+    if (hasMore)
+      refine();
+  };
+
+  hits = hits.filter(item => item.objectID !== null);
+  if (hits.length > 0)
+    hits.push({objectID: null});
+
+  return (
+    <FlatList
+      data={hits}
+      onEndReached={onEndReached}
+      keyExtractor={item => item.objectID}
+      renderItem={({item}) => {
+        if (item.objectID === null)
+          return <View style={[{height: 300}, searchResultStyles.container]}/>;
+
+        return renderItem(item);
+      }}
+    />
+  );
+});
+
+export default ({online, page, loaded, global, refresh, loading, lastError}: {
   online: boolean,
   loading: boolean,
-  page: PublicArbitraryLibraryPageObject,
+  page: PublicLibraryPageObject,
   loaded: boolean,
+  global: GlobalObject,
   refresh: () => void,
   lastError: lastErrorType,
 }) => {
@@ -36,15 +65,16 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
   items.push({key: "body", type: "body"});
   items.push({key: "separator", type: "separator"});
 
-  for (const id of page.documents) {
-    items.push({key: "document:" + id, type: "document", id: id});
-  }
+  // for (const id of page.documents) {
+  //   items.push({key: "document:" + id, type: "document", id: id});
+  // }
 
   return <View style={{flex: 1}}>
     <FlatList
       style={{flex: 1}} // TODO: is this necessary?
       data={items}
       renderItem={({item}) => {
+        console.log("CAMrenderItem", item);
         switch (item.type) {
           case "title":
             return <Text style={styles.title}>{page.title}</Text>;
@@ -55,7 +85,8 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
               ? <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>
               : null;
           case "separator":
-            return <View style={{height: 10}}/>;
+            // return <View style={{height: 10}}/>;
+            return <Text>{JSON.stringify(page)}</Text>;
           case "document":
             return <DocumentListItemContainer id={item.id}/>;
         }

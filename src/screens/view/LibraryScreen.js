@@ -5,27 +5,30 @@ import {connect} from 'react-redux';
 import {detailLevels, getObject, OBJECT_MODE_PUBLIC} from "../../model";
 import {FontAwesome} from '@expo/vector-icons';
 import NavTitleContainer from "../../containers/NavTitleContainer";
-import ArbitraryLibrary from "./ArbitraryLibrary";
+import Library from "./Library";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
-import type {PublicArbitraryLibraryPageObject} from "../../model/page";
+import type {PublicLibraryPageObject} from "../../model/page";
 import type {lastErrorType} from "../../reducers/lastError";
+import type {GlobalObject} from "../../model/global";
+import {GLOBAL_OBJECT_ID} from "../../model/global";
 
 type Props = {
   online: boolean,
   loading: boolean,
-  page: PublicArbitraryLibraryPageObject,
+  page: PublicLibraryPageObject,
   loaded: boolean,
+  global: GlobalObject,
   navigation: navigation,
   refresh: () => void,
   lastError: lastErrorType,
 }
 
 const mapStateToProps = (state, props) => {
-  const page: PublicArbitraryLibraryPageObject = getObject(state, 'page', props.navigation.getParam('pageId'));
+  const page: PublicLibraryPageObject = getObject(state, 'page', props.navigation.getParam('pageId'));
 
   return {
     online: state.flags.online,
@@ -33,6 +36,7 @@ const mapStateToProps = (state, props) => {
     lastError: state.lastError,
     page,
     loaded: detailLevels[page._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
+    global: getObject(state, 'global', GLOBAL_OBJECT_ID),
   };
 };
 
@@ -43,7 +47,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   },
 });
 
-class ArbitraryLibraryScreen extends React.Component<Props, State> {
+class LibraryScreen extends React.Component<Props, State> {
   static navigationOptions = {
     headerTitle: <NavTitleContainer title="Library"/>,
   };
@@ -65,8 +69,8 @@ class ArbitraryLibraryScreen extends React.Component<Props, State> {
   }
 
   render() {
-    return <ArbitraryLibrary {...this.props}/>;
+    return <Library {...this.props}/>;
   }
 }
 
-export default ArbitraryLibraryScreen = connect(mapStateToProps, mapDispatchToProps)(ArbitraryLibraryScreen);
+export default LibraryScreen = connect(mapStateToProps, mapDispatchToProps)(LibraryScreen);
