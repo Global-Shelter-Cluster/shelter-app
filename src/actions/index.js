@@ -76,6 +76,17 @@ export const loadObject = (type: ObjectType, id: number, recursive: boolean, for
   dispatch(changeFlag('loading', false));
 };
 
+// // If this fails, we'll run "setLastError" using the first item from "requests"
+// export const loadObjects = (requests: Array<ObjectRequest>, recursive: boolean, forceRemoteLoad: boolean) => async dispatch => {
+//   dispatch(changeFlag('loading', true));
+//   try {
+//     await persist.loadObjects(requests, recursive, forceRemoteLoad);
+//   } catch (e) {
+//     dispatch(setLastError('object-load', {type: requests[0].type, id: requests[0].id}));
+//   }
+//   dispatch(changeFlag('loading', false));
+// };
+
 export const loadCurrentUser = (recursive: boolean, forceRemoteLoad: boolean) => async (dispatch, getState) => {
   const id = getState().currentUser;
   if (!id)
