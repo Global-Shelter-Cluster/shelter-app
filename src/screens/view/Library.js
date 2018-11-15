@@ -83,7 +83,10 @@ export default ({online, page, loaded, global, refresh, loading, lastError}: {
         header={<View style={{marginBottom: 10}}>
           <Text style={styles.title}>{page.title}</Text>
           <ContextualNavigation object={page}/>
-          <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>
+          {page.body !== undefined && page.body
+            ? <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>
+            : null
+          }
         </View>}
       />
     </InstantSearch>
