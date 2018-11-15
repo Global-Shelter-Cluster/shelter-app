@@ -18,6 +18,7 @@ import type {navigation} from "../../nav";
 import persist from "../../persist";
 import {contactFromAlgoliaResult} from "../../model/contact";
 import {getPageEnterFromSearchResult} from "../../model/page";
+import {generateIndexName} from "../../model/search";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   const onEndReached = function () {
@@ -139,7 +140,7 @@ export default ({online, loading, tab, global, changeTab, navigation}: {
   if (!global.algolia_prefix)
     return null;
 
-  const indexName = global.algolia_prefix + tab.charAt(0).toUpperCase() + tab.substr(1);
+  const indexName = generateIndexName(global, tab);
 
   return <View style={{flex: 1}}>
     <Tabs
