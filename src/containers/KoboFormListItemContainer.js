@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import ReportListItem from '../components/ReportListItem';
+import KoboFormListItem from '../components/KoboFormListItem';
 import {getObject} from "../model";
 import {withNavigation} from 'react-navigation';
 import {convertFiles} from "../model/file";
@@ -18,4 +18,4 @@ const mapStateToProps = (state, props) => {
   };
 };
 
-export default withNavigation(connect(mapStateToProps)(ReportListItem));
+export default withNavigation(connect(mapStateToProps)(KoboFormListItem));

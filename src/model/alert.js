@@ -21,6 +21,7 @@ export type AlertObject = {
   event?: number,
   factsheet?: number,
   kobo_form?: number,
+  webform?: number,
   group?: number,
   url?: string,
 }
@@ -37,6 +38,7 @@ export default class Alert {
       'event',
       'factsheet',
       'kobo_form',
+      'webform',
       'group',
     ].map(key => {
       if (alert[key] !== undefined)

@@ -16,6 +16,8 @@ import type {EventObject} from "./event";
 import Event from "./event";
 import type {KoboFormObject} from "./kobo_form";
 import KoboForm from "./kobo_form";
+import type {WebformObject} from "./webform";
+import Webform from "./webform";
 import type {AlertObject} from "./alert";
 import Alert from "./alert";
 import type {ContactObject} from "./contact";
@@ -31,6 +33,7 @@ export type ObjectType =
   | "event"
   | "factsheet"
   | "kobo_form"
+  | "webform"
   | "alert"
   | "contact"
   | "page";
@@ -43,6 +46,7 @@ export type Objects = {
   document?: { [id: string]: DocumentObject },
   event?: { [id: string]: EventObject },
   kobo_form?: { [id: string]: KoboFormObject },
+  webform?: { [id: string]: WebformObject },
   alert?: { [id: string]: AlertObject },
   contact?: { [id: string]: ContactObject },
   page?: { [id: string]: PageObject },
@@ -56,6 +60,7 @@ export type ObjectIds = {
   document?: Array<number>,
   event?: Array<number>,
   kobo_form?: Array<number>,
+  webform?: Array<number>,
   alert?: Array<number>,
   contact?: Array<number>,
   page?: Array<number>,
@@ -71,6 +76,7 @@ export const expirationLimitsByObjectType = {
   "document": hour * 24,
   "event": hour * 24,
   "kobo_form": hour * 6,
+  "webform": hour * 6,
   "alert": hour * 24,
   "contact": hour * 24,
   "page": hour * 24,
@@ -84,6 +90,7 @@ export type Object =
   | DocumentObject
   | EventObject
   | KoboFormObject
+  | WebformObject
   | AlertObject
   | ContactObject
   | PageObject;
@@ -103,6 +110,7 @@ export const initialObjectsState: Objects = {
   document: {},
   event: {},
   kobo_form: {},
+  webform: {},
   alert: {},
   contact: {},
   page: {},
@@ -116,6 +124,7 @@ export const initialObjectIdsState: ObjectIds = {
   document: [],
   event: [],
   kobo_form: [],
+  webform: [],
   alert: [],
   contact: [],
   page: [],
@@ -129,6 +138,7 @@ const mapTypesToClasses = {
   'document': Document,
   'event': Event,
   'kobo_form': KoboForm,
+  'webform': Webform,
   'alert': Alert,
   'contact': Contact,
   'page': Page,

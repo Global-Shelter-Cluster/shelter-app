@@ -3,11 +3,13 @@
 import React from 'react';
 import {FlatList, RefreshControl, View} from 'react-native';
 import type {PrivateGroupObject} from "../../model/group";
-import ReportListItemContainer from "../../containers/ReportListItemContainer";
+import KoboFormListItemContainer from "../../containers/KoboFormListItemContainer";
+import WebformListItemContainer from "../../containers/WebformListItemContainer";
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 import {hairlineWidth} from "../../util";
 import vars from "../../vars";
+import type {ObjectRequest} from "../../persist";
 
 export default ({loading, group, refresh}: {
   loading: boolean,
@@ -19,9 +21,13 @@ export default ({loading, group, refresh}: {
   };
   const tab = 'all';
 
-  const ids = group.kobo_forms ? group.kobo_forms.filter(item => !!item) : [];
-  if (ids.length > 0)
-    ids.push(-1);
+  const objects: Array<ObjectRequest> = [
+    ...(group.webforms ? group.webforms.filter(item => !!item).map(id => ({type: 'webform', id})) : []),
+    ...(group.kobo_forms ? group.kobo_forms.filter(item => !!item).map(id => ({type: 'kobo_form', id})) : []),
+  ];
+
+  if (objects.length > 0)
+    objects.push(-1);
 
   return <View style={{flex: 1}}>
     <Tabs
@@ -30,8 +36,8 @@ export default ({loading, group, refresh}: {
       tabs={tabs}
     />
     {group.kobo_forms !== undefined && <FlatList
-      data={ids}
-      keyExtractor={item => item ? '' + item : 'end'}
+      data={objects}
+      keyExtractor={item => item !== -1 ? item.type + ':' + item.id : 'end'}
       renderItem={({item}) => {
         if (item === -1)
           return <View style={{
@@ -39,7 +45,14 @@ export default ({loading, group, refresh}: {
             borderTopWidth: hairlineWidth,
           }}/>;
 
-        return <ReportListItemContainer id={item}/>;
+        switch (item.type) {
+          case 'kobo_form':
+            return <KoboFormListItemContainer id={item.id}/>;
+          case 'webform':
+            return <WebformListItemContainer id={item.id}/>;
+          default:
+            console.error('Unrecognized item', item);
+        }
       }}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     />}

@@ -1,7 +1,6 @@
 // @flow
 
 import type {ObjectRequest} from "../persist";
-import {createSelector} from 'reselect';
 
 export type KoboFormObject = {
   _last_read?: number,
