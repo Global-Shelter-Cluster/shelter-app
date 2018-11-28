@@ -45,14 +45,20 @@ const mapStateToProps = (state, {group, navigation}) => {
       icon: 'users',
     });
 
-  if (group.kobo_forms)
+  if (group.kobo_forms || group.webforms) {
+    let count = 0;
+    if (group.kobo_forms)
+      count += group.kobo_forms.length;
+    if (group.webforms)
+      count += group.webforms.length;
+
     blocks.push({
       title: 'Assessment\nforms',
-      badge: group.kobo_forms.length,
+      badge: count,
       icon: 'paper-plane-o',
       action: () => navigation.push('ReportList', {groupId: group.id}),
     });
-  else if (isDashboardBlockVisibleByDefault(group, 'assessment_forms'))
+  } else if (isDashboardBlockVisibleByDefault(group, 'assessment_forms'))
     blocks.push({
       title: 'Assessment\nforms',
       icon: 'paper-plane-o',

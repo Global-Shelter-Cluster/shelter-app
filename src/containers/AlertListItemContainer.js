@@ -32,6 +32,9 @@ const mapStateToProps = (state, props) => {
   } else if (alert.kobo_form !== undefined) {
     ret.linkType = 'kobo_form';
     ret.enter = () => props.navigation.push('KoboForm', {koboFormId: alert.kobo_form});
+  } else if (alert.webform !== undefined) {
+    ret.linkType = 'webform';
+    ret.enter = () => props.navigation.push('Webform', {webformId: alert.webform});
   } else if (alert.group !== undefined) {
     ret.linkType = 'group';
     ret.enter = () => props.navigation.push('Group', {groupId: alert.group});

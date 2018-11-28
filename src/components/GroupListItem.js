@@ -59,8 +59,13 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
       if (unseenAlerts && unseenAlerts > 0)
         badges.push(<Badge key="unseenAlerts" icon="bell-o" value={unseenAlerts} color="white"/>);
 
+      let assessment_forms = 0;
       if (group.kobo_forms !== undefined && group.kobo_forms.length > 0)
-        badges.push(<Badge key="koboForms" icon="paper-plane-o" value={group.kobo_forms.length} color="white"/>);
+        assessment_forms += group.kobo_forms.length;
+      if (group.webforms !== undefined && group.webforms.length > 0)
+        assessment_forms += group.webforms.length;
+      if (assessment_forms > 0)
+        badges.push(<Badge key="assessmentForms" icon="paper-plane-o" value={assessment_forms} color="white"/>);
 
       if (recentDocs && recentDocs > 0)
         badges.push(<Badge key="recentDocs" icon="file-o" value={recentDocs} color="white"/>);
