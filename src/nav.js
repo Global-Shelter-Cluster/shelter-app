@@ -14,6 +14,7 @@ import {FontAwesome} from '@expo/vector-icons';
 import vars from "./vars";
 import ResourcesGroupScreen from "./screens/group/ResourcesGroupScreen";
 import ReportListScreen from "./screens/reporting/ReportListScreen";
+import WebformScreen from "./screens/reporting/WebformScreen";
 import DocumentListScreen from "./screens/group/DocumentListScreen";
 import EventListScreen from "./screens/group/EventListScreen";
 import DocumentScreen from "./screens/view/DocumentScreen";
@@ -53,6 +54,7 @@ const OperationsStack = createStackNavigator({
   User: UserScreen,
   ReportList: ReportListScreen,
   Reporting: WebsiteViewerScreen,
+  Webform: WebformScreen,
 });
 // const ChatStack = createSwitchNavigator({
 //   Chat: TempBlankScreen,
