@@ -13,8 +13,7 @@ const mapStateToProps = (state, props) => {
 
   return {
     webform,
-    enter: () => console.log('enter', webform),
-    // enter: () => props.navigation.push('Reporting', {title: kobo_form.title, url: kobo_form.kobo_form_url}),
+    enter: () => props.navigation.push('Webform', {webformId: webform.id}),
   };
 };
 
