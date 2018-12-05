@@ -105,7 +105,7 @@ class Remote {
     } catch (e) {
       //console.error('Axios error', e);
       if (e.response && e.response.data && typeof e.response.data[0] === 'string')
-        // We have an error message, show it instead of the default Axios message
+      // We have an error message, show it instead of the default Axios message
         throw new Error(e.response.data[0]);
       throw e;
     }
@@ -113,7 +113,7 @@ class Remote {
 
   async login(username: string, password: string, pushNotificationToken: string | null): Promise<Objects> {
     this.auth = null;
-    
+
     const data = await this._post('/get-objects', {
       'objects': [{type: 'global', id: 1}],
       'credentials': {
@@ -165,6 +165,14 @@ class Remote {
   async unfollowGroup(id: number): Promise<Objects> {
     const data = await this._post('/follow/' + id, {action: 'unfollow'});
     return data.objects !== undefined ? data.objects : {};
+  }
+
+  async submitAssessmentForm(type: string, id: number, values: {}): Promise<> {
+    const data = await this._post('/submit-assessment/' + type + '/' + id, {assessment: values});
+    if (data.assessment_errors !== undefined && data.assessment_errors)
+      throw new Error(data.assessment_errors);
+
+    return null;
   }
 }
 

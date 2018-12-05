@@ -6,7 +6,7 @@ import type {WebformObject} from "../../model/webform";
 import {getWebformPageValues, setWebformPageValues} from "../../model/webform";
 import {getObject} from "../../model";
 import Webform from './Webform';
-import {clearLastError, loadObject} from "../../actions";
+import {clearLastError, loadObject, submitWebform} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
@@ -19,10 +19,12 @@ import clone from "clone";
 type Props = {
   online: boolean,
   loading: boolean,
+  submitting: boolean,
   webform: WebformObject,
   currentPage: number,
   navigation: navigation,
   refresh: () => void,
+  submit: (values: {}) => void,
   lastError: lastErrorType,
 }
 
@@ -30,7 +32,15 @@ type State = {
   page: number,
   allFormValues: Array<{}>, // keyed by page, e.g. [{firstName:"John",lastName:"Smith"}, {favoriteColor:"red"}]
   pagesVisited: { [string]: true }, // e.g. {0: true, 1: true} (we've visited the first 2 pages)
+  submitted: boolean,
 }
+
+const initialState = {
+  page: 0,
+  allFormValues: [],
+  pagesVisited: {0: true},
+  submitted: false,
+};
 
 const mapStateToProps = (state, props) => {
   const webform: WebformObject = convertFiles(state, 'webform', getObject(state, 'webform', props.navigation.getParam('webformId')));
@@ -38,6 +48,7 @@ const mapStateToProps = (state, props) => {
   return {
     online: state.flags.online,
     loading: state.flags.loading,
+    submitting: state.flags.submitting,
     lastError: state.lastError,
     webform: webform,
   };
@@ -48,6 +59,9 @@ const mapDispatchToProps = (dispatch, props) => ({
     dispatch(clearLastError());
     dispatch(loadObject('webform', props.navigation.getParam('webformId'), false, true));
   },
+  submit: (values: {}) => {
+    dispatch(submitWebform(props.navigation.getParam('webformId'), values));
+  }
 });
 
 class WebformScreen extends React.Component<Props, State> {
@@ -57,16 +71,12 @@ class WebformScreen extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = {
-      page: 0,
-      allFormValues: [],
-      pagesVisited: {0: true},
-    };
+    this.state = initialState;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !propEqual(this.state, nextState, ['page'])
-      || !propEqual(this.props, nextProps, ['online', 'loading'], ['webform', 'lastError']);
+    return !propEqual(this.state, nextState, ['page', 'submitted'])
+      || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting'], ['webform', 'lastError']);
   }
 
   componentDidMount() {
@@ -78,18 +88,6 @@ class WebformScreen extends React.Component<Props, State> {
 
   render() {
     const isLastPage = this.state.page === (this.props.webform.form.length - 1);
-
-    const onSubmit = isLastPage
-      ? () => {
-        const mergedValues = this.state.allFormValues.reduce((prev, current) => Object.assign(prev, current), {})
-        console.log("TODO: submit", mergedValues); // TODO
-      }
-      : () => {
-        const page = this.state.page + 1;
-        const pagesVisited = clone(this.state.pagesVisited);
-        pagesVisited[page] = true;
-        this.setState({page, pagesVisited});
-      };
 
     return <Webform
       {...this.props}
@@ -103,7 +101,23 @@ class WebformScreen extends React.Component<Props, State> {
         this.setState({page, pagesVisited});
       }}
       onChange={formValues => this.setState({allFormValues: setWebformPageValues(this.state.allFormValues, this.state.page, formValues)})}
-      onSubmit={onSubmit}
+      onSubmit={isLastPage
+        ? () => {
+          const mergedValues = this.state.allFormValues.reduce((prev, current) => Object.assign(prev, current), {})
+          if (!this.props.submitting) {
+            this.props.submit(mergedValues);
+            this.setState({submitted: true});
+          }
+        }
+        : () => {
+          const page = this.state.page + 1;
+          const pagesVisited = clone(this.state.pagesVisited);
+          pagesVisited[page] = true;
+          this.setState({page, pagesVisited});
+        }}
+      submitted={this.state.submitted}
+      resetSubmitted={() => this.setState({submitted: false})}
+      resetForm={() => this.setState(initialState)}
     />;
   }
 }
