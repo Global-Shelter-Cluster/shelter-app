@@ -1,14 +1,14 @@
 // @flow
 
 import React from "react";
-import {ImageBackground, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import Button from "./Button";
 
-const image = require("../../assets/logo-dim.png");
+const image = require("../../assets/logo.png");
 
-export default class Error extends React.Component {
+export default class Notice extends React.Component {
   render() {
     const secondary = this.props.secondaryButtonLabel !== undefined
       ? <Button
@@ -18,9 +18,7 @@ export default class Error extends React.Component {
       : null;
 
     return <View style={styles.container}>
-      <ImageBackground style={styles.image} source={image}>
-        <FontAwesome name={"ban"} size={80} color={vars.ACCENT_RED}/>
-      </ImageBackground>
+      <Image style={styles.image} source={image}/>
       <Text style={styles.label}>{this.props.description}</Text>
       {this.props.buttonLabel !== undefined && this.props.buttonLabel &&
       <Button

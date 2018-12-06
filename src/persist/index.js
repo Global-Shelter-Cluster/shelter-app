@@ -496,6 +496,20 @@ class Persist {
     await Storage.setItem(Persist.cacheKey('seen'), JSON.stringify(seen));
   }
 
+  async submitAssessmentForm(type: "webform", id: number, values: {}) {
+    const isOnline = this.store.getState().flags.online;
+
+    if (!isOnline) {
+      throw new Error("Offline mode not supported yet"); // TODO
+    }
+
+    // TODO: this call should probably return objects, which should be saved here.
+    // This, in order to see the submissions on the app, and for the ability to
+    // edit your submission (once we support those things).
+
+    await this.remote.submitAssessmentForm(type, id, values);
+  }
+
   /**
    * Deletes objects and files that have no references to them.
    */

@@ -247,3 +247,14 @@ export const setFile = (url: string, filename: string, uses: Array<ObjectRequest
   await dispatch(setFiles(files));
   await persist.saveFiles();
 };
+
+export const submitWebform = (id: number, values: { [string]: string }) => async (dispatch, getState) => {
+  dispatch(clearLastError());
+  dispatch(changeFlag('submitting', true));
+  try {
+    await persist.submitAssessmentForm('webform', id, values);
+  } catch (e) {
+    dispatch(setLastError('webform-submit', {id, message: e.message}));
+  }
+  dispatch(changeFlag('submitting', false));
+};
