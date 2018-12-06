@@ -35,7 +35,7 @@ export default ({loading, group, refresh}: {
       changeTab={() => {}}
       tabs={tabs}
     />
-    {group.kobo_forms !== undefined && <FlatList
+    <FlatList
       data={objects}
       keyExtractor={item => item !== -1 ? item.type + ':' + item.id : 'end'}
       renderItem={({item}) => {
@@ -55,6 +55,6 @@ export default ({loading, group, refresh}: {
         }
       }}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
-    />}
+    />
   </View>;
 }
