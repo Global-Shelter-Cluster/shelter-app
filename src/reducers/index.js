@@ -6,7 +6,7 @@ import objects from './objects';
 import seen from './seen';
 import currentUser from './currentUser';
 import lastError from './lastError';
-import downloadProgress from './downloadProgress';
+import bgProgress from './bgProgress';
 import files from './files';
 
 export default combineReducers({
@@ -15,6 +15,6 @@ export default combineReducers({
   seen,
   currentUser,
   lastError,
-  downloadProgress,
+  bgProgress,
   files,
 });

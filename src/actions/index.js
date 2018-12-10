@@ -200,7 +200,7 @@ export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dis
   const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   let count = 0;
 
-  while (state.downloadProgress.filesLeft.length > 0) {
+  while (state.bgProgress.filesLeft.length > 0) {
     if (count++ % 20 === 0)
       await timeout(100); // a small pause every 20 downloads (let the thread breathe)
 
@@ -209,7 +209,7 @@ export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dis
       state = getState();
     }
 
-    await persist.saveFile(state.downloadProgress.filesLeft[0]);
+    await persist.saveFile(state.bgProgress.filesLeft[0]);
     dispatch(oneFileDownloaded());
     state = getState();
   }

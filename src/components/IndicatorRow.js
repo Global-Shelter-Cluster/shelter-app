@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Button, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import type {downloadProgressType} from "../reducers/downloadProgress";
+import type {bgProgressType} from "../reducers/bgProgress";
 import persist from "../persist";
 import config from "../config";
 import {hairlineWidth} from "../util";
@@ -13,7 +13,7 @@ import Collapsible from "./Collapsible";
 type Props = {
   online: boolean,
   setOnline: (boolean) => {},
-  downloadProgress: downloadProgressType,
+  bgProgress: bgProgressType,
 };
 
 type State = {
@@ -29,11 +29,11 @@ export default class IndicatorRow extends React.Component<Props, State> {
   }
 
   render() {
-    const {online, setOnline, downloadProgress} = this.props;
+    const {online, setOnline, bgProgress} = this.props;
 
-    const downloadIndicator = downloadProgress.downloadingCount > 0
+    const downloadIndicator = bgProgress.downloadingCount > 0
       ? <Text style={{flex: 1}}>
-        Downloading {downloadProgress.downloadingCount - downloadProgress.filesLeft.length + 1} / {downloadProgress.downloadingCount}
+        Downloading {bgProgress.downloadingCount - bgProgress.filesLeft.length + 1} / {bgProgress.downloadingCount}
       </Text>
       : null;
 

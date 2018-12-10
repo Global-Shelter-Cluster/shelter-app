@@ -5,18 +5,18 @@ import type {ObjectFileDescription} from "../persist";
 import clone from "clone";
 import {CLEAR_ALL_DOWNLOADS} from "../actions/index";
 
-export type downloadProgressType = {
+export type bgProgressType = {
   downloadingCount: number,
   filesLeft: Array<ObjectFileDescription>,
 }
 
-const downloadProgress = (state: downloadProgressType = {
+const bgProgress = (state: bgProgressType = {
   downloadingCount: 0,
   filesLeft: [],
 }, action: { type: string, files: Array<ObjectFileDescription> }) => {
   switch (action.type) {
     case ADD_FILES_TO_DOWNLOAD: {
-      const newState: downloadProgressType = clone(state);
+      const newState: bgProgressType = clone(state);
 
       const toAdd = action.files
         .filter(f => newState.filesLeft.filter(f2 => f2.url === f.url).length === 0); // skip if already in the queue
@@ -27,7 +27,7 @@ const downloadProgress = (state: downloadProgressType = {
       return newState;
     }
     case ONE_FILE_DOWNLOADED: {
-      const newState: downloadProgressType = clone(state);
+      const newState: bgProgressType = clone(state);
       newState.filesLeft.shift();
 
       if (newState.filesLeft.length === 0)
@@ -46,4 +46,4 @@ const downloadProgress = (state: downloadProgressType = {
   }
 };
 
-export default downloadProgress;
+export default bgProgress;
