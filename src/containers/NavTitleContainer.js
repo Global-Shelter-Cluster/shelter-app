@@ -6,8 +6,8 @@ import NavTitle from "../components/NavTitle";
 const mapStateToProps = state => ({
   online: state.flags.online,
   downloading: {
-    value: state.bgProgress.downloadingCount - state.bgProgress.filesLeft.length,
-    total: state.bgProgress.downloadingCount,
+    value: state.bgProgress.totalCount - state.bgProgress.filesLeft.length,
+    total: state.bgProgress.totalCount,
   },
 });
 

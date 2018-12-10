@@ -6,12 +6,12 @@ import clone from "clone";
 import {CLEAR_ALL_DOWNLOADS} from "../actions/index";
 
 export type bgProgressType = {
-  downloadingCount: number,
+  totalCount: number,
   filesLeft: Array<ObjectFileDescription>,
 }
 
 const bgProgress = (state: bgProgressType = {
-  downloadingCount: 0,
+  totalCount: 0,
   filesLeft: [],
 }, action: { type: string, files: Array<ObjectFileDescription> }) => {
   switch (action.type) {
@@ -21,7 +21,7 @@ const bgProgress = (state: bgProgressType = {
       const toAdd = action.files
         .filter(f => newState.filesLeft.filter(f2 => f2.url === f.url).length === 0); // skip if already in the queue
 
-      newState.downloadingCount += toAdd.length;
+      newState.totalCount += toAdd.length;
       newState.filesLeft.push(...toAdd);
 
       return newState;
@@ -31,13 +31,13 @@ const bgProgress = (state: bgProgressType = {
       newState.filesLeft.shift();
 
       if (newState.filesLeft.length === 0)
-        newState.downloadingCount = 0;
+        newState.totalCount = 0;
 
       return newState;
     }
     case CLEAR_ALL_DOWNLOADS: {
       return {
-        downloadingCount: 0,
+        totalCount: 0,
         filesLeft: [],
       };
     }
