@@ -22,10 +22,19 @@ type WebformPage = {
   fields: Array<WebformField>,
 }
 
-type WebformField = WebformTextField | WebformMarkupField;
+type WebformField = WebformTextField | WebformMarkupField | WebformTextAreaField;
 
 type WebformTextField = {
   type: "textfield",
+  key: string,
+  name: string,
+  required?: true,
+  default?: string,
+  description?: string,
+}
+
+type WebformTextAreaField = {
+  type: "textarea",
   key: string,
   name: string,
   required?: true,
@@ -69,10 +78,21 @@ export const getWebformPageValues = (webform: WebformObject, allValues: Array<{}
   const ret = {};
 
   for (const field of webform.form[page].fields) {
+    if (field.default !== undefined)
+      ret[field.key] = field.default;
+
     switch (field.type) {
       case "textfield":
-        if (field.default !== undefined)
-          ret[field.key] = field.default;
+        break;
+      case "textarea":
+        break;
+      case "number":
+        break;
+      case "date":
+        break;
+      case "time":
+        break;
+      case "select":
         break;
     }
   }
