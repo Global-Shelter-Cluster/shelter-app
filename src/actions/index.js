@@ -196,23 +196,50 @@ export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dis
   const existingFiles = getState().files;
 
   dispatch(addFilesToDownload(files.filter(i => existingFiles[i.url] === undefined)));
+  dispatch(processBackgroundTasks());
+};
+
+const processBackgroundTasks = () => async (dispatch, getState) => {
   let state = getState();
+  if (state.flags.processing)
+    return; // We're already processing bg tasks
+
+  dispatch(changeFlag('processing', true));
+
   const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   let count = 0;
 
-  while (state.bgProgress.filesLeft.length > 0) {
-    if (count++ % 20 === 0)
-      await timeout(100); // a small pause every 20 downloads (let the thread breathe)
+  mainLoop:
+    while (state.bgProgress.operationsLeft > 0) {
+      while (!state.flags.online) {
+        await timeout(5000);
+        state = getState();
+      }
 
-    while (!state.flags.online) {
-      await timeout(5000);
+      switch (state.bgProgress.currentOperation) {
+        case "assessment":
+          const s = state.bgProgress.assessmentFormSubmissions[0];
+          await persist.submitAssessmentForm(s.type, s.id, s.values);
+          dispatch(oneAssessmentFormSubmitted());
+          break;
+
+        case "file":
+          await persist.saveFile(state.bgProgress.filesLeft[0]);
+          dispatch(oneFileDownloaded());
+          break;
+
+        default:
+          // Something's wrong, let's just stop.
+          break mainLoop;
+      }
+
+      if (count++ % 20 === 0)
+        await timeout(100); // A small pause every 20 items (let the thread breathe)
+
       state = getState();
     }
 
-    await persist.saveFile(state.bgProgress.filesLeft[0]);
-    dispatch(oneFileDownloaded());
-    state = getState();
-  }
+  dispatch(changeFlag('processing', false));
 };
 
 export const ADD_FILES_TO_DOWNLOAD = 'ADD_FILES_TO_DOWNLOAD';
@@ -224,6 +251,17 @@ export const addFilesToDownload = (files: Array<ObjectFileDescription>) => ({
 export const ONE_FILE_DOWNLOADED = 'ONE_FILE_DOWNLOADED';
 export const oneFileDownloaded = () => ({
   type: ONE_FILE_DOWNLOADED,
+});
+
+export const ADD_ASSESSMENT_FORM_SUBMISSION = 'ADD_ASSESSMENT_FORM_SUBMISSION';
+export const addAssessmentFormSubmission = (files: Array<ObjectFileDescription>) => ({
+  type: ADD_FILES_TO_DOWNLOAD,
+  files: files,
+});
+
+export const ONE_ASSESSMENT_FORM_SUBMITTED = 'ONE_ASSESSMENT_FORM_SUBMITTED';
+export const oneAssessmentFormSubmitted = () => ({
+  type: ONE_ASSESSMENT_FORM_SUBMITTED,
 });
 
 export const CLEAR_ALL_DOWNLOADS = 'CLEAR_ALL_DOWNLOADS';

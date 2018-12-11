@@ -31,9 +31,19 @@ export default class IndicatorRow extends React.Component<Props, State> {
   render() {
     const {online, setOnline, bgProgress} = this.props;
 
+    let currentOperationDescription = '';
+    switch (bgProgress.currentOperation) {
+      case "assessment":
+        currentOperationDescription = 'Submitting assessment form';
+        break;
+      case "file":
+        currentOperationDescription = 'Downloading file';
+        break;
+    }
+
     const downloadIndicator = bgProgress.totalCount > 0
       ? <Text style={{flex: 1}}>
-        Downloading {bgProgress.totalCount - bgProgress.filesLeft.length + 1} / {bgProgress.totalCount}
+        {currentOperationDescription} {bgProgress.totalCount - bgProgress.operationsLeft + 1} / {bgProgress.totalCount}
       </Text>
       : null;
 

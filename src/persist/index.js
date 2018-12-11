@@ -53,6 +53,8 @@ export type Files = {
   }
 }
 
+export type AssessmentFormType = "webform";
+
 /**
  * Class Persist.
  *
@@ -496,7 +498,7 @@ class Persist {
     await Storage.setItem(Persist.cacheKey('seen'), JSON.stringify(seen));
   }
 
-  async submitAssessmentForm(type: "webform", id: number, values: {}) {
+  async submitAssessmentForm(type: AssessmentFormType, id: number, values: {}) {
     const isOnline = this.store.getState().flags.online;
 
     if (!isOnline) {

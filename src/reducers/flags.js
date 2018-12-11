@@ -9,6 +9,7 @@ export type flagsType = {
   loading: boolean,
   following: boolean, // or un-following
   submitting: boolean, // e.g. submitting a webform
+  processing: boolean, // processing background tasks (see bgProgress.js)
 }
 
 const initialFlags = {
@@ -18,9 +19,10 @@ const initialFlags = {
   loading: false,
   following: false,
   submitting: false,
+  processing: false,
 };
 
-export type flags = "initializing" | "online" | "loggingIn" | "loading" | "following" | "submitting";
+export type flags = "initializing" | "online" | "loggingIn" | "loading" | "following" | "submitting" | "processing";
 
 const initializing = (state: flagsType = initialFlags, action: { type: string, flag: flags, value: boolean }) => {
   switch (action.type) {
