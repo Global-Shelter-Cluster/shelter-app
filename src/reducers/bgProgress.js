@@ -6,7 +6,7 @@ import {
   ONE_ASSESSMENT_FORM_SUBMITTED,
   ONE_FILE_DOWNLOADED
 } from "../actions";
-import type {AssessmentFormType, ObjectFileDescription} from "../persist";
+import type {AssessmentFormSubmission, AssessmentFormType, ObjectFileDescription} from "../persist";
 import clone from "clone";
 import {CLEAR_ALL_DOWNLOADS} from "../actions/index";
 
@@ -15,7 +15,7 @@ export type bgProgressType = {
   operationsLeft: number,
   currentOperation: null | "file" | "assessment",
   filesLeft: Array<ObjectFileDescription>,
-  assessmentFormSubmissions: Array<{ type: AssessmentFormType, id: number, values: {} }>,
+  assessmentFormSubmissions: Array<AssessmentFormSubmission>,
 }
 
 const getCurrentOperation = (state: bgProgressType): string => {
@@ -36,7 +36,7 @@ const bgProgress = (state: bgProgressType = {
   }, action: {
     type: string,
     files?: Array<ObjectFileDescription>,
-    submission?: { type: AssessmentFormType, id: number, values: {} },
+    submission?: AssessmentFormSubmission,
   }) => {
     switch (action.type) {
       case ADD_FILES_TO_DOWNLOAD: {

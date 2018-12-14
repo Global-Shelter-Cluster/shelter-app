@@ -1,6 +1,7 @@
 // @flow
 
 import {
+  addAssessmentFormSubmission,
   clearAllDownloads,
   downloadFiles,
   replaceAllSeenObjects,
@@ -55,6 +56,12 @@ export type Files = {
 
 export type AssessmentFormType = "webform";
 
+export type AssessmentFormSubmission = {
+  type: AssessmentFormType,
+  id: number,
+  values: {},
+}
+
 /**
  * Class Persist.
  *
@@ -108,6 +115,14 @@ class Persist {
         {type: "global", id: GLOBAL_OBJECT_ID},
         {type: "user", id: id},
       ], true);
+
+      const submissionsString: string | null = await Storage.getItem(Persist.cacheKey('pendingAssessmentFormSubmissions'));
+      if (submissionsString !== null) {
+        const submissions = JSON.parse(submissionsString);
+        for (const submission of submissions)
+          await this.store.dispatch(addAssessmentFormSubmission(submission));
+      }
+
     } catch (e) {
       console.log('Error during initialization', e);
     }
@@ -499,17 +514,18 @@ class Persist {
   }
 
   async submitAssessmentForm(type: AssessmentFormType, id: number, values: {}) {
-    const isOnline = this.store.getState().flags.online;
-
-    if (!isOnline) {
-      throw new Error("Offline mode not supported yet"); // TODO
-    }
+    // Assume we're online, just try to send it (offline logic is handled in the submitAssessmentForm action).
 
     // TODO: this call should probably return objects, which should be saved here.
     // This, in order to see the submissions on the app, and for the ability to
     // edit your submission (once we support those things).
 
     await this.remote.submitAssessmentForm(type, id, values);
+  }
+
+  async savePendingAssessmentFormSubmissions() {
+    const submissions = this.store.getState().bgProgress.assessmentFormSubmissions;
+    await Storage.setItem(Persist.cacheKey('pendingAssessmentFormSubmissions'), JSON.stringify(submissions));
   }
 
   /**

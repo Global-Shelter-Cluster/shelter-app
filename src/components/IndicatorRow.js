@@ -1,7 +1,18 @@
 // @flow
 
 import React from 'react';
-import {Button, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Animated,
+  Button,
+  Easing,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import type {bgProgressType} from "../reducers/bgProgress";
 import persist from "../persist";
 import config from "../config";
@@ -9,6 +20,7 @@ import {hairlineWidth} from "../util";
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import Collapsible from "./Collapsible";
+import SingleLineText from "./SingleLineText";
 
 type Props = {
   online: boolean,
@@ -32,19 +44,44 @@ export default class IndicatorRow extends React.Component<Props, State> {
     const {online, setOnline, bgProgress} = this.props;
 
     let currentOperationDescription = '';
-    switch (bgProgress.currentOperation) {
-      case "assessment":
-        currentOperationDescription = 'Submitting assessment form';
-        break;
-      case "file":
-        currentOperationDescription = 'Downloading file';
-        break;
-    }
+    if (online) {
+      switch (bgProgress.currentOperation) {
+        case "assessment":
+          currentOperationDescription = 'Submitting assessment form';
+          break;
+        case "file":
+          currentOperationDescription = 'Downloading file';
+          break;
+      }
+      currentOperationDescription = (bgProgress.totalCount - bgProgress.operationsLeft + 1) + ' / ' + bgProgress.totalCount + ': ' + currentOperationDescription;
+    } else
+      currentOperationDescription = 'Offline';
 
-    const downloadIndicator = bgProgress.totalCount > 0
-      ? <Text style={{flex: 1}}>
-        {currentOperationDescription} {bgProgress.totalCount - bgProgress.operationsLeft + 1} / {bgProgress.totalCount}
-      </Text>
+    const spinValue = new Animated.Value(0);
+
+    Animated.loop(Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 3000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    })).start();
+
+    const spin = spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg'],
+    });
+
+    const loadingIcon = online && bgProgress.totalCount > 0
+      ? <Animated.View style={{transform: [{rotate: spin}], marginRight: 5}}>
+        <FontAwesome name={"refresh"} size={16} color={vars.SHELTER_GREY}/>
+      </Animated.View>
+      : null;
+
+    const progressIndicator = bgProgress.totalCount > 0
+      ? <View style={{flexDirection: "row", padding: 10, flex: 1}}>
+        {loadingIcon}
+        <SingleLineText>{currentOperationDescription}</SingleLineText>
+      </View>
       : null;
 
     const onlineIndicator = config.debugOnlineIndicator
@@ -56,15 +93,16 @@ export default class IndicatorRow extends React.Component<Props, State> {
 
     return <View style={{
       flexDirection: 'row',
-      justifyContent: "space-evenly",
+      // justifyContent: "space-evenly",
+      justifyContent: "flex-end",
       width: "100%",
-      alignItems: "center",
-      padding: 10,
+      alignItems: "flex-end",
+      // padding: 10,
       borderColor: vars.LIGHT_GREY,
       borderTopWidth: hairlineWidth,
     }}>
-      {downloadIndicator}
-      <TouchableOpacity onPress={() => this.setState({isModalOpen: true})} style={{flex: 1, alignItems: "flex-end"}}>
+      {progressIndicator}
+      <TouchableOpacity onPress={() => this.setState({isModalOpen: true})} style={{padding: 10}}>
         <FontAwesome name="info-circle" size={18} color={vars.SHELTER_GREY}/>
       </TouchableOpacity>
       <Modal
