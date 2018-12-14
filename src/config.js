@@ -32,7 +32,7 @@ const config: { [string]: configType } = {
   dev: {
     baseUrl: 'http://dev.sheltercluster.org',
     axiosExtra: {},
-    deleteFilesOnLogout: false,
+    deleteFilesOnLogout: true,
     reduxLogger: true,
     persistFiles: true,
     debugOnlineIndicator: true,

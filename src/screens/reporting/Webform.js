@@ -1,7 +1,17 @@
 // @flow
 
 import React from 'react';
-import {KeyboardAvoidingView, Image, Linking, RefreshControl, ScrollView, Share, StyleSheet, Text, View} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Image,
+  Linking,
+  RefreshControl,
+  ScrollView,
+  Share,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
 import type {WebformObject} from "../../model/webform";
 import {getWebformPageTabs, getWebformTCombData} from "../../model/webform";
 import ContextualNavigation from "../../components/ContextualNavigation";
@@ -59,11 +69,19 @@ export default class Webform extends React.Component<Props> {
       />;
 
     let errorMessage: null | string = null;
-    if (lastError.type === 'webform-submit' && lastError.data.id === webform.id)
+    if (lastError.type === 'assessment-form-submit' && lastError.data.type === 'webform' && lastError.data.id === webform.id)
       errorMessage = lastError.data.message;
 
     if (submitting)
       return <Loading/>;
+
+    if (submitted && lastError.type === 'assessment-form-queued' && lastError.data.type === 'webform' && lastError.data.id === webform.id) {
+      return <Notice
+        action={resetForm}
+        buttonLabel="Go back to the form"
+        description={"Thank you, your submission\nhas been queued and will be\nsent when you are online."}
+      />;
+    }
 
     if (submitted && errorMessage !== null) {
       return <Error

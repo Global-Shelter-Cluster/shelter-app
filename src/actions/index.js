@@ -1,6 +1,12 @@
 // @flow
 
-import type {Files, ObjectFileDescription, ObjectRequest} from "../persist";
+import type {
+  AssessmentFormSubmission,
+  AssessmentFormType,
+  Files,
+  ObjectFileDescription,
+  ObjectRequest
+} from "../persist";
 import persist from "../persist";
 import {NetInfo} from 'react-native';
 import type {ObjectIds, Objects, ObjectType} from "../model";
@@ -196,34 +202,73 @@ export const downloadFiles = (files: Array<ObjectFileDescription>) => async (dis
   const existingFiles = getState().files;
 
   dispatch(addFilesToDownload(files.filter(i => existingFiles[i.url] === undefined)));
+  dispatch(processBackgroundTasks());
+};
+
+const processBackgroundTasks = () => async (dispatch, getState) => {
   let state = getState();
+  if (state.flags.processing)
+    return; // We're already processing bg tasks
+
+  dispatch(changeFlag('processing', true));
+
   const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   let count = 0;
 
-  while (state.downloadProgress.filesLeft.length > 0) {
-    if (count++ % 20 === 0)
-      await timeout(100); // a small pause every 20 downloads (let the thread breathe)
+  mainLoop:
+    while (state.bgProgress.operationsLeft > 0) {
+      while (!state.flags.online) {
+        await timeout(5000);
+        state = getState();
+      }
 
-    while (!state.flags.online) {
-      await timeout(5000);
+      switch (state.bgProgress.currentOperation) {
+        case "assessment":
+          const s = state.bgProgress.assessmentFormSubmissions[0];
+          await persist.submitAssessmentForm(s.type, s.id, s.values);
+          await dispatch(oneAssessmentFormSubmitted());
+          await persist.savePendingAssessmentFormSubmissions();
+          break;
+
+        case "file":
+          await persist.saveFile(state.bgProgress.filesLeft[0]);
+          dispatch(oneFileDownloaded());
+          break;
+
+        default:
+          // Something's wrong, let's just stop.
+          break mainLoop;
+      }
+
+      if (count++ % 20 === 0)
+        await timeout(100); // A small pause every 20 items (let the thread breathe)
+
       state = getState();
     }
 
-    await persist.saveFile(state.downloadProgress.filesLeft[0]);
-    dispatch(oneFileDownloaded());
-    state = getState();
-  }
+  dispatch(changeFlag('processing', false));
 };
 
 export const ADD_FILES_TO_DOWNLOAD = 'ADD_FILES_TO_DOWNLOAD';
 export const addFilesToDownload = (files: Array<ObjectFileDescription>) => ({
   type: ADD_FILES_TO_DOWNLOAD,
-  files: files,
+  files,
 });
 
 export const ONE_FILE_DOWNLOADED = 'ONE_FILE_DOWNLOADED';
 export const oneFileDownloaded = () => ({
   type: ONE_FILE_DOWNLOADED,
+});
+
+export const ADD_ASSESSMENT_FORM_SUBMISSION = 'ADD_ASSESSMENT_FORM_SUBMISSION';
+export const addAssessmentFormSubmission = (submission: AssessmentFormSubmission) => ({
+  type: ADD_ASSESSMENT_FORM_SUBMISSION,
+  submission,
+});
+
+export const ONE_ASSESSMENT_FORM_SUBMITTED = 'ONE_ASSESSMENT_FORM_SUBMITTED';
+export const oneAssessmentFormSubmitted = () => ({
+  type: ONE_ASSESSMENT_FORM_SUBMITTED,
 });
 
 export const CLEAR_ALL_DOWNLOADS = 'CLEAR_ALL_DOWNLOADS';
@@ -248,13 +293,30 @@ export const setFile = (url: string, filename: string, uses: Array<ObjectRequest
   await persist.saveFiles();
 };
 
-export const submitWebform = (id: number, values: { [string]: string }) => async (dispatch, getState) => {
+export const submitAssessmentForm = (type: AssessmentFormType, id: number, values: { [string]: string }) => async (dispatch, getState) => {
   dispatch(clearLastError());
+
+  // Completely different things for when you're online vs. offline
   dispatch(changeFlag('submitting', true));
-  try {
-    await persist.submitAssessmentForm('webform', id, values);
-  } catch (e) {
-    dispatch(setLastError('webform-submit', {id, message: e.message}));
+  if (getState().flags.online) {
+
+    // Send it right away (or try to, anyway)
+    try {
+      await persist.submitAssessmentForm(type, id, values);
+    } catch (e) {
+      dispatch(setLastError('assessment-form-submit', {type, id, message: e.message}));
+    }
+
+  } else {
+
+    // Let the user know the submission is being queued
+    dispatch(setLastError('assessment-form-queued', {type, id}));
+
+    // Put it in the queue
+    await dispatch(addAssessmentFormSubmission({type, id, values}));
+    await persist.savePendingAssessmentFormSubmissions();
+    dispatch(processBackgroundTasks());
+
   }
   dispatch(changeFlag('submitting', false));
 };

@@ -7,7 +7,7 @@ import IndicatorRow from '../components/IndicatorRow';
 
 const mapStateToProps = state => ({
   online: state.flags.online,
-  downloadProgress: state.downloadProgress,
+  bgProgress: state.bgProgress,
 });
 
 const mapDispatchToProps = dispatch => {

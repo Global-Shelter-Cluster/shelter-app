@@ -6,7 +6,7 @@ import type {WebformObject} from "../../model/webform";
 import {getWebformPageValues, setWebformPageValues} from "../../model/webform";
 import {getObject} from "../../model";
 import Webform from './Webform';
-import {clearLastError, loadObject, submitWebform} from "../../actions";
+import {clearLastError, loadObject, submitAssessmentForm} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
@@ -25,6 +25,7 @@ type Props = {
   navigation: navigation,
   refresh: () => void,
   submit: (values: {}) => void,
+  clearLastError: () => void,
   lastError: lastErrorType,
 }
 
@@ -60,8 +61,11 @@ const mapDispatchToProps = (dispatch, props) => ({
     dispatch(loadObject('webform', props.navigation.getParam('webformId'), false, true));
   },
   submit: (values: {}) => {
-    dispatch(submitWebform(props.navigation.getParam('webformId'), values));
-  }
+    dispatch(submitAssessmentForm('webform', props.navigation.getParam('webformId'), values));
+  },
+  clearLastError: () => {
+    dispatch(clearLastError());
+  },
 });
 
 class WebformScreen extends React.Component<Props, State> {
@@ -117,7 +121,10 @@ class WebformScreen extends React.Component<Props, State> {
         }}
       submitted={this.state.submitted}
       resetSubmitted={() => this.setState({submitted: false})}
-      resetForm={() => this.setState(initialState)}
+      resetForm={() => {
+        this.setState(initialState);
+        this.props.clearLastError();
+      }}
     />;
   }
 }
