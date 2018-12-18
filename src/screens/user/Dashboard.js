@@ -8,13 +8,38 @@ import UserContainer from "../../containers/UserContainer";
 import GroupListItemContainer from '../../containers/GroupListItemContainer';
 import AlertListItemContainer from '../../containers/AlertListItemContainer';
 import Collapsible from "../../components/Collapsible";
+import type {AssessmentFormType} from "../../persist";
+import WebformListItemContainer from "../../containers/WebformListItemContainer";
 
-export default ({loading, user, unseenAlerts, refresh}: {
+export default ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}: {
   loading: boolean,
+  queuedFormSubmissions: Array<{ type: AssessmentFormType, id: number, count: number }>,
   user: PrivateUserObject,
   unseenAlerts: Array<number>,
   refresh: () => void,
 }) => {
+  const totalQueuedSubmissionCount = queuedFormSubmissions.reduce((a, b) => a + b.count, 0);
+
+  const submissions = queuedFormSubmissions.length > 0
+    ? <Collapsible
+      title="Queued assessment form submissions"
+      badge={totalQueuedSubmissionCount}
+      isOpen noHorizontalMargins
+    >
+      {queuedFormSubmissions.map(data => {
+        switch (data.type) {
+          case "webform":
+            return <WebformListItemContainer
+              key={data.type + ':' + data.id} id={data.id}
+              showGroup badge={data.count}/>;
+
+          default:
+            console.error("Assessment form type not implemented: " + data.type);
+        }
+      })}
+    </Collapsible>
+    : null;
+
   const alerts = unseenAlerts.length > 0
     ? <Collapsible title="New alerts" badge={unseenAlerts.length} isOpen noHorizontalMargins>
       {unseenAlerts.map(id => <AlertListItemContainer id={id} key={id} isTeaser/>)}
@@ -37,6 +62,7 @@ export default ({loading, user, unseenAlerts, refresh}: {
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     >
       <UserContainer user={user} showEdit={true}/>
+      {submissions}
       {alerts}
       {groups}
       {user.groups === undefined

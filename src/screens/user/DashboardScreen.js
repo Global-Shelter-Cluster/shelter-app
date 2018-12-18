@@ -12,19 +12,34 @@ import {propEqual} from "../../util";
 import {getUnseenAlertIds} from "../../model/alert";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
+import type {AssessmentFormType} from "../../persist";
 
 type Props = {
   loading: boolean,
+  queuedFormSubmissions: Array<{ type: AssessmentFormType, id: number, count: number }>,
   user: PrivateUserObject,
   unseenAlerts: Array<number>,
   refresh: () => void,
 }
 
-const mapStateToProps = state => ({
-  loading: state.flags.loading,
-  user: getCurrentUser(state),
-  unseenAlerts: getUnseenAlertIds(state),
-});
+const mapStateToProps = state => {
+  const queuedFormSubmissions = {};
+
+  for (const submission of state.bgProgress.assessmentFormSubmissions) {
+    const key = submission.type + ':' + submission.id;
+    if (queuedFormSubmissions[key] === undefined)
+      queuedFormSubmissions[key] = {type: submission.type, id: submission.id, count: 0};
+
+    queuedFormSubmissions[key].count++;
+  }
+
+  return {
+    loading: state.flags.loading,
+    queuedFormSubmissions: Object.values(queuedFormSubmissions),
+    user: getCurrentUser(state),
+    unseenAlerts: getUnseenAlertIds(state),
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   refresh: () => {
@@ -40,7 +55,7 @@ class DashboardScreen extends React.Component<Props> {
   };
 
   shouldComponentUpdate(nextProps) {
-    return !propEqual(this.props, nextProps, ['loading'], ['user', 'unseenAlerts']);
+    return !propEqual(this.props, nextProps, ['loading'], ['queuedFormSubmissions', 'user', 'unseenAlerts']);
   }
 
   componentWillMount() {
