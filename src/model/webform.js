@@ -78,17 +78,26 @@ export const getWebformPageValues = (webform: WebformObject, allValues: Array<{}
   const ret = {};
 
   for (const field of webform.form[page].fields) {
-    if (field.default !== undefined)
-      ret[field.key] = field.default;
-
     switch (field.type) {
       case "textfield":
+        if (field.default !== undefined) {
+          ret[field.key] = field.default;
+        }
         break;
       case "textarea":
+        if (field.default !== undefined) {
+          ret[field.key] = field.default;
+        }
         break;
       case "number":
+        if (field.default !== undefined) {
+          ret[field.key] = field.default;
+        }
         break;
       case "date":
+        if (field.default !== undefined) {
+          ret[field.key] = new Date(field.default);
+        }
         break;
       case "time":
         break;
@@ -146,8 +155,10 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
   let markupElementCounter: number = 0;
 
   for (const field of webform.form[page].fields) {
+
     switch (field.type) {
       case "textfield":
+      case "textarea":
         if (field.required)
           ret.type[field.key] = t.String;
         else
@@ -159,7 +170,86 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
         if (field.description !== undefined)
           ret.fieldOptions[field.key].help = field.description;
+        ret.order.push(field.key);
 
+        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
+        // you to this field.
+        if (lastEditableField !== null) {
+          ret.fieldOptions[lastEditableField].returnKeyType = "next";
+          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
+        }
+        lastEditableField = field.key;
+        break;
+
+      case "time":
+        console.log(field);
+        if (field.required)
+          ret.type[field.key] = t.Date;
+        else
+          ret.type[field.key] = t.maybe(t.Date);
+
+        ret.fieldOptions[field.key] = {
+          label: field.name + (field.required ? ' *' : ''),
+          mode: 'time',
+          config: {
+            format: (date) => new Date(date).toLocaleTimeString(navigator.language, {hour12: false})
+          }
+        };
+
+        if (field.description !== undefined) {
+          ret.fieldOptions[field.key].help = field.description;
+        }
+        ret.order.push(field.key);
+
+        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
+        // you to this field.
+        if (lastEditableField !== null) {
+          ret.fieldOptions[lastEditableField].returnKeyType = "next";
+          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
+        }
+        lastEditableField = field.key;
+        break;
+      case "date":
+        console.log(field);
+        if (field.required)
+          ret.type[field.key] = t.Date;
+        else
+          ret.type[field.key] = t.maybe(t.Date);
+
+        ret.fieldOptions[field.key] = {
+          label: field.name + (field.required ? ' *' : ''),
+          mode: 'date',
+          config: {
+            format: (date) => new Date(date).toDateString()
+          }
+        };
+
+        if (field.description !== undefined) {
+          ret.fieldOptions[field.key].help = field.description;
+        }
+
+        ret.order.push(field.key);
+
+        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
+        // you to this field.
+        if (lastEditableField !== null) {
+          ret.fieldOptions[lastEditableField].returnKeyType = "next";
+          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
+        }
+        lastEditableField = field.key;
+        break;
+      case "number":
+        if (field.required)
+          ret.type[field.key] = t.Number;
+        else
+          ret.type[field.key] = t.maybe(t.Number);
+
+        ret.fieldOptions[field.key] = {
+          label: field.name + (field.required ? ' *' : ''),
+        };
+
+        if (field.description !== undefined)
+          ret.fieldOptions[field.key].help = field.description;
         ret.order.push(field.key);
 
         // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
@@ -198,6 +288,6 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
   }
 
   ret.type = t.struct(ret.type);
-
+  // console.log(ret);
   return ret;
 };
