@@ -100,6 +100,9 @@ export const getWebformPageValues = (webform: WebformObject, allValues: Array<{}
         }
         break;
       case "time":
+        if (field.default !== undefined) {
+          ret[field.key] = new Date(field.default);
+        }
         break;
       case "select":
         break;
@@ -151,9 +154,11 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 } => {
   const ret = {type: {}, fieldOptions: {}, order: []};
 
+  const formatDate = (date) => new Date(date).toDateString();
+  const formatTime = (date) => new Date(date).toLocaleTimeString(navigator.language, {hour12: false});
+
   let lastEditableField: null | string = null;
   let markupElementCounter: number = 0;
-
   for (const field of webform.form[page].fields) {
 
     switch (field.type) {
@@ -192,7 +197,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
           label: field.name + (field.required ? ' *' : ''),
           mode: 'time',
           config: {
-            format: (date) => new Date(date).toLocaleTimeString(navigator.language, {hour12: false})
+            format: formatTime
           }
         };
 
@@ -220,7 +225,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
           label: field.name + (field.required ? ' *' : ''),
           mode: 'date',
           config: {
-            format: (date) => new Date(date).toDateString()
+            format: formatDate
           }
         };
 
