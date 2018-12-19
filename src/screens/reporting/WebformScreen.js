@@ -52,6 +52,7 @@ const mapStateToProps = (state, props) => {
     submitting: state.flags.submitting,
     lastError: state.lastError,
     webform: webform,
+    queued: state.bgProgress.assessmentFormSubmissions.filter(s => s.type === "webform" && s.id === webform.id).length,
   };
 };
 
@@ -80,7 +81,7 @@ class WebformScreen extends React.Component<Props, State> {
 
   shouldComponentUpdate(nextProps, nextState) {
     return !propEqual(this.state, nextState, ['page', 'submitted'])
-      || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting'], ['webform', 'lastError']);
+      || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting', 'queued'], ['webform', 'lastError']);
   }
 
   componentDidMount() {
