@@ -15,7 +15,7 @@ export default ({alert, group, isSeen, markSeen, enter, linkType, isTeaser}: {
   isSeen: boolean,
   markSeen: () => {},
   enter?: () => {},
-  linkType?: 'document' | 'event' | 'factsheet' | 'kobo_form' | 'group' | 'url',
+  linkType?: 'document' | 'event' | 'factsheet' | 'kobo_form' | 'webform' | 'group' | 'url',
   isTeaser: boolean,
 }) => {
   const groupLabel = isTeaser
@@ -37,6 +37,7 @@ export default ({alert, group, isSeen, markSeen, enter, linkType, isTeaser}: {
     'event': "calendar",
     'factsheet': "bar-chart",
     'kobo_form': "paper-plane-o",
+    'webform': "paper-plane-o",
     'group': "users",
     'url': "globe",
   };
