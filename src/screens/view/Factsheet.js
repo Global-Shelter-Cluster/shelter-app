@@ -18,11 +18,11 @@ import ExpandableFitImageContainer from "../../containers/ExpandableFitImageCont
 import FactsheetNavigationContainer from "../../containers/FactsheetNavigationContainer";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
-import Button from "../../components/Button";
 import vars from "../../vars";
 import HTML from 'react-native-render-html';
 import Loading from "../../components/Loading";
 import Collapsible from "../../components/Collapsible";
+import MultiLineButton from "../../components/MultiLineButton";
 
 export default ({online, factsheet, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -33,7 +33,7 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'factsheet', id: factsheet.id}}))
-    return <Button
+    return <MultiLineButton
       onPress={refresh}
       title="Error loading, please check your connection and try again"
     />;

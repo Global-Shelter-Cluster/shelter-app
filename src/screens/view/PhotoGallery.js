@@ -9,13 +9,12 @@ import {
   Share,
   StyleSheet,
   Text,
-  View,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
 import ContextualNavigation from "../../components/ContextualNavigation";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
-import Button from "../../components/Button";
 import vars from "../../vars";
 import HTML from 'react-native-render-html';
 import Loading from "../../components/Loading";
@@ -24,6 +23,7 @@ import type {PublicPhotoGalleryPageObject} from "../../model/page";
 import Collapsible from "../../components/Collapsible";
 import moment from "moment";
 import ImagesWithSlideshow from "../../components/ImagesWithSlideshow";
+import MultiLineButton from "../../components/MultiLineButton";
 
 export default ({online, page, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -34,7 +34,7 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'page', id: page.id}}))
-    return <Button
+    return <MultiLineButton
       onPress={refresh}
       title="Error loading, please check your connection and try again"
     />;

@@ -2,8 +2,8 @@
 
 import React from 'react';
 import {
-  KeyboardAvoidingView,
   Image,
+  KeyboardAvoidingView,
   Linking,
   RefreshControl,
   ScrollView,
@@ -14,10 +14,10 @@ import {
 } from 'react-native';
 import type {WebformObject} from "../../model/webform";
 import {getWebformPageTabs, getWebformTCombData} from "../../model/webform";
-import ContextualNavigation from "../../components/ContextualNavigation";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import Button from "../../components/Button";
+import MultiLineButton from "../../components/MultiLineButton";
 import vars from "../../vars";
 import HTML from 'react-native-render-html';
 import {hairlineWidth, propEqual} from "../../util";
@@ -63,7 +63,7 @@ export default class Webform extends React.Component<Props> {
     const {online, loading, submitting, submitted, page, lastError, webform, refresh, formValues, pagesVisited, onChange, onSubmit, onPageChange, resetForm, resetSubmitted} = this.props;
 
     if (equal(lastError, {type: 'object-load', data: {type: 'webform', id: webform.id}}))
-      return <Button
+      return <MultiLineButton
         onPress={refresh}
         title="Error loading, please check your connection and try again"
       />;
