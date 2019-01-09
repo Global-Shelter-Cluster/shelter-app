@@ -6,6 +6,8 @@ import clone from "clone";
 import t from 'tcomb-form-native';
 import HTML from 'react-native-render-html';
 import type {tabsDefinition} from "../components/Tabs";
+import ImageFieldFactory from "../components/tcomb/ImageFieldFactory";
+import {Permissions} from "expo";
 
 export type WebformObject = {
   _last_read?: number,
@@ -22,7 +24,7 @@ type WebformPage = {
   fields: Array<WebformField>,
 }
 
-type WebformField = WebformTextField | WebformMarkupField | WebformTextAreaField;
+type WebformField = WebformTextField | WebformMarkupField | WebformTextAreaField | WebformFileField;
 
 type WebformTextField = {
   type: "textfield",
@@ -40,6 +42,16 @@ type WebformTextAreaField = {
   required?: true,
   default?: string,
   description?: string,
+}
+
+type WebformFileField = {
+  type: "file",
+  key: string,
+  name: string,
+  required?: true,
+  description?: string,
+  file_type: "image", // TODO: maybe add others, for now "image" means an image widget (camera / camera roll)
+  file_extensions?: Array<string>, // e.g. ["gif", "jpg", "jpeg", "png"]
 }
 
 type WebformMarkupField = {
@@ -61,6 +73,32 @@ export default class Webform {
     return [];
   }
 }
+
+/**
+ * Calculates which permissions are required to fill the given form, based on its fields.
+ * For example, if the form has an image field, we need the "camera" and "camera roll" permissions.
+ *
+ * @returns Array<string>
+ */
+export const getPermissionsForWebform = (webform: WebformObject) => {
+  const list = {}; // e.g. {"camera": true, "calendar": true}
+
+
+  for (const page of webform.form) {
+    for (const field of page.fields) {
+      switch (field.type) {
+        case "file":
+          list[Permissions.CAMERA_ROLL] = true;
+          list[Permissions.CAMERA] = true;
+          break;
+
+        // TODO: geolocation
+      }
+    }
+  }
+
+  return Object.keys(list); // Array of strings
+};
 
 /**
  * Gets values by field key for the given page.
@@ -124,7 +162,7 @@ export const setWebformPageValues = (allValues: Array<{}>, page: number, values:
   return ret;
 };
 
-export const getWebformPageTabs = (webform: WebformObject, page: number, pagesVisited: {[string]: true}): tabsDefinition => {
+export const getWebformPageTabs = (webform: WebformObject, page: number, pagesVisited: { [string]: true }): tabsDefinition => {
   const ret: tabsDefinition = {};
   for (let i: number = 0; i < webform.form.length; i++) {
     const label = webform.form[i].title
@@ -329,6 +367,31 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
           ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
         }
         lastEditableField = field.key;
+        break;
+
+      case "file":
+        switch (field.file_type) {
+          case "image":
+            if (field.required)
+              ret.type[field.key] = t.String;
+            else
+              ret.type[field.key] = t.maybe(t.String);
+
+            ret.fieldOptions[field.key] = {
+              label: field.name + (field.required ? ' *' : ''),
+              factory: ImageFieldFactory,
+              config: {title: field.name + (field.required ? ' *' : '')},
+            };
+
+            if (field.description !== undefined) {
+              ret.fieldOptions[field.key].config.help = field.description;
+            }
+            ret.order.push(field.key);
+            break;
+
+          default:
+            console.warn("Widget not implemented for this file type", field);
+        }
         break;
 
       case "markup": // not very pretty but gets the job done
