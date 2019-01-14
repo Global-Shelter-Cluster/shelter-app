@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import {Animated, Button, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import t from 'tcomb-form-native';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
@@ -47,7 +47,38 @@ class ImageFieldFactory extends Component<Props, State> {
     ]).start();
   };
 
-  _getImageFromStorage = (path: string) => {
+  _resizeImage = (path: string) => {
+    return new Promise(function (resolve, reject) {
+      Image.getSize(path, async (width, height) => {
+        const resizeTo = 1024; // pixels
+        const jpegCompression = .7;
+
+        // Find which resize operation to perform, if any.
+        // For example, for a 6000x1000 image, we should resize to 1024 of width; for a 1000x6000 image, 1024 of height;
+        // and for a 800x600 image we shouldn't resize at all (though we still do the jpeg compression).
+        const tempW = width - Math.min(resizeTo, width);
+        const tempH = height - Math.min(resizeTo, height);
+        const ops = [];
+        if (tempW > tempH && tempW > 0)
+          // resize based on width
+          ops.push({resize: {width: resizeTo}});
+        else if (tempH > 0)
+          // resize based on height
+          ops.push({resize: {height: resizeTo}});
+
+        const {uri} = await Expo.ImageManipulator.manipulate(path, ops, {
+          compress: jpegCompression,
+          format: 'jpeg',
+        });
+
+        resolve(uri);
+      }, () => reject());
+    });
+  };
+
+  _getImageFromStorage = async (path: string) => {
+    path = await this._resizeImage(path);
+
     const next = this.state.image ? null : () => this._startAnimation();
     this.setState({image: path, overflow: 'hidden'}, next);
     super.getLocals().onChange(path);
@@ -86,13 +117,16 @@ class ImageFieldFactory extends Component<Props, State> {
               topContainer,
               locals.hasError ? {borderColor: '#a94442'} : {}
             ]}>
-            <Animated.Image
-              resizeMode="cover"
-              source={{
-                uri: this.state.image
-              }}
-              style={[styles.image, {height: this.state.height}]}
-            />
+            {this.state.image
+              ? <Animated.Image
+                resizeMode="cover"
+                source={{
+                  uri: this.state.image
+                }}
+                style={[styles.image, {height: this.state.height}]}
+              />
+              : null
+            }
             <View
               style={[
                 {overflow: this.state.overflow},
@@ -108,6 +142,19 @@ class ImageFieldFactory extends Component<Props, State> {
                 {locals.help || locals.config.help}
               </Text>
             ) : null}
+
+            {this.state.image
+              ? <TouchableOpacity
+                style={styles.button}
+                onPress={() => this.setState({
+                  image: undefined,
+                  height: new Animated.Value(0),
+                  overflow: 'visible'
+                })}>
+                <FontAwesome name="times" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
+              </TouchableOpacity>
+              : null
+            }
 
             <TouchableOpacity
               style={styles.button}
