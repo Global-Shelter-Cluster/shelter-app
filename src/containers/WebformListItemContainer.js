@@ -13,7 +13,7 @@ import {getPermissionsForWebform} from "../model/webform";
 const mapStateToProps = (state, props) => {
   const webform: WebformObject = convertFiles(state, 'webform', getObject(state, 'webform', props.id));
 
-  return {
+  const ret = {
     webform,
     enter: async () => {
       const permissions = getPermissionsForWebform(webform);
@@ -29,6 +29,11 @@ const mapStateToProps = (state, props) => {
       props.navigation.push('Webform', {webformId: webform.id});
     },
   };
+
+  if (props.showGroup !== undefined && props.showGroup && webform.groups.length > 0)
+    ret.group = convertFiles(state, 'group', getObject(state, 'group', webform.groups[0]));
+
+  return ret;
 };
 
 export default withNavigation(connect(mapStateToProps)(WebformListItem));

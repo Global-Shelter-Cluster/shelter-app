@@ -42,6 +42,7 @@ type Props = {
   formValues: {},
   pagesVisited: { [string]: true }, // e.g. {0: true, 1: true} (we've visited the first 2 pages)
   lastError: lastErrorType,
+  queued: number, // submissions queued for sending once we go online
 
   // handlers
   onChange: (values: {}) => void,
@@ -54,13 +55,11 @@ type Props = {
 
 export default class Webform extends React.Component<Props> {
   shouldComponentUpdate(nextProps: Props) {
-    // We purposefully leave some props out of this, so for example a change from "online" to
-    // "offline" won't make our form re-render.
-    return !propEqual(this.props, nextProps, ['loading', 'submitting', 'submitted', 'page'], ['webform', 'formValues', 'lastError']);
+    return !propEqual(this.props, nextProps, ['loading', 'submitting', 'submitted', 'page', 'queued', 'online'], ['webform', 'formValues', 'lastError']);
   }
 
   render() {
-    const {online, loading, submitting, submitted, page, lastError, webform, refresh, formValues, pagesVisited, onChange, onSubmit, onPageChange, resetForm, resetSubmitted} = this.props;
+    let {online, loading, submitting, submitted, page, lastError, webform, refresh, formValues, pagesVisited, onChange, onSubmit, onPageChange, resetForm, resetSubmitted, queued} = this.props;
 
     if (equal(lastError, {type: 'object-load', data: {type: 'webform', id: webform.id}}))
       return <MultiLineButton
@@ -124,6 +123,25 @@ export default class Webform extends React.Component<Props> {
       onPress={onSubmitWithValidation}
     />;
 
+    const queuedNotice = queued > 0
+      ? <View style={{paddingHorizontal: 10, justifyContent: "center", height: 50, backgroundColor: vars.ACCENT_YELLOW}}>
+        <Text style={{textAlign: "center"}}>
+          {online
+            ? (
+              queued === 1
+                ? "Sending 1 submission…"
+                : "Sending " + queued + " submissions…"
+            )
+            : (
+              queued === 1
+                ? "1 submission queued\nto be sent when online."
+                : queued + " submissions queued\nto be sent when online."
+            )
+          }
+        </Text>
+      </View>
+      : null;
+
     return <View style={{flex: 1}}>
       <ScrollView
         style={{flex: 1}}
@@ -155,6 +173,7 @@ export default class Webform extends React.Component<Props> {
           {submitButton}
         </View>
       </ScrollView>
+      {queuedNotice}
     </View>;
   }
 }
