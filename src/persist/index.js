@@ -520,7 +520,31 @@ class Persist {
     // This, in order to see the submissions on the app, and for the ability to
     // edit your submission (once we support those things).
 
-    await this.remote.submitAssessmentForm(type, id, values);
+    await this.remote.submitAssessmentForm(type, id, await this.processAssessmentFormFiles(values));
+  }
+
+  async processAssessmentFormFiles(values: {[string]: string}) {
+    return values; // TODO: remove this line
+
+    for (const key in values) {
+      if (!values[key].startsWith("file://"))
+        continue;
+
+      console.log('CAM','Expo.FileSystem.getInfoAsync',values[key]);
+      const info = await Expo.FileSystem.getInfoAsync(values[key]);
+      if (!info.exists || info.isDirectory)
+        continue;
+
+      console.log('CAM','Expo.FileSystem.readAsStringAsync',values[key]);
+      const fileData = await Expo.FileSystem.readAsStringAsync(values[key]);//, {encoding: Expo.FileSystem.EncodingTypes.Base64})
+      console.log("CAM2");
+      console.log("CAM3", fileData);
+      const base64Data = new Buffer(fileData).toString("base64");
+      console.log("CAMb64", key, base64Data);
+      values[key] = base64Data;
+    }
+
+    return values;
   }
 
   async savePendingAssessmentFormSubmissions() {
