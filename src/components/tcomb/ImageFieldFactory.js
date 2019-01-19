@@ -7,8 +7,12 @@
 import React from 'react';
 import {Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import t from 'tcomb-form-native';
+import {FileSystem, ImageManipulator} from 'expo';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
+import persist from "../../persist";
+
+const DIR = 'image-field';
 
 type Props = {
   title: string
@@ -66,22 +70,34 @@ class ImageFieldFactory extends Component<Props, State> {
           // resize based on height
           ops.push({resize: {height: resizeTo}});
 
-        const {uri} = await Expo.ImageManipulator.manipulate(path, ops, {
+        const {uri} = await ImageManipulator.manipulateAsync(path, ops, {
           compress: jpegCompression,
           format: 'jpeg',
         });
 
-        resolve(uri);
+        // Move to a "permanent" location, in case the form submission is sent in the future (e.g. user is offline).
+        const dir = await persist.initArbitraryDirectory(DIR);
+        const filename = uri.match(/\/([^\/]+)$/)[1]; // Gets everything after the last slash character (e.g. "a.jpg" if uri == "/path/to/a.jpg").
+        let newUri = dir + "/" + filename;
+        await FileSystem.moveAsync({
+          from: uri,
+          to: newUri,
+        });
+
+        resolve(newUri);
       }, () => reject());
     });
   };
 
   _getImageFromStorage = async (path: string) => {
-    path = await this._resizeImage(path);
+    const newPath: string = await this._resizeImage(path);
+
+    // We don't need the original file anymore
+    await FileSystem.deleteAsync(path, {idempotent: true});
 
     const next = this.state.image ? null : () => this._startAnimation();
-    this.setState({image: path, overflow: 'hidden'}, next);
-    super.getLocals().onChange(path);
+    this.setState({image: newPath, overflow: 'hidden'}, next);
+    super.getLocals().onChange(newPath);
   };
 
   getTemplate() {

@@ -34,6 +34,8 @@ import {getCurrentUser} from "../model/user";
 import {getPushToken} from "../push.js";
 import type {newAccountValues} from "../screens/auth/Signup";
 
+const DIR_PERSISTED = 'persisted';
+
 export type ObjectRequest = {
   type: ObjectType,
   id: number,
@@ -85,7 +87,7 @@ class Persist {
 
   async init() {
     this.remote = new Remote;
-    await this.initDirectory(FileSystem.documentDirectory + 'persisted');
+    await this.initDirectory(DIR_PERSISTED);
 
     try {
       const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
@@ -129,16 +131,26 @@ class Persist {
   }
 
   async initDirectory(directory: string) {
-    this.directory = directory;
-    const dirInfo: { exists: boolean, isDirectory: boolean } = await FileSystem.getInfoAsync(this.directory);
+    this.directory = await this.initArbitraryDirectory(directory);
+  }
+
+  /**
+   * @param directory string, e.g. "webform"
+   * @returns {Promise<string>} The complete path
+   */
+  async initArbitraryDirectory(directory: string) {
+    directory = FileSystem.documentDirectory + directory;
+    const dirInfo: { exists: boolean, isDirectory: boolean } = await FileSystem.getInfoAsync(directory);
 
     if (!dirInfo.exists)
-      await FileSystem.makeDirectoryAsync(this.directory);
+      await FileSystem.makeDirectoryAsync(directory);
     else if (!dirInfo.isDirectory) {
       // Our directory exists as a file. Delete it and create a directory instead.
-      await FileSystem.deleteAsync(this.directory);
-      await FileSystem.makeDirectoryAsync(this.directory);
+      await FileSystem.deleteAsync(directory);
+      await FileSystem.makeDirectoryAsync(directory);
     }
+
+    return directory;
   }
 
   updateLastRead(objects: Objects) {
@@ -261,7 +273,7 @@ class Persist {
     console.debug('Cleared storage');
     if (force || config.deleteFilesOnLogout) {
       FileSystem.deleteAsync(this.directory, {idempotent: true}).then(
-        () => this.initDirectory(this.directory)
+        () => this.initDirectory(DIR_PERSISTED)
       );
       console.debug('Deleted all files');
     }
@@ -521,30 +533,41 @@ class Persist {
     // edit your submission (once we support those things).
 
     await this.remote.submitAssessmentForm(type, id, await this.processAssessmentFormFiles(values));
+
+    this.deleteAssessmentFormFiles(values);
   }
 
-  async processAssessmentFormFiles(values: {[string]: string}) {
-    return values; // TODO: remove this line
+  async processAssessmentFormFiles(values: { [string]: string }) {
+    const newValues: { [string]: string } = clone(values);
 
+    for (const key in newValues) {
+      if (!newValues[key].startsWith("file://"))
+        continue;
+
+      const info = await FileSystem.getInfoAsync(newValues[key]);
+      if (!info.exists || info.isDirectory)
+        continue;
+
+      const base64Data = await FileSystem.readAsStringAsync(newValues[key], {encoding: FileSystem.EncodingTypes.Base64});
+
+      let mimetype = 'image/jpeg'; // TODO: for now, since we only support images, we assume jpeg
+
+      newValues[key] = 'data:' + mimetype + ';base64,' + base64Data;
+      // newValues[key] = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='; // small red dot png
+    }
+
+    return newValues;
+  }
+
+  async deleteAssessmentFormFiles(values: { [string]: string }) {
     for (const key in values) {
       if (!values[key].startsWith("file://"))
         continue;
 
-      console.log('CAM','Expo.FileSystem.getInfoAsync',values[key]);
-      const info = await Expo.FileSystem.getInfoAsync(values[key]);
-      if (!info.exists || info.isDirectory)
-        continue;
-
-      console.log('CAM','Expo.FileSystem.readAsStringAsync',values[key]);
-      const fileData = await Expo.FileSystem.readAsStringAsync(values[key]);//, {encoding: Expo.FileSystem.EncodingTypes.Base64})
-      console.log("CAM2");
-      console.log("CAM3", fileData);
-      const base64Data = new Buffer(fileData).toString("base64");
-      console.log("CAMb64", key, base64Data);
-      values[key] = base64Data;
+      try {
+        await FileSystem.deleteAsync(values[key], {idempotent: true});
+      } catch (e) {}
     }
-
-    return values;
   }
 
   async savePendingAssessmentFormSubmissions() {
