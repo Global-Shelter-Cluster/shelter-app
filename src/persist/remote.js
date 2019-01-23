@@ -51,7 +51,6 @@ class Remote {
     try {
       // TODO decide if we want to maintain basic auth on dev and exclude service routes.
       let axiosConfigs = {}; // config.axiosExtra;
-
       let shouldSaveAuthTokens = data.credentials !== undefined;
 
       if (this.auth !== null) {
