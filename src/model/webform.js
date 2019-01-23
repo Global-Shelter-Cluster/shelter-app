@@ -8,6 +8,7 @@ import HTML from 'react-native-render-html';
 import type {tabsDefinition} from "../components/Tabs";
 import ImageFieldFactory from "../components/tcomb/ImageFieldFactory";
 import {Permissions} from "expo";
+import Multiselect from "../components/Multiselect";
 
 export type WebformObject = {
   _last_read?: number,
@@ -323,6 +324,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         }
         lastEditableField = field.key;
         break;
+
       case "number":
         if (field.required)
           ret.type[field.key] = t.Number;
@@ -348,11 +350,16 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         break;
 
       case "select":
-        console.log(field);
-        ret.type[field.key] = t.enums(field.options);
+        if (field.required)
+          ret.type[field.key] = t.list(t.String);
+        else
+          ret.type[field.key] = t.maybe(t.list(t.String));
 
         ret.fieldOptions[field.key] = {
           label: field.name + (field.required ? ' *' : ''),
+          single: !(field.multiple),
+          choices: field.options,
+          factory: Multiselect,
         };
 
         if (field.description !== undefined) {
