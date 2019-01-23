@@ -223,7 +223,7 @@ class Persist {
     fileInfo = await FileSystem.getInfoAsync(localUri);
     if (!fileInfo.exists || fileInfo.size === 0)
       return;
-    //console.debug('saveFile(): downloaded file successfully', fileInfo.uri);
+    console.debug('saveFile(): downloaded file successfully', fileInfo.uri);
 
     // 2. Update "files" data from state
     let files: Files = this.store.getState().files;
@@ -493,7 +493,7 @@ class Persist {
         skipLoadingExpiredObjects = true; // Flag to stop from doing this twice
 
         const newObjects = await this.remote.loadObjects(loadImmediately);
-        //console.log('persist::loadObjects', newObjects);
+        console.log('persist::loadObjects', newObjects);
         this.updateLastRead(newObjects);
         await this.dispatchObjects(newObjects);
         this.saveObjects(newObjects);
