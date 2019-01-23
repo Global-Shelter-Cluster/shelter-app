@@ -21,10 +21,10 @@ const config: { [string]: configType } = {
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   local_jm: {
-    baseUrl: 'http://192.168.0.108:32782',
+    baseUrl: 'http://10.36.36.141:32828',
     axiosExtra: {},
     deleteFilesOnLogout: false,
-    reduxLogger: true,
+    reduxLogger: false,
     persistFiles: false,
     debugOnlineIndicator: true,
     googleAnalyticsTrackingId: 'UA-26890288-4',
@@ -63,6 +63,7 @@ config.default = config.prod;
 const channel = config[Expo.Constants.manifest.releaseChannel] !== undefined
   ? Expo.Constants.manifest.releaseChannel
   // : 'local';
+  // : 'dev';
   : 'dev';
   //: 'local_jm';
 

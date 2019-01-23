@@ -7,12 +7,12 @@ import ContextualNavigation from "../../components/ContextualNavigation";
 import EventActionsContainer from "../../containers/EventActionsContainer";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
-import Button from "../../components/Button";
 import vars from "../../vars";
 import HTML from 'react-native-render-html';
 import moment from "moment/moment";
 import Loading from "../../components/Loading";
 import {hairlineWidth} from "../../util";
+import MultiLineButton from "../../components/MultiLineButton";
 
 export default ({online, event, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -23,7 +23,7 @@ export default ({online, event, loaded, refresh, loading, lastError}: {
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'event', id: event.id}}))
-    return <Button
+    return <MultiLineButton
       onPress={refresh}
       title="Error loading, please check your connection and try again"
     />;

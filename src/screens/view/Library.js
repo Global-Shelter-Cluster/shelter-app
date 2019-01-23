@@ -7,7 +7,6 @@ import type {PublicLibraryPageObject} from "../../model/page";
 import HTML from "react-native-render-html";
 import type {lastErrorType} from "../../reducers/lastError";
 import equal from "deep-equal";
-import Button from "../../components/Button";
 import Loading from "../../components/Loading";
 import vars from "../../vars";
 import ContextualNavigation from "../../components/ContextualNavigation";
@@ -16,6 +15,7 @@ import {connectInfiniteHits, connectRefinementList} from "react-instantsearch/co
 import type {GlobalObject} from "../../model/global";
 import {InstantSearch} from "react-instantsearch/native";
 import {generateIndexName} from "../../model/search";
+import MultiLineButton from "../../components/MultiLineButton";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, header, refresh}) => {
   const onEndReached = function () {
@@ -54,7 +54,7 @@ export default ({online, page, loaded, global, refresh, loading, lastError}: {
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'page', id: page.id}}))
-    return <Button
+    return <MultiLineButton
       onPress={refresh}
       title="Error loading, please check your connection and try again"
     />;

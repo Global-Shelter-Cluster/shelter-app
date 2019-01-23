@@ -9,8 +9,8 @@ import vars from "../../vars";
 import {hairlineWidth} from "../../util";
 import {FontAwesome} from '@expo/vector-icons';
 import equal from "deep-equal";
-import Button from "../../components/Button";
 import Loading from "../../components/Loading";
+import MultiLineButton from "../../components/MultiLineButton";
 
 export default ({online, user, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -21,7 +21,7 @@ export default ({online, user, loaded, refresh, loading, lastError}: {
   lastError: lastErrorType,
 }) => {
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'user', id: user.id}}))
-    return <Button
+    return <MultiLineButton
       onPress={refresh}
       title="Error loading, please check your connection and try again"
     />;

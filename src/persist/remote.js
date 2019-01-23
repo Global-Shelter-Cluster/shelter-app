@@ -166,6 +166,9 @@ class Remote {
     return data.objects !== undefined ? data.objects : {};
   }
 
+  /**
+   * Files must be encoded as base64, e.g. "data:image/jpeg;base64,XYZ..."
+   */
   async submitAssessmentForm(type: string, id: number, values: {}): Promise<> {
     const data = await this._post('/submit-assessment/' + type + '/' + id, {assessment: values});
     if (data.assessment_errors !== undefined && data.assessment_errors)
