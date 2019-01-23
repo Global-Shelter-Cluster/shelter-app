@@ -24,14 +24,14 @@ class Remote {
 
   async login(user: string, pass: string): Objects {
     //TODO: fetch from Drupal
-    console.log('REMOTE login()', user, pass);
+    //console.log('REMOTE login()', user, pass);
     return this.loadObjects([]);
   }
 
   async loadObjects(requests: Array<ObjectRequest>): Objects {
     //TODO: fetch from Drupal
     await Remote.temporaryDelayGenerator();
-    console.log('REMOTE loadObjects()', requests);
+    //console.log('REMOTE loadObjects()', requests);
     return {
       user: {
         "733": {
