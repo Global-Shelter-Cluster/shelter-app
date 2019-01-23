@@ -532,16 +532,19 @@ class Persist {
     // This, in order to see the submissions on the app, and for the ability to
     // edit your submission (once we support those things).
 
-    await this.remote.submitAssessmentForm(type, id, await this.processAssessmentFormFiles(values));
+    console.debug("submitAssessmentForm", type, id, values);
+    const processedValues = await this.processAssessmentFormFiles(values);
+    console.debug("submitAssessmentForm: processed values", processedValues);
+    await this.remote.submitAssessmentForm(type, id, processedValues);
 
     this.deleteAssessmentFormFiles(values);
   }
 
-  async processAssessmentFormFiles(values: { [string]: string }) {
-    const newValues: { [string]: string } = clone(values);
+  async processAssessmentFormFiles(values: {}) {
+    const newValues: {} = clone(values);
 
     for (const key in newValues) {
-      if (!newValues[key].startsWith("file://"))
+      if (typeof newValues[key] !== "string" || !newValues[key].startsWith("file://"))
         continue;
 
       const info = await FileSystem.getInfoAsync(newValues[key]);
@@ -559,9 +562,9 @@ class Persist {
     return newValues;
   }
 
-  async deleteAssessmentFormFiles(values: { [string]: string }) {
+  async deleteAssessmentFormFiles(values: {}) {
     for (const key in values) {
-      if (!values[key].startsWith("file://"))
+      if (typeof values[key] !== "string" || !values[key].startsWith("file://"))
         continue;
 
       try {
