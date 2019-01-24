@@ -26,6 +26,7 @@ import Tabs from "../../components/Tabs";
 import Error from "../../components/Error";
 import Loading from "../../components/Loading";
 import Notice from "../../components/Notice";
+import formStyles from "../../styles/formStyles";
 
 const Form = t.form.Form;
 
@@ -164,7 +165,7 @@ export default class Webform extends React.Component<Props> {
             type={tCombData.type}
             options={{
               label: null,
-              stylesheet: formStyles,
+              stylesheet: formStylesheet,
               fields: tCombData.fieldOptions,
               order: tCombData.order,
             }}
@@ -208,8 +209,38 @@ const styles = StyleSheet.create({
   },
 });
 
-const formStyles = {
+const formStylesheet = {
   ...Form.stylesheet,
+  formGroup: {
+    normal: {
+      ...Form.stylesheet.formGroup.normal,
+      ...formStyles.fieldContainer,
+    },
+    error: {
+      ...Form.stylesheet.formGroup.error,
+      ...formStyles.fieldContainer,
+    },
+  },
+  controlLabel: {
+    normal: {
+      ...Form.stylesheet.controlLabel.normal,
+      ...formStyles.name,
+    },
+    error: {
+      ...Form.stylesheet.controlLabel.error,
+      ...formStyles.name,
+    },
+  },
+  helpBlock: {
+    normal: {
+      ...Form.stylesheet.helpBlock.normal,
+      ...formStyles.description,
+    },
+    error: {
+      ...Form.stylesheet.helpBlock.error,
+      ...formStyles.description,
+    },
+  },
   textbox: {
     ...Form.stylesheet.textbox,
     normal: {

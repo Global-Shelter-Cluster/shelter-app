@@ -23,7 +23,7 @@ type State = {
 
 const Component = t.form.Component;
 
-class ImageFieldFactory extends Component<Props, State> {
+class ImageFactory extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -64,10 +64,10 @@ class ImageFieldFactory extends Component<Props, State> {
         const tempH = height - Math.min(resizeTo, height);
         const ops = [];
         if (tempW > tempH && tempW > 0)
-          // resize based on width
+        // resize based on width
           ops.push({resize: {width: resizeTo}});
         else if (tempH > 0)
-          // resize based on height
+        // resize based on height
           ops.push({resize: {height: resizeTo}});
 
         const {uri} = await ImageManipulator.manipulateAsync(path, ops, {
@@ -103,8 +103,6 @@ class ImageFieldFactory extends Component<Props, State> {
   getTemplate() {
     return (locals: Object) => {
       const stylesheet = locals.stylesheet;
-      let controlLabelStyle = stylesheet.controlLabel.normal;
-      let helpBlockStyle = stylesheet.helpBlock.normal;
       let topContainer = stylesheet.imagePicker
         ? stylesheet.imagePicker.topContainer
         : styles.topContainer;
@@ -112,22 +110,18 @@ class ImageFieldFactory extends Component<Props, State> {
         ? stylesheet.imagePicker.container
         : styles.container;
 
-      if (locals.hasError) {
-        controlLabelStyle = stylesheet.controlLabel.error;
-        helpBlockStyle = stylesheet.helpBlock.error;
-      }
-
       return (
         <View>
-          {locals.label ? (
-            <Text
+          {locals.label
+            ? <Text
               style={[
-                controlLabelStyle,
+                locals.hasError ? stylesheet.controlLabel.error : stylesheet.controlLabel.normal,
                 locals.error ? {color: '#a94442'} : {}
               ]}>
               {locals.label}
             </Text>
-          ) : null}
+            : null
+          }
           <View
             style={[
               topContainer,
@@ -154,7 +148,10 @@ class ImageFieldFactory extends Component<Props, State> {
           </View>
           <View style={styles.buttonContainer}>
             {locals.help || locals.config.help ? (
-              <Text style={[helpBlockStyle, {paddingVertical: 10, flex: 1}]}>
+              <Text style={[
+                locals.hasError ? stylesheet.helpBlock.error : stylesheet.helpBlock.normal,
+                {paddingVertical: 10, flex: 1},
+              ]}>
                 {locals.help || locals.config.help}
               </Text>
             ) : null}
@@ -233,4 +230,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ImageFieldFactory;
+export default ImageFactory;

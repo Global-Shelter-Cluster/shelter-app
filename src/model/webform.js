@@ -1,14 +1,15 @@
 // @flow
 
 import React from 'react';
+import {View} from 'react-native';
 import type {ObjectRequest} from "../persist";
 import clone from "clone";
 import t from 'tcomb-form-native';
 import HTML from 'react-native-render-html';
 import type {tabsDefinition} from "../components/Tabs";
-import ImageFieldFactory from "../components/tcomb/ImageFieldFactory";
+import ImageFactory from "../components/tcomb/ImageFactory";
+import MultiselectFactory from "../components/tcomb/MultiselectFactory";
 import {Permissions} from "expo";
-import Multiselect from "../components/Multiselect";
 
 export type WebformObject = {
   _last_read?: number,
@@ -183,7 +184,7 @@ export const getWebformPageTabs = (webform: WebformObject, page: number, pagesVi
   return ret;
 };
 
-const markupTemplate = locals => <HTML html={locals.label}/>;
+const markupTemplate = locals => <View style={{marginBottom: 20}}><HTML html={locals.label}/></View>;
 
 /**
  * Generate the stuff needed for the tcomb-form-native library to render a single form page.
@@ -196,7 +197,11 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
   const ret = {type: {}, fieldOptions: {}, order: []};
 
   const formatDate = (date) => new Date(date).toDateString();
-  const formatTime = (date) => new Date(date).toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit', hour12: false});
+  const formatTime = (date) => new Date(date).toLocaleTimeString(navigator.language, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
 
   let lastEditableField: null | string = null;
   let markupElementCounter: number = 0;
@@ -359,11 +364,12 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
           label: field.name + (field.required ? ' *' : ''),
           single: !(field.multiple),
           choices: field.options,
-          factory: Multiselect,
+          factory: MultiselectFactory,
+          config: {},
         };
 
         if (field.description !== undefined) {
-          ret.fieldOptions[field.key].help = field.description;
+          ret.fieldOptions[field.key].config.help = field.description;
         }
         ret.order.push(field.key);
 
@@ -386,7 +392,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
             ret.fieldOptions[field.key] = {
               label: field.name + (field.required ? ' *' : ''),
-              factory: ImageFieldFactory,
+              factory: ImageFactory,
               config: {title: field.name + (field.required ? ' *' : '')},
             };
 
