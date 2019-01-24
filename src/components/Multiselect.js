@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, Text, TextInput, TouchableWithoutFeedback, UIManager, View} from 'react-native';
-import PropTypes from 'prop-types';
 import reject from 'lodash/reject';
 import get from 'lodash/get';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 
@@ -90,40 +88,6 @@ const styles = {
 };
 
 export default class MultiSelect extends Component {
-  static propTypes = {
-    single: PropTypes.bool,
-    selectedItems: PropTypes.array,
-    items: PropTypes.array.isRequired,
-    uniqueKey: PropTypes.string,
-    tagBorderColor: PropTypes.string,
-    tagTextColor: PropTypes.string,
-    fontFamily: PropTypes.string,
-    tagRemoveIconColor: PropTypes.string,
-    onSelectedItemsChange: PropTypes.func.isRequired,
-    selectedItemFontFamily: PropTypes.string,
-    selectedItemTextColor: PropTypes.string,
-    itemFontFamily: PropTypes.string,
-    itemTextColor: PropTypes.string,
-    itemFontSize: PropTypes.number,
-    selectedItemIconColor: PropTypes.string,
-    searchInputPlaceholderText: PropTypes.string,
-    searchInputStyle: PropTypes.object,
-    selectText: PropTypes.string,
-    altFontFamily: PropTypes.string,
-    hideSubmitButton: PropTypes.bool,
-    autoFocusInput: PropTypes.bool,
-    submitButtonColor: PropTypes.string,
-    submitButtonText: PropTypes.string,
-    textColor: PropTypes.string,
-    fontSize: PropTypes.number,
-    fixedHeight: PropTypes.bool,
-    hideTags: PropTypes.bool,
-    canAddItems: PropTypes.bool,
-    onAddItem: PropTypes.func,
-    onChangeInput: PropTypes.func,
-    displayKey: PropTypes.string
-  };
-
   static defaultProps = {
     single: false,
     selectedItems: [],
@@ -363,12 +327,12 @@ export default class MultiSelect extends Component {
           // maxHeight: 100, // TODO: if there are too many options, limit the height, make it scrollable, and turn on the "search" box
         }}>
           {false && <View style={styles.inputGroup}>
-            <Icon
+            {/*<Icon
               name="magnify"
               size={20}
               color={colorPack.placeholderTextColor}
               style={{marginRight: 10}}
-            />
+            />*/}
             <TextInput
               autoFocus={autoFocusInput}
               onChangeText={this._onChangeInput}
