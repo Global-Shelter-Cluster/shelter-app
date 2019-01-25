@@ -10,6 +10,7 @@ import type {tabsDefinition} from "../components/Tabs";
 import ImageFactory from "../components/tcomb/ImageFactory";
 import MultiselectFactory from "../components/tcomb/MultiselectFactory";
 import {Permissions} from "expo";
+import {textareaStylesheet} from "../styles/formStyles";
 
 export type WebformObject = {
   _last_read?: number,
@@ -245,14 +246,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
           label: field.name + (field.required ? ' *' : ''),
           multiline: true,
           numberOfLines: 5,
-          // @TODO
-          // stylesheet: {
-          //   textbox: {
-          //     normal: {
-          //       height: 100
-          //     }
-          //   }
-          // }
+          stylesheet: textareaStylesheet,
         };
 
         if (field.description !== undefined) {

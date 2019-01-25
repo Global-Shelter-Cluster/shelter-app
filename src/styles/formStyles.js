@@ -2,7 +2,7 @@
 
 import {StyleSheet} from 'react-native';
 import vars from "../vars";
-import {hairlineWidth} from "../util";
+import t from "tcomb-form-native";
 
 const formStyles = StyleSheet.create({
   fieldContainer: {
@@ -18,4 +18,66 @@ const formStyles = StyleSheet.create({
   },
 });
 
-export default formStyles;
+const Form = t.form.Form;
+
+export const formStylesheet = {
+  ...Form.stylesheet,
+  formGroup: {
+    normal: {
+      ...Form.stylesheet.formGroup.normal,
+      ...formStyles.fieldContainer,
+    },
+    error: {
+      ...Form.stylesheet.formGroup.error,
+      ...formStyles.fieldContainer,
+    },
+  },
+  controlLabel: {
+    normal: {
+      ...Form.stylesheet.controlLabel.normal,
+      ...formStyles.name,
+    },
+    error: {
+      ...Form.stylesheet.controlLabel.error,
+      ...formStyles.name,
+    },
+  },
+  helpBlock: {
+    normal: {
+      ...Form.stylesheet.helpBlock.normal,
+      ...formStyles.description,
+    },
+    error: {
+      ...Form.stylesheet.helpBlock.error,
+      ...formStyles.description,
+    },
+  },
+  textbox: {
+    ...Form.stylesheet.textbox,
+    normal: {
+      ...Form.stylesheet.textbox.normal,
+      borderColor: vars.SHELTER_GREY,
+      borderRadius: 2,
+    },
+    error: {
+      ...Form.stylesheet.textbox.error,
+      borderColor: vars.ACCENT_RED,
+      borderRadius: 2,
+    },
+  },
+};
+
+export const textareaStylesheet = {
+  ...formStylesheet,
+  textbox: {
+    ...formStylesheet.textbox,
+    normal: {
+      ...formStylesheet.textbox.normal,
+      height: 180,
+    },
+    error: {
+      ...formStylesheet.textbox.error,
+      height: 180,
+    },
+  },
+};

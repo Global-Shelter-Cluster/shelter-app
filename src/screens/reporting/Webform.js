@@ -26,7 +26,7 @@ import Tabs from "../../components/Tabs";
 import Error from "../../components/Error";
 import Loading from "../../components/Loading";
 import Notice from "../../components/Notice";
-import formStyles from "../../styles/formStyles";
+import {formStylesheet} from "../../styles/formStyles";
 
 const Form = t.form.Form;
 
@@ -125,7 +125,12 @@ export default class Webform extends React.Component<Props> {
     />;
 
     const queuedNotice = queued > 0
-      ? <View style={{paddingHorizontal: 10, justifyContent: "center", height: 50, backgroundColor: vars.ACCENT_YELLOW}}>
+      ? <View style={{
+        paddingHorizontal: 10,
+        justifyContent: "center",
+        height: 50,
+        backgroundColor: vars.ACCENT_YELLOW,
+      }}>
         <Text style={{textAlign: "center"}}>
           {online
             ? (
@@ -208,50 +213,3 @@ const styles = StyleSheet.create({
     color: vars.ACCENT_RED,
   },
 });
-
-const formStylesheet = {
-  ...Form.stylesheet,
-  formGroup: {
-    normal: {
-      ...Form.stylesheet.formGroup.normal,
-      ...formStyles.fieldContainer,
-    },
-    error: {
-      ...Form.stylesheet.formGroup.error,
-      ...formStyles.fieldContainer,
-    },
-  },
-  controlLabel: {
-    normal: {
-      ...Form.stylesheet.controlLabel.normal,
-      ...formStyles.name,
-    },
-    error: {
-      ...Form.stylesheet.controlLabel.error,
-      ...formStyles.name,
-    },
-  },
-  helpBlock: {
-    normal: {
-      ...Form.stylesheet.helpBlock.normal,
-      ...formStyles.description,
-    },
-    error: {
-      ...Form.stylesheet.helpBlock.error,
-      ...formStyles.description,
-    },
-  },
-  textbox: {
-    ...Form.stylesheet.textbox,
-    normal: {
-      ...Form.stylesheet.textbox.normal,
-      borderColor: vars.SHELTER_GREY,
-      borderRadius: 2,
-    },
-    error: {
-      ...Form.stylesheet.textbox.error,
-      borderColor: vars.ACCENT_RED,
-      borderRadius: 2,
-    },
-  },
-};
