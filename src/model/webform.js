@@ -203,7 +203,32 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
     hour12: false
   });
 
-  let lastEditableField: null | string = null;
+  let lastKeyboardField: null | string = null;
+  let lastField: null | string = null;
+
+  // Good UX: this function helps connect the previous field's "enter key" to the given field so it moves focus automatically.
+  const connectKeyboardNextKey = (current) => {
+    const k = lastKeyboardField;
+    lastKeyboardField = current;
+
+    if (k === null)
+      return; // There is no previous field, nothing to do.
+
+    if (k !== lastField)
+      return; // The last field isn't a keyboard field, so don't connect them.
+
+    if (
+      ret.fieldOptions[k] !== undefined
+      && ret.fieldOptions[k].text !== undefined
+      && ret.fieldOptions[k].text.type === 'textarea'
+    )
+      return; // Previous field is "textarea" so it needs its enter key to do normal newlines.
+
+    // All good, let's make the connection.
+    ret.fieldOptions[k].returnKeyType = "next";
+    ret.fieldOptions[k].onSubmitEditing = setFocus(current);
+  };
+
   let markupElementCounter: number = 0;
   for (const field of webform.form[page].fields) {
     console.log(field);
@@ -239,13 +264,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
         ret.order.push(field.key);
 
-        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
-        // you to this field.
-        if (lastEditableField !== null) {
-          ret.fieldOptions[lastEditableField].returnKeyType = "next";
-          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
-        }
-        lastEditableField = field.key;
+        connectKeyboardNextKey(field.key);
+        lastField = field.key;
         break;
 
       case "textfield":
@@ -264,13 +284,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         }
         ret.order.push(field.key);
 
-        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
-        // you to this field.
-        if (lastEditableField !== null) {
-          ret.fieldOptions[lastEditableField].returnKeyType = "next";
-          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
-        }
-        lastEditableField = field.key;
+        connectKeyboardNextKey(field.key);
+        lastField = field.key;
         break;
 
       case "time":
@@ -292,13 +307,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         }
         ret.order.push(field.key);
 
-        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
-        // you to this field.
-        if (lastEditableField !== null) {
-          ret.fieldOptions[lastEditableField].returnKeyType = "next";
-          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
-        }
-        lastEditableField = field.key;
+        lastField = field.key;
         break;
 
       case "date":
@@ -321,13 +330,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
         ret.order.push(field.key);
 
-        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
-        // you to this field.
-        if (lastEditableField !== null) {
-          ret.fieldOptions[lastEditableField].returnKeyType = "next";
-          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
-        }
-        lastEditableField = field.key;
+        lastField = field.key;
         break;
 
       case "number":
@@ -345,13 +348,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         }
         ret.order.push(field.key);
 
-        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
-        // you to this field.
-        if (lastEditableField !== null) {
-          ret.fieldOptions[lastEditableField].returnKeyType = "next";
-          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
-        }
-        lastEditableField = field.key;
+        connectKeyboardNextKey(field.key);
+        lastField = field.key;
         break;
 
       case "select":
@@ -373,13 +371,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         }
         ret.order.push(field.key);
 
-        // Good UX: on the last editable field, make the keyboard have a "next" button, which moves
-        // you to this field.
-        if (lastEditableField !== null) {
-          ret.fieldOptions[lastEditableField].returnKeyType = "next";
-          ret.fieldOptions[lastEditableField].onSubmitEditing = setFocus(field.key);
-        }
-        lastEditableField = field.key;
+        connectKeyboardNextKey(field.key);
+        lastField = field.key;
         break;
 
       case "file":
@@ -400,6 +393,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
               ret.fieldOptions[field.key].config.help = field.description;
             }
             ret.order.push(field.key);
+
+            lastField = field.key;
             break;
 
           default:
@@ -420,17 +415,20 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
     }
   }
 
-  if (lastEditableField !== null) {
+  if (
+    lastKeyboardField !== null
+    && lastKeyboardField === lastField // Only do this if the last field has a keyboard
+  ) {
     const isLastPage = page === (webform.form.length - 1);
 
     if (isLastPage) {
-      ret.fieldOptions[lastEditableField].returnKeyType = "send";
+      ret.fieldOptions[lastKeyboardField].returnKeyType = "send";
       // TODO
     } else {
-      ret.fieldOptions[lastEditableField].returnKeyType = "next";
+      ret.fieldOptions[lastKeyboardField].returnKeyType = "next";
     }
 
-    ret.fieldOptions[lastEditableField].onSubmitEditing = onSubmit;
+    ret.fieldOptions[lastKeyboardField].onSubmitEditing = onSubmit;
   }
 
   ret.type = t.struct(ret.type);
