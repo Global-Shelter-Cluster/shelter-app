@@ -57,24 +57,8 @@ export default class IndicatorRow extends React.Component<Props, State> {
     } else
       currentOperationDescription = 'Offline';
 
-    const spinValue = new Animated.Value(0);
-
-    Animated.loop(Animated.timing(spinValue, {
-      toValue: 1,
-      duration: 3000,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    })).start();
-
-    const spin = spinValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg'],
-    });
-
     const loadingIcon = online && bgProgress.totalCount > 0
-      ? <Animated.View style={{transform: [{rotate: spin}], marginRight: 5}}>
-        <FontAwesome name={"refresh"} size={16} color={vars.SHELTER_GREY}/>
-      </Animated.View>
+      ? <RotatingLoadingIcon/>
       : null;
 
     const progressIndicator = bgProgress.totalCount > 0
@@ -141,6 +125,36 @@ export default class IndicatorRow extends React.Component<Props, State> {
     </View>;
   }
 };
+
+/**
+ * We have a separate component for the "loading" icon with shouldComponentUpdate always returning "false", which
+ * prevents the animation from resetting to "rotation = 0 degree" every time the main component is rendered.
+ */
+class RotatingLoadingIcon extends React.Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  render() {
+    const spinValue = new Animated.Value(0);
+
+    Animated.loop(Animated.timing(spinValue, {
+      toValue: 1,
+      duration: 3000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    })).start();
+
+    const spin = spinValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg'],
+    });
+
+    return <Animated.View style={{transform: [{rotate: spin}], marginRight: 5}}>
+      <FontAwesome name={"refresh"} size={16} color={vars.SHELTER_GREY}/>
+    </Animated.View>;
+  }
+}
 
 const styles = StyleSheet.create({
   closeButton: {
