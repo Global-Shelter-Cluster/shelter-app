@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 2,
     height: 150,
-    borderColor: 'grey',
+    borderColor: vars.SHELTER_GREY,
     borderWidth: 1
   },
   container: {

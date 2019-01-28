@@ -11,6 +11,7 @@ import ImageFactory from "../components/tcomb/ImageFactory";
 import MultiselectFactory from "../components/tcomb/MultiselectFactory";
 import {Permissions} from "expo";
 import {textareaStylesheet} from "../styles/formStyles";
+import GeolocationFactory from "../components/tcomb/GeolocationFactory";
 
 export type WebformObject = {
   _last_read?: number,
@@ -27,7 +28,12 @@ type WebformPage = {
   fields: Array<WebformField>,
 }
 
-type WebformField = WebformTextField | WebformMarkupField | WebformTextAreaField | WebformFileField;
+type WebformField =
+  WebformTextField
+  | WebformMarkupField
+  | WebformTextAreaField
+  | WebformFileField
+  | WebformGeolocationField;
 
 type WebformTextField = {
   type: "textfield",
@@ -55,6 +61,14 @@ type WebformFileField = {
   description?: string,
   file_type: "image", // TODO: maybe add others, for now "image" means an image widget (camera / camera roll)
   file_extensions?: Array<string>, // e.g. ["gif", "jpg", "jpeg", "png"]
+}
+
+type WebformGeolocationField = {
+  type: "geolocation",
+  key: string,
+  name: string,
+  required?: true,
+  description?: string,
 }
 
 type WebformMarkupField = {
@@ -95,7 +109,10 @@ export const getPermissionsForWebform = (webform: WebformObject) => {
           list[Permissions.CAMERA] = true;
           break;
 
-        // TODO: geolocation
+        case "geolocation":
+          list[Permissions.LOCATION] = true;
+          break;
+
       }
     }
   }
@@ -394,6 +411,26 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
           default:
             console.warn("Widget not implemented for this file type", field);
         }
+        break;
+
+      case "geolocation":
+        // if (field.required)
+          ret.type[field.key] = t.struct({lat: t.Number, lon: t.Number});
+        // else
+        //   ret.type[field.key] = t.maybe(t.union([t.Number, t.Number], 'Geolocation'));
+
+        ret.fieldOptions[field.key] = {
+          label: field.name + (field.required ? ' *' : ''),
+          factory: GeolocationFactory,
+          config: {title: field.name + (field.required ? ' *' : '')},
+        };
+
+        if (field.description !== undefined) {
+          ret.fieldOptions[field.key].config.help = field.description;
+        }
+        ret.order.push(field.key);
+
+        lastField = field.key;
         break;
 
       case "markup": // not very pretty but gets the job done

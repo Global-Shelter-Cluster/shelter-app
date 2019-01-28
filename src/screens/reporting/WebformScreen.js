@@ -46,12 +46,22 @@ const initialState = {
 const mapStateToProps = (state, props) => {
   const webform: WebformObject = convertFiles(state, 'webform', getObject(state, 'webform', props.navigation.getParam('webformId')));
 
+  const tempwebform: WebformObject = clone(webform);
+  tempwebform.form[tempwebform.form.length-1].fields.push({
+    type: 'geolocation',
+    key: 'geo',
+    name: 'Test geo location',
+    description: 'hey there',
+  });
+
+  console.log("CAM", tempwebform);
+
   return {
     online: state.flags.online,
     loading: state.flags.loading,
     submitting: state.flags.submitting,
     lastError: state.lastError,
-    webform: webform,
+    webform: tempwebform,
     queued: state.bgProgress.assessmentFormSubmissions.filter(s => s.type === "webform" && s.id === webform.id).length,
   };
 };
