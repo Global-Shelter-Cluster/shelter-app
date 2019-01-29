@@ -15,10 +15,12 @@ import persist from "../../persist";
 const DIR = 'image-field';
 
 type Props = {
-  title: string
+  title: string,
+  value?: string,
 };
+
 type State = {
-  image: ?string
+  image?: string,
 };
 
 const Component = t.form.Component;
@@ -26,10 +28,11 @@ const Component = t.form.Component;
 class ImageFactory extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+
     this.state = {
-      image: undefined,
-      height: new Animated.Value(0),
-      overflow: 'visible'
+      image: props.value,
+      height: new Animated.Value(props.value ? 150 : 0),
+      overflow: props.value ? 'hidden' : 'visible',
     };
   }
 
