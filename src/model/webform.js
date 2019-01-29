@@ -249,7 +249,6 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
   let markupElementCounter: number = 0;
   for (const field of webform.form[page].fields) {
-    console.log(field);
     switch (field.type) {
       case "textarea":
         if (field.required) {
@@ -409,15 +408,15 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
             break;
 
           default:
-            console.warn("Widget not implemented for this file type", field);
+            console.warn("Widget not implemented for this field type", field);
         }
         break;
 
       case "geolocation":
-        // if (field.required)
+        if (field.required)
           ret.type[field.key] = t.struct({lat: t.Number, lon: t.Number});
-        // else
-        //   ret.type[field.key] = t.maybe(t.union([t.Number, t.Number], 'Geolocation'));
+        else
+          ret.type[field.key] = t.maybe(t.struct({lat: t.Number, lon: t.Number}));
 
         ret.fieldOptions[field.key] = {
           label: field.name + (field.required ? ' *' : ''),
@@ -443,6 +442,9 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         };
         ret.order.push(key);
         break;
+
+      default:
+        console.warn("Widget not implemented for this field type", field);
     }
   }
 
@@ -452,17 +454,10 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
   ) {
     const isLastPage = page === (webform.form.length - 1);
 
-    if (isLastPage) {
-      ret.fieldOptions[lastKeyboardField].returnKeyType = "send";
-      // TODO
-    } else {
-      ret.fieldOptions[lastKeyboardField].returnKeyType = "next";
-    }
-
+    ret.fieldOptions[lastKeyboardField].returnKeyType = isLastPage ? "send" : "next";
     ret.fieldOptions[lastKeyboardField].onSubmitEditing = onSubmit;
   }
 
   ret.type = t.struct(ret.type);
-  // console.log(ret);
   return ret;
 };
