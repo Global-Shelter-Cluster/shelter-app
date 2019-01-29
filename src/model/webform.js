@@ -100,7 +100,6 @@ export default class Webform {
 export const getPermissionsForWebform = (webform: WebformObject) => {
   const list = {}; // e.g. {"camera": true, "calendar": true}
 
-
   for (const page of webform.form) {
     for (const field of page.fields) {
       switch (field.type) {

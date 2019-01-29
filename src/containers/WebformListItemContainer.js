@@ -6,22 +6,12 @@ import {getObject} from "../model";
 import {withNavigation} from 'react-navigation';
 import {convertFiles} from "../model/file";
 import type {WebformObject} from "../model/webform";
+import {getPermissionsForWebform} from "../model/webform";
 import WebformListItem from "../components/WebformListItem";
 import {ensurePermissions} from "../permission";
-import {getPermissionsForWebform} from "../model/webform";
-import clone from "clone";
 
 const mapStateToProps = (state, props) => {
-  let webform: WebformObject = convertFiles(state, 'webform', getObject(state, 'webform', props.id));
-
-  const tempwebform: WebformObject = clone(webform);
-  tempwebform.form[tempwebform.form.length-1].fields.push({
-    type: 'geolocation',
-    key: 'geo',
-    name: 'Test geo location',
-    description: 'hey there',
-  });
-  webform=tempwebform;
+  const webform: WebformObject = convertFiles(state, 'webform', getObject(state, 'webform', props.id));
 
   const ret = {
     webform,
