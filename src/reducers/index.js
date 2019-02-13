@@ -8,6 +8,7 @@ import currentUser from './currentUser';
 import lastError from './lastError';
 import bgProgress from './bgProgress';
 import files from './files';
+import notification from './notification';
 
 export default combineReducers({
   flags,
@@ -17,4 +18,5 @@ export default combineReducers({
   lastError,
   bgProgress,
   files,
+  notification,
 });

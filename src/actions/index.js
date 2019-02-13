@@ -13,6 +13,7 @@ import type {ObjectIds, Objects, ObjectType} from "../model";
 import config from "../config";
 import type {flags} from "../reducers/flags";
 import type {newAccountValues} from "../screens/auth/Signup";
+import type {notificationType} from "../reducers/notification";
 
 export const CHANGE_FLAG = 'CHANGE_FLAG';
 export const changeFlag = (flag: flags, value: boolean) => ({
@@ -320,3 +321,14 @@ export const submitAssessmentForm = (type: AssessmentFormType, id: number, value
   }
   dispatch(changeFlag('submitting', false));
 };
+
+export const SET_NOTIFICATION = 'SET_NOTIFICATION';
+export const setNotification = (notification: notificationType) => ({
+  type: SET_NOTIFICATION,
+  notification,
+});
+
+export const CLEAR_NOTIFICATION = 'CLEAR_NOTIFICATION';
+export const clearNotification = () => ({
+  type: CLEAR_NOTIFICATION,
+});
