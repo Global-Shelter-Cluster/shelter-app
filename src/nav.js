@@ -1,7 +1,12 @@
 // @flow
 
 import React from "react";
-import {createBottomTabNavigator, createStackNavigator, createSwitchNavigator} from "react-navigation";
+import {
+  createBottomTabNavigator,
+  createStackNavigator,
+  createSwitchNavigator,
+  NavigationActions
+} from "react-navigation";
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
 import ForgotScreen from "./screens/auth/ForgotScreen";
@@ -28,7 +33,6 @@ import AlertListScreen from "./screens/group/AlertListScreen";
 import ContactScreen from "./screens/view/ContactScreen";
 import UserListScreen from "./screens/group/UserListScreen";
 import UserScreen from "./screens/view/UserScreen";
-import analytics from "./analytics";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
@@ -122,3 +126,21 @@ export type navigation = {
   setParams: ({}) => {},
   getParam: (name: string, defaultValue?: string | null) => string | null,
 }
+
+let _navigator = null;
+export const setTopNav = nav => {
+  _navigator = nav;
+};
+const doWhenNavigatorExists = async myFunc => {
+  const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  while (_navigator === null)
+    await timeout(500);
+
+  myFunc();
+};
+export const navService = {
+  navigate: (routeName, params) => doWhenNavigatorExists(() => _navigator.dispatch(
+    NavigationActions.navigate({routeName, params})
+  ))
+};

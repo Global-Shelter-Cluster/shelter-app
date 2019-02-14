@@ -4,12 +4,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {clearNotification} from '../actions';
 import Notification from '../components/Notification';
-import {getNotificationEnter} from "../model/notification";
+import {notificationEnter} from "../model/notification";
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = state => ({
   show: !state.flags.initializing && !state.flags.loggingIn && state.currentUser !== null,
   notification: state.notification,
-  enter: () => getNotificationEnter(state, props.navigation),
+  enter: () => notificationEnter(state),
 });
 
 const mapDispatchToProps = dispatch => {

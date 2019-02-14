@@ -13,8 +13,8 @@ persist.store = store;
 // persist.clearAll();
 // store.dispatch(logout());
 
-export default () => (
+export default ({exp}) => (
   <Provider store={store}>
-    <AppContainer/>
+    <AppContainer exp={exp}/>
   </Provider>
 );

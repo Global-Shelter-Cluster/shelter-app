@@ -29,7 +29,7 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
   if (!loaded)
     return <Loading/>;
 
-  const items: Array<{ key: string, type: "title" | "body" | "document", id?: number }> = [];
+  const items: Array<{ key: string, type: "title" | "nav" | "body" | "document", id?: number }> = [];
 
   items.push({key: "title", type: "title"});
   items.push({key: "nav", type: "nav"});

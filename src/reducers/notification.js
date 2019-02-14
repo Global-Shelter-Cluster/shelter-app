@@ -9,10 +9,7 @@ export type notificationType = {
   id?: number,
 }
 
-const notification = (state: notificationType | null =
-                        null
-                      // {title: "Ecuador Earthquake 2018 (response)",body: "A factsheet was recently added: January 2019",data: {link: "a", id: 123}}
-  , action: { type: string, notification?: notificationType }) => {
+const notification = (state: notificationType | null = null, action: { type: string, notification?: notificationType }) => {
   switch (action.type) {
     case SET_NOTIFICATION:
       return action.notification;

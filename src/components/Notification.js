@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {Animated, Easing, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Animated, Easing, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import type {notificationType} from "../reducers/notification";
@@ -15,6 +15,10 @@ type Props = {
 
 export default class Notification extends React.Component<Props> {
   render() {
+    // Only show notifications in iOS (on Android, they show even if the app is in the foreground. See https://docs.expo.io/versions/latest/guides/push-notifications/)
+    if (Platform.OS !== 'ios')
+      return null;
+
     const {show, notification, enter, dismiss} = this.props;
 
     if (!show || !notification)
@@ -35,7 +39,10 @@ export default class Notification extends React.Component<Props> {
         transform: [{translateY}],
         opacity,
       }]}>
-      <TouchableOpacity onPress={enter} style={{margin: 10, flex: 1}}>
+      <TouchableOpacity onPress={() => {
+        enter();
+        dismiss();
+      }} style={{margin: 10, flex: 1}}>
         <Text style={styles.title}>{notification.title}</Text>
         {notification.body
           ? <Text>{notification.body}</Text>
@@ -67,8 +74,12 @@ const styles = StyleSheet.create({
     maxHeight: 150,
     flexDirection: "row",
     borderRadius: 5,
-    backgroundColor: vars.ACCENT_YELLOW_SEMITRANSPARENT,
-    overflow: "hidden",
+    backgroundColor: vars.WHITE_SEMITRANSPARENT,
+    shadowColor: "black",
+    shadowOffset: {width: 0, height: 3},
+    shadowRadius: 5,
+    shadowOpacity: .5,
+    elevation: 5, // Shadow works for iOS, elevation for Android
   },
   title: {
     fontWeight: "bold",
