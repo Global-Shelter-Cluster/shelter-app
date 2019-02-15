@@ -5,7 +5,8 @@ import {
   createBottomTabNavigator,
   createStackNavigator,
   createSwitchNavigator,
-  NavigationActions
+  NavigationActions,
+  createAppContainer
 } from "react-navigation";
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
@@ -77,7 +78,7 @@ const SearchStack = createStackNavigator({
 const TabScreens = createBottomTabNavigator({
   Me: {
     screen: MeStack,
-    navigationOptions: {
+    defaultNavigationOptions: {
       tabBarLabel: "User",
     },
   },
@@ -86,7 +87,7 @@ const TabScreens = createBottomTabNavigator({
   Resources: ResourcesStack,
   Search: SearchStack,
 }, {
-  navigationOptions: ({navigation}) => ({
+  defaultNavigationOptions: ({navigation}) => ({
     tabBarIcon: ({focused, tintColor}) => {
       const {routeName} = navigation.state;
 
@@ -118,7 +119,7 @@ const MainNavigator = createSwitchNavigator(
   }
 );
 
-export default MainNavigator;
+export default createAppContainer(MainNavigator);
 
 export type navigation = {
   push: (string, {}) => {},
