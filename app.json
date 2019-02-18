@@ -10,7 +10,7 @@
     "primaryColor": "#7F1416",
     "icon": "./assets/icon/opaque.png",
     "android": {
-      "versionCode": 2,
+      "versionCode": 3,
       "icon": "./assets/icon/transparent.png",
       "package": "org.sheltercluster.shelterapp"
     },
