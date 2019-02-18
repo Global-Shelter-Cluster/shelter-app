@@ -15,4 +15,5 @@ export default {
   LIGHT_GREY: 'rgba(0,0,0,.3)',
   MEDIUM_GREY: 'rgba(0,0,0,.5)',
   BG_GREY: '#EEEEEE',
+  WHITE_SEMITRANSPARENT: 'rgba(255, 255, 255, .9)',
 }
