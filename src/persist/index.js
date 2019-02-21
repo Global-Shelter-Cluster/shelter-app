@@ -4,6 +4,7 @@ import {
   addAssessmentFormSubmission,
   clearAllDownloads,
   downloadFiles,
+  mergeLocalVars,
   replaceAllSeenObjects,
   setCurrentUser,
   setFile,
@@ -33,6 +34,7 @@ import type {PrivateUserObject} from "../model/user";
 import {getCurrentUser} from "../model/user";
 import {getPushToken} from "../push.js";
 import type {newAccountValues} from "../screens/auth/Signup";
+import type {localVarsType} from "../reducers/localVars";
 
 const DIR_PERSISTED = 'persisted';
 
@@ -110,6 +112,12 @@ class Persist {
       if (seenString !== null) {
         const seen: ObjectIds = JSON.parse(seenString);
         await this.store.dispatch(replaceAllSeenObjects(seen));
+      }
+
+      const localVarsString: string | null = await Storage.getItem(Persist.cacheKey('localVars'));
+      if (localVarsString !== null) {
+        const localVars: localVarsType = JSON.parse(localVarsString);
+        await this.store.dispatch(mergeLocalVars(localVars));
       }
 
       await this.store.dispatch(setCurrentUser(id));
@@ -525,6 +533,11 @@ class Persist {
     await Storage.setItem(Persist.cacheKey('seen'), JSON.stringify(seen));
   }
 
+  async saveLocalVars() {
+    const localVars = this.store.getState().localVars;
+    await Storage.setItem(Persist.cacheKey('localVars'), JSON.stringify(localVars));
+  }
+
   async submitAssessmentForm(type: AssessmentFormType, id: number, values: {}) {
     // Assume we're online, just try to send it (offline logic is handled in the submitAssessmentForm action).
 
@@ -569,7 +582,8 @@ class Persist {
 
       try {
         await FileSystem.deleteAsync(values[key], {idempotent: true});
-      } catch (e) {}
+      } catch (e) {
+      }
     }
   }
 

@@ -12,7 +12,7 @@ import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
 import ForgotScreen from "./screens/auth/ForgotScreen";
 import DashboardScreen from "./screens/user/DashboardScreen";
-import EditScreen from "./screens/user/EditScreen";
+import SettingsScreen from "./screens/user/SettingsScreen";
 import GroupScreen from "./screens/group/GroupScreen";
 import OperationsScreen from "./screens/group/OperationsScreen";
 import WebsiteViewerScreen from "./screens/misc/WebsiteViewerScreen";
@@ -69,7 +69,7 @@ const ResourcesStack = createStackNavigator({
 });
 const MeStack = createStackNavigator({
   Dashboard: DashboardScreen,
-  Edit: EditScreen,
+  Settings: SettingsScreen,
 });
 const SearchStack = createStackNavigator({
   Search: SearchScreen,
