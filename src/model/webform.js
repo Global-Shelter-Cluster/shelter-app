@@ -29,6 +29,12 @@ type WebformPage = {
 
 type WebformField = WebformTextField | WebformMarkupField | WebformTextAreaField | WebformFileField;
 
+type condition = {
+  field: string,
+  value: string,
+  op?: "eq" | "gt" | "gte" | "neq",
+};
+
 type WebformTextField = {
   type: "textfield",
   key: string,
@@ -36,6 +42,7 @@ type WebformTextField = {
   required?: true,
   default?: string,
   description?: string,
+  visible?: Array<condition>,
 }
 
 type WebformTextAreaField = {
@@ -162,6 +169,8 @@ export const getWebformPageValues = (webform: WebformObject, allValues: Array<{}
 export const setWebformPageValues = (allValues: Array<{}>, page: number, values: {}) => {
   const ret = clone(allValues);
   ret[page] = values;
+  console.log('CAM setWebformPageValues ', ret);
+
   return ret;
 };
 
@@ -190,11 +199,13 @@ const markupTemplate = locals => <View style={{marginBottom: 20}}><HTML html={lo
 /**
  * Generate the stuff needed for the tcomb-form-native library to render a single form page.
  */
-export const getWebformTCombData = (webform: WebformObject, page: number, setFocus: (key: string) => {}, onSubmit: () => {}): {
+export const getWebformTCombData = (webform: WebformObject, page: number, setFocus: (key: string) => {}, onSubmit: () => {}, flattenedValues: {}): {
   type: {},
   fieldOptions: {},
   order: Array<string>,
 } => {
+  console.log("CAM I'm calling getWebformTCombData!");
+
   const ret = {type: {}, fieldOptions: {}, order: []};
 
   const formatDate = (date) => new Date(date).toDateString();
@@ -276,6 +287,11 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         if (field.description !== undefined) {
           ret.fieldOptions[field.key].help = field.description;
         }
+
+        if (field.visible !== undefined) {
+          ret.fieldOptions[field.key].hidden = true;
+        }
+
         ret.order.push(field.key);
 
         connectKeyboardNextKey(field.key);

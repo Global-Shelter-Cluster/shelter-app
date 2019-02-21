@@ -41,6 +41,7 @@ type Props = {
   webform: WebformObject,
   page: number,
   formValues: {},
+  flattenedValues: {},
   pagesVisited: { [string]: true }, // e.g. {0: true, 1: true} (we've visited the first 2 pages)
   lastError: lastErrorType,
   queued: number, // submissions queued for sending once we go online
@@ -115,7 +116,7 @@ export default class Webform extends React.Component<Props> {
         onPageChange(tab);
     };
 
-    const tCombData = getWebformTCombData(webform, page, setFocus, onSubmitWithValidation);
+    const tCombData = getWebformTCombData(webform, page, setFocus, onSubmitWithValidation, flattenedValues);
     const tabs = getWebformPageTabs(webform, page, pagesVisited);
     const isLastPage = page === (webform.form.length - 1);
 
