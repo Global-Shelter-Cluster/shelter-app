@@ -176,6 +176,15 @@ class Remote {
 
     return null;
   }
+
+  async getFilesSize(urls: Array<string>): Promise<number> {
+    try {
+      const data = await this._post('/get-files-size', urls);
+      return parseInt(data[0], 10);
+    } catch (e) {
+      return 0;
+    }
+  }
 }
 
 export default Remote;

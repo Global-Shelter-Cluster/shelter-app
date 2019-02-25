@@ -219,6 +219,11 @@ const processBackgroundTasks = () => async (dispatch, getState) => {
 
   mainLoop:
     while (state.bgProgress.operationsLeft > 0) {
+      if (state.bgProgress.operationsLeft === state.bgProgress.filesLeft.length && !state.localVars.downloadFiles) {
+        // Only file downloads are left, and these are turned off
+        break;
+      }
+
       while (!state.flags.online) {
         await timeout(5000);
         state = getState();
@@ -233,8 +238,10 @@ const processBackgroundTasks = () => async (dispatch, getState) => {
           break;
 
         case "file":
-          await persist.saveFile(state.bgProgress.filesLeft[0]);
-          dispatch(oneFileDownloaded());
+          if (state.localVars.downloadFiles) {
+            await persist.saveFile(state.bgProgress.filesLeft[0]);
+            dispatch(oneFileDownloaded());
+          }
           break;
 
         default:
@@ -337,6 +344,9 @@ export const clearNotification = () => ({
 export const saveLocalVars = (localVars: localVarsTypeAllOptional) => async dispatch => {
   dispatch(mergeLocalVars(localVars));
   await persist.saveLocalVars();
+
+  if (localVars.downloadFiles) // Special case: we're turning on file downloads, so we make them resume if needed.
+    dispatch(processBackgroundTasks());
 };
 
 export const MERGE_LOCAL_VARS = 'MERGE_LOCAL_VARS';

@@ -4,6 +4,7 @@ import {
   addAssessmentFormSubmission,
   clearAllDownloads,
   downloadFiles,
+  logout,
   mergeLocalVars,
   replaceAllSeenObjects,
   setCurrentUser,
@@ -88,10 +89,10 @@ class Persist {
   }
 
   async init() {
-    this.remote = new Remote;
-    await this.initDirectory(DIR_PERSISTED);
-
     try {
+      this.remote = new Remote;
+      await this.initDirectory(DIR_PERSISTED);
+
       const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
       if (authString) {
         this.remote.auth = JSON.parse(authString);
@@ -135,6 +136,7 @@ class Persist {
 
     } catch (e) {
       console.log('Error during initialization', e);
+      await this.store.dispatch(logout());
     }
   }
 
@@ -590,6 +592,10 @@ class Persist {
   async savePendingAssessmentFormSubmissions() {
     const submissions = this.store.getState().bgProgress.assessmentFormSubmissions;
     await Storage.setItem(Persist.cacheKey('pendingAssessmentFormSubmissions'), JSON.stringify(submissions));
+  }
+
+  async getFilesSize(urls: Array<string>) {
+    return this.remote.getFilesSize(urls);
   }
 
   /**

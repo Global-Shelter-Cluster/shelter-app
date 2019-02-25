@@ -14,6 +14,7 @@ import equal from "deep-equal";
 import MultiLineButton from "../../components/MultiLineButton";
 import type {PrivateUserObject} from "../../model/user";
 import singleRowCheckbox from "../../styles/singleRowCheckbox";
+import config from "../../config";
 
 const Form = t.form.Form;
 
@@ -85,12 +86,19 @@ export default class Settings extends React.Component<Props> {
         //     submitLocalVars(localVars);
         // };
 
+        const formType = config.debugMode
+          ? t.struct({
+            downloadFiles: t.Boolean,
+            askedToDownloadFiles: t.Boolean,
+          })
+          : t.struct({
+            downloadFiles: t.Boolean,
+          });
+
         content = <ScrollView style={{flex: 1, padding: 10}}>
           <Form
             ref="preferences_form"
-            type={t.struct({
-              downloadFiles: t.Boolean,
-            })}
+            type={formType}
             options={{
               label: null,
               stylesheet: formStylesheet,
@@ -98,6 +106,11 @@ export default class Settings extends React.Component<Props> {
                 downloadFiles: {
                   label: "Download files",
                   help: "Allows for offline use of documents.",
+                  template: singleRowCheckbox,
+                },
+                askedToDownloadFiles: {
+                  label: "Asked to download files",
+                  help: "Only available in DEBUG mode.",
                   template: singleRowCheckbox,
                 },
               },
