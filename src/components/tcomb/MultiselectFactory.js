@@ -40,7 +40,10 @@ export default class MultiselectFactory extends t.form.Component {
     let self = this;
     return function (locals) {
       const stylesheet = locals.stylesheet;
-      console.log('CAMlocals',locals);
+      // console.log('CAMlocals',locals);
+      if (locals.hidden === true) {
+        return null;
+      }
       return (
         <View style={locals.hasError ? stylesheet.formGroup.error : stylesheet.formGroup.normal}>
           {locals.label

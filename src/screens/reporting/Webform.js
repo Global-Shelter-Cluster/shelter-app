@@ -57,11 +57,11 @@ type Props = {
 
 export default class Webform extends React.Component<Props> {
   shouldComponentUpdate(nextProps: Props) {
-    return !propEqual(this.props, nextProps, ['loading', 'submitting', 'submitted', 'page', 'queued', 'online'], ['webform', 'formValues', 'lastError']);
+    return !propEqual(this.props, nextProps, ['loading', 'submitting', 'submitted', 'page', 'queued', 'online'], ['webform', 'formValues', 'lastError', 'flattenedValues']);
   }
 
   render() {
-    let {online, loading, submitting, submitted, page, lastError, webform, refresh, formValues, pagesVisited, onChange, onSubmit, onPageChange, resetForm, resetSubmitted, queued} = this.props;
+    let {online, loading, submitting, submitted, page, lastError, webform, refresh, formValues, pagesVisited, onChange, onSubmit, onPageChange, resetForm, resetSubmitted, queued, flattenedValues} = this.props;
 
     if (equal(lastError, {type: 'object-load', data: {type: 'webform', id: webform.id}}))
       return <MultiLineButton
