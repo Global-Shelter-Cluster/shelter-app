@@ -308,10 +308,6 @@ export default class MultiSelect extends Component {
     return <View>{itemList}</View>;
   };
 
-  checkVisible = (isVisible) => {
-    // console.log(this.props.selectedItems);
-  };
-
   render() {
     const {
       searchInputPlaceholderText,
