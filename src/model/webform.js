@@ -29,6 +29,12 @@ type WebformPage = {
 
 type WebformField = WebformTextField | WebformMarkupField | WebformTextAreaField | WebformFileField;
 
+type conditional = {
+  field: string,
+  value: string,
+  op?: "eq" | "gt" | "gte" | "neq",
+};
+
 type WebformTextField = {
   type: "textfield",
   key: string,
@@ -36,6 +42,8 @@ type WebformTextField = {
   required?: true,
   default?: string,
   description?: string,
+  visible: boolean,
+  conditional: conditional,
 }
 
 type WebformTextAreaField = {
@@ -45,6 +53,8 @@ type WebformTextAreaField = {
   required?: true,
   default?: string,
   description?: string,
+  visible: boolean,
+  conditional: conditional,
 }
 
 type WebformFileField = {
@@ -55,11 +65,15 @@ type WebformFileField = {
   description?: string,
   file_type: "image", // TODO: maybe add others, for now "image" means an image widget (camera / camera roll)
   file_extensions?: Array<string>, // e.g. ["gif", "jpg", "jpeg", "png"]
+  visible: boolean,
+  conditional: conditional,
 }
 
 type WebformMarkupField = {
   type: "markup",
   value: string, // HTML
+  visible: boolean,
+  conditional: conditional,
 }
 
 export default class Webform {
@@ -162,6 +176,8 @@ export const getWebformPageValues = (webform: WebformObject, allValues: Array<{}
 export const setWebformPageValues = (allValues: Array<{}>, page: number, values: {}) => {
   const ret = clone(allValues);
   ret[page] = values;
+  // console.log('CAM setWebformPageValues ', ret);
+
   return ret;
 };
 
@@ -185,16 +201,57 @@ export const getWebformPageTabs = (webform: WebformObject, page: number, pagesVi
   return ret;
 };
 
+/**
+ * Evaluate any conditional rules against the current form values.
+ */
+const fieldIsVisible = (field, flattenedValues) :boolean => {
+  // No conditional rules - field is normaly visible.
+  if (field.conditional == undefined) {
+    return true;
+  }
+
+  // Since there are no values, conditions cannot be met.
+  if (Object.keys(flattenedValues).length == 0) {
+    return false;
+  }
+
+  let visible = true;
+
+  // AND condition
+  if (field.conditional.or == undefined) {
+    // If any of the rules is not met, set visible to false.
+    field.conditional.rules.forEach((test) => {
+      if (flattenedValues[test.field] instanceof Array && flattenedValues[test.field].indexOf(test.value) == -1) {
+        visible = false;
+      }
+    });
+  }
+
+  // OR condition
+  if (field.conditional.or == true) {
+    // If any of the rules is met, set visible to true.
+    visible = false;
+    field.conditional.rules.forEach((test) => {
+      if (flattenedValues[test.field] instanceof Array && flattenedValues[test.field].indexOf(test.value) > -1) {
+        visible = true;
+      }
+    });
+  }
+
+  return visible;
+}
+
 const markupTemplate = locals => <View style={{marginBottom: 20}}><HTML html={locals.label}/></View>;
 
 /**
  * Generate the stuff needed for the tcomb-form-native library to render a single form page.
  */
-export const getWebformTCombData = (webform: WebformObject, page: number, setFocus: (key: string) => {}, onSubmit: () => {}): {
+export const getWebformTCombData = (webform: WebformObject, page: number, setFocus: (key: string) => {}, onSubmit: () => {}, flattenedValues: {}): {
   type: {},
   fieldOptions: {},
   order: Array<string>,
 } => {
+  console.log("CAM I'm calling getWebformTCombData!");
   const ret = {type: {}, fieldOptions: {}, order: []};
 
   const formatDate = (date) => new Date(date).toDateString();
@@ -206,6 +263,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
   let lastKeyboardField: null | string = null;
   let lastField: null | string = null;
+
+
 
   // Good UX: this function helps connect the previous field's "enter key" to the given field so it moves focus automatically.
   const connectKeyboardNextKey = (current) => {
@@ -232,7 +291,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
   let markupElementCounter: number = 0;
   for (const field of webform.form[page].fields) {
-    console.log(field);
+    field.visible = fieldIsVisible(field, flattenedValues);
+
     switch (field.type) {
       case "textarea":
         if (field.required) {
@@ -276,6 +336,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         if (field.description !== undefined) {
           ret.fieldOptions[field.key].help = field.description;
         }
+
         ret.order.push(field.key);
 
         connectKeyboardNextKey(field.key);
@@ -347,6 +408,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         break;
 
       case "select":
+
         if (field.required)
           ret.type[field.key] = t.list(t.String);
         else
@@ -358,11 +420,13 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
           choices: field.options,
           factory: MultiselectFactory,
           config: {},
+          hidden: true,
         };
 
         if (field.description !== undefined) {
           ret.fieldOptions[field.key].config.help = field.description;
         }
+
         ret.order.push(field.key);
 
         connectKeyboardNextKey(field.key);
@@ -406,7 +470,8 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         };
         ret.order.push(key);
         break;
-    }
+    };
+    ret.fieldOptions[field.key].hidden = !field.visible;
   }
 
   if (

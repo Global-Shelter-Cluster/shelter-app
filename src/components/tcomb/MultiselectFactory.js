@@ -11,6 +11,7 @@ import {
   View,
   TouchableHighlight
 } from 'react-native';
+
 import MultiSelect from '../Multiselect';
 import t from 'tcomb-form-native';
 
@@ -20,7 +21,10 @@ export default class MultiselectFactory extends t.form.Component {
     super(props);
     this.choices = props.options.choices;
     this.single = props.options.single;
-    this.label = props.options.label
+    this.label = props.options.label;
+    this.state = {
+      selectedItems: props.value,
+    };
   }
 
   onSelectedItemsChange = selectedItems => {
@@ -37,10 +41,14 @@ export default class MultiselectFactory extends t.form.Component {
   }
 
   getTemplate() {
+    console.log('getTempalte', this.state.selectedItems);
     let self = this;
     return function (locals) {
       const stylesheet = locals.stylesheet;
-      console.log('CAMlocals',locals);
+      // console.log('CAMlocals',locals);
+      if (locals.hidden === true) {
+        return null;
+      }
       return (
         <View style={locals.hasError ? stylesheet.formGroup.error : stylesheet.formGroup.normal}>
           {locals.label
@@ -50,6 +58,7 @@ export default class MultiselectFactory extends t.form.Component {
             </Text>
             : null
           }
+
           <MultiSelect
             // fixedHeight
             hideSubmitButton={true}

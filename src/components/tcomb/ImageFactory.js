@@ -27,9 +27,9 @@ class ImageFactory extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      image: undefined,
-      height: new Animated.Value(0),
-      overflow: 'visible'
+      image: props.value ? props.value : undefined,
+      height: new Animated.Value(props.value ? 150 : 0),
+      overflow: props.value ? 'hidden' : 'visible',
     };
   }
 
