@@ -41,7 +41,6 @@ export default class MultiselectFactory extends t.form.Component {
   }
 
   getTemplate() {
-    console.log('getTempalte', this.state.selectedItems);
     let self = this;
     return function (locals) {
       const stylesheet = locals.stylesheet;
