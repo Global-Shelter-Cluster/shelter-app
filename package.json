@@ -19,6 +19,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "amplitude": "^3.5.0",
     "axios": "^0.18.0",
     "clone": "^2.1.1",
     "deep-equal": "^1.0.1",
@@ -31,6 +32,7 @@
     "md5": "^2.2.1",
     "moment": "^2.22.2",
     "npm": "^6.4.1",
+    "pretty-bytes": "^5.1.0",
     "re-reselect": "^2.1.0",
     "react": "16.5.0",
     "react-instantsearch": "^5.1.0",

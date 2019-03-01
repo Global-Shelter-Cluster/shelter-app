@@ -130,6 +130,7 @@ export default class MultiSelect extends Component {
     this.state = {
       searchTerm: ''
     };
+    // console.log(props);
   }
 
   shouldComponentUpdate() {
@@ -305,6 +306,10 @@ export default class MultiSelect extends Component {
     }
 
     return <View>{itemList}</View>;
+  };
+
+  checkVisible = (isVisible) => {
+    // console.log(this.props.selectedItems);
   };
 
   render() {
