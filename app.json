@@ -3,14 +3,14 @@
     "name": "Shelter Cluster",
     "description": "Mobile app for the Shelter Cluster",
     "slug": "sheltercluster",
-    "version": "0.1.20",
-    "sdkVersion": "31.0.0",
+    "version": "0.1.23",
+    "sdkVersion": "32.0.0",
     "githubUrl": "https://github.com/Global-Shelter-Cluster/shelter-app",
     "orientation": "portrait",
     "primaryColor": "#7F1416",
     "icon": "./assets/icon/opaque.png",
     "android": {
-      "versionCode": 2,
+      "versionCode": 3,
       "icon": "./assets/icon/transparent.png",
       "package": "org.sheltercluster.shelterapp"
     },
@@ -20,7 +20,14 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "org.sheltercluster.shelterapp"
+      "bundleIdentifier": "org.sheltercluster.shelterapp",
+      "infoPlist": {
+        "NSCalendarsUsageDescription": "Allows you to add Shelter Cluster events to your calendar",
+        "NSCameraUsageDescription": "Allows you to take pictures to upload to Shelter Cluster forms",
+        "NSContactsUsageDescription": "Allows you to add contacts from Shelter Cluster to your phone",
+        "NSLocationWhenInUseUsageDescription": "Allows you to select your location in Shelter Cluster forms",
+        "NSPhotoLibraryUsageDescription": "Allows you to select images from your phone to upload to Shelter Cluster forms",
+      }
     },
     "splash": {
       "image": "./assets/splash.png",

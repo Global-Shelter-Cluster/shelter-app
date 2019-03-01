@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, KeyboardAvoidingView, StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
+import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, View} from 'react-native';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -69,7 +69,6 @@ export default class Signup extends React.Component<Props, State> {
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <StatusBar barStyle="light-content"/>
         <View style={styles.innerContainer}>
           {!loggingIn
             ? <Text style={styles.banner}>{"Create a Shelter Cluster account"}</Text>

@@ -41,6 +41,7 @@ type Props = {
   webform: WebformObject,
   page: number,
   formValues: {},
+  flattenedValues: {},
   pagesVisited: { [string]: true }, // e.g. {0: true, 1: true} (we've visited the first 2 pages)
   lastError: lastErrorType,
   queued: number, // submissions queued for sending once we go online
@@ -56,11 +57,11 @@ type Props = {
 
 export default class Webform extends React.Component<Props> {
   shouldComponentUpdate(nextProps: Props) {
-    return !propEqual(this.props, nextProps, ['loading', 'submitting', 'submitted', 'page', 'queued', 'online'], ['webform', 'formValues', 'lastError']);
+    return !propEqual(this.props, nextProps, ['loading', 'submitting', 'submitted', 'page', 'queued', 'online'], ['webform', 'formValues', 'lastError', 'flattenedValues']);
   }
 
   render() {
-    let {online, loading, submitting, submitted, page, lastError, webform, refresh, formValues, pagesVisited, onChange, onSubmit, onPageChange, resetForm, resetSubmitted, queued} = this.props;
+    let {online, loading, submitting, submitted, page, lastError, webform, refresh, formValues, pagesVisited, onChange, onSubmit, onPageChange, resetForm, resetSubmitted, queued, flattenedValues} = this.props;
 
     if (equal(lastError, {type: 'object-load', data: {type: 'webform', id: webform.id}}))
       return <MultiLineButton
@@ -115,7 +116,7 @@ export default class Webform extends React.Component<Props> {
         onPageChange(tab);
     };
 
-    const tCombData = getWebformTCombData(webform, page, setFocus, onSubmitWithValidation);
+    const tCombData = getWebformTCombData(webform, page, setFocus, onSubmitWithValidation, flattenedValues);
     const tabs = getWebformPageTabs(webform, page, pagesVisited);
     const isLastPage = page === (webform.form.length - 1);
 

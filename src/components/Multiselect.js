@@ -130,6 +130,7 @@ export default class MultiSelect extends Component {
     this.state = {
       searchTerm: ''
     };
+    // console.log(props);
   }
 
   shouldComponentUpdate() {

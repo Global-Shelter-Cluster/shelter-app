@@ -1,12 +1,18 @@
 // @flow
 
 import React from "react";
-import {createBottomTabNavigator, createStackNavigator, createSwitchNavigator} from "react-navigation";
+import {
+  createBottomTabNavigator,
+  createStackNavigator,
+  createSwitchNavigator,
+  NavigationActions,
+  createAppContainer
+} from "react-navigation";
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
 import ForgotScreen from "./screens/auth/ForgotScreen";
 import DashboardScreen from "./screens/user/DashboardScreen";
-import EditScreen from "./screens/user/EditScreen";
+import SettingsScreen from "./screens/user/SettingsScreen";
 import GroupScreen from "./screens/group/GroupScreen";
 import OperationsScreen from "./screens/group/OperationsScreen";
 import WebsiteViewerScreen from "./screens/misc/WebsiteViewerScreen";
@@ -28,7 +34,6 @@ import AlertListScreen from "./screens/group/AlertListScreen";
 import ContactScreen from "./screens/view/ContactScreen";
 import UserListScreen from "./screens/group/UserListScreen";
 import UserScreen from "./screens/view/UserScreen";
-import analytics from "./analytics";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
@@ -64,7 +69,7 @@ const ResourcesStack = createStackNavigator({
 });
 const MeStack = createStackNavigator({
   Dashboard: DashboardScreen,
-  Edit: EditScreen,
+  Settings: SettingsScreen,
 });
 const SearchStack = createStackNavigator({
   Search: SearchScreen,
@@ -73,7 +78,7 @@ const SearchStack = createStackNavigator({
 const TabScreens = createBottomTabNavigator({
   Me: {
     screen: MeStack,
-    navigationOptions: {
+    defaultNavigationOptions: {
       tabBarLabel: "User",
     },
   },
@@ -82,7 +87,7 @@ const TabScreens = createBottomTabNavigator({
   Resources: ResourcesStack,
   Search: SearchStack,
 }, {
-  navigationOptions: ({navigation}) => ({
+  defaultNavigationOptions: ({navigation}) => ({
     tabBarIcon: ({focused, tintColor}) => {
       const {routeName} = navigation.state;
 
@@ -114,7 +119,7 @@ const MainNavigator = createSwitchNavigator(
   }
 );
 
-export default MainNavigator;
+export default createAppContainer(MainNavigator);
 
 export type navigation = {
   push: (string, {}) => {},
@@ -122,3 +127,21 @@ export type navigation = {
   setParams: ({}) => {},
   getParam: (name: string, defaultValue?: string | null) => string | null,
 }
+
+let _navigator = null;
+export const setTopNav = nav => {
+  _navigator = nav;
+};
+const doWhenNavigatorExists = async myFunc => {
+  const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  while (_navigator === null)
+    await timeout(500);
+
+  myFunc();
+};
+export const navService = {
+  navigate: (routeName, params) => doWhenNavigatorExists(() => _navigator.dispatch(
+    NavigationActions.navigate({routeName, params})
+  ))
+};

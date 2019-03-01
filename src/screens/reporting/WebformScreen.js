@@ -80,7 +80,7 @@ class WebformScreen extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !propEqual(this.state, nextState, ['page', 'submitted'])
+    return !propEqual(this.state, nextState, ['page', 'submitted'], ['allFormValues'])
       || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting', 'queued'], ['webform', 'lastError']);
   }
 
@@ -98,6 +98,7 @@ class WebformScreen extends React.Component<Props, State> {
       {...this.props}
       page={this.state.page}
       formValues={getWebformPageValues(this.props.webform, this.state.allFormValues, this.state.page)}
+      flattenedValues={this.state.allFormValues.reduce((prev, current) => Object.assign(prev, current), {})}
       pagesVisited={this.state.pagesVisited}
       onPageChange={newPage => {
         const page = parseInt(newPage, 10);

@@ -5,6 +5,8 @@ import {Linking, Modal, Platform, Share, StyleSheet, TouchableOpacity, View, Web
 import type {ContactObject} from "../model/contact";
 import {createExpoContact} from "../model/contact";
 import Button from "./Button";
+import {ensurePermissions} from "../permission";
+import {Contacts, Permissions} from "expo";
 
 type Props = {
   contact: ContactObject,
@@ -58,7 +60,15 @@ export default class ContactActions extends React.Component<Props, State> {
     buttons.push(<Button
       primary style={styles.button}
       key="contact" title="Contact" icon="address-card-o"
-      onPress={() => Expo.Contacts.presentFormAsync(null, createExpoContact(contact))}
+      onPress={async () => {
+        try {
+          await ensurePermissions(Permissions.CONTACTS);
+          Contacts.presentFormAsync(null, createExpoContact(contact));
+        } catch(e) {
+          console.log('Exception', e);
+          return null;
+        }
+      }}
     />);
 
     return <View style={styles.container}>

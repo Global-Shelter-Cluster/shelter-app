@@ -6,7 +6,7 @@ export type configType = {
   deleteFilesOnLogout: boolean,
   reduxLogger: boolean,
   persistFiles: boolean,
-  debugOnlineIndicator: boolean, // allows toggling online/offline and clearing cache with a "long press" on the indicator
+  debugMode: boolean, // allows toggling online/offline and clearing cache with a "long press" on the indicator, and some extra settings
   googleAnalyticsTrackingId: string,
 };
 
@@ -17,7 +17,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: false,
     reduxLogger: true,
     persistFiles: false,
-    debugOnlineIndicator: true,
+    debugMode: true,
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   local_jm: {
@@ -26,7 +26,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: false,
     reduxLogger: false,
     persistFiles: false,
-    debugOnlineIndicator: true,
+    debugMode: true,
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   dev: {
@@ -35,7 +35,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: true,
     reduxLogger: true,
     persistFiles: true,
-    debugOnlineIndicator: true,
+    debugMode: true,
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   stage: {
@@ -44,7 +44,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: true,
     reduxLogger: false,
     persistFiles: true,
-    debugOnlineIndicator: false,
+    debugMode: false,
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   prod: {
@@ -53,7 +53,7 @@ const config: { [string]: configType } = {
     deleteFilesOnLogout: true,
     reduxLogger: false,
     persistFiles: true,
-    debugOnlineIndicator: false,
+    debugMode: false,
     googleAnalyticsTrackingId: 'UA-26890288-3',
   }
 };
