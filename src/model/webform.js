@@ -269,7 +269,6 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
   fieldOptions: {},
   order: Array<string>,
 } => {
-  console.log("CAM I'm calling getWebformTCombData!");
   const ret = {type: {}, fieldOptions: {}, order: []};
 
   const formatDate = (date) => new Date(date).toDateString();
@@ -512,7 +511,12 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
       default:
         console.warn("Widget not implemented for this field type", field);
     }
-    ret.fieldOptions[field.key].hidden = !field.visible;
+
+    // @TODO consider setting up default values for all field options instead of individually in switch.
+    if (ret.fieldOptions[field.key] != undefined) {
+      ret.fieldOptions[field.key].hidden = !field.visible;
+    }
+
   }
 
   if (
