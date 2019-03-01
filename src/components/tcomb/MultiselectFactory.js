@@ -22,7 +22,9 @@ export default class MultiselectFactory extends t.form.Component {
     this.choices = props.options.choices;
     this.single = props.options.single;
     this.label = props.options.label;
-    this.checkVisible = this.checkVisible.bind(this);
+    this.state = {
+      selectedItems: props.value,
+    };
   }
 
   onSelectedItemsChange = selectedItems => {
@@ -38,11 +40,8 @@ export default class MultiselectFactory extends t.form.Component {
     return choices
   }
 
-  checkVisible = (isVisible) => {
-    console.log('FNORD');
-  };
-
   getTemplate() {
+    console.log('getTempalte', this.state.selectedItems);
     let self = this;
     return function (locals) {
       const stylesheet = locals.stylesheet;

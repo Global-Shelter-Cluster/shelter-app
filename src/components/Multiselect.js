@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {FlatList, Text, TextInput, TouchableWithoutFeedback, UIManager, View} from 'react-native';
 import reject from 'lodash/reject';
 import get from 'lodash/get';
-import InViewPort from './InViewPort';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 
@@ -131,6 +130,7 @@ export default class MultiSelect extends Component {
     this.state = {
       searchTerm: ''
     };
+    // console.log(props);
   }
 
   shouldComponentUpdate() {
@@ -309,7 +309,7 @@ export default class MultiSelect extends Component {
   };
 
   checkVisible = (isVisible) => {
-    console.log(this.props.selectedItems);
+    // console.log(this.props.selectedItems);
   };
 
   render() {
@@ -327,39 +327,37 @@ export default class MultiSelect extends Component {
           marginBottom: 10
         }}
       >
-        <InViewPort onChange={(isVisible) => this.checkVisible(isVisible)}>
-          <View style={{
-            flexDirection: 'column',
-            // maxHeight: 100, // TODO: if there are too many options, limit the height, make it scrollable, and turn on the "search" box
-          }}>
-            {false && <View style={styles.inputGroup}>
-              {/*<Icon
-                name="magnify"
-                size={20}
-                color={colorPack.placeholderTextColor}
-                style={{marginRight: 10}}
-              />*/}
-              <TextInput
-                autoFocus={autoFocusInput}
-                onChangeText={this._onChangeInput}
-                blurOnSubmit={false}
-                onSubmitEditing={this._addItem}
-                placeholder={searchInputPlaceholderText}
-                placeholderTextColor={colorPack.placeholderTextColor}
-                underlineColorAndroid="transparent"
-                style={[searchInputStyle, {flex: 1}]}
-                value={searchTerm}
-              />
-            </View>}
-            <View
-              style={{
-                flexDirection: 'column',
-              }}
-            >
-              <View>{this._renderItems()}</View>
-            </View>
+        <View style={{
+          flexDirection: 'column',
+          // maxHeight: 100, // TODO: if there are too many options, limit the height, make it scrollable, and turn on the "search" box
+        }}>
+          {false && <View style={styles.inputGroup}>
+            {/*<Icon
+              name="magnify"
+              size={20}
+              color={colorPack.placeholderTextColor}
+              style={{marginRight: 10}}
+            />*/}
+            <TextInput
+              autoFocus={autoFocusInput}
+              onChangeText={this._onChangeInput}
+              blurOnSubmit={false}
+              onSubmitEditing={this._addItem}
+              placeholder={searchInputPlaceholderText}
+              placeholderTextColor={colorPack.placeholderTextColor}
+              underlineColorAndroid="transparent"
+              style={[searchInputStyle, {flex: 1}]}
+              value={searchTerm}
+            />
+          </View>}
+          <View
+            style={{
+              flexDirection: 'column',
+            }}
+          >
+            <View>{this._renderItems()}</View>
           </View>
-        </InViewPort>
+        </View>
       </View>
     );
   }
