@@ -406,20 +406,45 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         break;
 
       case "number":
-        if (field.required)
-          ret.type[field.key] = t.Number;
-        else
-          ret.type[field.key] = t.maybe(t.Number);
-
         ret.fieldOptions[field.key] = {
           label: field.name + (field.required ? ' *' : ''),
         };
 
+        // Validation functions.
+        let refinementFunctions = [];
+        let refinementDescriptions = [];
+        if (field.max !== undefined) {
+          refinementFunctions.push((n) => n <= field.max);
+          refinementDescriptions.push(`Max ${field.max}.`);
+        }
+
+        if (field.min !== undefined) {
+          refinementFunctions.push((n) => n >= field.min);
+          refinementDescriptions.push(`Min ${field.min}.`);
+        }
+
+        if (field.integer !== undefined) {
+          refinementFunctions.push((n) => Number.isInteger(n));
+          refinementDescriptions.push("Integer.");
+        }
+
+        const refinements = (n) => {
+          for (let i in refinementFunctions) {
+            if (!refinementFunctions[i](n)) return false;
+          }
+          return true;
+        };
+
+        if (field.required)
+          ret.type[field.key] = t.refinement(t.Number, refinements, 'Validation');
+        else
+          ret.type[field.key] = t.maybe(t.refinement(t.Number, refinements, 'Validation'));
+
+        ret.fieldOptions[field.key].help = refinementDescriptions.join(' ');
         if (field.description !== undefined) {
-          ret.fieldOptions[field.key].help = field.description;
+          ret.fieldOptions[field.key].help = field.description + ret.fieldOptions[field.key].help;
         }
         ret.order.push(field.key);
-
         connectKeyboardNextKey(field.key);
         lastField = field.key;
         break;
