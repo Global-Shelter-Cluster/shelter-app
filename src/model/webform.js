@@ -11,6 +11,7 @@ import ImageFactory from "../components/tcomb/ImageFactory";
 import MultiselectFactory from "../components/tcomb/MultiselectFactory";
 import {Permissions} from "expo";
 import {textareaStylesheet} from "../styles/formStyles";
+import GeolocationFactory from "../components/tcomb/GeolocationFactory";
 
 export type WebformObject = {
   _last_read?: number,
@@ -27,7 +28,12 @@ type WebformPage = {
   fields: Array<WebformField>,
 }
 
-type WebformField = WebformTextField | WebformMarkupField | WebformTextAreaField | WebformFileField;
+type WebformField =
+  WebformTextField
+  | WebformMarkupField
+  | WebformTextAreaField
+  | WebformFileField
+  | WebformGeolocationField;
 
 type conditional = {
   field: string,
@@ -69,6 +75,16 @@ type WebformFileField = {
   conditional: conditional,
 }
 
+type WebformGeolocationField = {
+  type: "geolocation",
+  key: string,
+  name: string,
+  required?: true,
+  description?: string,
+  visible: boolean,
+  conditional: conditional,
+}
+
 type WebformMarkupField = {
   type: "markup",
   value: string, // HTML
@@ -100,7 +116,6 @@ export default class Webform {
 export const getPermissionsForWebform = (webform: WebformObject) => {
   const list = {}; // e.g. {"camera": true, "calendar": true}
 
-
   for (const page of webform.form) {
     for (const field of page.fields) {
       switch (field.type) {
@@ -109,7 +124,10 @@ export const getPermissionsForWebform = (webform: WebformObject) => {
           list[Permissions.CAMERA] = true;
           break;
 
-        // TODO: geolocation
+        case "geolocation":
+          list[Permissions.LOCATION] = true;
+          break;
+
       }
     }
   }
@@ -251,7 +269,6 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
   fieldOptions: {},
   order: Array<string>,
 } => {
-  console.log("CAM I'm calling getWebformTCombData!");
   const ret = {type: {}, fieldOptions: {}, order: []};
 
   const formatDate = (date) => new Date(date).toDateString();
@@ -456,8 +473,28 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
             break;
 
           default:
-            console.warn("Widget not implemented for this file type", field);
+            console.warn("Widget not implemented for this field type", field);
         }
+        break;
+
+      case "geolocation":
+        if (field.required)
+          ret.type[field.key] = t.struct({lat: t.Number, lon: t.Number});
+        else
+          ret.type[field.key] = t.maybe(t.struct({lat: t.Number, lon: t.Number}));
+
+        ret.fieldOptions[field.key] = {
+          label: field.name + (field.required ? ' *' : ''),
+          factory: GeolocationFactory,
+          config: {title: field.name + (field.required ? ' *' : '')},
+        };
+
+        if (field.description !== undefined) {
+          ret.fieldOptions[field.key].config.help = field.description;
+        }
+        ret.order.push(field.key);
+
+        lastField = field.key;
         break;
 
       case "markup": // not very pretty but gets the job done
@@ -470,8 +507,16 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         };
         ret.order.push(key);
         break;
-    };
-    ret.fieldOptions[field.key].hidden = !field.visible;
+
+      default:
+        console.warn("Widget not implemented for this field type", field);
+    }
+
+    // @TODO consider setting up default values for all field options instead of individually in switch.
+    if (ret.fieldOptions[field.key] != undefined) {
+      ret.fieldOptions[field.key].hidden = !field.visible;
+    }
+
   }
 
   if (
@@ -480,17 +525,10 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
   ) {
     const isLastPage = page === (webform.form.length - 1);
 
-    if (isLastPage) {
-      ret.fieldOptions[lastKeyboardField].returnKeyType = "send";
-      // TODO
-    } else {
-      ret.fieldOptions[lastKeyboardField].returnKeyType = "next";
-    }
-
+    ret.fieldOptions[lastKeyboardField].returnKeyType = isLastPage ? "send" : "next";
     ret.fieldOptions[lastKeyboardField].onSubmitEditing = onSubmit;
   }
 
   ret.type = t.struct(ret.type);
-  // console.log(ret);
   return ret;
 };

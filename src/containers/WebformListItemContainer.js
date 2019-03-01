@@ -6,9 +6,9 @@ import {getObject} from "../model";
 import {withNavigation} from 'react-navigation';
 import {convertFiles} from "../model/file";
 import type {WebformObject} from "../model/webform";
+import {getPermissionsForWebform} from "../model/webform";
 import WebformListItem from "../components/WebformListItem";
 import {ensurePermissions} from "../permission";
-import {getPermissionsForWebform} from "../model/webform";
 
 const mapStateToProps = (state, props) => {
   const webform: WebformObject = convertFiles(state, 'webform', getObject(state, 'webform', props.id));

@@ -155,7 +155,6 @@ export default class Webform extends React.Component<Props> {
         refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
       >
         <Text style={styles.title}>{webform.title}</Text>
-        {/*<ContextualNavigation object={webform}/>*/}
         <View style={styles.info}>
           <View style={{flex: 1}}>
             {webform.description !== undefined && webform.description && <HTML html={webform.description}/>}

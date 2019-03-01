@@ -51,7 +51,7 @@ const mapStateToProps = (state, props) => {
     loading: state.flags.loading,
     submitting: state.flags.submitting,
     lastError: state.lastError,
-    webform: webform,
+    webform,
     queued: state.bgProgress.assessmentFormSubmissions.filter(s => s.type === "webform" && s.id === webform.id).length,
   };
 };
