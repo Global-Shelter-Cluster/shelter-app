@@ -14,6 +14,7 @@ import config from "../config";
 import type {flags} from "../reducers/flags";
 import type {newAccountValues} from "../screens/auth/Signup";
 import type {notificationType} from "../reducers/notification";
+import type {localVarsTypeAllOptional} from "../reducers/localVars";
 
 export const CHANGE_FLAG = 'CHANGE_FLAG';
 export const changeFlag = (flag: flags, value: boolean) => ({
@@ -134,7 +135,7 @@ export const markSeen = (objectType: ObjectType, id: number) => async dispatch =
 };
 
 export const ADD_SEEN_OBJECT = 'ADD_SEEN_OBJECT';
-export const addSeenObject = (objectType: ObjectType, id: number) => ({
+const addSeenObject = (objectType: ObjectType, id: number) => ({
   type: ADD_SEEN_OBJECT,
   objectType: objectType,
   id,
@@ -218,6 +219,11 @@ const processBackgroundTasks = () => async (dispatch, getState) => {
 
   mainLoop:
     while (state.bgProgress.operationsLeft > 0) {
+      if (state.bgProgress.operationsLeft === state.bgProgress.filesLeft.length && !state.localVars.downloadFiles) {
+        // Only file downloads are left, and these are turned off
+        break;
+      }
+
       while (!state.flags.online) {
         await timeout(5000);
         state = getState();
@@ -232,8 +238,10 @@ const processBackgroundTasks = () => async (dispatch, getState) => {
           break;
 
         case "file":
-          await persist.saveFile(state.bgProgress.filesLeft[0]);
-          dispatch(oneFileDownloaded());
+          if (state.localVars.downloadFiles) {
+            await persist.saveFile(state.bgProgress.filesLeft[0]);
+            dispatch(oneFileDownloaded());
+          }
           break;
 
         default:
@@ -331,4 +339,18 @@ export const setNotification = (notification: notificationType) => ({
 export const CLEAR_NOTIFICATION = 'CLEAR_NOTIFICATION';
 export const clearNotification = () => ({
   type: CLEAR_NOTIFICATION,
+});
+
+export const saveLocalVars = (localVars: localVarsTypeAllOptional) => async dispatch => {
+  dispatch(mergeLocalVars(localVars));
+  await persist.saveLocalVars();
+
+  if (localVars.downloadFiles) // Special case: we're turning on file downloads, so we make them resume if needed.
+    dispatch(processBackgroundTasks());
+};
+
+export const MERGE_LOCAL_VARS = 'MERGE_LOCAL_VARS';
+export const mergeLocalVars = (localVars: localVarsTypeAllOptional) => ({
+  type: MERGE_LOCAL_VARS,
+  localVars,
 });

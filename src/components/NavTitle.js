@@ -11,7 +11,7 @@ const NavTitle = ({online, title, subtitle, downloading}: {
   online: boolean,
   title: string,
   subtitle?: string | null,
-  downloading: { value: number, total: number },
+  downloading: { value: number, total: number, hide: boolean },
 }) => {
   let icon = null;
   if (subtitle === '')
@@ -19,7 +19,7 @@ const NavTitle = ({online, title, subtitle, downloading}: {
 
   if (!online)
     icon = <FontAwesome key="online" name="wifi" size={20} color={vars.ACCENT_RED}/>;
-  else if (downloading.total > 0) {
+  else if (!downloading.hide && downloading.total > 0) {
     const downloadingIcons = [
       'hourglass-01',
       'hourglass-02',

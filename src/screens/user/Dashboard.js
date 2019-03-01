@@ -10,8 +10,9 @@ import AlertListItemContainer from '../../containers/AlertListItemContainer';
 import Collapsible from "../../components/Collapsible";
 import type {AssessmentFormType} from "../../persist";
 import WebformListItemContainer from "../../containers/WebformListItemContainer";
+import FirstTimeFileDownloadNoticeContainer from "../../containers/FirstTimeFileDownloadNoticeContainer";
 
-export default ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}: {
+const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}: {
   loading: boolean,
   queuedFormSubmissions: Array<{ type: AssessmentFormType, id: number, count: number }>,
   user: PrivateUserObject,
@@ -61,6 +62,7 @@ export default ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}: {
       style={{flex: 1}}
       refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
     >
+      <FirstTimeFileDownloadNoticeContainer/>
       <UserContainer user={user} showEdit={true}/>
       {submissions}
       {alerts}
@@ -71,3 +73,5 @@ export default ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}: {
     <IndicatorRowContainer/>
   </View>;
 };
+
+export default Dashboard;
