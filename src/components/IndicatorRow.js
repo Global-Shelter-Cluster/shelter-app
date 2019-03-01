@@ -26,6 +26,7 @@ type Props = {
   online: boolean,
   setOnline: (boolean) => {},
   bgProgress: bgProgressType,
+  fileDownloadsDisabled: boolean,
 };
 
 type State = {
@@ -41,7 +42,7 @@ export default class IndicatorRow extends React.Component<Props, State> {
   }
 
   render() {
-    const {online, setOnline, bgProgress} = this.props;
+    const {online, setOnline, bgProgress, fileDownloadsDisabled} = this.props;
 
     let currentOperationDescription = '';
     if (online) {
@@ -61,14 +62,17 @@ export default class IndicatorRow extends React.Component<Props, State> {
       ? <RotatingLoadingIcon/>
       : null;
 
-    const progressIndicator = bgProgress.totalCount > 0
+    // Hide the indicator if there's only file downloads left and these are turned off
+    const hideProgressIndicator = (fileDownloadsDisabled && bgProgress.totalCount > 0 && bgProgress.operationsLeft === bgProgress.filesLeft.length)
+
+    const progressIndicator = !hideProgressIndicator && bgProgress.totalCount > 0
       ? <View style={{flexDirection: "row", padding: 10, flex: 1}}>
         {loadingIcon}
         <SingleLineText>{currentOperationDescription}</SingleLineText>
       </View>
       : null;
 
-    const onlineIndicator = config.debugOnlineIndicator
+    const onlineIndicator = config.debugMode
       ? <Text
         onPress={() => setOnline(!online)}
         onLongPress={() => persist.clearAll(true)}

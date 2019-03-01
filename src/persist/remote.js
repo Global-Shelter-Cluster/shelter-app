@@ -46,7 +46,7 @@ class Remote {
   auth: null | authType = null;
 
   async _post(path: string, data: { credentials?: {}, pushNotificationToken?: string | null } = {}): Promise<{ objects?: Objects, authorization?: authType }> {
-    console.debug('Axios POST request', path, data, this.auth);
+    // console.debug('Axios POST request', path, data, this.auth);
 
     try {
       // TODO decide if we want to maintain basic auth on dev and exclude service routes.
@@ -73,7 +73,7 @@ class Remote {
       }
 
       const response = await axios.post(path, JSON.stringify(data), axiosConfigs);
-      console.debug('Axios response', response.data);
+      // console.debug('Axios response', response.data);
 
       // Update token after using refresh_token.
       if (
@@ -175,6 +175,15 @@ class Remote {
       throw new Error(data.assessment_errors);
 
     return null;
+  }
+
+  async getFilesSize(urls: Array<string>): Promise<number> {
+    try {
+      const data = await this._post('/get-files-size', urls);
+      return parseInt(data.total, 10);
+    } catch (e) {
+      return 0;
+    }
   }
 }
 

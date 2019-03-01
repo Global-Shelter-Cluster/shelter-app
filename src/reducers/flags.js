@@ -24,7 +24,7 @@ const initialFlags = {
 
 export type flags = "initializing" | "online" | "loggingIn" | "loading" | "following" | "submitting" | "processing";
 
-const initializing = (state: flagsType = initialFlags, action: { type: string, flag: flags, value: boolean }) => {
+const flagsReducer = (state: flagsType = initialFlags, action: { type: string, flag: flags, value: boolean }) => {
   switch (action.type) {
     case CHANGE_FLAG:
       const newState = Object.assign({}, state);
@@ -35,4 +35,4 @@ const initializing = (state: flagsType = initialFlags, action: { type: string, f
   }
 };
 
-export default initializing;
+export default flagsReducer;
