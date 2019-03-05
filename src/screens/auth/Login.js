@@ -8,6 +8,9 @@ import t from 'tcomb-form-native';
 import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import i18n from "../../i18n";
+
+const translation = new i18n();
 
 const Form = t.form.Form;
 
@@ -57,7 +60,7 @@ export default class Login extends React.Component<Props, State> {
       loginButton = <Text style={styles.text}>Logging in...</Text>;
     else {
       loginButton = <Button
-        primary title="Log in"
+        primary title={translation.t("Log in")}
         onPress={() => this.login()}
       />;
     }
