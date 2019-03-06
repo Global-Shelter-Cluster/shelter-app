@@ -73,7 +73,8 @@ class FactsheetScreen extends React.Component<Props> {
   }
 
   title(date) {
-    return moment(date).utc().format('MMM YYYY') + ' Factsheet';
+    // "factsheet.date" is a string like "2019-03", not a timestamp, so we don't do ".utc()" here
+    return moment(date).format('MMM YYYY') + ' Factsheet';
   }
 
   render() {

@@ -19,6 +19,8 @@ export default FactsheetNavigation = ({prev, next, enter}: {
 
   const links = [];
 
+  // "factsheet.date" is a string like "2019-03", not a timestamp, so we don't do ".utc()" here
+
   if (prev)
     links.push(<TouchableOpacity key="prev" onPress={() => enter(prev.id)} style={styles.linkContainer}>
       <FontAwesome
@@ -26,13 +28,13 @@ export default FactsheetNavigation = ({prev, next, enter}: {
         style={styles.icon}
       />
       <SingleLineText
-        style={styles.label}>{moment(prev.date).utc().format('MMM YYYY')}</SingleLineText>
+        style={styles.label}>{moment(prev.date).format('MMM YYYY')}</SingleLineText>
     </TouchableOpacity>);
 
   if (next)
     links.push(<TouchableOpacity key="next" onPress={() => enter(next.id)} style={styles.linkContainer}>
       <SingleLineText
-        style={[styles.label, {textAlign: "right"}]}>{moment(next.date).utc().format('MMM YYYY')}</SingleLineText>
+        style={[styles.label, {textAlign: "right"}]}>{moment(next.date).format('MMM YYYY')}</SingleLineText>
       <FontAwesome
         name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
         style={styles.icon}
