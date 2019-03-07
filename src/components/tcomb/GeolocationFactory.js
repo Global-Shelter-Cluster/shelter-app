@@ -24,6 +24,7 @@ const initialRegion = {
 type Props = {
   title: string,
   value?: { lat: number, lon: number },
+  options?: { config?: { current_coordinates?: true } },
 };
 
 type State = {
@@ -56,6 +57,13 @@ class GeolocationFactory extends Component<Props, State> {
         modal: false,
         modalCounter: 0,
       };
+  }
+
+  componentDidMount() {
+    if (this.state.lat === undefined && this.props.options.config.current_coordinates)
+      this._setCurrentLocation();
+    else if (this.state.lat !== undefined)
+      super.getLocals().onChange({lat: this.state.lat, lon: this.state.lon});
   }
 
   _getRegionFromCoords(lat: number, lon: number): Region {
