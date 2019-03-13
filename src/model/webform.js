@@ -83,6 +83,7 @@ type WebformGeolocationField = {
   description?: string,
   visible: boolean,
   conditional: conditional,
+  current_coordinates?: true,
 }
 
 type WebformMarkupField = {
@@ -511,7 +512,10 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
         ret.fieldOptions[field.key] = {
           label: field.name + (field.required ? ' *' : ''),
           factory: GeolocationFactory,
-          config: {title: field.name + (field.required ? ' *' : '')},
+          config: {
+            title: field.name + (field.required ? ' *' : ''),
+            current_coordinates: field.current_coordinates ? true : false,
+          },
         };
 
         if (field.description !== undefined) {
