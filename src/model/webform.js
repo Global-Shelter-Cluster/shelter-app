@@ -425,7 +425,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
         if (field.integer !== undefined) {
           refinementFunctions.push((n) => Number.isInteger(n));
-          refinementDescriptions.push("Integer.");
+          refinementDescriptions.push("Integer");
         }
 
         const refinements = (n) => {
