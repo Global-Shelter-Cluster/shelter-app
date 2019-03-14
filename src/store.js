@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 import config from "./config";
 import i18n from "./i18n";
 
-const middlewares = [thunk, i18n.subscribe];
+const middlewares = [thunk, i18n.reduxMiddleware];
 
 if (config.reduxLogger) {
   const {logger} = require(`redux-logger`);

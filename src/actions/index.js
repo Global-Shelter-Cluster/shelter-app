@@ -64,7 +64,7 @@ export const setCurrentLanguages = language => {
 }
 
 export const getTranslations = (lang, forceRefresh = false) => async dispatch => {
-  const done = false;
+  let done = false;
   if (!forceRefresh) {
     const translations = await Storage.getItem(`translations_${lang}`);
     if (translations !== null) {

@@ -9,7 +9,6 @@ import {logout} from "./src/actions";
 import i18n from "./src/i18n";
 
 persist.store = store;
-i18n.store = store;
 
 // // TEMP: clear everything (logout, etc)
 // persist.clearAll();

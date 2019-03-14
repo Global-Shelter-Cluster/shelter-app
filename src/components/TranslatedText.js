@@ -6,8 +6,8 @@ import i18n from '../i18n';
 class TranslatedText extends Component {
 
   getTranslation = () => {
-    const translation = this.props.translations[this.props.text];
-    return translation ? translation: this.props.text;
+    // const translation = this.props.translations[this.props.text];
+    // return translation ? translation: this.props.text;
     return i18n.t(this.props.text);
   };
 
@@ -20,8 +20,9 @@ class TranslatedText extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  translations: state.languages.translations,
-});
-
-export default connect(mapStateToProps)(TranslatedText);
+// const mapStateToProps = state => ({
+//   translations: state.languages.translations,
+// });
+//
+// export default connect(mapStateToProps)(TranslatedText);
+export default TranslatedText;
