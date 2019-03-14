@@ -3,15 +3,15 @@
 import type {Objects} from "../model";
 import type {ObjectRequest} from "./index";
 import persist from "./index";
-import axiosLib from 'axios';
+import axiosLib from "axios";
 import config from "../config";
 import type {newAccountValues} from "../screens/auth/Signup";
 
 const axios = axiosLib.create({
-  baseURL: config.baseUrl + '/api-v1',
+  baseURL: config.baseUrl + "/api-v1",
   headers: {
     post: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
   },
 });
@@ -100,6 +100,7 @@ class Remote {
       }
 
       //console.debug('Axios response', (response.request._response.length / 1024).toFixed(1) + 'KB');//, response.data);
+      // console.log('languages:', response.data.objects.languages);
       return response.data;
     } catch (e) {
       //console.error('Axios error', e);
@@ -185,6 +186,17 @@ class Remote {
       return 0;
     }
   }
+
+  async getTranslations(lang: String) {
+    const res = await axiosLib.get(`${config.baseUrl}/api-v1/app-translations/${lang}.json`);
+    return res;
+  }
+
+  async getEnabledLanguages() {
+    const res = await axios.get(`${config.baseUrl}/api-v1/app-languages`);
+    return res;
+  }
+
 }
 
 export default Remote;

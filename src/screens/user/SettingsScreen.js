@@ -44,7 +44,6 @@ const initialState = {
 const mapStateToProps = state => {
   const user: PrivateUserObject = convertFiles(state, 'user', getCurrentUser(state));
   // @TODO hoping that language is added to state.
-  //console.log(state);
   return {
     online: state.flags.online,
     loading: state.flags.loading,

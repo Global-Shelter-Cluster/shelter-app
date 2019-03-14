@@ -6,8 +6,10 @@ import AppContainer from './src/containers/AppContainer';
 import persist from "./src/persist";
 import store from "./src/store";
 import {logout} from "./src/actions";
+import i18n from "./src/i18n";
 
 persist.store = store;
+i18n.store = store;
 
 // // TEMP: clear everything (logout, etc)
 // persist.clearAll();

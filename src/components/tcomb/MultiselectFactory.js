@@ -42,6 +42,7 @@ export default class MultiselectFactory extends t.form.Component {
 
   getTemplate() {
     let self = this;
+
     return function (locals) {
       const stylesheet = locals.stylesheet;
       // console.log('CAMlocals',locals);

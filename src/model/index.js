@@ -24,8 +24,6 @@ import type {ContactObject} from "./contact";
 import Contact from "./contact";
 import type {PageObject} from "./page";
 import Page from "./page";
-import type {LanguageObject} from "./language";
-import Language from "./language";
 
 export type ObjectType =
   "global"
@@ -38,8 +36,7 @@ export type ObjectType =
   | "webform"
   | "alert"
   | "contact"
-  | "page"
-  | "language";
+  | "page";
 
 export type Objects = {
   global?: { [id: string]: GlobalObject },
@@ -53,7 +50,6 @@ export type Objects = {
   alert?: { [id: string]: AlertObject },
   contact?: { [id: string]: ContactObject },
   page?: { [id: string]: PageObject },
-  language?: { [id: string]: PageObject },
 }
 
 export type ObjectIds = {
@@ -68,7 +64,6 @@ export type ObjectIds = {
   alert?: Array<number>,
   contact?: Array<number>,
   page?: Array<number>,
-  language?: Array<string>,
 }
 
 const hour = 3600;
@@ -85,7 +80,6 @@ export const expirationLimitsByObjectType = {
   "alert": hour * 24,
   "contact": hour * 24,
   "page": hour * 24,
-  "language": hour * 24,
 };
 
 export type Object =
@@ -99,8 +93,7 @@ export type Object =
   | WebformObject
   | AlertObject
   | ContactObject
-  | PageObject
-  | LanguageObject;
+  | PageObject;
 
 export const initialObjectsState: Objects = {
   global: {
@@ -121,7 +114,6 @@ export const initialObjectsState: Objects = {
   alert: {},
   contact: {},
   page: {},
-  language: {},
 };
 
 export const initialObjectIdsState: ObjectIds = {
@@ -136,7 +128,6 @@ export const initialObjectIdsState: ObjectIds = {
   alert: [],
   contact: [],
   page: [],
-  language: [],
 };
 
 const mapTypesToClasses = {
@@ -151,7 +142,6 @@ const mapTypesToClasses = {
   'alert': Alert,
   'contact': Contact,
   'page': Page,
-  'language': Language,
 };
 
 // Highest level of detail, e.g. a user object includes the list of followed groups.

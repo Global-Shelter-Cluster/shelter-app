@@ -10,8 +10,6 @@ import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import i18n from "../../i18n";
 
-const translation = new i18n();
-
 const Form = t.form.Form;
 
 type Props = {
@@ -60,7 +58,7 @@ export default class Login extends React.Component<Props, State> {
       loginButton = <Text style={styles.text}>Logging in...</Text>;
     else {
       loginButton = <Button
-        primary title={translation.t("Log in")}
+        primary title='Log in'//{i18n.t("Log in")}
         onPress={() => this.login()}
       />;
     }

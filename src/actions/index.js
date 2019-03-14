@@ -15,6 +15,7 @@ import type {flags} from "../reducers/flags";
 import type {newAccountValues} from "../screens/auth/Signup";
 import type {notificationType} from "../reducers/notification";
 import type {localVarsTypeAllOptional} from "../reducers/localVars";
+import Storage from "../persist/storage_async";
 
 export const CHANGE_FLAG = 'CHANGE_FLAG';
 export const changeFlag = (flag: flags, value: boolean) => ({
@@ -40,6 +41,50 @@ export const CLEAR_ALL_OBJECTS = 'CLEAR_ALL_OBJECTS';
 export const clearAllObjects = () => ({
   type: CLEAR_ALL_OBJECTS,
 });
+
+export const updateTranslations = translations => {
+  return {
+    type: "UPDATE_TRANSLATIONS",
+    translations
+  }
+}
+
+export const updateLanguages = languages => {
+  return {
+    type: "UPDATE_LANGUAGES",
+    languages
+  }
+}
+
+export const setCurrentLanguages = language => {
+  return {
+    type: "SET_CURRENT_LANGUAGE",
+    language
+  }
+}
+
+export const getTranslations = (lang, forceRefresh = false) => async dispatch => {
+  const done = false;
+  if (!forceRefresh) {
+    const translations = await Storage.getItem(`translations_${lang}`);
+    if (translations !== null) {
+      dispatch(updateTranslations(JSON.parse(translations)));
+      done = true;
+    }
+  }
+
+  if (!done) {
+    if (lang != 'en') {
+      const translations = await persist.getTranslations(lang);
+      await Storage.setItem(`translations_${lang}`, JSON.stringify(translations));
+      dispatch(updateTranslations(translations));
+    } else {
+      // Setting empty object will let all string fallback to their initial untranslated english value.
+      dispatch(updateTranslations({}));
+    }
+  }
+  // Notify translation service.
+}
 
 export const login = (user: string, pass: string) => async dispatch => {
   dispatch(clearLastError());

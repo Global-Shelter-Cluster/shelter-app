@@ -10,6 +10,7 @@ import bgProgress from './bgProgress';
 import files from './files';
 import notification from './notification';
 import localVars from './localVars';
+import languages from './languages';
 
 export default combineReducers({
   flags,
@@ -21,4 +22,5 @@ export default combineReducers({
   files,
   notification,
   localVars,
+  languages,
 });
