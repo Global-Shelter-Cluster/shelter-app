@@ -8,13 +8,12 @@ class TranslatedText extends Component {
   getTranslation = () => {
     const translation = this.props.translations[this.props.text];
     return translation ? translation: this.props.text;
-    // return i18n.t(this.props.text);
   };
 
   render() {
     return (
       <View>
-        <Text>{ this.getTranslation() }</Text>
+        <Text style={this.props.style}>{ this.getTranslation() }</Text>
       </View>
     );
   }

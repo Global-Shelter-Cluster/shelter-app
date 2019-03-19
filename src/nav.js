@@ -8,6 +8,7 @@ import {
   NavigationActions,
   createAppContainer
 } from "react-navigation";
+import { StyleSheet } from "react-native";
 import TranslatedText from './components/TranslatedText';
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
@@ -81,30 +82,31 @@ const TabScreens = createBottomTabNavigator({
   Me: {
     screen: MeStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText text="Me" />,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Me" />,
     },
   },
   Operations: {
     screen: OperationsStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText text="Operations" />,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Operations" />,
     },
   },
   // Chat: ChatStack, //TODO: hide this for now
   Resources: {
     screen: ResourcesStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText text="Resources" />,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Resources" />,
     },
   },
   Search: {
     screen: SearchStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText text="Search" />,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Search" />,
     },
   },
 }, {
   defaultNavigationOptions: ({navigation}) => ({
+    lazy: false,
     tabBarIcon: ({focused, tintColor}) => {
       const {routeName} = navigation.state;
 
@@ -125,6 +127,12 @@ const TabScreens = createBottomTabNavigator({
       inactiveTintColor: vars.MEDIUM_GREY,
     },
   }),
+});
+
+const styles = StyleSheet.create({
+  tabLabel: {
+    fontSize: 12,
+  }
 });
 
 const MainNavigator = createSwitchNavigator(

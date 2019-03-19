@@ -6,6 +6,7 @@ import {FontAwesome} from '@expo/vector-icons';
 import Hourglasses from '../hourglasses';
 import vars from "../vars";
 import SingleLineText from "./SingleLineText";
+import TranslatedText from "./TranslatedText";
 
 const NavTitle = ({online, title, subtitle, downloading}: {
   online: boolean,
@@ -56,7 +57,7 @@ const NavTitle = ({online, title, subtitle, downloading}: {
   }
 
   const titleLine = icon === null
-    ? <Text style={[styles.title, styles.container]} numberOfLines={1} ellipsizeMode="middle">{title}</Text>
+    ? <TranslatedText text={title} style={[styles.title, styles.container]} numberOfLines={1} ellipsizeMode="middle" />
     : <Text style={styles.container} numberOfLines={1}>
       {icon}
       <Text style={styles.title} numberOfLines={1} ellipsizeMode="middle">{" " + title}</Text>

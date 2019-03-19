@@ -12,7 +12,6 @@ import type {AssessmentFormType} from "../../persist";
 import WebformListItemContainer from "../../containers/WebformListItemContainer";
 import FirstTimeFileDownloadNoticeContainer from "../../containers/FirstTimeFileDownloadNoticeContainer";
 import i18n from "../../i18n";
-import TranslatedText from "../../components/TranslatedText";
 
 const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}: {
   loading: boolean,

@@ -81,7 +81,6 @@ class SettingsScreen extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return true;
     return !propEqual(this.state, nextState, ['tab'], ['user', 'localVars'])
       || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting'], ['user', 'localVars', 'lastError']);
   }

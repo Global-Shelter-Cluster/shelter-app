@@ -14,6 +14,7 @@ import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import type {AssessmentFormType} from "../../persist";
 import i18n from "../../i18n";
+import TranslatedText from "../../components/TranslatedText";
 
 type Props = {
   loading: boolean,
@@ -50,7 +51,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class DashboardScreen extends React.Component<Props> {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = () => {
     return {
       headerTitle: <NavTitleContainer title={i18n.t("Dashboard")}/>,
       headerRight: <LogoutNavButtonContainer/>,
