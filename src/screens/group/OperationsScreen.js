@@ -15,6 +15,7 @@ import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
+import i18n from "../../i18n";
 
 type Props = {
   online: boolean,
@@ -50,7 +51,7 @@ const mapDispatchToProps = dispatch => ({
 
 class OperationsScreen extends React.Component<Props, State> {
   static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Operations"/>,
+    headerTitle: <NavTitleContainer title={i18n.t("Operations")} />,
   };
 
   constructor(props: Props) {

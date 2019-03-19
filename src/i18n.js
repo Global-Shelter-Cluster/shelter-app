@@ -16,7 +16,6 @@ class Translations {
     return next => async action => {
       const returnValue = next(action);
       if (action.type == "UPDATE_TRANSLATIONS") {
-        console.log(getState().languages);
         this.updateTranslations(getState);
       }
       return returnValue;

@@ -8,6 +8,7 @@ import {
   NavigationActions,
   createAppContainer
 } from "react-navigation";
+import TranslatedText from './components/TranslatedText';
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
 import ForgotScreen from "./screens/auth/ForgotScreen";
@@ -34,6 +35,7 @@ import AlertListScreen from "./screens/group/AlertListScreen";
 import ContactScreen from "./screens/view/ContactScreen";
 import UserListScreen from "./screens/group/UserListScreen";
 import UserScreen from "./screens/view/UserScreen";
+import i18n from "./i18n";
 
 const AuthScreens = createSwitchNavigator({
   Login: LoginScreen,
@@ -78,14 +80,29 @@ const SearchStack = createStackNavigator({
 const TabScreens = createBottomTabNavigator({
   Me: {
     screen: MeStack,
-    defaultNavigationOptions: {
-      tabBarLabel: "User",
+    navigationOptions: {
+      tabBarLabel: () => <TranslatedText text="Me" />,
     },
   },
-  Operations: OperationsStack,
+  Operations: {
+    screen: OperationsStack,
+    navigationOptions: {
+      tabBarLabel: () => <TranslatedText text="Operations" />,
+    },
+  },
   // Chat: ChatStack, //TODO: hide this for now
-  Resources: ResourcesStack,
-  Search: SearchStack,
+  Resources: {
+    screen: ResourcesStack,
+    navigationOptions: {
+      tabBarLabel: () => <TranslatedText text="Resources" />,
+    },
+  },
+  Search: {
+    screen: SearchStack,
+    navigationOptions: {
+      tabBarLabel: () => <TranslatedText text="Search" />,
+    },
+  },
 }, {
   defaultNavigationOptions: ({navigation}) => ({
     tabBarIcon: ({focused, tintColor}) => {

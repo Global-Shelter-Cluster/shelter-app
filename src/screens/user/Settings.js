@@ -1,6 +1,15 @@
 // @flow
 import React from 'react';
-import {FlatList, RefreshControl, ScrollView, Text, View} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet
+} from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 import {formStylesheet} from "../../styles/formStyles";
@@ -18,6 +27,9 @@ import connect from "react-redux/es/connect/connect";
 import { setCurrentLanguages, getTranslations } from "../../actions";
 import TranslatedText from "../../components/TranslatedText";
 import MultiselectFactory from "../../components/tcomb/MultiselectFactory";
+import i18n from "../../i18n";
+import {FontAwesome} from '@expo/vector-icons';
+import vars from "../../vars";
 
 const Form = t.form.Form;
 
@@ -48,7 +60,8 @@ type Props = {
 
 type State = {
   languageValue: string,
-  languageOptions: {},
+  languageOptionsOld: {},
+  languageOptions: [],
   _languageForm: () => void,
 };
 
@@ -58,10 +71,10 @@ class Settings extends React.Component<Props, State> {
     super(props);
     this.state = {
       languageValue: props.currentLanguage,
-      languageOptions: {
+      languageOptionsOld: {
         fields: {
           languages: {
-            label: 'Select your language',
+            label: i18n.t("Select your language"),
             single: true,
             choices: this.props.languageOptions,
             factory: MultiselectFactory,
@@ -69,6 +82,7 @@ class Settings extends React.Component<Props, State> {
           }
         }
       },
+      languageOptions: [],
       _languageForm: () => {},
     };
   }
@@ -77,11 +91,18 @@ class Settings extends React.Component<Props, State> {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
   }
 
-  _onChangeLanguage = () => {
-    const selectedLanguage = this._languageForm.getValue().languages[0];
-    const lang = this.props.languageOptions[selectedLanguage];
+  _onPress = async (lang)  => {
     this.props.setLanguage(lang);
-    this.props.getTranslations(lang);
+    await this.props.getTranslations(lang);
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'Dashboard' })],
+    });
+    this.props.navigation.dispatch(resetAction);
+  }
+
+  _onRefreshLanguages = async () => {
+    await this.props.languageOptions.forEach((lang) => this.props.getTranslations(lang, true));
   }
 
   render() {
@@ -93,7 +114,7 @@ class Settings extends React.Component<Props, State> {
         if (equal(lastError, {type: 'object-load', data: {type: 'user', id: user.id}})) {
           content = <MultiLineButton
             onPress={refresh}
-            title="Error loading, please check your connection and try again"
+            title={<Text>"Error loading, please check your connection and try again"</Text>}
           />;
           break;
         }
@@ -147,13 +168,13 @@ class Settings extends React.Component<Props, State> {
               stylesheet: formStylesheet,
               fields: {
                 downloadFiles: {
-                  label: "Download files",
-                  help: "Allows for offline use of documents.",
+                  label: i18n.t("Download files"),
+                  help: i18n.t("Allows for offline use of documents."),
                   template: singleRowCheckbox,
                 },
                 askedToDownloadFiles: {
-                  label: "Asked to download files",
-                  help: "Only available in DEBUG mode.",
+                  label: i18n.t("Asked to download files"),
+                  help: i18n.t("Only available in DEBUG mode."),
                   template: singleRowCheckbox,
                 },
               },
@@ -161,14 +182,20 @@ class Settings extends React.Component<Props, State> {
             onChange={onChangeLocalVars}
             value={localVars}
           />
-          <Form
-            ref={(ref) => this._languageForm = ref}
-            type={languageModel}
-            options={this.state.languageOptions}
-            value={this.state.languageValue}
-            onChange={this._onChangeLanguage}
-          />
-          <Text>Current language: {this.props.currentLanguage}</Text>
+
+          <TranslatedText text="Select your language" />
+          { this.props.languageOptions.map((lang) => (
+            <TouchableOpacity
+              key={lang}
+              style={[styles.option, lang === this.props.currentLanguage ? styles.current: '']}
+              onPress={() => this._onPress(lang)}
+            >
+              <Text style={[lang === this.props.currentLanguage ? styles.textCurrent: '']}>{lang}</Text>
+            </TouchableOpacity>
+          ))}
+
+
+          <Button title={i18n.t("Import all translations")} onPress={this._onRefreshLanguages}/>
           <TranslatedText text="App testing string"/>
         </ScrollView>;
         break;
@@ -189,6 +216,25 @@ class Settings extends React.Component<Props, State> {
     </View>;
   }
 }
+const styles = StyleSheet.create({
+  option: {
+    alignItems:'center',
+    color: '#000',
+    borderRadius: 13,
+    borderWidth: 1,
+    height: 26,
+    justifyContent: 'center',
+    margin: 5,
+    width: 26,
+  },
+  current: {
+    backgroundColor: vars.MEDIUM_GREY,
+    borderWidth: 0,
+  },
+  textCurrent: {
+    color: '#fff',
+  },
+});
 
 const mapStateToProps = state => ({
   enabledLanguages: state.languages.enabled,
@@ -198,7 +244,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setLanguage: (lang) => dispatch(setCurrentLanguages(lang)),
-  getTranslations: (lang) => dispatch(getTranslations(lang))
+  getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh))
 });
 
 export default Settings = connect(mapStateToProps, mapDispatchToProps)(Settings);

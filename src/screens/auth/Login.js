@@ -58,7 +58,7 @@ export default class Login extends React.Component<Props, State> {
       loginButton = <Text style={styles.text}>Logging in...</Text>;
     else {
       loginButton = <Button
-        primary title='Log in'//{i18n.t("Log in")}
+        primary title={i18n.t("Log in")}
         onPress={() => this.login()}
       />;
     }
@@ -74,7 +74,7 @@ export default class Login extends React.Component<Props, State> {
         dimmed style={{marginTop: 5}}
         onPress={() => {
           this.props.navigation.navigate('Forgot');
-        }} title="Forgot your username/password?"/>
+        }} title={i18n.t("Forgot your username/password?")} />
       : null;
 
     return (
@@ -99,7 +99,7 @@ export default class Login extends React.Component<Props, State> {
               fields: {
                 username: {
                   textContentType: "username",
-                  placeholder: "Username or e-mail address",
+                  placeholder: i18n.t("Username or e-mail address"),
                   onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
                   returnKeyType: "next",
                   autoCapitalize: "none",

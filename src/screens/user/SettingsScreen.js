@@ -15,6 +15,7 @@ import {PageHit} from "expo-analytics";
 import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import type {localVarsType, localVarsTypeAllOptional} from "../../reducers/localVars";
+import i18n from "../../i18n";
 
 type Props = {
   online: boolean,
@@ -69,7 +70,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 
 class SettingsScreen extends React.Component<Props, State> {
   static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Settings"/>,
+    headerTitle: <NavTitleContainer title={i18n.t("Settings")}/>,
   };
 
   constructor(props: Props) {
@@ -80,6 +81,7 @@ class SettingsScreen extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    return true;
     return !propEqual(this.state, nextState, ['tab'], ['user', 'localVars'])
       || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting'], ['user', 'localVars', 'lastError']);
   }
@@ -99,6 +101,7 @@ class SettingsScreen extends React.Component<Props, State> {
       user={this.state.user}
       localVars={this.state.localVars}
       onChangeLocalVars={this.props.submitLocalVars}
+      navigation={this.props.navigation}
     />;
   }
 }

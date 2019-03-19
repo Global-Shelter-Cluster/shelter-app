@@ -5,6 +5,7 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import Button from './Button';
 import type {PrivateUserObject, PublicUserObject} from "../model/user";
 import vars from "../vars";
+import i18n from "../i18n";
 // import {FileSystem} from "expo";
 
 export default ({user, showEdit, edit}: {
@@ -35,7 +36,7 @@ export default ({user, showEdit, edit}: {
       <Text style={styles.name}>{user.name}</Text>
       {org_role}
       {showEdit
-        ? <Button primary onPress={edit} title="Settings" icon="gear"/>
+        ? <Button primary onPress={edit} title={i18n.t("Settings")} icon="gear"/>
         : null
       }
     </View>

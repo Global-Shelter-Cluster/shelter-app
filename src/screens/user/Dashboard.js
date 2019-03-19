@@ -11,6 +11,8 @@ import Collapsible from "../../components/Collapsible";
 import type {AssessmentFormType} from "../../persist";
 import WebformListItemContainer from "../../containers/WebformListItemContainer";
 import FirstTimeFileDownloadNoticeContainer from "../../containers/FirstTimeFileDownloadNoticeContainer";
+import i18n from "../../i18n";
+import TranslatedText from "../../components/TranslatedText";
 
 const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}: {
   loading: boolean,
@@ -23,7 +25,7 @@ const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}
 
   const submissions = queuedFormSubmissions.length > 0
     ? <Collapsible
-      title="Queued assessment form submissions"
+      title={i18n.t("Queued assessment form submissions")}
       badge={totalQueuedSubmissionCount}
       isOpen noHorizontalMargins
     >
@@ -42,17 +44,17 @@ const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}
     : null;
 
   const alerts = unseenAlerts.length > 0
-    ? <Collapsible title="New alerts" badge={unseenAlerts.length} isOpen noHorizontalMargins>
+    ? <Collapsible title={i18n.t("New alerts")} badge={unseenAlerts.length} isOpen noHorizontalMargins>
       {unseenAlerts.map(id => <AlertListItemContainer id={id} key={id} isTeaser/>)}
     </Collapsible>
     : null;
 
   const groups = user.groups !== undefined && user.groups.length > 0
     ? alerts === null
-      ? <Collapsible title="Followed" badge={user.groups.length} isOpen noHorizontalMargins>
+      ? <Collapsible title={i18n.t("Followed")} badge={user.groups.length} isOpen noHorizontalMargins>
         {user.groups.map(id => <GroupListItemContainer display="full" id={id} key={id} hideFollowedIndicator/>)}
       </Collapsible>
-      : <Collapsible title="Followed" badge={user.groups.length} noHorizontalMargins>
+      : <Collapsible title={i18n.t("Followed")} badge={user.groups.length} noHorizontalMargins>
         {user.groups.map(id => <GroupListItemContainer display="full" id={id} key={id} hideFollowedIndicator/>)}
       </Collapsible>
     : null;
@@ -68,7 +70,7 @@ const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}
       {alerts}
       {groups}
       {user.groups === undefined
-      && <Text style={{textAlign: "center", padding: 40, width: "100%"}}>You're not following any responses yet.</Text>}
+      && <Text style={{textAlign: "center", padding: 40, width: "100%"}}>{i18n.t("You're not following any responses yet.")}</Text>}
     </ScrollView>
     <IndicatorRowContainer/>
   </View>;

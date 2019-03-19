@@ -7,6 +7,7 @@ import Tabs from "../../components/Tabs";
 import type {PrivateUserObject} from "../../model/user";
 import GroupListItemContainer from '../../containers/GroupListItemContainer';
 import type {GlobalObject} from "../../model/global";
+import i18n from "../../i18n";
 
 export type tabs = "followed" | "featured" | "regions";
 
@@ -23,9 +24,9 @@ export default ({online, loading, tab, global, user, changeTab, refreshGlobal, r
   let ids: Array<number> = [];
 
   const tabs: tabsDefinition = {
-    "followed": {label: "Followed"},
-    "featured": {label: "Featured"},
-    "regions": {label: "Regions"},
+    "followed": {label: i18n.t("Followed")},
+    "featured": {label: i18n.t("Featured")},
+    "regions": {label: i18n.t("Regions")},
   };
 
   if (user.groups === undefined || user.groups.length === 0)

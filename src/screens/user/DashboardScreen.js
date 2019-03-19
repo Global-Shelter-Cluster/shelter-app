@@ -13,6 +13,7 @@ import {getUnseenAlertIds} from "../../model/alert";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import type {AssessmentFormType} from "../../persist";
+import i18n from "../../i18n";
 
 type Props = {
   loading: boolean,
@@ -49,9 +50,11 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class DashboardScreen extends React.Component<Props> {
-  static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Dashboard"/>,
-    headerRight: <LogoutNavButtonContainer/>,
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: <NavTitleContainer title={i18n.t("Dashboard")}/>,
+      headerRight: <LogoutNavButtonContainer/>,
+    }
   };
 
   shouldComponentUpdate(nextProps) {

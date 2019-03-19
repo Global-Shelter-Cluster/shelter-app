@@ -8,6 +8,7 @@ import t from 'tcomb-form-native';
 import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import i18n from "../../i18n";
 
 const Form = t.form.Form;
 
@@ -57,21 +58,21 @@ export default class Signup extends React.Component<Props, State> {
       signupButton = <Text style={styles.text}>Creating your account...</Text>;
     else {
       signupButton = <Button
-        primary title="Sign up"
+        primary title={i18n.t("Sign up")}
         onPress={() => this.signup()}
       />;
     }
     const backToLoginButton = !loggingIn
       ? <Button onPress={() => {
         this.props.navigation.navigate('Login');
-      }} title="Back to Log in"/>
+      }} title={i18n.t("Back to Log in")} />
       : null;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View style={styles.innerContainer}>
           {!loggingIn
-            ? <Text style={styles.banner}>{"Create a Shelter Cluster account"}</Text>
+            ? <Text style={styles.banner}>{i18n.t("Create a Shelter Cluster account")}</Text>
             : null
           }
           {errorMessage}
@@ -104,7 +105,7 @@ export default class Signup extends React.Component<Props, State> {
                   returnKeyType: "next",
                 },
                 email: {
-                  placeholder: "E-mail address",
+                  placeholder: i18n.t("E-mail address"),
                   textContentType: "emailAddress",
                   keyboardType: "email-address",
                   onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),

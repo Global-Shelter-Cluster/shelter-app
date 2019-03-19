@@ -10,6 +10,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
+import i18n from "../../i18n";
 
 type Props = {
   loggedIn: boolean,
@@ -22,7 +23,7 @@ type Props = {
 
 class ForgotScreen extends React.Component<Props> {
   static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Log in"/>,
+    headerTitle: <NavTitleContainer title={i18n.t("Log in")}/>,
   };
 
   shouldComponentUpdate(nextProps) {

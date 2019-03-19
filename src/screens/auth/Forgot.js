@@ -8,6 +8,7 @@ import t from 'tcomb-form-native';
 import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
+import i18n from "../../i18n";
 
 const Form = t.form.Form;
 
@@ -72,14 +73,14 @@ export default class Forgot extends React.Component<Props, State> {
       requestButton = <Text style={styles.text}>Requesting a new password for your account...</Text>;
     else {
       requestButton = <Button
-        primary title="Request password"
+        primary title={i18n.t("Request password")}
         onPress={() => this.submit()}
       />;
     }
     const backToLoginButton = !loggingIn
       ? <Button onPress={() => {
         this.props.navigation.navigate('Login');
-      }} title="Back to Log in"/>
+      }} title={i18n.t("Back to Log in")}/>
       : null;
 
     return (
@@ -101,7 +102,7 @@ export default class Forgot extends React.Component<Props, State> {
               stylesheet: formStyles,
               fields: {
                 value: {
-                  placeholder: "Username or e-mail address",
+                  placeholder: i18n.t("Username or e-mail address"),
                   onSubmitEditing: () => this.submit(),
                   returnKeyType: "go",
                   autoCapitalize: "none",
