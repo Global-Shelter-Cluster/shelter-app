@@ -8,6 +8,7 @@ import {Constants, MapView} from "expo";
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import moment from "moment/moment";
+import i18n from "../i18n";
 
 type Props = {
   event: PublicEventObject,
@@ -35,10 +36,10 @@ export default class EventActions extends React.Component<Props, State> {
       // It's a link
       if (online)
         buttons.push(<Button
-          key="map" primary title="Map"
+          key="map" primary title={i18n.t("Map")}
           onPress={() => this.setState({modal: 'map'})}/>);
       else
-        buttons.push(<Button key="map" disabledIcon="wifi" title="Map"/>);
+        buttons.push(<Button key="map" disabledIcon="wifi" title={i18n.t("Map")}/>);
     }
 
     // if (online)

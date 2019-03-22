@@ -5,6 +5,7 @@ import {Text, TouchableOpacity} from 'react-native';
 import ResultHighlight from './ResultHighlight';
 import searchResultStyles from "../../styles/searchResultStyles";
 import moment from "moment/moment";
+import i18n from "../../i18n";
 
 export default DocumentResult = ({result, enter}) => {
   const lines = [];
@@ -20,9 +21,9 @@ export default DocumentResult = ({result, enter}) => {
   else
     lines.push('');
   if (result.field_featured)
-    lines[lines.length - 1] += " · Featured";
+    lines[lines.length - 1] += " · " + i18n.t("Featured");
   if (result.field_key_document && !result.field_featured)
-    lines[lines.length - 1] += " · Key document";
+    lines[lines.length - 1] += " · " + i18n.t("Key document");
 
   return <TouchableOpacity onPress={enter} style={searchResultStyles.container}>
     <ResultHighlight

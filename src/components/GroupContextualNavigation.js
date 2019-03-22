@@ -6,6 +6,7 @@ import type {PublicGroupObject} from "../model/group";
 import GroupListItemContainer from "../containers/GroupListItemContainer";
 import LinkListItemContainer from "../containers/LinkListItemContainer";
 import Collapsible from "./Collapsible";
+import i18n from "../i18n";
 
 export default ({group, areAllSubregionsCountries}: { group: PublicGroupObject, areAllSubregionsCountries: boolean }) => {
   let groupCount = 0;
@@ -14,20 +15,20 @@ export default ({group, areAllSubregionsCountries}: { group: PublicGroupObject, 
 
   if (group.parent_region) {
     groupCount++;
-    sections.push({title: "In", isOpen: true, data: [group.parent_region]});
+    sections.push({title: i18n.t("In"), isOpen: true, data: [group.parent_region]});
   } else if (group.associated_regions) {
     groupCount += group.associated_regions.length;
-    sections.push({title: "In", isOpen: true, data: group.associated_regions});
+    sections.push({title: i18n.t("In"), isOpen: true, data: group.associated_regions});
   }
 
   if (group.parent_response) {
     groupCount++;
-    sections.push({title: "Related to", data: [group.parent_response]});
+    sections.push({title: i18n.t("Related to"), data: [group.parent_response]});
   }
 
-  const subregionsLabel = areAllSubregionsCountries ? "Countries" : "Regions";
+  const subregionsLabel = areAllSubregionsCountries ? i18n.t("Countries") : i18n.t("Regions");
   if (group.response_region_hierarchy && group.regions && group.responses) {
-    const section = {title: subregionsLabel + " / responses", data: []};
+    const section = {title: subregionsLabel + " / " + i18n.t("responses"), data: []};
     const rawIds = [];
 
     for (let id of group.responses) {
@@ -66,32 +67,32 @@ export default ({group, areAllSubregionsCountries}: { group: PublicGroupObject, 
 
     if (group.responses) {
       groupCount += group.responses.length;
-      sections.push({title: "Responses", data: group.responses});
+      sections.push({title: i18n.t("Responses"), data: group.responses});
     }
   }
 
   if (group.hubs) {
     groupCount += group.hubs.length;
-    sections.push({title: "Hubs", data: group.hubs});
+    sections.push({title: i18n.t("Hubs"), data: group.hubs});
   }
 
   if (group.working_groups) {
     groupCount += group.working_groups.length;
-    sections.push({title: "Working groups", data: group.working_groups});
+    sections.push({title: i18n.t("Working groups"), data: group.working_groups});
   }
 
   if (group.communities_of_practice) {
     groupCount += group.communities_of_practice.length;
-    sections.push({title: "Communities of Practice", data: group.communities_of_practice});
+    sections.push({title: i18n.t("Communities of Practice"), data: group.communities_of_practice});
   }
 
   if (group.strategic_advisory) {
     groupCount++;
-    sections.push({title: "Strategic Advisory Group", data: [group.strategic_advisory]});
+    sections.push({title: i18n.t("Strategic Advisory Group"), data: [group.strategic_advisory]});
   }
 
   if (group.useful_links) {
-    sections.push({title: "Useful links", links: group.useful_links});
+    sections.push({title: i18n.t("Useful links"), links: group.useful_links});
   }
 
   if (groupCount === 0)

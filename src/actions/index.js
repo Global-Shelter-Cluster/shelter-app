@@ -56,16 +56,20 @@ export const updateLanguages = languages => {
   }
 }
 
-export const setCurrentLanguages = language => {
+export const setCurrentLanguage = language => {
   return {
     type: "SET_CURRENT_LANGUAGE",
     language
   }
 }
 
+export const updadeCurrentLanguage = language => async dispatch => {
+  await Storage.setItem('currentLanguage', language);
+  dispatch(setCurrentLanguage(language));
+}
+
 export const refreshEnabledLanguages = () => async dispatch => {
   await persist.getEnabledLanguages(true);
-
 }
 
 export const getTranslations = (lang, forceRefresh = false) => async dispatch => {

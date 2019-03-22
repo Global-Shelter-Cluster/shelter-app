@@ -16,6 +16,7 @@ export type DashboardBlockType = {
 };
 
 const DashboardBlock = ({title, icon, badge, isBadgeHighlighted, action, disabledIcon}: DashboardBlockType) => {
+  console.log('BLOCK');
   if (disabledIcon !== undefined || action === undefined)
     return <View style={[styles.container, styles.disabledContainer]}>
       <FontAwesome name={icon} size={28} style={[styles.icon, styles.disabled]}/>

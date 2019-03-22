@@ -12,6 +12,8 @@ import {
   setFiles,
   setObjects,
   updateLanguages,
+  setCurrentLanguage,
+  getTranslations,
 } from "../actions";
 import type {Store} from "redux";
 import type {authType} from "./remote";
@@ -93,6 +95,7 @@ class Persist {
     try {
       this.remote = new Remote;
       this.getEnabledLanguages();
+      this.setCurrentLanguage();
       await this.initDirectory(DIR_PERSISTED);
 
       const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
@@ -615,6 +618,14 @@ class Persist {
     if (data) {
       this.store.dispatch(updateLanguages(data));
       Storage.setItem('enabledLanguages', JSON.stringify(data));
+    }
+  }
+
+  async setCurrentLanguage() {
+    const currentLanguage = await Storage.getItem('currentLanguage');
+    if (currentLanguage !== null) {
+      this.store.dispatch(setCurrentLanguage(currentLanguage));
+      this.store.dispatch(getTranslations(currentLanguage));
     }
   }
 

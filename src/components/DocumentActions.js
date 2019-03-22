@@ -9,6 +9,7 @@ import {Constants} from "expo";
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import PDFReader from 'rn-pdf-reader-js';
+import i18n from "../i18n";
 
 type Props = {
   document: PublicDocumentObject,
@@ -39,7 +40,7 @@ export default class DocumentActions extends React.Component<Props, State> {
           key="view" primary title="View"
           onPress={() => this.setState({modal: 'link'})}/>);
       else
-        buttons.push(<Button key="view" disabledIcon="wifi" title="View"/>);
+        buttons.push(<Button key="view" disabledIcon="wifi" title={i18n.t("View")} />);
     } else {
       // It's a file
       const isLocalFile = document.file !== undefined && document.file.startsWith('file://');
@@ -50,27 +51,27 @@ export default class DocumentActions extends React.Component<Props, State> {
           case '.pdf':
             if (Platform.OS === 'ios')
               buttons.push(<Button
-                key="view" primary title="View"
+                key="view" primary title={i18n.t("View")}
                 onPress={() => this.setState({modal: 'webview'})}/>);
             else
               buttons.push(<Button
-                key="view" primary title="View"
+                key="view" primary title={i18n.t("View")}
                 onPress={() => this.setState({modal: 'pdf'})}/>);
             break;
 
           default:
             // TODO: figure out what to do in this case...
             buttons.push(<Button
-              key="view" primary title="View"
+              key="view" primary title={i18n.t("View")}
               onPress={() => this.setState({modal: 'webview'})}/>);
         }
       } else
       // We're offline and don't have the file locally.
-        buttons.push(<Button key="view" disabledIcon="wifi" title="View"/>);
+        buttons.push(<Button key="view" disabledIcon="wifi" title={i18n.t("View")}/>);
     }
 
     // if (online)
-      buttons.push(<Button key="share" title="Share" icon="share" onPress={() => {
+      buttons.push(<Button key="share" title={i18n.t("Share")} icon="share" onPress={() => {
         Share.share({url: document.file})
       }}/>);
     // else

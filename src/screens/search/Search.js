@@ -19,6 +19,7 @@ import persist from "../../persist";
 import {contactFromAlgoliaResult} from "../../model/contact";
 import {getPageEnterFromSearchResult} from "../../model/page";
 import {generateIndexName} from "../../model/search";
+import i18n from "../../i18n";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, renderItem}) => {
   const onEndReached = function () {
@@ -66,7 +67,7 @@ const SearchBox = connectSearchBox(({refine, currentRefinement}) => {
       style={styles}
       onChangeText={text => refine(text)}
       value={currentRefinement}
-      placeholder="Search..."
+      placeholder={i18n.t("Search...")}
       clearButtonMode="always"
       spellCheck={false}
       autoCorrect={false}
@@ -95,28 +96,28 @@ export default ({online, loading, tab, global, changeTab, navigation}: {
 }) => {
   const tabs: tabsDefinition = {
     "documents": {
-      label: "Documents",
+      label: i18n.t("Documents"),
       icon: "file-o",
       renderSearchResult: item => <DocumentResult
         result={item} enter={() => navigation.push('Document', {documentId: parseInt(item.objectID, 10)})}
       />,
     },
     "events": {
-      label: "Events",
+      label: i18n.t("Events"),
       icon: "calendar",
       renderSearchResult: item => <EventResult
         result={item} enter={() => navigation.push('Event', {eventId: parseInt(item.objectID, 10)})}
       />,
     },
     "groups": {
-      label: "Groups",
+      label: i18n.t("Groups"),
       icon: "users",
       renderSearchResult: item => <GroupResult
         result={item} enter={() => navigation.push('Group', {groupId: parseInt(item.objectID, 10)})}
       />,
     },
     "pages": {
-      label: "Pages",
+      label: i18n.t("Pages"),
       icon: "globe",
       renderSearchResult: item => {
         return <PageResult
@@ -125,7 +126,7 @@ export default ({online, loading, tab, global, changeTab, navigation}: {
       },
     },
     "contacts": {
-      label: "Contacts",
+      label: i18n.t("Contacts"),
       icon: "address-card-o",
       renderSearchResult: item => <ContactResult
         result={item} enter={async () => {

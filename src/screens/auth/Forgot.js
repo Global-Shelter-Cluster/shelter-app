@@ -9,6 +9,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import i18n from "../../i18n";
+import TranslatedText from "../../components/TranslatedText";
 
 const Form = t.form.Form;
 
@@ -87,7 +88,7 @@ export default class Forgot extends React.Component<Props, State> {
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View style={styles.innerContainer}>
           {!loggingIn && !submitted
-            ? <Text style={styles.banner}>{"Request a new password for your Shelter\u00A0Cluster\u00A0account"}</Text>
+            ? <TranslatedText style={styles.banner}>Request a new password for your Shelter Cluster account</TranslatedText>
             : null
           }
           {errorMessage}

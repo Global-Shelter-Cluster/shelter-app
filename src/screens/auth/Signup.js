@@ -53,9 +53,9 @@ export default class Signup extends React.Component<Props, State> {
 
     let signupButton;
     if (!online)
-      signupButton = <Text style={styles.text}>No internet connection detected.</Text>;
+      signupButton = <TranslatedText style={styles.text}>No internet connection detected.</TranslatedText>;
     else if (loggingIn)
-      signupButton = <Text style={styles.text}>Creating your account...</Text>;
+      signupButton = <TranslatedText style={styles.text}>Creating your account...</TranslatedText>;
     else {
       signupButton = <Button
         primary title={i18n.t("Sign up")}
@@ -95,12 +95,14 @@ export default class Signup extends React.Component<Props, State> {
               fields: {
                 name: {
                   textContentType: "name",
+                  placeholder: i18n.t("Name"),
                   onSubmitEditing: () => this.refs.form.getComponent('organization').refs.input.focus(),
                   returnKeyType: "next",
                   autoCapitalize: "none",
                 },
                 organization: {
                   textContentType: "organizationName",
+                  placeholder: i18n.t("Organization"),
                   onSubmitEditing: () => this.refs.form.getComponent('email').refs.input.focus(),
                   returnKeyType: "next",
                 },
@@ -113,6 +115,7 @@ export default class Signup extends React.Component<Props, State> {
                 },
                 password: {
                   textContentType: "password",
+                  placeholder: i18n.t("Password"),
                   password: true,
                   secureTextEntry: true,
                   onSubmitEditing: () => this.signup(),

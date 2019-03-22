@@ -8,6 +8,7 @@ import Loading from "../../components/Loading";
 import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
+import i18n from "../../i18n";
 
 type Props = {
   navigation: navigation,
@@ -15,7 +16,7 @@ type Props = {
 
 export default class WebsiteViewerScreen extends React.Component<Props> {
   static navigationOptions = ({navigation}: { navigation: navigation }) => ({
-    headerTitle: <NavTitleContainer title={navigation.getParam('title', 'Loading...')}/>,
+    headerTitle: <NavTitleContainer title={navigation.getParam('title', i18n.t('Loading...'))}/>,
   });
 
   componentDidMount() {

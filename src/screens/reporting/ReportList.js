@@ -10,6 +10,7 @@ import Tabs from "../../components/Tabs";
 import {hairlineWidth} from "../../util";
 import vars from "../../vars";
 import type {ObjectRequest} from "../../persist";
+import i18n from "../../i18n";
 
 export default ({loading, group, refresh}: {
   loading: boolean,
@@ -17,7 +18,7 @@ export default ({loading, group, refresh}: {
   refresh: () => void,
 }) => {
   const tabs: tabsDefinition = {
-    "all": {label: "Assessment forms"},
+    "all": {label: i18n.t("Assessment forms")},
   };
   const tab = 'all';
 

@@ -10,6 +10,8 @@ import vars from "../vars";
 import SingleLineText from "./SingleLineText";
 import Badge from "./Badge";
 import {hairlineWidth} from "../util";
+import i18n from "../i18n";
+import TranslatedText from "./TranslatedText";
 
 export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, enter, ellipsizeMode, indent}: {
   group: GroupObject,
@@ -96,7 +98,7 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
         </View>
         : title;
       const contents = [
-        <Text key="type" style={styles.typeLabel}>{typeLabel}</Text>,
+        <TranslatedText key="type" style={styles.typeLabel}>{typeLabel}</TranslatedText>,
         titleRow,
       ];
 

@@ -25,7 +25,7 @@ import singleRowCheckbox from "../../styles/singleRowCheckbox";
 import config from "../../config";
 import connect from "react-redux/es/connect/connect";
 import {
-  setCurrentLanguages,
+  updadeCurrentLanguage,
   getTranslations,
   refreshEnabledLanguages
 } from "../../actions";
@@ -251,7 +251,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setLanguage: (lang) => dispatch(setCurrentLanguages(lang)),
+  setLanguage: (lang) => dispatch(updadeCurrentLanguage(lang)),
   getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh)),
   refreshEnabledLanguages: () => dispatch(refreshEnabledLanguages())
 });

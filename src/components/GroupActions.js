@@ -7,6 +7,7 @@ import Button from "./Button";
 import {Constants} from "expo";
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
+import i18n from "../i18n";
 
 type Props = {
   group: PublicGroupObject,
@@ -38,27 +39,27 @@ export default class GroupActions extends React.Component<Props, State> {
     const buttons = [];
 
     if (changingFollowing)
-      buttons.push(<Button key="follow" disabledIcon="refresh" title="Loading..."/>);
+      buttons.push(<Button key="follow" disabledIcon="refresh" title={i18n.t("Loading...")}/>);
     else if (isFollowing)
       buttons.push(<Button
-        key="follow" primary title="Un-follow"
+        key="follow" primary title={i18n.t("Un-follow")}
         icon="sign-out"
         onPress={unfollow}/>);
     else if (cantFollow && groupTypeIsFollowable)
-      buttons.push(<Button key="follow" disabledIcon="ban" title="Follow"/>);
+      buttons.push(<Button key="follow" disabledIcon="ban" title={i18n.t("Follow")}/>);
     else if (groupTypeIsFollowable)
       buttons.push(<Button
-        key="follow" primary title="Follow"
+        key="follow" primary title={i18n.t("Follow")}
         icon="sign-in"
         onPress={follow}/>);
 
     if (online)
       buttons.push(<Button
-        key="view" title="Website"
+        key="view" title={i18n.t("Website")}
         icon="external-link"
         onPress={viewOnWebsite}/>);
     else
-      buttons.push(<Button key="view" disabledIcon="wifi" title="Website"/>);
+      buttons.push(<Button key="view" disabledIcon="wifi" title={i18n.t("Website")}/>);
 
     return <View style={styles.container}>
       {buttons.map((button, i) => <View key={i} style={styles.button}>{button}</View>)}

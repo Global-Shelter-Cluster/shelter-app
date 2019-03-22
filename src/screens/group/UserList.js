@@ -7,6 +7,7 @@ import Tabs from "../../components/Tabs";
 import vars from "../../vars";
 import type {PublicGroupObject} from "../../model/group";
 import UserListItemContainer from "../../containers/UserListItemContainer";
+import i18n from "../../i18n";
 
 export type tabs = "followers";
 
@@ -27,7 +28,7 @@ export default ({online, loading, tab, group, refresh, changeTab}: {
   }
 
   const tabs: tabsDefinition = {
-    "followers": {label: "Followers"},
+    "followers": {label: i18n.t("Followers")},
   };
 
   return <View style={{flex: 1}}>

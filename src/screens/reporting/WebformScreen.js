@@ -15,6 +15,7 @@ import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import clone from "clone";
+import i18n from "../../i18n";
 
 type Props = {
   online: boolean,
@@ -71,7 +72,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 
 class WebformScreen extends React.Component<Props, State> {
   static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Assessment form"/>,
+    headerTitle: <NavTitleContainer title={i18n.t("Assessment form")}/>,
   };
 
   constructor(props: Props) {

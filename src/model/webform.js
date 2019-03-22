@@ -12,6 +12,7 @@ import MultiselectFactory from "../components/tcomb/MultiselectFactory";
 import {Permissions} from "expo";
 import {textareaStylesheet} from "../styles/formStyles";
 import GeolocationFactory from "../components/tcomb/GeolocationFactory";
+import i18n from "../i18n";
 
 export type WebformObject = {
   _last_read?: number,
@@ -205,7 +206,7 @@ export const getWebformPageTabs = (webform: WebformObject, page: number, pagesVi
   for (let i: number = 0; i < webform.form.length; i++) {
     const label = webform.form[i].title
       ? webform.form[i].title
-      : (i === 0 ? 'Start' : '');
+      : (i === 0 ? i18n.t('Start') : '');
 
     const temp = {
       label,
@@ -426,7 +427,7 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
         if (field.integer !== undefined) {
           refinementFunctions.push((n) => Number.isInteger(n));
-          refinementDescriptions.push("Integer");
+          refinementDescriptions.push(i18n.t("Integer"));
         }
 
         const refinements = (n) => {

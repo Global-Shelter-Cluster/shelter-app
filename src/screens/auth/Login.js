@@ -9,6 +9,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import i18n from "../../i18n";
+import TranslatedText from "../../components/TranslatedText";
 
 const Form = t.form.Form;
 
@@ -53,9 +54,9 @@ export default class Login extends React.Component<Props, State> {
 
     let loginButton;
     if (!online)
-      loginButton = <Text style={styles.text}>No internet connection detected.</Text>;
+      loginButton = <TranslatedText style={styles.text}>No internet connection detected.</TranslatedText>;
     else if (loggingIn)
-      loginButton = <Text style={styles.text}>Logging in...</Text>;
+      loginButton = <TranslatedText style={styles.text}>Logging in...</TranslatedText>;
     else {
       loginButton = <Button
         primary title={i18n.t("Log in")}
@@ -66,7 +67,7 @@ export default class Login extends React.Component<Props, State> {
     const signupButton = !loggingIn && online
       ? <Button onPress={() => {
         this.props.navigation.navigate('Signup');
-      }} title="Sign up"/>
+      }} title={i18n.t("Sign up")} />
       : null;
 
     const forgotButton = !loggingIn && online
@@ -106,6 +107,7 @@ export default class Login extends React.Component<Props, State> {
                 },
                 password: {
                   textContentType: "password",
+                  placeholder: i18n.t("Password"),
                   password: true,
                   secureTextEntry: true,
                   onSubmitEditing: () => this.login(),

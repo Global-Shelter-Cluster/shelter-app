@@ -27,6 +27,7 @@ import Error from "../../components/Error";
 import Loading from "../../components/Loading";
 import Notice from "../../components/Notice";
 import {formStylesheet} from "../../styles/formStyles";
+import i18n from "../../i18n";
 
 const Form = t.form.Form;
 
@@ -66,7 +67,7 @@ export default class Webform extends React.Component<Props> {
     if (equal(lastError, {type: 'object-load', data: {type: 'webform', id: webform.id}}))
       return <MultiLineButton
         onPress={refresh}
-        title="Error loading, please check your connection and try again"
+        title={i18n.t("Error loading, please check your connection and try again")}
       />;
 
     let errorMessage: null | string = null;
@@ -79,17 +80,17 @@ export default class Webform extends React.Component<Props> {
     if (submitted && lastError.type === 'assessment-form-queued' && lastError.data.type === 'webform' && lastError.data.id === webform.id) {
       return <Notice
         action={resetForm}
-        buttonLabel="Go back to the form"
-        description={"Thank you, your submission\nhas been queued and will be\nsent when you are online."}
+        buttonLabel={i18n.t("Go back to the form")}
+        description={i18n.t("Thank you, your submission has been queued and will be sent when you are online.")}
       />;
     }
 
     if (submitted && errorMessage !== null) {
       return <Error
         action={onSubmit}
-        buttonLabel="Try again"
+        buttonLabel={i18n.t("Try again")}
         description={errorMessage}
-        secondaryButtonLabel="Go back to the form"
+        secondaryButtonLabel={i18n.t("Go back to the form")}
         secondaryAction={resetSubmitted}
       />;
     }
@@ -97,8 +98,8 @@ export default class Webform extends React.Component<Props> {
     if (submitted && errorMessage === null) {
       return <Notice
         action={resetForm}
-        buttonLabel="Go back to the form"
-        description={"Thank you, your submission\nhas been received."}
+        buttonLabel={i18n.t("Go back to the form")}
+        description={i18n.t("Thank you, your submission has been received.")}
       />;
     }
 
@@ -121,10 +122,11 @@ export default class Webform extends React.Component<Props> {
     const isLastPage = page === (webform.form.length - 1);
 
     const submitButton = <Button
-      primary title={isLastPage ? "Submit" : "Next page"}
+      primary title={isLastPage ? i18n.t("Submit") : i18n.t("Next page")}
       onPress={onSubmitWithValidation}
     />;
 
+    /* @TODO count arg translation */
     const queuedNotice = queued > 0
       ? <View style={{
         paddingHorizontal: 10,

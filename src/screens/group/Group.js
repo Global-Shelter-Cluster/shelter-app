@@ -16,6 +16,7 @@ import Collapsible from "../../components/Collapsible";
 import ContactListItemContainer from "../../containers/ContactListItemContainer";
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
+import i18n from "../../i18n";
 
 export type tabs = "dashboard" | "pages" | "nav";
 
@@ -34,16 +35,16 @@ export default ({online, group, loaded, tab, changeTab, factsheet, refresh, load
   if (!loaded && equal(lastError, {type: 'object-load', data: {type: 'group', id: group.id}}))
     return <Error
       action={refresh}
-      buttonLabel="Try again"
-      description="Error loading data, please check your connection"
+      buttonLabel={i18n.t("Try again")}
+      description={i18n.t("Error loading data, please check your connection")}
     />;
   if (!loaded)
     return <Loading/>;
 
   const tabs: tabsDefinition = {
-    "dashboard": {label: "Dashboard"},
-    "pages": {label: "Pages"},
-    "nav": {label: "Navigation"},
+    "dashboard": {label: i18n.t("Dashboard")},
+    "pages": {label: i18n.t("Pages")},
+    "nav": {label: i18n.t("Navigation")},
   };
 
   if (group.pages === undefined)
@@ -79,7 +80,7 @@ export default ({online, group, loaded, tab, changeTab, factsheet, refresh, load
         >
           <GroupDashboardContainer group={group}/>
           {group.contacts !== undefined
-            ? <Collapsible title="Coordination team" noHorizontalMargins isOpen badge={group.contacts.length}>
+            ? <Collapsible title={i18n.t("Coordination team")} noHorizontalMargins isOpen badge={group.contacts.length}>
               {group.contacts.map(id => <ContactListItemContainer key={id} id={id}/>)}
             </Collapsible>
             : null

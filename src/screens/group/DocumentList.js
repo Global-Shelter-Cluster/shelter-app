@@ -6,6 +6,7 @@ import type {PublicGroupObject} from "../../model/group";
 import DocumentListItemContainer from "../../containers/DocumentListItemContainer";
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
+import i18n from "../../i18n";
 
 export type tabs = "recent" | "featured" | "key";
 
@@ -32,9 +33,9 @@ export default ({online, loading, tab, group, refresh, changeTab}: {
   }
 
   const tabs: tabsDefinition = {
-    "recent": {label: "Recent"},
-    "featured": {label: "Featured"},
-    "key": {label: "Key"},
+    "recent": {label: i18n.t("Recent")},
+    "featured": {label: i18n.t("Featured")},
+    "key": {label: i18n.t("Key")},
   };
 
   if (group.recent_documents === undefined || group.recent_documents.length === 0)
