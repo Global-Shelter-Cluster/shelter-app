@@ -6,15 +6,19 @@ import { connect } from 'react-redux';
 class TranslatedText extends Component {
 
   getTranslation = () => {
-    const translation = this.props.translations[this.props.text];
-    return translation ? translation: this.props.text;
+    let text = '';
+    if (typeof(this.props.children) === "string") {
+      text = this.props.children;
+    } else {
+      text = this.props.text;
+    }
+    const translation = this.props.translations[text];
+    return translation ? translation : text;
   };
 
   render() {
     return (
-      <View>
-        <Text style={this.props.style}>{ this.getTranslation() }</Text>
-      </View>
+      <Text style={this.props.style}>{ this.getTranslation() }</Text>
     );
   }
 }

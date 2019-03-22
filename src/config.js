@@ -21,7 +21,7 @@ const config: { [string]: configType } = {
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
   local_jm: {
-    baseUrl: 'http://10.36.38.31:32800',
+    baseUrl: 'http://10.36.38.36:32775',
     axiosExtra: {},
     deleteFilesOnLogout: false,
     reduxLogger: false,

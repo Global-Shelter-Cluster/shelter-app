@@ -15,8 +15,8 @@ import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
-import i18n from "../../i18n";
 import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
+import TranslatedText from "../../components/TranslatedText"
 
 type Props = {
   online: boolean,
@@ -53,7 +53,7 @@ const mapDispatchToProps = dispatch => ({
 class OperationsScreen extends React.Component<Props, State> {
   static navigationOptions = () => {
     return {
-      headerTitle: <NavTitleContainer title={i18n.t("Operations")} />,
+      headerTitle: <NavTitleContainer title={<TranslatedText>Operations</TranslatedText>} />,
     }
   };
 

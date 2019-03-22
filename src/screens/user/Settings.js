@@ -24,7 +24,11 @@ import type {PrivateUserObject} from "../../model/user";
 import singleRowCheckbox from "../../styles/singleRowCheckbox";
 import config from "../../config";
 import connect from "react-redux/es/connect/connect";
-import { setCurrentLanguages, getTranslations } from "../../actions";
+import {
+  setCurrentLanguages,
+  getTranslations,
+  refreshEnabledLanguages
+} from "../../actions";
 import TranslatedText from "../../components/TranslatedText";
 import MultiselectFactory from "../../components/tcomb/MultiselectFactory";
 import i18n from "../../i18n";
@@ -74,7 +78,7 @@ class Settings extends React.Component<Props, State> {
       languageOptionsOld: {
         fields: {
           languages: {
-            label: i18n.t("Select your language"),
+            label: <TranslatedText>Select your language</TranslatedText>,
             single: true,
             choices: this.props.languageOptions,
             factory: MultiselectFactory,
@@ -96,14 +100,18 @@ class Settings extends React.Component<Props, State> {
     await this.props.getTranslations(lang);
     // Reset the navigation and navigating away will show the selected translation.
     const resetAction = StackActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'Dashboard' })],
+      index: 1,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Dashboard' }),
+        NavigationActions.navigate({ routeName: 'Settings' }),
+      ],
     });
     this.props.navigation.dispatch(resetAction);
   }
 
   _onRefreshLanguages = async () => {
-    await this.props.languageOptions.forEach((lang) => this.props.getTranslations(lang, true));
+    await this.props.getTranslations(this.props.currentLanguage, true);
+    await this.props.refreshEnabledLanguages();
   }
 
   render() {
@@ -115,7 +123,7 @@ class Settings extends React.Component<Props, State> {
         if (equal(lastError, {type: 'object-load', data: {type: 'user', id: user.id}})) {
           content = <MultiLineButton
             onPress={refresh}
-            title={<Text>"Error loading, please check your connection and try again"</Text>}
+            title={i18n("Error loading, please check your connection and try again")}
           />;
           break;
         }
@@ -184,7 +192,7 @@ class Settings extends React.Component<Props, State> {
             value={localVars}
           />
 
-          <TranslatedText text="Select your language" />
+          <TranslatedText>Select your language</TranslatedText>
           { this.props.languageOptions.map((lang) => (
             <TouchableOpacity
               key={lang}
@@ -195,9 +203,8 @@ class Settings extends React.Component<Props, State> {
             </TouchableOpacity>
           ))}
 
-
           <Button title={i18n.t("Import all translations")} onPress={this._onRefreshLanguages}/>
-          <TranslatedText text="App testing string"/>
+          <TranslatedText>App testing string</TranslatedText>
         </ScrollView>;
         break;
     }
@@ -245,7 +252,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   setLanguage: (lang) => dispatch(setCurrentLanguages(lang)),
-  getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh))
+  getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh)),
+  refreshEnabledLanguages: () => dispatch(refreshEnabledLanguages())
 });
 
 export default Settings = connect(mapStateToProps, mapDispatchToProps)(Settings);

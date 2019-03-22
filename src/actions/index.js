@@ -63,6 +63,11 @@ export const setCurrentLanguages = language => {
   }
 }
 
+export const refreshEnabledLanguages = () => async dispatch => {
+  await persist.getEnabledLanguages(true);
+
+}
+
 export const getTranslations = (lang, forceRefresh = false) => async dispatch => {
   let done = false;
   if (!forceRefresh) {
@@ -83,7 +88,6 @@ export const getTranslations = (lang, forceRefresh = false) => async dispatch =>
       dispatch(updateTranslations({}));
     }
   }
-  // Notify translation service.
 }
 
 export const login = (user: string, pass: string) => async dispatch => {

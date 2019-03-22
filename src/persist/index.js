@@ -616,7 +616,6 @@ class Persist {
       this.store.dispatch(updateLanguages(data));
       Storage.setItem('enabledLanguages', JSON.stringify(data));
     }
-
   }
 
   async getTranslations(lang) {
