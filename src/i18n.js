@@ -1,52 +1,53 @@
-
-const translate = (text, count = null, replacements = {}, zero_string = null) => {
-  let count_replace = '@count';
-
-  // If count = 0 and we provide a string for when count is 0.
-  if (count === 0 && zero_string !== null) {
-    text = zero_string;
-  }
-  else if (count !== null) {
-    // Get the plural index for languages with multiple plurals.
-    const formula = G.languages[G.language].formula;
-    const $n = count;
-    const pluralIndex = eval(formula);
-
-    if (pluralIndex > 0) {
-      count_replace = '@count[' + pluralIndex + ']';
-    }
-
-    // Replace count in text first.
-    text = text.replace('@count', count_replace);
-  }
-
-  // Replace the text.
-  const dictionary = G.dictionary[G.language];
-  let translated_text = dictionary[text] || text;
-
-  for (let i in replacements) {
-    translated_text = translated_text.replace(i, replacements[i]);
-  }
-
-  // Replace @count for count.
-  if (count !== null) {
-    translated_text = translated_text.replace(count_replace, count);
-  }
-
-  return translated_text;
-}
-
 class Translations {
 
   translations = {};
+  enabledLanguages = {};
+  currentLanguage = {};
+  pluralFormula = '';
 
-  t = (string) => {
-    const translation = this.translations[string];
-    return translation ? translation: string;
+  /**
+   * t('You have @count @items', countVar, {'@items': 'snail(s)'}, 'You have no snails')
+   * t('You have @count object', countVar, {}, 'You have no objects')
+   * t('The current version is @version', null, {'@version': 'v1.2.3'})
+   */
+  t = (string, count = null, replacements = {}, zeroString = null) => {
+    let countToken = '@count';
+
+    if (count === 0 && zeroString !== null) {
+      string = zeroString;
+    }
+    else if (count !== null) {
+      // Get the plural index for languages with multiple plurals.
+      const pluralIndex = eval(this.formula);
+
+      if (pluralIndex > 0) {
+        countToken = '@count[' + pluralIndex + ']';
+        string = string.replace('@count', countToken);
+      }
+    }
+
+    let translatedText = this.translations[string] || string;
+
+    // Replace the variables.
+    for (let i in replacements) {
+      translatedText = translatedText.replace(i, replacements[i]);
+    }
+
+    // Replace @count for count value.
+    if (count !== null) {
+      translatedText = translatedText.replace(countToken, count);
+    }
+
+    return translatedText;
   };
 
   updateLanguages = (getState) => {
-    //console.log(getState().languages.enabled);
+    this.enabledLanguages = getState().languages.enabled;
+  }
+
+  setCurrentLanguages = (getState) => {
+    this.currentLanguage = getState().languages.currentLanguage;
+    this.pluralFormula = this.enabledLanguages[this.currentLanguage].formula;
   }
 
   updateTranslations = (getState) => {
@@ -59,9 +60,12 @@ class Translations {
       if (action.type == "UPDATE_TRANSLATIONS") {
         this.updateTranslations(getState);
       }
-      // if (action.type == "UPDATE_LANGUAGES") {
-      //   this.updateLanguages(getState);
-      // }
+      if (action.type == "UPDATE_LANGUAGES") {
+        this.updateLanguages(getState);
+      }
+      if (action.type == "SET_CURRENT_LANGUAGE") {
+        this.setCurrentLanguages(getState);
+      }
       return returnValue;
     }
   }

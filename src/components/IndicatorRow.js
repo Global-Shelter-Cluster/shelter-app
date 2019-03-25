@@ -21,6 +21,8 @@ import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import Collapsible from "./Collapsible";
 import SingleLineText from "./SingleLineText";
+import i18n from "../i18n";
+import TranslatedText from "./TranslatedText"
 
 type Props = {
   online: boolean,
@@ -73,11 +75,11 @@ export default class IndicatorRow extends React.Component<Props, State> {
       : null;
 
     const onlineIndicator = config.debugMode
-      ? <Text
+      ? <TranslatedText
         onPress={() => setOnline(!online)}
         onLongPress={() => persist.clearAll(true)}
-      >{online ? 'online' : 'offline'}</Text>
-      : <Text>{online ? 'online' : 'offline'}</Text>;
+      >{online ? 'online' : 'offline'}</TranslatedText>
+      : <TranslatedText>{online ? 'online' : 'offline'}</TranslatedText>;
 
     return <View style={{
       flexDirection: 'row',
@@ -99,24 +101,28 @@ export default class IndicatorRow extends React.Component<Props, State> {
         onRequestClose={() => this.setState({isModalOpen: false})}
       >
         <ScrollView contentContainerStyle={{paddingVertical: 50}}>
-          <Text style={styles.text}>
+          <TranslatedText style={styles.text}>
             PROGRAM/INITIATIVE/ACTIVITY UNDERTAKEN WITH THE FINANCIAL SUPPORT OF THE GOVERNMENT OF CANADA PROVIDED
             THROUGH GLOBAL AFFAIRS CANADA (GAC)
-          </Text>
+          </TranslatedText>
           <Image style={styles.logo} source={require("../../assets/about/red-cross.png")}/>
           <Image style={styles.logo} source={require("../../assets/about/gov-canada.png")}/>
-          <Text style={styles.text}>
+          <TranslatedText style={styles.text}>
             THIS APP IS MADE POSSIBLE THROUGH THE FINANCIAL AND IN-KIND CONTRIBUTIONS OF:
-          </Text>
+          </TranslatedText>
           <Image style={styles.logo} source={require("../../assets/about/unhcr.png")}/>
           <Image style={styles.logo} source={require("../../assets/about/international-federation-of-redcross.png")}/>
           <Image style={styles.logo} source={require("../../assets/about/humanitarian-aid.png")}/>
           <View style={{height: 50}}/>
-          <Collapsible title="Technical information" isOpen>
-            <Text>Expo version: {Expo.Constants.expoVersion}</Text>
-            <Text>App version: {Expo.Constants.manifest.version}</Text>
-            <Text>Environment: {Expo.Constants.manifest.releaseChannel ? Expo.Constants.manifest.releaseChannel : '<none>'}</Text>
-            <Text>Connectivity: {onlineIndicator}</Text>
+          <Collapsible title={i18n.t("Technical information")} isOpen>
+            <TranslatedText replacements={{'@version': Expo.Constants.expoVersion}}>Expo version: @version</TranslatedText>
+            <TranslatedText replacements={{'@version': Expo.Constants.manifest.version}}>App version: @version</TranslatedText>
+            <TranslatedText
+              replacements={{'@env': Expo.Constants.manifest.releaseChannel ? Expo.Constants.manifest.releaseChannel : i18n.t('<none>') }}
+            >Environment: @env
+            </TranslatedText>
+            <TranslatedText>Connectivity</TranslatedText>
+            {onlineIndicator}
           </Collapsible>
         </ScrollView>
         <TouchableOpacity
