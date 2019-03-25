@@ -193,18 +193,22 @@ class Settings extends React.Component<Props, State> {
           />
 
           <TranslatedText>Select your language</TranslatedText>
+          { !this.props.online && <TranslatedText>Language settings can't be changed while offline</TranslatedText>}
           { this.props.languageOptions.map((lang) => (
             <TouchableOpacity
               key={lang}
               style={[styles.option, lang === this.props.currentLanguage ? styles.current: '']}
               onPress={() => this._onPress(lang)}
+              disabled={!this.props.online}
             >
               <Text style={[lang === this.props.currentLanguage ? styles.textCurrent: '']}>{lang}</Text>
             </TouchableOpacity>
           ))}
-
-          <Button title={i18n.t("Import all translations")} onPress={this._onRefreshLanguages}/>
-          <TranslatedText>App testing string</TranslatedText>
+          <Button
+            disabled={!this.props.online}
+            title={i18n.t("Import all translations")}
+            onPress={this._onRefreshLanguages}
+          />
         </ScrollView>;
         break;
     }
@@ -245,6 +249,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
+  online: state.flags.online,
   enabledLanguages: state.languages.enabled,
   currentLanguage: state.languages.currentLanguage,
   languageOptions: Object.keys(state.languages.enabled).map((lang) => lang)

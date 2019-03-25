@@ -6,7 +6,7 @@ import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import SingleLineText from "./SingleLineText";
 
-const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style}: {
+const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style, disabled}: {
   onPress?: () => void,
   primary?: boolean,
   dimmed?: boolean, // Ignored if "primary" is present.
@@ -14,6 +14,7 @@ const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style}: {
   icon?: string,
   disabledIcon?: string,
   style?: {},
+  disabled?: boolean
 }) => {
   if (disabledIcon !== undefined)
     return <View style={[styles.container, style]}>
@@ -29,7 +30,7 @@ const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style}: {
     );
   const textColor = !primary && dimmed ? vars.SHELTER_GREY : "white";
 
-  return <TouchableOpacity onPress={onPress} style={[styles.container, {backgroundColor: bgColor}, style]}>
+  return <TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.container, {backgroundColor: bgColor}, style]}>
     {icon && <FontAwesome name={icon} size={18} color={textColor} style={styles.icon}/>}
     <SingleLineText style={[styles.label, {color: textColor}]}>{title}</SingleLineText>
   </TouchableOpacity>;
