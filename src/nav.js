@@ -8,7 +8,7 @@ import {
   NavigationActions,
   createAppContainer
 } from "react-navigation";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import TranslatedText from './components/TranslatedText';
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
@@ -78,30 +78,31 @@ const SearchStack = createStackNavigator({
   Search: SearchScreen,
 });
 
+// tabBarLabel hidden on android because seem impossible to center
 const TabScreens = createBottomTabNavigator({
   Me: {
     screen: MeStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Me" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel}  text="Me" />,
     },
   },
   Operations: {
     screen: OperationsStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Operations" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Operations" />,
     },
   },
   // Chat: ChatStack, //TODO: hide this for now
   Resources: {
     screen: ResourcesStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Resources" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Resources" />,
     },
   },
   Search: {
     screen: SearchStack,
     navigationOptions: {
-      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Search" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Search" />,
     },
   },
 }, {
