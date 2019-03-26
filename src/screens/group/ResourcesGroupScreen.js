@@ -17,6 +17,7 @@ import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import type {GlobalObject} from "../../model/global";
 import type {tabs} from "./Group";
+import i18n from "../../i18n";
 
 type Props = {
   online: boolean,
@@ -40,7 +41,6 @@ const mapStateToProps = (state, props) => {
     return {group:{},loading:true};
   }
   const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', global.resources_id));
-
   return {
     online: state.flags.online,
     loading: state.flags.loading,
@@ -48,6 +48,7 @@ const mapStateToProps = (state, props) => {
     group: group,
     loaded: detailLevels[group._mode] >= detailLevels[OBJECT_MODE_PUBLIC],
     areAllSubregionsCountries: areAllSubregionsCountries(state, group.id),
+    currentLanguage: state.languages.currentLanguage,
   };
 };
 
@@ -65,17 +66,17 @@ const mergeProps = (propsFromState, propsFromDispatch, props) => ({
 });
 
 class ResourcesGroupScreen extends React.Component<Props> {
-  static navigationOptions = ({navigation}) => ({
-    headerTitle: <NavTitleContainer
-      title={navigation.getParam('title', 'Loading...')}
-      subtitle={navigation.getParam('subtitle', null)}
-    />,
-  });
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: <NavTitleContainer title={navigation.getParam('i18nTitle', i18n.t('Resources'))}/>,
+    };
+  };
 
   constructor(props: Props) {
     super(props);
     this.state = {
       tab: "dashboard",
+      currentLanguage: props.currentLanguage,
     };
   }
 
@@ -112,7 +113,10 @@ class ResourcesGroupScreen extends React.Component<Props> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id)),
+      payload => {
+        analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id))
+        i18n.forceUpdate(this, 'Resources');
+      },
     );
   }
 

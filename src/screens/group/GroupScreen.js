@@ -16,6 +16,7 @@ import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import type {tabs} from "./Group";
+import i18n from "../../i18n"
 
 type Props = {
   online: boolean,
@@ -57,8 +58,8 @@ const mapDispatchToProps = (dispatch, props) => ({
 class GroupScreen extends React.Component<Props, State> {
   static navigationOptions = ({navigation}) => ({
     headerTitle: <NavTitleContainer
-      title={navigation.getParam('title', 'Loading...')}
-      subtitle={navigation.getParam('subtitle', null)}
+      title={navigation.getParam('title', i18n.t('Loading...'))}
+      subtitle={i18n.t(navigation.getParam('subtitle', null))}
     />,
   });
 

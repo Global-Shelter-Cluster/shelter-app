@@ -9,6 +9,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import i18n from "../../i18n";
+import TranslatedText from "../../components/TranslatedText"
 
 const Form = t.form.Form;
 

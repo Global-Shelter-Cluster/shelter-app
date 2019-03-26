@@ -98,6 +98,7 @@ class Settings extends React.Component<Props, State> {
   _onPress = async (lang)  => {
     this.props.setLanguage(lang);
     await this.props.getTranslations(lang);
+
     // Reset the navigation and navigating away will show the selected translation.
     const resetAction = StackActions.reset({
       index: 1,
@@ -107,6 +108,7 @@ class Settings extends React.Component<Props, State> {
       ],
     });
     this.props.navigation.dispatch(resetAction);
+
   }
 
   _onRefreshLanguages = async () => {

@@ -16,7 +16,8 @@ import type {navigation} from "../../nav";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
 import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
-import TranslatedText from "../../components/TranslatedText"
+import TranslatedText from "../../components/TranslatedText";
+import i18n from '../../i18n';
 
 type Props = {
   online: boolean,
@@ -37,6 +38,7 @@ const mapStateToProps = state => ({
   loading: state.flags.loading,
   user: getCurrentUser(state),
   global: getObject(state, 'global', GLOBAL_OBJECT_ID),
+  currentLanguage: state.languages.currentLanguage
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -51,20 +53,22 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class OperationsScreen extends React.Component<Props, State> {
-  static navigationOptions = () => {
+  static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: <NavTitleContainer title={<TranslatedText>Operations</TranslatedText>} />,
-    }
+      headerTitle: <NavTitleContainer title={navigation.getParam('i18nTitle', i18n.t('Operations'))}/>,
+    };
   };
 
   constructor(props: Props) {
     super(props);
     this.state = {
       tab: "followed",
+      currentLanguage: props.currentLanguage
     };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    return true;
     return !propEqual(this.state, nextState, ['tab'])
       || !propEqual(this.props, nextProps, ['online', 'loading'], ['user', 'global']);
   }
@@ -78,7 +82,10 @@ class OperationsScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.state.tab)),
+      payload => {
+        analytics.hit(new PageHit(payload.state.routeName + '/' + this.state.tab));
+        i18n.forceUpdate(this, 'Operations');
+      }
     );
   }
 

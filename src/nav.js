@@ -107,7 +107,7 @@ const TabScreens = createBottomTabNavigator({
   },
 }, {
   defaultNavigationOptions: ({navigation}) => ({
-    lazy: false,
+
     tabBarIcon: ({focused, tintColor}) => {
       const {routeName} = navigation.state;
 

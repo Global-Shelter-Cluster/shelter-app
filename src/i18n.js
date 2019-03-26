@@ -54,6 +54,17 @@ class Translations {
     this.translations = getState().languages.translations;
   }
 
+  // Inspect component for language change and force update if necessary.
+  forceUpdate = (component, title) => {
+    if (component.props.currentLanguage !== component.state.currentLanguage) {
+      component.setState({currentLanguage: component.props.currentLanguage});
+      component.props.navigation.setParams({
+        i18nTitle: i18n.t(title),
+      });
+      component.forceUpdate();
+    }
+  }
+
   reduxMiddleware = ({ getState }) => {
     return next => async action => {
       const returnValue = next(action);

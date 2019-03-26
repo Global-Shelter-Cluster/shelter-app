@@ -521,7 +521,7 @@ class Persist {
         skipLoadingExpiredObjects = true; // Flag to stop from doing this twice
 
         const newObjects = await this.remote.loadObjects(loadImmediately);
-        console.log('persist::loadObjects', newObjects);
+        //console.log('persist::loadObjects', newObjects);
         this.updateLastRead(newObjects);
         await this.dispatchObjects(newObjects);
         this.saveObjects(newObjects);

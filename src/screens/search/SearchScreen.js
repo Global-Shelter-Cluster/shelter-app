@@ -14,6 +14,7 @@ import type {navigation} from "../../nav";
 import type {tabs} from "./Search";
 import analytics from "../../analytics";
 import {PageHit} from "expo-analytics";
+import i18n from "../../i18n";
 
 type Props = {
   online: boolean,
@@ -31,6 +32,7 @@ const mapStateToProps = state => ({
   online: state.flags.online,
   loading: state.flags.loading,
   global: getObject(state, 'global', GLOBAL_OBJECT_ID),
+  currentLanguage: state.languages.currentLanguage
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -41,14 +43,19 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class SearchScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    headerTitle: <NavTitleContainer title="Search"/>,
+  // static navigationOptions = {
+  //   headerTitle: <NavTitleContainer title="Search"/>,
+  // };
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: <NavTitleContainer title={navigation.getParam('i18nTitle', i18n.t('Search'))}/>,
+    };
   };
-
   constructor(props: Props) {
     super(props);
     this.state = {
       tab: "documents",
+      currentLanguage: props.currentLanguage,
     };
   }
 
@@ -66,7 +73,10 @@ class SearchScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName)),
+      payload => {
+        analytics.hit(new PageHit(payload.state.routeName))
+        i18n.forceUpdate(this, 'Search');
+      },
     );
   }
 

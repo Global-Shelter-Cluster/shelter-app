@@ -5,6 +5,7 @@ import {getObject} from "./index";
 import moment from 'moment';
 import createCachedSelector from 're-reselect';
 import {getCurrentUser} from "./user";
+import i18n from '../i18n'
 
 const RECENT_DOCS_MAX_DAYS = 30; // how many days ago are docs still considered "recent"
 
@@ -240,8 +241,8 @@ export const getGroupTypeLabel = (group: GroupObject) => {
     return '';
 
   return group.region_type !== undefined
-    ? group.region_type.toLowerCase()
-    : group.type.replace(/_/g, ' ');
+    ? i18n.t(group.region_type.toLowerCase())
+    : i18n.t(group.type.replace(/_/g, ' '));
 };
 
 export const getGroupTinyDescription = (group: GroupObject) => {
@@ -252,22 +253,22 @@ export const getGroupTinyDescription = (group: GroupObject) => {
   const ret = [];
 
   if (group.responses !== undefined)
-    ret.push(plural(group.responses.length, 'response', 'responses'));
+    ret.push(plural(group.responses.length, i18n.t('response'), i18nt('responses')));
 
   if (group.regions !== undefined)
-    ret.push(plural(group.regions.length, 'region', 'regions'));
+    ret.push(plural(group.regions.length, i18n.t('region'), i18n.t('regions')));
 
   if (group.hubs !== undefined)
-    ret.push(plural(group.hubs.length, 'hub', 'hubs'));
+    ret.push(plural(group.hubs.length, i18n.t('hub'), i18n.t('hubs')));
 
   if (group.working_groups !== undefined)
-    ret.push(plural(group.working_groups.length, 'working group', 'working groups'));
+    ret.push(plural(group.working_groups.length, i18n.t('working group'), i18n.t('working groups')));
 
   if (group.communities_of_practice !== undefined)
-    ret.push(plural(group.communities_of_practice.length, 'CoP', 'CoPs'));
+    ret.push(plural(group.communities_of_practice.length, i18n.t('CoP'), i18n.t('CoPs')));
 
   if (group.strategic_advisory !== undefined)
-    ret.push('1 SAG');
+    ret.push(i18n.t('1 SAG'));
 
   return ret.join(', ');
 };
