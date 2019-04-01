@@ -94,7 +94,7 @@ class Persist {
   async init() {
     try {
       this.remote = new Remote;
-      this.getEnabledLanguages();
+      this.getEnabledLanguages(this.store.getState().flags.online);
       this.setCurrentLanguage();
       await this.initDirectory(DIR_PERSISTED);
 

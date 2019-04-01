@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -10,6 +10,9 @@ import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
 import i18n from "../../i18n";
 import TranslatedText from "../../components/TranslatedText";
+import {connect} from 'react-redux';
+import {ScrollView} from "../user/Settings";
+import {updadeCurrentLanguage} from "../../actions";
 
 const Form = t.form.Form;
 
@@ -19,13 +22,14 @@ type Props = {
   loggingIn: boolean,
   lastError: lastErrorType,
   navigation: navigation,
+  languageOptions: [],
 }
 
 type State = {
   formValues: { username: string, password: string },
 }
 
-export default class Login extends React.Component<Props, State> {
+class Login extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
@@ -35,7 +39,8 @@ export default class Login extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return !propEqual(this.state, nextState, [], ['formValues'])
+    return nextProps.languageOptions.length != this.props.languageOptions.length ||
+      !propEqual(this.state, nextState, [], ['formValues'])
       || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
   }
 
@@ -43,6 +48,10 @@ export default class Login extends React.Component<Props, State> {
     if (this.refs.form.validate().isValid()) {
       this.props.submit(this.state.formValues.username, this.state.formValues.password);
     }
+  }
+
+  _onSwitchLanguage(lang) {
+    this.props.setLanguage(lang);
   }
 
   render() {
@@ -84,6 +93,17 @@ export default class Login extends React.Component<Props, State> {
           style={{flex: 1}}
           imageStyle={{maxWidth: 400, maxHeight: 400}}
           source={require('../../../assets/splash.png')}/>
+        { online && <View style={[styles.innerContainer, styles.languageSwitcher]}>
+          { this.props.languageOptions.map((lang) => (
+            <TouchableOpacity
+              key={lang}
+              onPress={() => this._onSwitchLanguage(lang)}
+              style={styles.languageButton}
+            >
+              <Text style={styles.languageText}>{lang}</Text>
+            </TouchableOpacity>
+          ))}
+        </View> }
         <View style={styles.innerContainer}>
           <Text style={styles.title}>ShelterCluster.org</Text>
           {errorMessage}
@@ -138,6 +158,22 @@ const styles = StyleSheet.create({
     // height: 165,
     justifyContent: "space-between",
   },
+  languageButton: {
+    backgroundColor: vars.SHELTER_RED,
+    padding: 5,
+    textAlign: "center",
+    width: 30,
+  },
+  languageText: {
+    color: '#fff',
+    textAlign: "center",
+  },
+  languageSwitcher: {
+    flexDirection: 'row',
+    justifyContent: "space-around",
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
   title: {
     fontSize: 24,
     textAlign: "center",
@@ -176,3 +212,14 @@ const formStyles = {
     },
   },
 };
+
+const mapStateToProps = state => ({
+  enabledLanguages: state.languages.enabled,
+  languageOptions: Object.keys(state.languages.enabled).map((lang) => lang)
+});
+
+const mapDispatchToProps = dispatch => ({
+  setLanguage: (lang) => dispatch(updadeCurrentLanguage(lang)),
+});
+
+export default Login = connect(mapStateToProps, mapDispatchToProps)(Login);

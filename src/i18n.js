@@ -45,8 +45,8 @@ class Translations {
     this.enabledLanguages = getState().languages.enabled;
   }
 
-  setCurrentLanguages = (getState) => {
-    this.currentLanguage = getState().languages.currentLanguage;
+  setCurrentLanguages = async (getState) => {
+    this.currentLanguage = await getState().languages.currentLanguage;
     this.pluralFormula = this.enabledLanguages[this.currentLanguage].formula;
   }
 
