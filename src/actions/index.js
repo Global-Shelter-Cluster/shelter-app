@@ -77,7 +77,7 @@ export const getTranslations = (lang, forceRefresh = false) => async dispatch =>
   if (!forceRefresh) {
     const translations = await Storage.getItem(`translations_${lang}`);
     if (translations !== null) {
-      dispatch(updateTranslations(JSON.parse(translations)));
+      await dispatch(updateTranslations(JSON.parse(translations)));
       done = true;
     }
   }

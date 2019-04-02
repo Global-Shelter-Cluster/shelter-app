@@ -12,7 +12,7 @@ import i18n from "../../i18n";
 import TranslatedText from "../../components/TranslatedText";
 import {connect} from 'react-redux';
 import {ScrollView} from "../user/Settings";
-import {updadeCurrentLanguage} from "../../actions";
+import {getTranslations, updadeCurrentLanguage} from "../../actions";
 
 const Form = t.form.Form;
 
@@ -23,6 +23,8 @@ type Props = {
   lastError: lastErrorType,
   navigation: navigation,
   languageOptions: [],
+  setLanguage: (lang: string) => {},
+  currentLanguage: string,
 }
 
 type State = {
@@ -41,7 +43,7 @@ class Login extends React.Component<Props, State> {
   shouldComponentUpdate(nextProps: Props, nextState: State) {
     return nextProps.languageOptions.length != this.props.languageOptions.length ||
       !propEqual(this.state, nextState, [], ['formValues'])
-      || !propEqual(this.props, nextProps, ['online', 'loggingIn'], ['lastError']);
+      || !propEqual(this.props, nextProps, ['currentLanguage', 'online', 'loggingIn'], ['lastError']);
   }
 
   login() {
@@ -50,8 +52,12 @@ class Login extends React.Component<Props, State> {
     }
   }
 
-  _onSwitchLanguage(lang) {
+  async _onSwitchLanguage(lang) {
     this.props.setLanguage(lang);
+    await this.props.getTranslations(lang);
+    // Reset the navigation stack.
+    this.props.navigation.navigate('Signup');
+    this.props.navigation.navigate('Login');
   }
 
   render() {
@@ -93,7 +99,7 @@ class Login extends React.Component<Props, State> {
           style={{flex: 1}}
           imageStyle={{maxWidth: 400, maxHeight: 400}}
           source={require('../../../assets/splash.png')}/>
-        { online && <View style={[styles.innerContainer, styles.languageSwitcher]}>
+        { online && !loggingIn && <View style={[styles.innerContainer, styles.languageSwitcher]}>
           { this.props.languageOptions.map((lang) => (
             <TouchableOpacity
               key={lang}
@@ -214,12 +220,13 @@ const formStyles = {
 };
 
 const mapStateToProps = state => ({
-  enabledLanguages: state.languages.enabled,
-  languageOptions: Object.keys(state.languages.enabled).map((lang) => lang)
+  languageOptions: Object.keys(state.languages.enabled).map((lang) => lang),
+  currentLanguage: state.languages.currentLanguage,
 });
 
 const mapDispatchToProps = dispatch => ({
   setLanguage: (lang) => dispatch(updadeCurrentLanguage(lang)),
+  getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh)),
 });
 
 export default Login = connect(mapStateToProps, mapDispatchToProps)(Login);

@@ -37,7 +37,6 @@ class Translations {
     if (count !== null) {
       translatedText = translatedText.replace(countToken, count);
     }
-
     return translatedText;
   };
 
