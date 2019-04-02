@@ -99,17 +99,19 @@ class Login extends React.Component<Props, State> {
           style={{flex: 1}}
           imageStyle={{maxWidth: 400, maxHeight: 400}}
           source={require('../../../assets/splash.png')}/>
-        { online && !loggingIn && <View style={[styles.innerContainer, styles.languageSwitcher]}>
-          { this.props.languageOptions.map((lang) => (
-            <TouchableOpacity
-              key={lang}
-              onPress={() => this._onSwitchLanguage(lang)}
-              style={styles.languageButton}
-            >
-              <Text style={styles.languageText}>{lang}</Text>
-            </TouchableOpacity>
-          ))}
-        </View> }
+        { online && !loggingIn && this.props.languageOptions.length > 1 &&
+          <View style={[styles.innerContainer, styles.languageSwitcher]}>
+            { this.props.languageOptions.map((lang) => (
+              <TouchableOpacity
+                key={lang}
+                onPress={() => this._onSwitchLanguage(lang)}
+                style={styles.languageButton}
+              >
+                <Text style={styles.languageText}>{lang}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        }
         <View style={styles.innerContainer}>
           <Text style={styles.title}>ShelterCluster.org</Text>
           {errorMessage}
