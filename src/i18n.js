@@ -41,8 +41,8 @@ class Translations {
     return translatedText;
   };
 
-  updateLanguages = (getState) => {
-    this.enabledLanguages = getState().languages.enabled;
+  updateLanguages = async (getState) => {
+    this.enabledLanguages = await getState().languages.enabled;
   }
 
   setCurrentLanguages = async (getState) => {

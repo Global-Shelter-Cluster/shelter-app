@@ -1,7 +1,11 @@
 const initialState = {
-  // @TODO load from disk, consider https://facebook.github.io/react-native/docs/asyncstorage
   translations: {},
-  enabled: {en: {name: 'English'}},
+  enabled: {
+    en: {
+      name: 'English',
+      formula: ''
+    }
+  },
   currentLanguage: 'en',
 };
 

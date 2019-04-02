@@ -94,7 +94,7 @@ class Persist {
   async init() {
     try {
       this.remote = new Remote;
-      this.getEnabledLanguages(this.store.getState().flags.online);
+      await this.getEnabledLanguages(this.store.getState().flags.online);
       this.setCurrentLanguage();
       await this.initDirectory(DIR_PERSISTED);
 
@@ -622,11 +622,9 @@ class Persist {
   }
 
   async setCurrentLanguage() {
-    const currentLanguage = await Storage.getItem('currentLanguage');
-    if (currentLanguage !== null) {
-      this.store.dispatch(setCurrentLanguage(currentLanguage));
-      this.store.dispatch(getTranslations(currentLanguage));
-    }
+    const currentLanguage = await Storage.getItem('currentLanguage') || 'en';
+    this.store.dispatch(setCurrentLanguage(currentLanguage));
+    this.store.dispatch(getTranslations(currentLanguage));
   }
 
   async getTranslations(lang) {
