@@ -1,17 +1,8 @@
 // @flow
 import React from 'react';
-import {
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet
-} from 'react-native';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {NavigationActions, StackActions} from 'react-navigation';
 import type {tabsDefinition} from "../../components/Tabs";
-import Tabs from "../../components/Tabs";
 import {formStylesheet} from "../../styles/formStyles";
 import t from "tcomb-form-native";
 import type {localVarsType} from "../../reducers/localVars";
@@ -24,16 +15,13 @@ import type {PrivateUserObject} from "../../model/user";
 import singleRowCheckbox from "../../styles/singleRowCheckbox";
 import config from "../../config";
 import connect from "react-redux/es/connect/connect";
-import {
-  updadeCurrentLanguage,
-  getTranslations,
-  refreshEnabledLanguages
-} from "../../actions";
+import {getTranslations, refreshEnabledLanguages, updadeCurrentLanguage} from "../../actions";
 import TranslatedText from "../../components/TranslatedText";
 import MultiselectFactory from "../../components/tcomb/MultiselectFactory";
 import i18n from "../../i18n";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
+import MultiSelect from "../../components/Multiselect";
 
 const Form = t.form.Form;
 
@@ -87,7 +75,8 @@ class Settings extends React.Component<Props, State> {
         }
       },
       languageOptions: [],
-      _languageForm: () => {},
+      _languageForm: () => {
+      },
     };
   }
 
@@ -95,7 +84,7 @@ class Settings extends React.Component<Props, State> {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
   }
 
-  _onPress = async (lang)  => {
+  _onPress = async (lang) => {
     this.props.setLanguage(lang);
     await this.props.getTranslations(lang);
 
@@ -103,8 +92,8 @@ class Settings extends React.Component<Props, State> {
     const resetAction = StackActions.reset({
       index: 1,
       actions: [
-        NavigationActions.navigate({ routeName: 'Dashboard' }),
-        NavigationActions.navigate({ routeName: 'Settings' }),
+        NavigationActions.navigate({routeName: 'Dashboard'}),
+        NavigationActions.navigate({routeName: 'Settings'}),
       ],
     });
     this.props.navigation.dispatch(resetAction);
@@ -170,6 +159,39 @@ class Settings extends React.Component<Props, State> {
             downloadFiles: t.Boolean,
           });
 
+        const langSelector = <View style={formStylesheet.formGroup.normal}>
+          <TranslatedText style={formStylesheet.controlLabel.normal}>Select your language</TranslatedText>
+          {!this.props.online && <TranslatedText>Language settings can't be changed while offline</TranslatedText>}
+          <MultiSelect
+            hideSubmitButton={true}
+            hideDropdown={true}
+            hideTags={true}
+            single={true}
+            items={Object.keys(this.props.languageOptions).map(lang => ({
+              id: lang,
+              name: this.props.languageOptions[lang].native,
+              disabled: !this.props.online,
+            }))}
+            uniqueKey="id"
+            ref={(component) => {
+              self.multiSelect = component
+            }}
+            onSelectedItemsChange={selected => this._onPress(selected[0])}
+            selectedItems={[this.props.currentLanguage]}
+            selectText={null}
+            selectedItemTextColor="#CCC"
+            selectedItemIconColor="#CCC"
+            itemTextColor="#000"
+            displayKey="name"
+            searchInputStyle={{color: '#CCC'}}
+          />
+          <Button
+            disabled={!this.props.online}
+            title={i18n.t("Import all translations")}
+            onPress={this._onRefreshLanguages}
+          />
+        </View>;
+
         content = <ScrollView style={{flex: 1, padding: 10}}>
           <Form
             ref="preferences_form"
@@ -194,23 +216,10 @@ class Settings extends React.Component<Props, State> {
             value={localVars}
           />
 
-          <TranslatedText>Select your language</TranslatedText>
-          { !this.props.online && <TranslatedText>Language settings can't be changed while offline</TranslatedText>}
-          { this.props.languageOptions.map((lang) => (
-            <TouchableOpacity
-              key={lang}
-              style={[styles.option, lang === this.props.currentLanguage ? styles.current: '']}
-              onPress={() => this._onPress(lang)}
-              disabled={!this.props.online}
-            >
-              <Text style={[lang === this.props.currentLanguage ? styles.textCurrent: '']}>{lang}</Text>
-            </TouchableOpacity>
-          ))}
-          <Button
-            disabled={!this.props.online}
-            title={i18n.t("Import all translations")}
-            onPress={this._onRefreshLanguages}
-          />
+          {Object.keys(this.props.languageOptions).length > 1
+            ? langSelector
+            : null // Hide the language selector if there's just English available
+          }
         </ScrollView>;
         break;
     }
@@ -230,31 +239,12 @@ class Settings extends React.Component<Props, State> {
     </View>;
   }
 }
-const styles = StyleSheet.create({
-  option: {
-    alignItems:'center',
-    color: '#000',
-    borderRadius: 13,
-    borderWidth: 1,
-    height: 26,
-    justifyContent: 'center',
-    margin: 5,
-    width: 26,
-  },
-  current: {
-    backgroundColor: vars.MEDIUM_GREY,
-    borderWidth: 0,
-  },
-  textCurrent: {
-    color: '#fff',
-  },
-});
 
 const mapStateToProps = state => ({
   online: state.flags.online,
   enabledLanguages: state.languages.enabled,
   currentLanguage: state.languages.currentLanguage,
-  languageOptions: Object.keys(state.languages.enabled).map((lang) => lang)
+  languageOptions: state.languages.enabled,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -3,6 +3,7 @@ const initialState = {
   enabled: {
     en: {
       name: 'English',
+      native: 'English',
       formula: ''
     }
   },
