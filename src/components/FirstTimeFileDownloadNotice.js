@@ -1,11 +1,14 @@
 // @flow
 
 import React from "react";
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View, Html} from "react-native";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import Button from "./Button";
 import prettyBytes from 'pretty-bytes';
+import i18n from "../i18n";
+import HTML from 'react-native-render-html';
+import TranslatedText from "./TranslatedText"
 
 type Props = {
   online: boolean,
@@ -43,23 +46,25 @@ export default class FirstTimeFileDownloadNotice extends React.Component<Props, 
     if (alreadyAsked || !online || !files)
       return null;
 
-    const byteString = bytes ? <Text>(approximately <Text style={styles.bold}>{prettyBytes(bytes, {locale: 'en'})}</Text>). </Text> : null;
+    const byteString = bytes ? i18n.t("(approximately <b>@bytes</b>)", null, {'@bytes': prettyBytes(bytes, {locale: 'en'})}) : null;
+
+    const filesMessage = files === 1
+      ? i18n.t("In order for the app to work while offline, we need to download <b>1 file</b>.")
+      : i18n.t("In order for the app to work while offline, we need to download <b>@count files</b>.", files);
+
+    const message = byteString ? filesMessage + ' ' + byteString : filesMessage;
 
     return <View style={styles.container}>
-      <Text style={styles.label}>
-        In order for the app to work while offline, we need to download
-        <Text style={styles.bold}> {files === 1 ? "1 file" : files + " files"}{byteString ? " " : ". "}</Text>
-        {byteString}
-        You can turn file downloads on/off in Settings.
-      </Text>
+      <HTML baseFontStyle={styles.label} html={message} />
+      <TranslatedText style={styles.label}>You can turn file downloads on/off in Settings.</TranslatedText>
       <View style={styles.buttonContainer}>
         <Button
           style={styles.button} primary
-          onPress={ok} title="Download"
+          onPress={ok} title={i18n.t("Download")}
         />
         <Button
           style={styles.button}
-          onPress={cancel} title="Skip for now"
+          onPress={cancel} title={i18n.t("Skip for now")}
         />
       </View>
     </View>;
