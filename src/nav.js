@@ -44,7 +44,21 @@ const AuthScreens = createSwitchNavigator({
   Forgot: ForgotScreen,
 });
 
-const OperationsStack = createStackNavigator({
+/**
+ * Wrapper around createStackNavigator() so we're able to customize the "back button" label easily.
+ */
+const createStackNavigator2 = screens => {
+  for (const k in screens)
+    screens[k] = {
+      screen: screens[k],
+      navigationOptions: () => ({
+        headerBackTitle: i18n.t('Back'),
+      }),
+    };
+  return createStackNavigator(screens);
+};
+
+const OperationsStack = createStackNavigator2({
   Operations: OperationsScreen,
   Group: GroupScreen,
   WebsiteViewer: WebsiteViewerScreen,
@@ -67,14 +81,14 @@ const OperationsStack = createStackNavigator({
 // const ChatStack = createSwitchNavigator({
 //   Chat: TempBlankScreen,
 // });
-const ResourcesStack = createStackNavigator({
+const ResourcesStack = createStackNavigator2({
   ResourcesGroup: ResourcesGroupScreen,
 });
-const MeStack = createStackNavigator({
+const MeStack = createStackNavigator2({
   Dashboard: DashboardScreen,
   Settings: SettingsScreen,
 });
-const SearchStack = createStackNavigator({
+const SearchStack = createStackNavigator2({
   Search: SearchScreen,
 });
 
