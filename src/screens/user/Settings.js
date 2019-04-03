@@ -173,9 +173,6 @@ class Settings extends React.Component<Props, State> {
               disabled: !this.props.online,
             }))}
             uniqueKey="id"
-            ref={(component) => {
-              self.multiSelect = component
-            }}
             onSelectedItemsChange={selected => this._onPress(selected[0])}
             selectedItems={[this.props.currentLanguage]}
             selectText={null}
