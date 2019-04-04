@@ -16,6 +16,7 @@ import type {newAccountValues} from "../screens/auth/Signup";
 import type {notificationType} from "../reducers/notification";
 import type {localVarsTypeAllOptional} from "../reducers/localVars";
 import Storage from "../persist/storage_async";
+import Remote from "../persist/remote";
 
 export const CHANGE_FLAG = 'CHANGE_FLAG';
 export const changeFlag = (flag: flags, value: boolean) => ({
@@ -407,3 +408,9 @@ export const mergeLocalVars = (localVars: localVarsTypeAllOptional) => ({
   type: MERGE_LOCAL_VARS,
   localVars,
 });
+
+export const UPDATE_APP_CONFIG = 'UPDATE_APP_CONFIG';
+export const updateRemoteAppConfig = appRemoteConfig => ({
+  type: UPDATE_APP_CONFIG,
+  appRemoteConfig,
+})

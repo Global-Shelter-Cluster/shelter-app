@@ -14,6 +14,7 @@ import {
   updateLanguages,
   setCurrentLanguage,
   getTranslations,
+  updateRemoteAppConfig,
 } from "../actions";
 import type {Store} from "redux";
 import type {authType} from "./remote";
@@ -97,6 +98,7 @@ class Persist {
       await this.getEnabledLanguages(this.store.getState().flags.online);
       this.setCurrentLanguage();
       await this.initDirectory(DIR_PERSISTED);
+      await this.getRemoteAppConfig();
 
       const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
       if (authString) {
@@ -630,6 +632,33 @@ class Persist {
   async getTranslations(lang) {
     const { data } = await this.remote.getTranslations(lang);
     return data;
+  }
+
+  async getRemoteAppConfig() {
+    const { data: remoteConfig } = await this.remote.getRemoteAppConfig();
+    const currentAppConfig = await this.store.getState().appRemoteConfig;
+    if (currentAppConfig.updatedAt === remoteConfig.updatedAt) {
+      return;
+    }
+    this.store.dispatch(updateRemoteAppConfig(remoteConfig))
+  }
+
+  async remoteConfigHasChanged(key, value) {
+    const { data: remoteConfig } = await this.remote.getRemoteAppConfig();
+    const currentAppConfig = await this.store.getState().appRemoteConfig;
+
+    if (currentAppConfig.updatedAt === remoteConfig.updatedAt) {
+      return false;
+    }
+
+    await this.store.dispatch(updateRemoteAppConfig(remoteConfig))
+    console.log(remoteConfig[key] === value);
+    if (remoteConfig[key] === value) {
+      console.log('WHAT^^^???');
+      return false;
+    }
+
+    return true;
   }
 
   /**

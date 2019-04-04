@@ -43,9 +43,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class SearchScreen extends React.Component<Props, State> {
-  // static navigationOptions = {
-  //   headerTitle: <NavTitleContainer title="Search"/>,
-  // };
   static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: <NavTitleContainer title={navigation.getParam('i18nTitle', i18n.t('Search'))}/>,
