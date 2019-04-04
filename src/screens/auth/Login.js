@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity} from 'react-native';
+import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -13,6 +13,7 @@ import TranslatedText from "../../components/TranslatedText";
 import {connect} from 'react-redux';
 import {ScrollView} from "../user/Settings";
 import {getTranslations, updadeCurrentLanguage} from "../../actions";
+import {FontAwesome} from '@expo/vector-icons';
 
 const Form = t.form.Form;
 
@@ -22,13 +23,14 @@ type Props = {
   loggingIn: boolean,
   lastError: lastErrorType,
   navigation: navigation,
-  languageOptions: [],
+  languageOptions: {},
   setLanguage: (lang: string) => {},
   currentLanguage: string,
 }
 
 type State = {
   formValues: { username: string, password: string },
+  languageSwitcherOpen: boolean,
 }
 
 class Login extends React.Component<Props, State> {
@@ -37,13 +39,13 @@ class Login extends React.Component<Props, State> {
     super(props);
     this.state = {
       formValues: {username: "", password: ""},
+      languageSwitcherOpen: false,
     };
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return nextProps.languageOptions.length != this.props.languageOptions.length ||
-      !propEqual(this.state, nextState, [], ['formValues'])
-      || !propEqual(this.props, nextProps, ['currentLanguage', 'online', 'loggingIn'], ['lastError']);
+    return !propEqual(this.state, nextState, ['languageSwitcherOpen'], ['formValues'])
+      || !propEqual(this.props, nextProps, ['currentLanguage', 'online', 'loggingIn'], ['lastError', 'languageOptions']);
   }
 
   login() {
@@ -82,16 +84,40 @@ class Login extends React.Component<Props, State> {
     const signupButton = !loggingIn && online
       ? <Button onPress={() => {
         this.props.navigation.navigate('Signup');
-      }} title={i18n.t("Sign up")} />
+      }} title={i18n.t("Sign up")}/>
       : null;
 
     const forgotButton = !loggingIn && online
       ? <Button
-        dimmed style={{marginTop: 5}}
+        small dimmed style={{marginTop: 5, flex: 1}}
         onPress={() => {
           this.props.navigation.navigate('Forgot');
-        }} title={i18n.t("Forgot your username/password?")} />
+        }} title={i18n.t("Forgot your username/password?")}/>
       : null;
+
+    const showLanguageSwitcher = online && !loggingIn && Object.keys(this.props.languageOptions).length > 1;
+
+    const languageSwitcherToggle = <TouchableOpacity
+      onPress={() => this.setState({languageSwitcherOpen: !this.state.languageSwitcherOpen})}
+    >
+      <FontAwesome name="globe" size={30}
+                   color={this.state.languageSwitcherOpen ? vars.SHELTER_RED : vars.SHELTER_GREY}/>
+    </TouchableOpacity>;
+
+    const languageSwitcher = <View style={[styles.innerContainer, styles.languageSwitcher]}>
+      {Object.keys(this.props.languageOptions).map(lang => (
+        <TouchableOpacity
+          key={lang}
+          onPress={() => this._onSwitchLanguage(lang)}
+          style={styles.languageButton}
+        >
+          <Text style={styles.languageText}>
+            {this.props.languageOptions[lang].native}
+            {this.props.languageOptions[lang].native}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>;
 
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -99,19 +125,6 @@ class Login extends React.Component<Props, State> {
           style={{flex: 1}}
           imageStyle={{maxWidth: 400, maxHeight: 400}}
           source={require('../../../assets/splash.png')}/>
-        { online && !loggingIn && this.props.languageOptions.length > 1 &&
-          <View style={[styles.innerContainer, styles.languageSwitcher]}>
-            { this.props.languageOptions.map((lang) => (
-              <TouchableOpacity
-                key={lang}
-                onPress={() => this._onSwitchLanguage(lang)}
-                style={styles.languageButton}
-              >
-                <Text style={styles.languageText}>{lang}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        }
         <View style={styles.innerContainer}>
           <Text style={styles.title}>ShelterCluster.org</Text>
           {errorMessage}
@@ -147,7 +160,10 @@ class Login extends React.Component<Props, State> {
           />}
           {loginButton}
           {signupButton}
-          {forgotButton}
+          <View style={styles.bottomContainer}>
+            {showLanguageSwitcher && this.state.languageSwitcherOpen ? languageSwitcher : forgotButton}
+            {showLanguageSwitcher ? languageSwitcherToggle : null}
+          </View>
         </View>
       </KeyboardAvoidingView>
     );
@@ -160,25 +176,31 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   innerContainer: {
-    // flexShrink: 1,
     padding: 20,
     paddingBottom: 30,
-    // height: 165,
     justifyContent: "space-between",
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   languageButton: {
     backgroundColor: vars.SHELTER_RED,
-    padding: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginLeft: 1,
+    marginTop: 1,
     textAlign: "center",
-    width: 30,
   },
   languageText: {
-    color: '#fff',
+    color: "white",
     textAlign: "center",
   },
   languageSwitcher: {
+    flex: 1,
+    flexWrap: "wrap",
     flexDirection: 'row',
-    justifyContent: "space-around",
+    justifyContent: "center",
     paddingBottom: 10,
     paddingTop: 10,
   },
@@ -222,7 +244,7 @@ const formStyles = {
 };
 
 const mapStateToProps = state => ({
-  languageOptions: Object.keys(state.languages.enabled).map((lang) => lang),
+  languageOptions: state.languages.enabled,
   currentLanguage: state.languages.currentLanguage,
 });
 
