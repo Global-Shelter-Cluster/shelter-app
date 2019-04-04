@@ -60,6 +60,9 @@ export default class FirstTimeFileDownloadNotice extends React.Component<Props, 
 
     const downloadLabel = i18n.t("Download");
     const skipLabel = i18n.t("Skip for now");
+
+    // Some languages have long labels, which makes the buttons don't show them fully when they're side-to-side. Instead,
+    // we show them one on top of the other.
     const longLabels = downloadLabel.length > 14 || skipLabel.length > 14;
 
     return <View style={styles.container}>
