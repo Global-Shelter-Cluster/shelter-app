@@ -14,6 +14,7 @@ import {
   updateLanguages,
   setCurrentLanguage,
   getTranslations,
+  updateTranslations,
   updateRemoteAppConfig,
 } from "../actions";
 import type {Store} from "redux";
@@ -288,6 +289,10 @@ class Persist {
     if (this.remote) {
       this.remote.auth = null;
     }
+    this.store.dispatch(updateRemoteAppConfig());
+    this.store.dispatch(updateTranslations());
+    this.store.dispatch(updateLanguages());
+    this.store.dispatch(setCurrentLanguage());
     console.debug('Cleared storage');
     if (force || config.deleteFilesOnLogout) {
       FileSystem.deleteAsync(this.directory, {idempotent: true}).then(
@@ -618,6 +623,7 @@ class Persist {
 
     const { data } = await this.remote.getEnabledLanguages();
     if (data) {
+      console.log(data);
       this.store.dispatch(updateLanguages(data));
       Storage.setItem('enabledLanguages', JSON.stringify(data));
     }
@@ -635,7 +641,13 @@ class Persist {
   }
 
   async getRemoteAppConfig() {
-    const { data: remoteConfig } = await this.remote.getRemoteAppConfig();
+    const { data: remoteConfig = {} } = await this.remote.getRemoteAppConfig()
+    .catch((e) => {
+      console.log('No remote config');
+      this.store.dispatch(updateRemoteAppConfig())
+      return false;
+    });
+
     const currentAppConfig = await this.store.getState().appRemoteConfig;
     if (currentAppConfig.updatedAt === remoteConfig.updatedAt) {
       return;
@@ -644,7 +656,12 @@ class Persist {
   }
 
   async remoteConfigHasChanged(key, value) {
-    const { data: remoteConfig } = await this.remote.getRemoteAppConfig();
+    console.log(key, value);
+    const { data: remoteConfig = {} } = await this.remote.getRemoteAppConfig()
+    .catch((e) => {
+      console.log('No remote config');
+      return false;
+    });
     const currentAppConfig = await this.store.getState().appRemoteConfig;
 
     if (currentAppConfig.updatedAt === remoteConfig.updatedAt) {
@@ -652,9 +669,7 @@ class Persist {
     }
 
     await this.store.dispatch(updateRemoteAppConfig(remoteConfig))
-    console.log(remoteConfig[key] === value);
     if (remoteConfig[key] === value) {
-      console.log('WHAT^^^???');
       return false;
     }
 

@@ -50,7 +50,7 @@ class Translations {
   }
 
   updateTranslations = (getState) => {
-    this.translations = getState().languages.translations;
+    this.translations = getState().languages.translations || {};
   }
 
   // Inspect component for language change and force update if necessary.

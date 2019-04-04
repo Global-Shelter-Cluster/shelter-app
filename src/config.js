@@ -65,6 +65,6 @@ const channel = config[Expo.Constants.manifest.releaseChannel] !== undefined
   // : 'local';
   // : 'dev';
   // : 'stage';
-  // : 'local_jm';
+  : 'local_jm';
 
 export default config[channel];

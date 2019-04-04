@@ -15,17 +15,17 @@ const translationReducer = (state = initialState, action) => {
     case "UPDATE_TRANSLATIONS":
       return {
         ...state,
-        translations: action.translations
+        translations: action.translations || state.translations
       };
     case "UPDATE_LANGUAGES":
       return {
         ...state,
-        enabled: action.languages
+        enabled: action.languages || state.enabled
       };
     case "SET_CURRENT_LANGUAGE":
       return {
         ...state,
-        currentLanguage: action.language
+        currentLanguage: action.language || state.currentLanguage
       };
     default:
       return state;
