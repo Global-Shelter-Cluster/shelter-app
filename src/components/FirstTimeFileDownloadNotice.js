@@ -1,14 +1,13 @@
 // @flow
 
 import React from "react";
-import {Image, StyleSheet, Text, View, Html} from "react-native";
+import {Html, Image, StyleSheet, Text, View} from "react-native";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import Button from "./Button";
 import prettyBytes from 'pretty-bytes';
 import i18n from "../i18n";
 import HTML from 'react-native-render-html';
-import TranslatedText from "./TranslatedText"
 
 type Props = {
   online: boolean,
@@ -46,25 +45,33 @@ export default class FirstTimeFileDownloadNotice extends React.Component<Props, 
     if (alreadyAsked || !online || !files)
       return null;
 
-    const byteString = bytes ? i18n.t("(approximately <b>@bytes</b>)", null, {'@bytes': prettyBytes(bytes, {locale: 'en'})}) : null;
+    let message;
 
-    const filesMessage = files === 1
-      ? i18n.t("In order for the app to work while offline, we need to download <b>1 file</b>.")
-      : i18n.t("In order for the app to work while offline, we need to download <b>@count files</b>.", files);
+    if (bytes) {
+      const replacements = {'@bytes': prettyBytes(bytes, {locale: i18n.currentLanguage})};
+      message = files === 1
+        ? i18n.t("In order for the app to work while offline, we need to download <b>1 file</b> (approximately <b>@bytes</b>). You can turn file downloads on/off in Settings.", null, replacements)
+        : i18n.t("In order for the app to work while offline, we need to download <b>@count files</b> (approximately <b>@bytes</b>). You can turn file downloads on/off in Settings.", files, replacements);
+    } else {
+      message = files === 1
+        ? i18n.t("In order for the app to work while offline, we need to download <b>1 file</b>. You can turn file downloads on/off in Settings.")
+        : i18n.t("In order for the app to work while offline, we need to download <b>@count files</b>. You can turn file downloads on/off in Settings.", files);
+    }
 
-    const message = byteString ? filesMessage + ' ' + byteString : filesMessage;
+    const downloadLabel = i18n.t("Download");
+    const skipLabel = i18n.t("Skip for now");
+    const longLabels = downloadLabel.length > 14 || skipLabel.length > 14;
 
     return <View style={styles.container}>
-      <HTML baseFontStyle={styles.label} html={message} />
-      <TranslatedText style={styles.label}>You can turn file downloads on/off in Settings.</TranslatedText>
-      <View style={styles.buttonContainer}>
+      <HTML baseFontStyle={styles.label} html={message}/>
+      <View style={longLabels ? styles.buttonContainerLongLabels : styles.buttonContainer}>
         <Button
-          style={styles.button} primary
-          onPress={ok} title={i18n.t("Download")}
+          style={longLabels ? styles.buttonLongLabel : styles.button} primary
+          onPress={ok} title={downloadLabel}
         />
         <Button
-          style={styles.button}
-          onPress={cancel} title={i18n.t("Skip for now")}
+          style={longLabels ? styles.buttonLongLabel : styles.button}
+          onPress={cancel} title={skipLabel}
         />
       </View>
     </View>;
@@ -73,8 +80,6 @@ export default class FirstTimeFileDownloadNotice extends React.Component<Props, 
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 40,
     backgroundColor: vars.ACCENT_DARK_BLUE,
@@ -95,5 +100,12 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 10,
+  },
+  buttonContainerLongLabels: {
+    marginVertical: 10,
+    marginHorizontal: 0,
+  },
+  buttonLongLabel: {
+    flex: 1,
   },
 });
