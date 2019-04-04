@@ -113,7 +113,6 @@ class Login extends React.Component<Props, State> {
         >
           <Text style={styles.languageText}>
             {this.props.languageOptions[lang].native}
-            {this.props.languageOptions[lang].native}
           </Text>
         </TouchableOpacity>
       ))}
