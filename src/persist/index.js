@@ -314,6 +314,7 @@ class Persist {
   async login(user: string, pass: string) {
     // Always get user data from remote on login
     const pushToken = await getPushToken();
+    console.debug('Logging in, push token: ' + pushToken);
     const objects = await this.remote.login(user, pass, pushToken);
 
     // Save everything we received (user object, groups, etc.)
