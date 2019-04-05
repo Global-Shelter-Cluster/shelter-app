@@ -16,6 +16,7 @@ persist.store = store;
 
 export default ({exp}) => (
   <Provider store={store}>
+    {/*<AppContainer exp={{notification: {data: {title: 'test', link: 'group:pages', id: 97}, origin: 'selected'}}}/>*/}
     <AppContainer exp={exp}/>
   </Provider>
 );

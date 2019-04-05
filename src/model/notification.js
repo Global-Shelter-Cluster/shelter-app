@@ -23,24 +23,48 @@ export const notificationEnter = createSelector(
             if (shouldRefresh)
               persist.store.dispatch(loadObject('group', notification.id, false, true));
             if (link[2]) // tab (e.g. "featured")
-              return navService.navigate('DocumentList', {groupId: notification.id, which: link[2]});
+              return navService.push('DocumentList', {groupId: notification.id, which: link[2]});
             else
-              return navService.navigate('DocumentList', {groupId: notification.id});
+              return navService.push('DocumentList', {groupId: notification.id});
+
+          case 'pages':
+            if (shouldRefresh)
+              persist.store.dispatch(loadObject('group', notification.id, false, true));
+            console.log('CAM group nav3 group:pages', {groupId: notification.id, which: link[1]});
+            return navService.push('Group', {groupId: notification.id, which: link[1]});
         }
 
         if (shouldRefresh)
           persist.store.dispatch(loadObject('group', notification.id, false, true));
-        return navService.navigate('Group', {groupId: notification.id});
+        return navService.push('Group', {groupId: notification.id});
 
       case 'factsheet':
         if (shouldRefresh)
           persist.store.dispatch(loadObject('factsheet', notification.id, false, true));
-        return navService.navigate('Factsheet', {factsheetId: notification.id});
+        return navService.push('Factsheet', {factsheetId: notification.id});
 
       case 'document':
         if (shouldRefresh)
           persist.store.dispatch(loadObject('document', notification.id, false, true));
-        return navService.navigate('Document', {documentId: notification.id});
+        return navService.push('Document', {documentId: notification.id});
+
+      case 'library':
+        if (shouldRefresh)
+          persist.store.dispatch(loadObject('page', notification.id, false, true));
+        return navService.push('Library', {pageId: notification.id});
+
+      case 'arbitrary_library':
+        if (shouldRefresh)
+          persist.store.dispatch(loadObject('page', notification.id, false, true));
+        return navService.push('ArbitraryLibrary', {pageId: notification.id});
+
+      case 'photo_gallery':
+        if (shouldRefresh)
+          persist.store.dispatch(loadObject('page', notification.id, false, true));
+        return navService.push('PhotoGallery', {pageId: notification.id});
+
+      case 'page':
+        return navService.push('WebsiteViewer', {url: notification.page_url, title: notification.page_title});
     }
   }
 );

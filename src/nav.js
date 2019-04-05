@@ -2,13 +2,14 @@
 
 import React from "react";
 import {
+  createAppContainer,
   createBottomTabNavigator,
   createStackNavigator,
   createSwitchNavigator,
   NavigationActions,
-  createAppContainer
+  StackActions
 } from "react-navigation";
-import { StyleSheet, Platform } from "react-native";
+import {Platform, StyleSheet} from "react-native";
 import TranslatedText from './components/TranslatedText';
 import LoginScreen from "./screens/auth/LoginScreen";
 import SignupScreen from "./screens/auth/SignupScreen";
@@ -97,26 +98,26 @@ const TabScreens = createBottomTabNavigator({
   Me: {
     screen: MeStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel}  text="Me" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Me"/>,
     },
   },
   Operations: {
     screen: OperationsStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Operations" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Operations"/>,
     },
   },
   // Chat: ChatStack, //TODO: hide this for now
   Resources: {
     screen: ResourcesStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Resources" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Resources"/>,
     },
   },
   Search: {
     screen: SearchStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Search" />,
+      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Search"/>,
     },
   },
 }, {
@@ -183,5 +184,9 @@ const doWhenNavigatorExists = async myFunc => {
 export const navService = {
   navigate: (routeName, params) => doWhenNavigatorExists(() => _navigator.dispatch(
     NavigationActions.navigate({routeName, params})
-  ))
+  )),
+  push: (routeName, params) => doWhenNavigatorExists(() => _navigator.dispatch(
+    StackActions.push({routeName, params})
+  )),
+  dispatch: navigationAction => doWhenNavigatorExists(() => _navigator.dispatch(navigationAction)),
 };
