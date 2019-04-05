@@ -11,6 +11,7 @@ import files from './files';
 import notification from './notification';
 import localVars from './localVars';
 import languages from './languages';
+import appRemoteConfig from './appRemoteConfig';
 
 export default combineReducers({
   flags,
@@ -23,4 +24,5 @@ export default combineReducers({
   notification,
   localVars,
   languages,
+  appRemoteConfig,
 });

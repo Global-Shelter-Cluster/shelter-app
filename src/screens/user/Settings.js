@@ -22,6 +22,7 @@ import i18n from "../../i18n";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
 import MultiSelect from "../../components/Multiselect";
+import persist from "../../persist"
 
 const Form = t.form.Form;
 
@@ -48,6 +49,7 @@ type Props = {
   enabledLanguages: {},
   currentLanguage: String,
   languageOptions: [],
+  lastDrupalLanguageUpdate: String,
 }
 
 type State = {
@@ -80,6 +82,14 @@ class Settings extends React.Component<Props, State> {
     };
   }
 
+  async componentWillMount() {
+    const hasChanged = await persist.remoteConfigHasChanged('lastLocaleUpdate', this.props.lastLocaleUpdate);
+    if (hasChanged) {
+      console.log('HAS CHANGED');
+      await this._onRefreshLanguages();
+    }
+  }
+
   shouldComponentUpdate(nextProps: Props) {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
   }
@@ -87,7 +97,10 @@ class Settings extends React.Component<Props, State> {
   _onPress = async (lang) => {
     this.props.setLanguage(lang);
     await this.props.getTranslations(lang);
+    this.resetNav();
+  }
 
+  resetNav = () => {
     // Reset the navigation and navigating away will show the selected translation.
     const resetAction = StackActions.reset({
       index: 1,
@@ -97,12 +110,12 @@ class Settings extends React.Component<Props, State> {
       ],
     });
     this.props.navigation.dispatch(resetAction);
-
   }
 
   _onRefreshLanguages = async () => {
     await this.props.getTranslations(this.props.currentLanguage, true);
     await this.props.refreshEnabledLanguages();
+    this.resetNav();
   }
 
   render() {
@@ -182,11 +195,6 @@ class Settings extends React.Component<Props, State> {
             displayKey="name"
             searchInputStyle={{color: '#CCC'}}
           />
-          <Button
-            disabled={!this.props.online}
-            title={i18n.t("Import all translations")}
-            onPress={this._onRefreshLanguages}
-          />
         </View>;
 
         content = <ScrollView style={{flex: 1, padding: 10}}>
@@ -242,6 +250,7 @@ const mapStateToProps = state => ({
   enabledLanguages: state.languages.enabled,
   currentLanguage: state.languages.currentLanguage,
   languageOptions: state.languages.enabled,
+  lastLocaleUpdate: state.appRemoteConfig.lastLocaleUpdate,
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -242,10 +242,12 @@ const formStyles = {
   },
 };
 
-const mapStateToProps = state => ({
-  languageOptions: state.languages.enabled,
-  currentLanguage: state.languages.currentLanguage,
-});
+const mapStateToProps = state => {
+  return {
+    languageOptions: state.languages.enabled,
+    currentLanguage: state.languages.currentLanguage,
+  }
+};
 
 const mapDispatchToProps = dispatch => ({
   setLanguage: (lang) => dispatch(updadeCurrentLanguage(lang)),

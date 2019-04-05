@@ -187,6 +187,11 @@ class Remote {
     }
   }
 
+  async getRemoteAppConfig() {
+    const res = await axiosLib.get(`${config.baseUrl}/app_config.json`);
+    return res;
+  }
+
   async getTranslations(lang: String) {
     const res = await axiosLib.get(`${config.baseUrl}/api-v1/app-translations/${lang}.json`);
     return res;
