@@ -50,7 +50,7 @@ export default class IndicatorRow extends React.Component<Props, State> {
     if (online) {
       switch (bgProgress.currentOperation) {
         case "assessment":
-          currentOperationDescription = 'Submitting assessment form';
+          currentOperationDescription = 'Submitting form';
           break;
         case "file":
           currentOperationDescription = 'Downloading file';

@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch, props) => ({
 
 class WebformScreen extends React.Component<Props, State> {
   static navigationOptions = {
-    headerTitle: <NavTitleContainer title={i18n.t("Assessment form")}/>,
+    headerTitle: <NavTitleContainer title={i18n.t("Data collection")}/>,
   };
 
   constructor(props: Props) {

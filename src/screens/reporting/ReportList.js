@@ -18,7 +18,7 @@ export default ({loading, group, refresh}: {
   refresh: () => void,
 }) => {
   const tabs: tabsDefinition = {
-    "all": {label: i18n.t("Assessment forms")},
+    "all": {label: i18n.t("Data collection")},
   };
   const tab = 'all';
 

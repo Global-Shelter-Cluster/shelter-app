@@ -54,14 +54,14 @@ const mapStateToProps = (state, {group, navigation}) => {
       count += group.webforms.length;
 
     blocks.push({
-      title: i18n.t('Assessment forms'),
+      title: i18n.t('Data collection'),
       badge: count,
       icon: 'pencil-square-o',
       action: () => navigation.push('ReportList', {groupId: group.id}),
     });
   } else if (isDashboardBlockVisibleByDefault(group, 'assessment_forms'))
     blocks.push({
-      title: i18n.t('Assessment forms'),
+      title: i18n.t('Data collection'),
       icon: 'pencil-square-o',
     });
 

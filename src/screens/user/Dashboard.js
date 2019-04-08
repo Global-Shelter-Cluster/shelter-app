@@ -24,7 +24,7 @@ const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}
 
   const submissions = queuedFormSubmissions.length > 0
     ? <Collapsible
-      title={i18n.t("Queued assessment form submissions")}
+      title={i18n.t("Queued form submissions")}
       badge={totalQueuedSubmissionCount}
       isOpen noHorizontalMargins
     >
@@ -36,7 +36,7 @@ const Dashboard = ({loading, queuedFormSubmissions, user, unseenAlerts, refresh}
               showGroup badge={data.count}/>;
 
           default:
-            console.error("Assessment form type not implemented: " + data.type);
+            console.error("Form type not implemented: " + data.type);
         }
       })}
     </Collapsible>
