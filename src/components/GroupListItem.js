@@ -67,7 +67,7 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
       if (group.webforms !== undefined && group.webforms.length > 0)
         assessment_forms += group.webforms.length;
       if (assessment_forms > 0)
-        badges.push(<Badge key="assessmentForms" icon="paper-plane-o" value={assessment_forms} color="white"/>);
+        badges.push(<Badge key="assessmentForms" icon="pencil-square-o" value={assessment_forms} color="white"/>);
 
       if (recentDocs && recentDocs > 0)
         badges.push(<Badge key="recentDocs" icon="file-o" value={recentDocs} color="white"/>);

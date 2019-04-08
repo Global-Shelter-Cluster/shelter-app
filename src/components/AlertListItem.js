@@ -36,8 +36,8 @@ export default ({alert, group, isSeen, markSeen, enter, linkType, isTeaser}: {
     'document': "file-o",
     'event': "calendar",
     'factsheet': "bar-chart",
-    'kobo_form': "paper-plane-o",
-    'webform': "paper-plane-o",
+    'kobo_form': "pencil-square-o",
+    'webform': "pencil-square-o",
     'group': "users",
     'url': "globe",
   };

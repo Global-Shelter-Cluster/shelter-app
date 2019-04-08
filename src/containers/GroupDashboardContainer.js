@@ -56,13 +56,13 @@ const mapStateToProps = (state, {group, navigation}) => {
     blocks.push({
       title: i18n.t('Assessment forms'),
       badge: count,
-      icon: 'paper-plane-o',
+      icon: 'pencil-square-o',
       action: () => navigation.push('ReportList', {groupId: group.id}),
     });
   } else if (isDashboardBlockVisibleByDefault(group, 'assessment_forms'))
     blocks.push({
       title: i18n.t('Assessment forms'),
-      icon: 'paper-plane-o',
+      icon: 'pencil-square-o',
     });
 
   const recentDocs = getRecentDocumentsCount(state, group.id);
