@@ -624,7 +624,6 @@ class Persist {
 
     const { data } = await this.remote.getEnabledLanguages();
     if (data) {
-      console.log(data);
       this.store.dispatch(updateLanguages(data));
       Storage.setItem('enabledLanguages', JSON.stringify(data));
     }
@@ -657,7 +656,6 @@ class Persist {
   }
 
   async remoteConfigHasChanged(key, value) {
-    console.log(key, value);
     const { data: remoteConfig = {} } = await this.remote.getRemoteAppConfig()
     .catch((e) => {
       console.log('No remote config');

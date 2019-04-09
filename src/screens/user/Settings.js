@@ -85,7 +85,6 @@ class Settings extends React.Component<Props, State> {
   async componentWillMount() {
     const hasChanged = await persist.remoteConfigHasChanged('lastLocaleUpdate', this.props.lastLocaleUpdate);
     if (hasChanged) {
-      console.log('HAS CHANGED');
       await this._onRefreshLanguages();
     }
   }

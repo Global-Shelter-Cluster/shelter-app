@@ -188,7 +188,7 @@ class Remote {
   }
 
   async getRemoteAppConfig() {
-    const res = await axiosLib.get(`${config.baseUrl}/app_config.json`);
+    const res = await axiosLib.get(`${config.baseUrl}/app_config.json?b=${Math.random()}`);
     return res;
   }
 
