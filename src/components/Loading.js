@@ -4,6 +4,7 @@ import React from "react";
 import {ImageBackground, StyleSheet, Text, View, Animated, Easing} from "react-native";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
+import TranslatedText from "./TranslatedText";
 
 const image = require("../../assets/logo-dim.png");
 
@@ -33,7 +34,7 @@ export default class Loading extends React.Component {
           <FontAwesome name={"refresh"} size={80} color={vars.LIGHT_GREY}/>
         </Animated.View>
       </ImageBackground>
-      <Text style={styles.label}>Loading...</Text>
+      <TranslatedText style={styles.label}>Loading...</TranslatedText>
     </View>;
   }
 }

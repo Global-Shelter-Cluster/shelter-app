@@ -23,6 +23,7 @@ import HTML from 'react-native-render-html';
 import Loading from "../../components/Loading";
 import Collapsible from "../../components/Collapsible";
 import MultiLineButton from "../../components/MultiLineButton";
+import i18n from "../../i18n";
 
 export default ({online, factsheet, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -54,16 +55,16 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
       <View style={styles.highlights}>
         <HTML html={factsheet.highlights}/>
       </View>
-      {factsheet.map !== undefined && <Collapsible title="Map">
+      {factsheet.map !== undefined && <Collapsible title={i18n.t("Map")}>
         <ExpandableFitImageContainer source={{uri: factsheet.map}} full={factsheet.full_map}/>
       </Collapsible>}
-      {factsheet.need_analysis !== undefined && <Collapsible title="Need analysis">
+      {factsheet.need_analysis !== undefined && <Collapsible title={i18n.t("Need analysis")}>
         <HTML html={factsheet.need_analysis}/>
       </Collapsible>}
-      {factsheet.response !== undefined && <Collapsible title="Response">
+      {factsheet.response !== undefined && <Collapsible title={i18n.t("Response")}>
         <HTML html={factsheet.response}/>
       </Collapsible>}
-      {factsheet.gaps_challenges !== undefined && <Collapsible title="Gaps / challenges">
+      {factsheet.gaps_challenges !== undefined && <Collapsible title={i18n.t("Gaps / challenges")}>
         <HTML html={factsheet.gaps_challenges}/>
       </Collapsible>}
     </ScrollView>
