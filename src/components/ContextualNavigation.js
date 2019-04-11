@@ -12,6 +12,7 @@ import type {PublicFactsheetObject} from "../model/factsheet";
 import {hairlineWidth} from "../util";
 import type {ContactObject} from "../model/contact";
 import type {PageObject} from "../model/page";
+import TranslatedText from "./TranslatedText";
 
 export default ContextualNavigation = ({object}: { object: PublicDocumentObject | PublicEventObject | PublicFactsheetObject | ContactObject | PageObject }) => {
   if (!object.groups)
@@ -28,7 +29,7 @@ export default ContextualNavigation = ({object}: { object: PublicDocumentObject 
     sections.push({title: "In", data: object.groups});
     if (!collapsibleTitle) {
       collapsibleTitle = <View style={styles.container}>
-        <Text style={styles.sectionHeader}>In</Text>
+        <TranslatedText style={styles.sectionHeader}>In</TranslatedText>
         <MultipleGroupListItemContainer ids={object.groups}/>
       </View>;
     }
@@ -37,7 +38,7 @@ export default ContextualNavigation = ({object}: { object: PublicDocumentObject 
   const sectionList = <SectionList
     style={styles.container}
     sections={sections}
-    renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
+    renderSectionHeader={({section}) => <TranslatedText style={styles.sectionHeader}>{section.title}</TranslatedText>}
     renderItem={({item}) => <GroupListItemContainer display="text-only" id={item}/>}
     keyExtractor={(item, index) => index}
   />;

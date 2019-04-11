@@ -121,8 +121,9 @@ export default class IndicatorRow extends React.Component<Props, State> {
               replacements={{'@env': Expo.Constants.manifest.releaseChannel ? Expo.Constants.manifest.releaseChannel : i18n.t('<none>') }}
             >Environment: @env
             </TranslatedText>
-            <TranslatedText>Connectivity</TranslatedText>
-            {onlineIndicator}
+            <Text>
+              <TranslatedText>Connectivity</TranslatedText>: {onlineIndicator}
+            </Text>
           </Collapsible>
         </ScrollView>
         <TouchableOpacity

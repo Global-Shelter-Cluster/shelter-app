@@ -7,6 +7,7 @@ import {createExpoContact} from "../model/contact";
 import Button from "./Button";
 import {ensurePermissions} from "../permission";
 import {Contacts, Permissions} from "expo";
+import i18n from "../i18n";
 
 type Props = {
   contact: ContactObject,
@@ -59,7 +60,7 @@ export default class ContactActions extends React.Component<Props, State> {
 
     buttons.push(<Button
       primary style={styles.button}
-      key="contact" title="Contact" icon="address-card-o"
+      key="contact" title={i18n.t("Contact")} icon="address-card-o"
       onPress={async () => {
         try {
           await ensurePermissions(Permissions.CONTACTS);
