@@ -85,6 +85,10 @@ export type PublicGroupObject = {
   working_groups?: Array<number>,
   communities_of_practice?: Array<number>,
   strategic_advisory?: number,
+  kobo_forms?: Array<number>,
+  webforms?: Array<number>,
+  alerts?: Array<number>,
+  followers: Array<number>,
   useful_links?: Array<{ url: string, title?: string }>,
   pages?: Array<number>, // top-level page ids
   child_pages?: Array<number>, // all child page ids
