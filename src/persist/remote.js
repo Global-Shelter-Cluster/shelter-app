@@ -147,7 +147,7 @@ class Remote {
   }
 
   async updateUser(updates: Object): Promise<Objects> {
-    const res = await this._post('/update-user', {
+    return await this._post('/update-user', {
       updates,
       'objects': [{type: 'global', id: 1}],
     });

@@ -677,7 +677,13 @@ class Persist {
 
   // Updates to Drupal user account.
   async updateUser(updates: Object) {
-    await this.remote.updateUser(updates);
+    const res = await this.remote.updateUser(updates);
+
+    const { authorization, objects, update_messages } = res;
+    // Save everything we received (user object, groups, etc.)
+    this.updateLastRead(objects);
+    this.saveObjects(objects);
+    this.dispatchObjects(objects);
   }
 
   /**
