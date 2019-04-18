@@ -96,7 +96,7 @@ class Settings extends React.Component<Props, State> {
   _onPress = async (language) => {
     this.props.setLanguage(language);
     await this.props.getTranslations(language);
-    await persist.updateUser({ language });
+    persist.updateUser({ language });
     this.resetNav();
   }
 
