@@ -146,6 +146,10 @@ class Remote {
     await this._post('/forgot', {value});
   }
 
+  async updateUser(updates: Object): Promise<Objects> {
+    const res = await this._post('/update-user', updates);
+  }
+
   logout(pushNotificationToken: string | null) {
     return this._post('/logout', {
       pushNotificationToken,

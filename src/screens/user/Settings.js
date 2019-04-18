@@ -93,9 +93,10 @@ class Settings extends React.Component<Props, State> {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
   }
 
-  _onPress = async (lang) => {
-    this.props.setLanguage(lang);
-    await this.props.getTranslations(lang);
+  _onPress = async (language) => {
+    this.props.setLanguage(language);
+    await this.props.getTranslations(language);
+    await persist.updateUser({ language });
     this.resetNav();
   }
 

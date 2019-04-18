@@ -675,6 +675,11 @@ class Persist {
     return true;
   }
 
+  // Updates to Drupal user account.
+  async updateUser(updates: Object) {
+    await this.remote.updateUser({ updates });
+  }
+
   /**
    * Deletes objects and files that have no references to them.
    */
