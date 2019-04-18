@@ -209,6 +209,11 @@ class Remote {
     return res;
   }
 
+  async getTimezones() {
+    const res = await axios.get(`${config.baseUrl}/api-v1/app-timezones`);
+    return res.data;
+  }
+
 }
 
 export default Remote;

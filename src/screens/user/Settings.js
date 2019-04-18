@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
-import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
+import ModalSelector from 'react-native-modal-selector'
 import type {tabsDefinition} from "../../components/Tabs";
 import {formStylesheet} from "../../styles/formStyles";
 import t from "tcomb-form-native";
@@ -22,7 +23,8 @@ import i18n from "../../i18n";
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
 import MultiSelect from "../../components/Multiselect";
-import persist from "../../persist"
+import persist from "../../persist";
+import timezones from "../../timezones";
 
 const Form = t.form.Form;
 
@@ -48,6 +50,7 @@ type Props = {
 
   enabledLanguages: {},
   currentLanguage: String,
+  currentTimezone: String,
   languageOptions: [],
   lastDrupalLanguageUpdate: String,
 }
@@ -57,6 +60,7 @@ type State = {
   languageOptionsOld: {},
   languageOptions: [],
   _languageForm: () => void,
+  isVisible: boolean
 };
 
 class Settings extends React.Component<Props, State> {
@@ -76,6 +80,7 @@ class Settings extends React.Component<Props, State> {
           }
         }
       },
+      isVisible: true,
       languageOptions: [],
       _languageForm: () => {
       },
@@ -96,8 +101,12 @@ class Settings extends React.Component<Props, State> {
   _onPress = async (language) => {
     this.props.setLanguage(language);
     await this.props.getTranslations(language);
-    persist.updateUser({ language });
+    persist.updateUser({ language }).catch((e) => console.log(e));
     this.resetNav();
+  }
+
+  _onTimezone = async (tz) => {
+    persist.updateUser({ timezone: tz.label }).catch((e) => console.log(e));
   }
 
   resetNav = () => {
@@ -197,6 +206,17 @@ class Settings extends React.Component<Props, State> {
           />
         </View>;
 
+        const timeZoneSelector = <View>
+          <TranslatedText style={formStylesheet.controlLabel.normal}>Select your timezone</TranslatedText>
+          {!this.props.online && <TranslatedText>Language settings can't be changed while offline</TranslatedText>}
+          <ModalSelector
+            data={timezones.map((tz) => ({key: tz, label: tz}))}
+            initValue={this.props.currentTimezone}
+            onChange={(tz) => this._onTimezone(tz)}
+            disabled={!this.props.online}
+          />
+        </View>;
+
         content = <ScrollView style={{flex: 1, padding: 10}}>
           <Form
             ref="preferences_form"
@@ -225,6 +245,7 @@ class Settings extends React.Component<Props, State> {
             ? langSelector
             : null // Hide the language selector if there's just English available
           }
+          { timeZoneSelector }
         </ScrollView>;
         break;
     }
@@ -245,12 +266,29 @@ class Settings extends React.Component<Props, State> {
   }
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#532860',
+    justifyContent: 'center',
+  },
+  button: {
+    backgroundColor: '#b8c',
+    borderRadius: 4,
+    marginLeft: 10,
+    marginRight: 10,
+    padding: 10,
+  },
+});
+
 const mapStateToProps = state => ({
   online: state.flags.online,
   enabledLanguages: state.languages.enabled,
   currentLanguage: state.languages.currentLanguage,
   languageOptions: state.languages.enabled,
   lastLocaleUpdate: state.appRemoteConfig.lastLocaleUpdate,
+  currentTimezone: 'America/New_York',
 });
 
 const mapDispatchToProps = dispatch => ({

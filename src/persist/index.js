@@ -100,6 +100,7 @@ class Persist {
       this.setCurrentLanguage();
       await this.initDirectory(DIR_PERSISTED);
       await this.getRemoteAppConfig();
+      const zones = await this.remote.getTimezones();
 
       const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
       if (authString) {
@@ -684,6 +685,7 @@ class Persist {
     this.updateLastRead(objects);
     this.saveObjects(objects);
     this.dispatchObjects(objects);
+    return update_messages;
   }
 
   /**
