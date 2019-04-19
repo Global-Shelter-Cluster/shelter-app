@@ -215,7 +215,7 @@ class Settings extends React.Component<Props, State> {
         const timeZoneSelector = global.timezones
           ? <View>
             <TranslatedText style={formStylesheet.controlLabel.normal}>Select your timezone</TranslatedText>
-            {!this.props.online && <TranslatedText>Language settings can't be changed while offline</TranslatedText>}
+            {!this.props.online && <TranslatedText>Timezone can't be changed while offline</TranslatedText>}
             <ModalSelector
               data={global.timezones.map((tz) => ({key: tz, label: tz}))}
               initValue={user.timezone ? user.timezone : defaultTimezone}
