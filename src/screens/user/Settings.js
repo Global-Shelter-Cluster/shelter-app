@@ -1,6 +1,15 @@
 // @flow
 import React from 'react';
-import {FlatList, RefreshControl, ScrollView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import ModalSelector from 'react-native-modal-selector'
 import type {tabsDefinition} from "../../components/Tabs";
@@ -15,24 +24,19 @@ import MultiLineButton from "../../components/MultiLineButton";
 import type {PrivateUserObject} from "../../model/user";
 import singleRowCheckbox from "../../styles/singleRowCheckbox";
 import config from "../../config";
-import connect from "react-redux/es/connect/connect";
-import {getTranslations, refreshEnabledLanguages, updadeCurrentLanguage} from "../../actions";
 import TranslatedText from "../../components/TranslatedText";
 import MultiselectFactory from "../../components/tcomb/MultiselectFactory";
 import i18n from "../../i18n";
 import {FontAwesome} from '@expo/vector-icons';
-import vars from "../../vars";
 import MultiSelect from "../../components/Multiselect";
 import persist from "../../persist";
-import timezones from "../../timezones";
+import type {GlobalObject} from "../../model/global";
 
 const Form = t.form.Form;
 
 export type tabs = "user" | "preferences";
 
-const languageModel = t.struct({
-  languages: t.list(t.String)
-});
+const defaultTimezone = 'America/New_York';
 
 type Props = {
   online: boolean,
@@ -41,8 +45,11 @@ type Props = {
   changeTab: (tab: tabs) => void,
   lastError: lastErrorType,
 
+  global: GlobalObject,
   user: PrivateUserObject,
   refreshUser: () => void,
+  refreshGlobal: () => void,
+  updateUser: values => void,
 
   localVars: localVarsType,
   // submitLocalVars: () => void,
@@ -50,7 +57,6 @@ type Props = {
 
   enabledLanguages: {},
   currentLanguage: String,
-  currentTimezone: String,
   languageOptions: [],
   lastDrupalLanguageUpdate: String,
 }
@@ -98,15 +104,15 @@ class Settings extends React.Component<Props, State> {
     return !propEqual(this.props, nextProps, ['online', 'loading', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
   }
 
-  _onPress = async (language) => {
+  async _changeLanguage(language: string) {
     this.props.setLanguage(language);
     await this.props.getTranslations(language);
-    persist.updateUser({ language }).catch((e) => console.log(e));
+    this.props.updateUser({language});
     this.resetNav();
   }
 
-  _onTimezone = async (tz) => {
-    persist.updateUser({ timezone: tz.label }).catch((e) => console.log(e));
+  async _changeTimezone(timezone: string) {
+    this.props.updateUser({timezone});
   }
 
   resetNav = () => {
@@ -128,7 +134,7 @@ class Settings extends React.Component<Props, State> {
   }
 
   render() {
-    const {online, loading, tab, changeTab, lastError, user, refreshUser, localVars, onChangeLocalVars} = this.props;
+    const {online, loading, tab, changeTab, lastError, global, user, refreshUser, refreshGlobal, localVars, onChangeLocalVars} = this.props;
     let content = null;
 
     switch (tab) {
@@ -195,7 +201,7 @@ class Settings extends React.Component<Props, State> {
               disabled: !this.props.online,
             }))}
             uniqueKey="id"
-            onSelectedItemsChange={selected => this._onPress(selected[0])}
+            onSelectedItemsChange={selected => this._changeLanguage(selected[0])}
             selectedItems={[this.props.currentLanguage]}
             selectText={null}
             selectedItemTextColor="#CCC"
@@ -206,18 +212,26 @@ class Settings extends React.Component<Props, State> {
           />
         </View>;
 
-        const timeZoneSelector = <View>
-          <TranslatedText style={formStylesheet.controlLabel.normal}>Select your timezone</TranslatedText>
-          {!this.props.online && <TranslatedText>Language settings can't be changed while offline</TranslatedText>}
-          <ModalSelector
-            data={timezones.map((tz) => ({key: tz, label: tz}))}
-            initValue={this.props.currentTimezone}
-            onChange={(tz) => this._onTimezone(tz)}
-            disabled={!this.props.online}
-          />
-        </View>;
+        const timeZoneSelector = global.timezones
+          ? <View>
+            <TranslatedText style={formStylesheet.controlLabel.normal}>Select your timezone</TranslatedText>
+            {!this.props.online && <TranslatedText>Language settings can't be changed while offline</TranslatedText>}
+            <ModalSelector
+              data={global.timezones.map((tz) => ({key: tz, label: tz}))}
+              initValue={user.timezone ? user.timezone : defaultTimezone}
+              onChange={(tz) => this._changeTimezone(tz.key)}
+              disabled={!this.props.online}
+            />
+          </View>
+          : null;
 
-        content = <ScrollView style={{flex: 1, padding: 10}}>
+        content = <ScrollView
+          style={{flex: 1, padding: 10}}
+          refreshControl={<RefreshControl refreshing={loading} onRefresh={() => {
+            refreshGlobal();
+            refreshUser();
+          }}/>}
+        >
           <Form
             ref="preferences_form"
             type={formType}
@@ -245,7 +259,7 @@ class Settings extends React.Component<Props, State> {
             ? langSelector
             : null // Hide the language selector if there's just English available
           }
-          { timeZoneSelector }
+          {timeZoneSelector}
         </ScrollView>;
         break;
     }
@@ -282,19 +296,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = state => ({
-  online: state.flags.online,
-  enabledLanguages: state.languages.enabled,
-  currentLanguage: state.languages.currentLanguage,
-  languageOptions: state.languages.enabled,
-  lastLocaleUpdate: state.appRemoteConfig.lastLocaleUpdate,
-  currentTimezone: 'America/New_York',
-});
-
-const mapDispatchToProps = dispatch => ({
-  setLanguage: (lang) => dispatch(updadeCurrentLanguage(lang)),
-  getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh)),
-  refreshEnabledLanguages: () => dispatch(refreshEnabledLanguages())
-});
-
-export default Settings = connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default Settings;

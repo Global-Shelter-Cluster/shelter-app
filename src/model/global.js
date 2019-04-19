@@ -16,6 +16,7 @@ export type GlobalObject = {
   algolia_prefix: string,
   global_id: int,
   resources_id: int,
+  timezones: Array<string>,
 }
 
 export default class Global {

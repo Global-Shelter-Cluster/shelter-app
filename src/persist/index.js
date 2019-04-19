@@ -100,7 +100,6 @@ class Persist {
       this.setCurrentLanguage();
       await this.initDirectory(DIR_PERSISTED);
       await this.getRemoteAppConfig();
-      const zones = await this.remote.getTimezones();
 
       const authString: string | null = await Storage.getItem(Persist.cacheKey('auth'));
       if (authString) {
@@ -623,7 +622,7 @@ class Persist {
       }
     }
 
-    const { data } = await this.remote.getEnabledLanguages();
+    const {data} = await this.remote.getEnabledLanguages();
     if (data) {
       this.store.dispatch(updateLanguages(data));
       Storage.setItem('enabledLanguages', JSON.stringify(data));
@@ -637,17 +636,17 @@ class Persist {
   }
 
   async getTranslations(lang) {
-    const { data } = await this.remote.getTranslations(lang);
+    const {data} = await this.remote.getTranslations(lang);
     return data;
   }
 
   async getRemoteAppConfig() {
-    const { data: remoteConfig = {} } = await this.remote.getRemoteAppConfig()
-    .catch((e) => {
-      console.log('No remote config');
-      this.store.dispatch(updateRemoteAppConfig())
-      return false;
-    });
+    const {data: remoteConfig = {}} = await this.remote.getRemoteAppConfig()
+      .catch((e) => {
+        console.log('No remote config');
+        this.store.dispatch(updateRemoteAppConfig())
+        return false;
+      });
 
     const currentAppConfig = await this.store.getState().appRemoteConfig;
     if (currentAppConfig.updatedAt === remoteConfig.updatedAt) {
@@ -657,11 +656,11 @@ class Persist {
   }
 
   async remoteConfigHasChanged(key, value) {
-    const { data: remoteConfig = {} } = await this.remote.getRemoteAppConfig()
-    .catch((e) => {
-      console.log('No remote config');
-      return false;
-    });
+    const {data: remoteConfig = {}} = await this.remote.getRemoteAppConfig()
+      .catch((e) => {
+        console.log('No remote config');
+        return false;
+      });
     const currentAppConfig = await this.store.getState().appRemoteConfig;
 
     if (currentAppConfig.updatedAt === remoteConfig.updatedAt) {
@@ -680,7 +679,7 @@ class Persist {
   async updateUser(updates: Object) {
     const res = await this.remote.updateUser(updates);
 
-    const { authorization, objects, update_messages } = res;
+    const {objects, update_messages} = res;
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);
     this.saveObjects(objects);

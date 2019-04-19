@@ -147,10 +147,7 @@ class Remote {
   }
 
   async updateUser(updates: Object): Promise<Objects> {
-    return await this._post('/update-user', {
-      updates,
-      'objects': [{type: 'global', id: 1}],
-    });
+    return await this._post('/update-user', {updates});
   }
 
   logout(pushNotificationToken: string | null) {
@@ -207,11 +204,6 @@ class Remote {
   async getEnabledLanguages() {
     const res = await axios.get(`${config.baseUrl}/api-v1/app-languages`);
     return res;
-  }
-
-  async getTimezones() {
-    const res = await axios.get(`${config.baseUrl}/api-v1/app-timezones`);
-    return res.data;
   }
 
 }

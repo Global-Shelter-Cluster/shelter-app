@@ -4,7 +4,16 @@ import React from 'react';
 import {connect} from 'react-redux';
 import type {tabs} from "./Settings";
 import Settings from './Settings';
-import {clearLastError, loadObject, saveLocalVars} from "../../actions";
+import {
+  clearLastError,
+  getTranslations,
+  loadCurrentUser,
+  loadObject,
+  refreshEnabledLanguages,
+  saveLocalVars,
+  updadeCurrentLanguage,
+  updateUser
+} from "../../actions";
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
@@ -16,6 +25,8 @@ import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import type {localVarsType, localVarsTypeAllOptional} from "../../reducers/localVars";
 import i18n from "../../i18n";
+import {getObject} from "../../model";
+import {GLOBAL_OBJECT_ID} from "../../model/global";
 
 type Props = {
   online: boolean,
@@ -50,15 +61,24 @@ const mapStateToProps = state => {
     loading: state.flags.loading,
     submitting: state.flags.submitting,
     lastError: state.lastError,
+    global: getObject(state, 'global', GLOBAL_OBJECT_ID),
     user,
     localVars: state.localVars,
+    enabledLanguages: state.languages.enabled,
+    currentLanguage: state.languages.currentLanguage,
+    languageOptions: state.languages.enabled,
+    lastLocaleUpdate: state.appRemoteConfig.lastLocaleUpdate,
   };
 };
 
-const mapDispatchToProps = (dispatch, props) => ({
-  refresh: () => {
+const mapDispatchToProps = dispatch => ({
+  refreshUser: () => {
     dispatch(clearLastError());
-    dispatch(loadObject('webform', props.navigation.getParam('webformId'), false, true));
+    dispatch(loadCurrentUser(false, true));
+  },
+  refreshGlobal: () => {
+    dispatch(clearLastError());
+    dispatch(loadObject('global', GLOBAL_OBJECT_ID, false, true));
   },
   submitLocalVars: (values: localVarsTypeAllOptional) => {
     dispatch(saveLocalVars(values));
@@ -66,6 +86,10 @@ const mapDispatchToProps = (dispatch, props) => ({
   clearLastError: () => {
     dispatch(clearLastError());
   },
+  setLanguage: lang => dispatch(updadeCurrentLanguage(lang)),
+  getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh)),
+  refreshEnabledLanguages: () => dispatch(refreshEnabledLanguages()),
+  updateUser: values => dispatch(updateUser(values)),
 });
 
 class SettingsScreen extends React.Component<Props, State> {

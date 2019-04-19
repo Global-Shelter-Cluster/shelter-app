@@ -16,6 +16,7 @@ export type PrivateUserObject = {
   org: string,
   role: string,
   groups?: Array<number>,
+  timezone: string,
 }
 
 export type PublicUserObject = {

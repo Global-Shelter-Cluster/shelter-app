@@ -413,4 +413,12 @@ export const UPDATE_APP_CONFIG = 'UPDATE_APP_CONFIG';
 export const updateRemoteAppConfig = appRemoteConfig => ({
   type: UPDATE_APP_CONFIG,
   appRemoteConfig,
-})
+});
+
+export const updateUser = values => async dispatch => {
+  try {
+    await persist.updateUser(values);
+  } catch (e) {
+    dispatch(setLastError('update-user', {message: e.message}));
+  }
+};
