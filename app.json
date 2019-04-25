@@ -3,7 +3,7 @@
     "name": "Shelter Cluster",
     "description": "Mobile app for the Shelter Cluster",
     "slug": "sheltercluster",
-    "version": "0.1.27",
+    "version": "0.1.28",
     "sdkVersion": "32.0.0",
     "githubUrl": "https://github.com/Global-Shelter-Cluster/shelter-app",
     "orientation": "portrait",
