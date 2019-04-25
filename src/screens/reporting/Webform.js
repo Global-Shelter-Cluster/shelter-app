@@ -119,7 +119,7 @@ export default class Webform extends React.Component<Props> {
 
     const tCombData = getWebformTCombData(webform, page, setFocus, onSubmitWithValidation, flattenedValues);
     const tabs = getWebformPageTabs(webform, page, pagesVisited);
-    const isLastPage = page === (webform.form.length - 1);
+    const isLastPage = webform.form !== undefined ? (page === (webform.form.length - 1)) : true;
 
     const submitButton = <Button
       primary title={isLastPage ? i18n.t("Submit") : i18n.t("Next page")}
@@ -167,17 +167,20 @@ export default class Webform extends React.Component<Props> {
             changeTab={changeTab}
             tabs={tabs}
           />
-          <Form
-            ref="form"
-            type={tCombData.type}
-            options={{
-              label: null,
-              stylesheet: formStylesheet,
-              fields: tCombData.fieldOptions,
-              order: tCombData.order,
-            }}
-            onChange={onChange} value={formValues}
-          />
+          {Object.keys(tCombData.type).length > 0
+            ? <Form
+              ref="form"
+              type={tCombData.type}
+              options={{
+                label: null,
+                stylesheet: formStylesheet,
+                fields: tCombData.fieldOptions,
+                order: tCombData.order,
+              }}
+              onChange={onChange} value={formValues}
+            />
+            : null
+          }
           {submitButton}
         </View>
       </ScrollView>

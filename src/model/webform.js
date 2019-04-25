@@ -21,7 +21,7 @@ export type WebformObject = {
   id: number,
   groups?: Array<number>,
   title: string,
-  form: Array<WebformPage>,
+  form?: Array<WebformPage>,
 }
 
 type WebformPage = {
@@ -116,6 +116,9 @@ export default class Webform {
  * @returns Array<string>
  */
 export const getPermissionsForWebform = (webform: WebformObject) => {
+  if (webform.form === undefined)
+    return [];
+
   const list = {}; // e.g. {"camera": true, "calendar": true}
 
   for (const page of webform.form) {
@@ -151,6 +154,9 @@ export const getWebformPageValues = (webform: WebformObject, allValues: Array<{}
     return allValues[page];
 
   const ret = {};
+
+  if (webform.form === undefined)
+    return ret;
 
   for (const field of webform.form[page].fields) {
     switch (field.type) {
@@ -203,6 +209,10 @@ export const setWebformPageValues = (allValues: Array<{}>, page: number, values:
 
 export const getWebformPageTabs = (webform: WebformObject, page: number, pagesVisited: { [string]: true }): tabsDefinition => {
   const ret: tabsDefinition = {};
+
+  if (webform.form === undefined)
+    return ret;
+
   for (let i: number = 0; i < webform.form.length; i++) {
     const label = webform.form[i].title
       ? webform.form[i].title
@@ -259,7 +269,7 @@ const fieldIsVisible = (field, flattenedValues) :boolean => {
   }
 
   return visible;
-}
+};
 
 const markupTemplate = locals => <View style={{marginBottom: 20}}><HTML html={locals.label}/></View>;
 
@@ -273,6 +283,9 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 } => {
   const ret = {type: {}, fieldOptions: {}, order: []};
 
+  if (webform.form === undefined)
+    return ret;
+
   const formatDate = (date) => new Date(date).toDateString();
   const formatTime = (date) => new Date(date).toLocaleTimeString(navigator.language, {
     hour: '2-digit',
@@ -282,8 +295,6 @@ export const getWebformTCombData = (webform: WebformObject, page: number, setFoc
 
   let lastKeyboardField: null | string = null;
   let lastField: null | string = null;
-
-
 
   // Good UX: this function helps connect the previous field's "enter key" to the given field so it moves focus automatically.
   const connectKeyboardNextKey = (current) => {

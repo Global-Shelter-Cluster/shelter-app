@@ -93,40 +93,42 @@ class WebformScreen extends React.Component<Props, State> {
   }
 
   render() {
-    const isLastPage = this.state.page === (this.props.webform.form.length - 1);
+    const {webform, submitting, submit, clearLastError} = this.props;
+    const {page, allFormValues, pagesVisited, submitted} = this.state;
+    const isLastPage = webform.form !== undefined ? (page === (webform.form.length - 1)) : true;
 
     return <Webform
       {...this.props}
-      page={this.state.page}
-      formValues={getWebformPageValues(this.props.webform, this.state.allFormValues, this.state.page)}
-      flattenedValues={this.state.allFormValues.reduce((prev, current) => Object.assign(prev, current), {})}
-      pagesVisited={this.state.pagesVisited}
+      page={page}
+      formValues={getWebformPageValues(webform, allFormValues, page)}
+      flattenedValues={allFormValues.reduce((prev, current) => Object.assign(prev, current), {})}
+      pagesVisited={pagesVisited}
       onPageChange={newPage => {
         const page = parseInt(newPage, 10);
-        const pagesVisited = clone(this.state.pagesVisited);
+        const pagesVisited = clone(pagesVisited);
         pagesVisited[page] = true;
         this.setState({page, pagesVisited});
       }}
-      onChange={formValues => this.setState({allFormValues: setWebformPageValues(this.state.allFormValues, this.state.page, formValues)})}
+      onChange={formValues => this.setState({allFormValues: setWebformPageValues(allFormValues, page, formValues)})}
       onSubmit={isLastPage
         ? () => {
-          const mergedValues = this.state.allFormValues.reduce((prev, current) => Object.assign(prev, current), {})
-          if (!this.props.submitting) {
-            this.props.submit(mergedValues);
+          const mergedValues = allFormValues.reduce((prev, current) => Object.assign(prev, current), {})
+          if (!submitting) {
+            submit(mergedValues);
             this.setState({submitted: true});
           }
         }
         : () => {
-          const page = this.state.page + 1;
-          const pagesVisited = clone(this.state.pagesVisited);
+          const page = page + 1;
+          const pagesVisited = clone(pagesVisited);
           pagesVisited[page] = true;
           this.setState({page, pagesVisited});
         }}
-      submitted={this.state.submitted}
+      submitted={submitted}
       resetSubmitted={() => this.setState({submitted: false})}
       resetForm={() => {
         this.setState(initialState);
-        this.props.clearLastError();
+        clearLastError();
       }}
     />;
   }
