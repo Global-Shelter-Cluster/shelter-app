@@ -32,6 +32,9 @@ const objects = (state: Objects = initialObjectsState, action: { type: string, o
 
           const newObjectsFiltered = {};
           for (const id of Object.keys(newObjects)) {
+            if (typeof newObjects[id] !== 'object' || newObjects[id] === null)
+              continue;
+
             if (
               detailLevels[newObjects[id]._mode] < detailLevels[OBJECT_MODE_PUBLIC]
               && existingObjects[id] !== undefined

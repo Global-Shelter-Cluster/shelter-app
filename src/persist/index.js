@@ -448,7 +448,7 @@ class Persist {
     if (!forceRemoteLoad) {
       loaded = (await Storage.multiGet(requests.map(o => Persist.cacheKey(o.type, o.id))))
         .map(convertItem)
-        .filter(i => i.object); // Safety check: discard results that for some reason don't contain the actual objects
+        .filter(i => typeof i.object === 'object' && i.object !== null); // Safety check: discard results that for some reason don't contain the actual objects
 
       if (loaded.length) {
         if (recursive) {
@@ -475,7 +475,10 @@ class Persist {
 
             if (allRelatedRequests.length) {
               const temp = await Storage.multiGet(allRelatedRequests.map(o => Persist.cacheKey(o.type, o.id)));
-              loaded.push(...temp.map(convertItem));
+              loaded.push(...temp
+                .map(convertItem)
+                .filter(i => typeof i.object === 'object' && i.object !== null) // Safety check: discard results that for some reason don't contain the actual objects
+              );
             }
 
             // Continue as long as there were new requests added
