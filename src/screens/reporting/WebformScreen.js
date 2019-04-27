@@ -119,8 +119,8 @@ class WebformScreen extends React.Component<Props, State> {
           }
         }
         : () => {
-          const page = page + 1;
-          const pagesVisited = clone(pagesVisited);
+          const page = this.state.page + 1;
+          const pagesVisited = clone(this.state.pagesVisited);
           pagesVisited[page] = true;
           this.setState({page, pagesVisited});
         }}
