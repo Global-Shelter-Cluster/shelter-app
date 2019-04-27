@@ -105,7 +105,7 @@ class WebformScreen extends React.Component<Props, State> {
       pagesVisited={pagesVisited}
       onPageChange={newPage => {
         const page = parseInt(newPage, 10);
-        const pagesVisited = clone(pagesVisited);
+        const pagesVisited = clone(this.state.pagesVisited);
         pagesVisited[page] = true;
         this.setState({page, pagesVisited});
       }}
