@@ -1,17 +1,7 @@
 // @flow
 
 import React from 'react';
-import {
-  Image,
-  KeyboardAvoidingView,
-  Linking,
-  RefreshControl,
-  ScrollView,
-  Share,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import {KeyboardAvoidingView, Platform, RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 import type {WebformObject} from "../../model/webform";
 import {getWebformPageTabs, getWebformTCombData} from "../../model/webform";
 import equal from 'deep-equal';
@@ -151,7 +141,11 @@ export default class Webform extends React.Component<Props> {
       </View>
       : null;
 
-    return <View style={{flex: 1}}>
+    return <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+    >
       <ScrollView
         style={{flex: 1}}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
@@ -185,7 +179,7 @@ export default class Webform extends React.Component<Props> {
         </View>
       </ScrollView>
       {queuedNotice}
-    </View>;
+    </KeyboardAvoidingView>;
   }
 }
 
