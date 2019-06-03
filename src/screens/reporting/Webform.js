@@ -170,6 +170,10 @@ export default class Webform extends React.Component<Props> {
                 stylesheet: formStylesheet,
                 fields: tCombData.fieldOptions,
                 order: tCombData.order,
+                i18n: {
+                  optional: '',
+                  required: '',
+                }
               }}
               onChange={onChange} value={formValues}
             />
