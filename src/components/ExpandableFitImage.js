@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Image, Modal, ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Constants} from "expo";
+import Constants from 'expo-constants';
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import FitImage from 'react-native-fit-image';

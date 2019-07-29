@@ -4,7 +4,7 @@ import React from 'react';
 import {Linking, Modal, Platform, Share, StyleSheet, TouchableOpacity, View, WebView} from 'react-native';
 import type {PublicGroupObject} from "../model/group";
 import Button from "./Button";
-import {Constants} from "expo";
+import Constants from 'expo-constants';
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import i18n from "../i18n";

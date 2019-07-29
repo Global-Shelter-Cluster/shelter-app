@@ -28,7 +28,7 @@ import Model, {
   OBJECT_MODE_PRIVATE,
   OBJECT_MODE_PUBLIC
 } from "../model";
-import {FileSystem} from "expo";
+import * as FileSystem from 'expo-file-system';
 import md5 from "md5";
 import Storage from "./storage_async";
 // import Storage from "./storage_sqlite";

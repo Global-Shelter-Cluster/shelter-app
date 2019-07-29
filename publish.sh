@@ -2,7 +2,7 @@
 
 if [[ $1 =~ ^(dev|stage|prod)$ ]]; then
   if [[ $1 == prod ]]; then
-    expo publish --release-channel default
+    expo publish --release-channel prod`cat PROD_RELEASE_CHANNEL.json`
   else
     expo publish --release-channel $1
   fi

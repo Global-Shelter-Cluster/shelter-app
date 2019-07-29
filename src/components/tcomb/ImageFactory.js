@@ -7,7 +7,8 @@
 import React from 'react';
 import {Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import t from 'tcomb-form-native';
-import {FileSystem, ImageManipulator} from 'expo';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as FileSystem from 'expo-file-system';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
 import persist from "../../persist";

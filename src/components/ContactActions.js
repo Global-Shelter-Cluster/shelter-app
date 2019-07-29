@@ -6,7 +6,8 @@ import type {ContactObject} from "../model/contact";
 import {createExpoContact} from "../model/contact";
 import Button from "./Button";
 import {ensurePermissions} from "../permission";
-import {Contacts, Permissions} from "expo";
+import * as Permissions from 'expo-permissions';
+import * as Contacts from 'expo-contacts';
 import i18n from "../i18n";
 
 type Props = {
@@ -76,7 +77,7 @@ export default class ContactActions extends React.Component<Props, State> {
       {buttons}
     </View>;
   }
-};
+}
 
 const styles = StyleSheet.create({
   container: {
