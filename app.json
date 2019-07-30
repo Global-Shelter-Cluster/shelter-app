@@ -4,7 +4,7 @@
     "description": "Mobile app for the Shelter Cluster",
     "slug": "sheltercluster",
     "version": "0.1.30",
-    "sdkVersion": "33.0.0",
+    "sdkVersion": "34.0.0",
     "githubUrl": "https://github.com/Global-Shelter-Cluster/shelter-app",
     "orientation": "portrait",
     "primaryColor": "#7F1416",
