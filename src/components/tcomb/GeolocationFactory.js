@@ -1,12 +1,10 @@
 // @flow
 
 import React from 'react';
-import {Animated, Button, Image, Modal, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import t from 'tcomb-form-native';
 import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
-import * as ImageManipulator from 'expo-image-manipulator';
-import * as FileSystem from 'expo-file-system';
 import Constants from 'expo-constants';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";

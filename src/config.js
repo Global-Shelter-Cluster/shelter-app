@@ -1,6 +1,7 @@
 // @flow
 
 import prodReleaseChannelCounter from '../PROD_RELEASE_CHANNEL';
+import Constants from 'expo-constants';
 
 export type configType = {
   baseUrl: string,
@@ -60,8 +61,8 @@ const config: { [string]: configType } = {
   }
 };
 
-const channel = config[Expo.Constants.manifest.releaseChannel] !== undefined
-  ? Expo.Constants.manifest.releaseChannel
+const channel = config[Constants.manifest.releaseChannel] !== undefined
+  ? Constants.manifest.releaseChannel
   // : 'local';
   : 'dev';
   // : 'stage';

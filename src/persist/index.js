@@ -583,7 +583,7 @@ class Persist {
       if (!info.exists || info.isDirectory)
         continue;
 
-      const base64Data = await FileSystem.readAsStringAsync(newValues[key], {encoding: FileSystem.EncodingTypes.Base64});
+      const base64Data = await FileSystem.readAsStringAsync(newValues[key], {encoding: 'base64'});// TODO: this should use `FileSystem.EncodingTypes.Base64` instead of the hardcoded string
 
       let mimetype = 'image/jpeg'; // TODO: for now, since we only support images, we assume jpeg
 

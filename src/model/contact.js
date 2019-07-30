@@ -2,6 +2,7 @@
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {html2text} from "../util";
+import * as Contacts from 'expo-contacts';
 
 export type PublicContactObject = {
   _last_read?: number,
@@ -57,8 +58,8 @@ export default class Contact {
   }
 }
 
-export function createExpoContact(contact: ContactObject): Expo.Contacts.Contact {
-  const f = Expo.Contacts.Fields;
+export function createExpoContact(contact: ContactObject): Contacts.Contact {
+  const f = Contacts.Fields;
   const ret = {
     [f.FirstName]: contact.name,
   };

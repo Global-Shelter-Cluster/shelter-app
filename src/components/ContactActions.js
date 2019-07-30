@@ -38,7 +38,7 @@ export default class ContactActions extends React.Component<Props, State> {
           style={styles.button}
           key={"mail" + i} title={address} icon="envelope-o"
           onPress={() => {
-            // Expo.MailComposer.composeAsync({recipients: [address]});
+            // MailComposer.composeAsync({recipients: [address]}); (Expo library)
             Linking.openURL('mailto:' + address); // TODO: is this better?
           }}
         />);
