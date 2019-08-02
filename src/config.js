@@ -50,7 +50,7 @@ const config: { [string]: configType } = {
     debugMode: false,
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
-  ['prod' + prodReleaseChannelCounter]: {
+  ['prod-v' + prodReleaseChannelCounter]: {
     baseUrl: 'https://www.sheltercluster.org',
     axiosExtra: {},
     deleteFilesOnLogout: true,
