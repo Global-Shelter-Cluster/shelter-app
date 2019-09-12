@@ -3,8 +3,8 @@
     "name": "Shelter Cluster",
     "description": "Mobile app for the Shelter Cluster",
     "slug": "sheltercluster",
-    "version": "0.1.30",
-    "sdkVersion": "32.0.0",
+    "version": "0.1.31",
+    "sdkVersion": "34.0.0",
     "githubUrl": "https://github.com/Global-Shelter-Cluster/shelter-app",
     "orientation": "portrait",
     "primaryColor": "#7F1416",
@@ -26,7 +26,7 @@
         "NSCameraUsageDescription": "Allows you to take pictures to upload to Shelter Cluster forms",
         "NSContactsUsageDescription": "Allows you to add contacts from Shelter Cluster to your phone",
         "NSLocationWhenInUseUsageDescription": "Allows you to select your location in Shelter Cluster forms",
-        "NSPhotoLibraryUsageDescription": "Allows you to select images from your phone to upload to Shelter Cluster forms",
+        "NSPhotoLibraryUsageDescription": "Allows you to select images from your phone to upload to Shelter Cluster forms"
       }
     },
     "splash": {

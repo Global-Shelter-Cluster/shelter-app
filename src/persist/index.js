@@ -28,7 +28,7 @@ import Model, {
   OBJECT_MODE_PRIVATE,
   OBJECT_MODE_PUBLIC
 } from "../model";
-import {FileSystem} from "expo";
+import * as FileSystem from 'expo-file-system';
 import md5 from "md5";
 import Storage from "./storage_async";
 // import Storage from "./storage_sqlite";
@@ -583,7 +583,7 @@ class Persist {
       if (!info.exists || info.isDirectory)
         continue;
 
-      const base64Data = await FileSystem.readAsStringAsync(newValues[key], {encoding: FileSystem.EncodingTypes.Base64});
+      const base64Data = await FileSystem.readAsStringAsync(newValues[key], {encoding: 'base64'});// TODO: this should use `FileSystem.EncodingTypes.Base64` instead of the hardcoded string
 
       let mimetype = 'image/jpeg'; // TODO: for now, since we only support images, we assume jpeg
 

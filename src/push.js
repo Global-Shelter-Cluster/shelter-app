@@ -1,6 +1,7 @@
 // @flow
 
-import {Notifications, Permissions} from "expo";
+import { Notifications } from "expo";
+import * as Permissions from 'expo-permissions';
 import config from "./config";
 import {ensurePermissions} from "./permission";
 

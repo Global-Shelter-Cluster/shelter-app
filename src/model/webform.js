@@ -9,7 +9,7 @@ import HTML from 'react-native-render-html';
 import type {tabsDefinition} from "../components/Tabs";
 import ImageFactory from "../components/tcomb/ImageFactory";
 import MultiselectFactory from "../components/tcomb/MultiselectFactory";
-import {Permissions} from "expo";
+import * as Permissions from 'expo-permissions';
 import {textareaStylesheet} from "../styles/formStyles";
 import GeolocationFactory from "../components/tcomb/GeolocationFactory";
 import i18n from "../i18n";

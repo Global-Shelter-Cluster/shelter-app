@@ -4,7 +4,8 @@ import React from 'react';
 import {Linking, Modal, Platform, Share, StyleSheet, TouchableOpacity, View, WebView} from 'react-native';
 import type {PublicEventObject} from "../model/event";
 import Button from "./Button";
-import {Constants, MapView} from "expo";
+import MapView from 'react-native-maps';
+import Constants from 'expo-constants';
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import moment from "moment/moment";
@@ -86,7 +87,7 @@ export default class EventActions extends React.Component<Props, State> {
       </Modal>
     </View>;
   }
-};
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -5,7 +5,7 @@ import {Linking, Modal, Platform, Share, StyleSheet, TouchableOpacity, View, Web
 import type {PublicDocumentObject} from "../model/document";
 import Button from "./Button";
 import {getExtension} from "../util";
-import {Constants} from "expo";
+import Constants from 'expo-constants';
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import PDFReader from 'rn-pdf-reader-js';

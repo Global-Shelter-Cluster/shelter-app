@@ -1,6 +1,6 @@
 // @flow
 
-import {SQLite} from 'expo';
+import { SQLite } from 'expo-sqlite';
 import websql from 'websql-promisified';
 
 class Storage {

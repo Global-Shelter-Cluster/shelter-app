@@ -5,9 +5,11 @@
  */
 
 import React from 'react';
-import {Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Animated, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import t from 'tcomb-form-native';
-import {FileSystem, ImageManipulator} from 'expo';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../../vars";
 import persist from "../../persist";
@@ -175,7 +177,7 @@ class ImageFactory extends Component<Props, State> {
             <TouchableOpacity
               style={styles.button}
               onPress={() =>
-                Expo.ImagePicker.launchCameraAsync({mediaTypes: "Images"}).then((image: Object) => {
+                ImagePicker.launchCameraAsync({mediaTypes: "Images"}).then((image: Object) => {
                   if (image.cancelled)
                     return;
                   this._getImageFromStorage(image.uri)
@@ -186,7 +188,7 @@ class ImageFactory extends Component<Props, State> {
             <TouchableOpacity
               style={styles.button}
               onPress={() =>
-                Expo.ImagePicker.launchImageLibraryAsync({mediaTypes: "Images"}).then((image: Object) => {
+                ImagePicker.launchImageLibraryAsync({mediaTypes: "Images"}).then((image: Object) => {
                   if (image.cancelled)
                     return;
                   this._getImageFromStorage(image.uri)

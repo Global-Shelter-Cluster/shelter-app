@@ -23,6 +23,7 @@ import Collapsible from "./Collapsible";
 import SingleLineText from "./SingleLineText";
 import i18n from "../i18n";
 import TranslatedText from "./TranslatedText"
+import Constants from 'expo-constants';
 
 type Props = {
   online: boolean,
@@ -115,10 +116,10 @@ export default class IndicatorRow extends React.Component<Props, State> {
           <Image style={styles.logo} source={require("../../assets/about/humanitarian-aid.png")}/>
           <View style={{height: 50}}/>
           <Collapsible title={i18n.t("Technical information")} isOpen>
-            <TranslatedText replacements={{'@version': Expo.Constants.expoVersion}}>Expo version: @version</TranslatedText>
-            <TranslatedText replacements={{'@version': Expo.Constants.manifest.version}}>App version: @version</TranslatedText>
+            <TranslatedText replacements={{'@version': Constants.expoVersion}}>Expo version: @version</TranslatedText>
+            <TranslatedText replacements={{'@version': Constants.manifest.version}}>App version: @version</TranslatedText>
             <TranslatedText
-              replacements={{'@env': Expo.Constants.manifest.releaseChannel ? Expo.Constants.manifest.releaseChannel : i18n.t('<none>') }}
+              replacements={{'@env': Constants.manifest.releaseChannel ? Constants.manifest.releaseChannel : i18n.t('<none>') }}
             >Environment: @env
             </TranslatedText>
             <Text>

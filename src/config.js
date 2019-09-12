@@ -1,5 +1,8 @@
 // @flow
 
+import prodReleaseChannelCounter from '../PROD_RELEASE_CHANNEL';
+import Constants from 'expo-constants';
+
 export type configType = {
   baseUrl: string,
   axiosExtra: {},
@@ -47,7 +50,7 @@ const config: { [string]: configType } = {
     debugMode: false,
     googleAnalyticsTrackingId: 'UA-26890288-4',
   },
-  prod: {
+  ['prod-v' + prodReleaseChannelCounter]: {
     baseUrl: 'https://www.sheltercluster.org',
     axiosExtra: {},
     deleteFilesOnLogout: true,
@@ -58,13 +61,11 @@ const config: { [string]: configType } = {
   }
 };
 
-config.default = config.prod;
-
-const channel = config[Expo.Constants.manifest.releaseChannel] !== undefined
-  ? Expo.Constants.manifest.releaseChannel
+const channel = config[Constants.manifest.releaseChannel] !== undefined
+  ? Constants.manifest.releaseChannel
   // : 'local';
-  // : 'dev';
+  : 'dev';
   // : 'stage';
-  : 'local_jm';
+  // : 'local_jm';
 
 export default config[channel];
