@@ -16,7 +16,9 @@ import type {newAccountValues} from "../screens/auth/Signup";
 import type {notificationType} from "../reducers/notification";
 import type {localVarsTypeAllOptional} from "../reducers/localVars";
 import Storage from "../persist/storage_async";
-import Remote from "../persist/remote";
+import type {PrivateUserObject} from "../model/user";
+import {getCurrentUser} from "../model/user";
+import clone from "clone";
 
 export const CHANGE_FLAG = 'CHANGE_FLAG';
 export const changeFlag = (flag: flags, value: boolean) => ({
@@ -415,10 +417,28 @@ export const updateRemoteAppConfig = appRemoteConfig => ({
   appRemoteConfig,
 });
 
-export const updateUser = values => async dispatch => {
+export const updateUser = values => async (dispatch, getState) => {
+  // Get a copy of the current user object, in case we need to restore it (which happens below if the remote call fails).
+  const currentUserObject: PrivateUserObject = clone(getCurrentUser(getState()));
+  const userId = currentUserObject.id;
+
+  // Now get another copy, modify it, and store it immediately so the interface updates quickly.
+  const updatedUserObject: PrivateUserObject = clone(currentUserObject);
+  Object.assign(updatedUserObject, values);
+  // updatedUserObject._last_read++;
+  dispatch(setObjects({user: {
+    ['' + userId]: updatedUserObject,
+  }}));
+
   try {
     await persist.updateUser(values);
   } catch (e) {
+    // The remote call failed, so we restore the unmodified user object to avoid giving the user the impression that it
+    // was successful.
+    dispatch(setObjects({user: {
+      ['' + userId]: currentUserObject,
+    }}));
+
     dispatch(setLastError('update-user', {message: e.message}));
   }
 };

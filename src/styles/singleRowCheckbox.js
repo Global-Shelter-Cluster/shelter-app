@@ -4,6 +4,9 @@ import {Switch, Text, TouchableWithoutFeedback, View} from 'react-native';
 // Shows the title and checkbox in the same row, and allows the user to tap on the title to change the value.
 //
 // Adapted from the regular checkbox template: tcomb-form-native/lib/templates/bootstrap/checkbox.js
+//
+// If the label starts with "--", it adds some top padding and border (it "starts a new section").
+// If the label starts with "  ", it's rendered as a "child".
 
 function singleRowCheckbox(locals) {
   if (locals.hidden) {
@@ -24,9 +27,23 @@ function singleRowCheckbox(locals) {
     helpBlockStyle = stylesheet.helpBlock.error;
   }
 
-  var label = locals.label ? (
+  let locals_label = locals.label;
+
+  const startsNewSection = locals_label.startsWith('--');
+  if (startsNewSection)
+    locals_label = locals_label.substr(2);
+
+  const isChild = locals_label.startsWith('  ');
+  if (isChild)
+    locals_label = locals_label.substr(2);
+
+  var label = locals_label ? (
     <TouchableWithoutFeedback onPress={() => locals.onChange(!locals.value)}>
-      <Text style={[controlLabelStyle, {flex: 1}]}>{locals.label}</Text>
+      <Text style={[
+        controlLabelStyle,
+        {flex: 1},
+        isChild ? {fontWeight: "normal"} : null,
+      ]}>{locals_label}</Text>
     </TouchableWithoutFeedback>
   ) : null;
   var help = locals.help ? (
@@ -40,11 +57,15 @@ function singleRowCheckbox(locals) {
     ) : null;
 
   return (
-    <View style={formGroupStyle}>
+    <View style={[
+      formGroupStyle,
+      startsNewSection ? {marginTop: -10, paddingTop: 20, borderTopWidth: 1, borderTopColor: "#eee"} : null,
+      isChild ? {paddingLeft: 20, marginTop: -10} : null,
+    ]}>
       <View style={{flexDirection: "row", alignItems: "center", justifyContent: "flex-end"}}>
         {label}
         <Switch
-          accessibilityLabel={locals.label}
+          accessibilityLabel={locals_label}
           ref="input"
           disabled={locals.disabled}
           onTintColor={locals.onTintColor}

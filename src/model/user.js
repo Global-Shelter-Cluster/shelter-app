@@ -17,6 +17,12 @@ export type PrivateUserObject = {
   role: string,
   groups?: Array<number>,
   timezone: string,
+  notifications: {
+    app_daily: boolean,
+    app_upcoming_events: boolean,
+    email_daily: boolean,
+    email_weekly: boolean,
+  },
 }
 
 export type PublicUserObject = {

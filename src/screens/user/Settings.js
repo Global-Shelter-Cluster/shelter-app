@@ -1,18 +1,10 @@
 // @flow
 import React from 'react';
-import {
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import ModalSelector from 'react-native-modal-selector'
 import type {tabsDefinition} from "../../components/Tabs";
+import Tabs from "../../components/Tabs";
 import {formStylesheet} from "../../styles/formStyles";
 import t from "tcomb-form-native";
 import type {localVarsType} from "../../reducers/localVars";
@@ -27,14 +19,15 @@ import config from "../../config";
 import TranslatedText from "../../components/TranslatedText";
 import MultiselectFactory from "../../components/tcomb/MultiselectFactory";
 import i18n from "../../i18n";
-import {FontAwesome} from '@expo/vector-icons';
 import MultiSelect from "../../components/Multiselect";
 import persist from "../../persist";
 import type {GlobalObject} from "../../model/global";
+import Notice from "../../components/Notice";
+import Error from "../../components/Error";
 
 const Form = t.form.Form;
 
-export type tabs = "user" | "preferences";
+export type tabs = "user" | "preferences" | "notifications";
 
 const defaultTimezone = 'America/New_York';
 
@@ -133,12 +126,50 @@ class Settings extends React.Component<Props, State> {
     this.resetNav();
   }
 
+  async onChangeNotifications(newValues) {
+    const notifications = {
+      app_daily: !!newValues.app_daily,
+      app_upcoming_events: !!newValues.app_upcoming_events,
+      email_daily: !!newValues.email_daily,
+      email_weekly: !!newValues.email_weekly,
+    };
+
+    // This ugly block of code is just to make the user happy by trying to guess their intentions. Just .. trust it.
+
+    const oldValues = this.props.user.notifications;
+
+    if (!notifications.app_daily && !notifications.app_upcoming_events && (oldValues.app_daily || oldValues.app_upcoming_events))
+      newValues.app = false;
+    if (!notifications.email_daily && !notifications.email_weekly && (oldValues.email_daily || oldValues.email_weekly))
+      newValues.email = false;
+
+    if (newValues.app && !notifications.app_daily && !notifications.app_upcoming_events) {
+      notifications.app_daily = true;
+      notifications.app_upcoming_events = true;
+    }
+    if (!newValues.app) {
+      notifications.app_daily = false;
+      notifications.app_upcoming_events = false;
+    }
+
+    if (newValues.email && !notifications.email_daily && !notifications.email_weekly)
+      notifications.email_daily = true;
+    if (!newValues.email) {
+      notifications.email_daily = false;
+      notifications.email_weekly = false;
+    }
+
+    // Ugly code ends here.
+
+    this.props.updateUser({notifications});
+  }
+
   render() {
     const {online, loading, tab, changeTab, lastError, global, user, refreshUser, refreshGlobal, localVars, onChangeLocalVars} = this.props;
     let content = null;
 
     switch (tab) {
-      case "user":
+      case "user": {
         if (equal(lastError, {type: 'object-load', data: {type: 'user', id: user.id}})) {
           content = <MultiLineButton
             onPress={refresh}
@@ -171,8 +202,8 @@ class Settings extends React.Component<Props, State> {
           />
         </ScrollView>;
         break;
-
-      case "preferences":
+      }
+      case "preferences": {
         // const onSubmitWithValidation = () => {
         //   if (this.refs.preferences_form.validate().isValid())
         //     submitLocalVars(localVars);
@@ -262,19 +293,103 @@ class Settings extends React.Component<Props, State> {
           {timeZoneSelector}
         </ScrollView>;
         break;
+      }
+      case "notifications": {
+        const formType = t.struct({
+          app: t.Boolean,
+          app_daily: t.Boolean,
+          app_upcoming_events: t.Boolean,
+          email: t.Boolean,
+          email_daily: t.Boolean,
+          email_weekly: t.Boolean,
+        });
+
+        const notificationVars = {
+          app_daily: user.notifications && user.notifications.app_daily,
+          app_upcoming_events: user.notifications && user.notifications.app_upcoming_events,
+          email_daily: user.notifications && user.notifications.email_daily,
+          email_weekly: user.notifications && user.notifications.email_weekly,
+        };
+        notificationVars.app = (notificationVars.app_daily || notificationVars.app_upcoming_events);
+        notificationVars.email = (notificationVars.email_daily || notificationVars.email_weekly);
+
+        const fieldsOptions = {
+          app: {
+            label: i18n.t("Push notifications"),
+            template: singleRowCheckbox,
+          },
+          app_daily: {
+            label: i18n.t("  Daily digest"),
+            template: singleRowCheckbox,
+            hidden: !notificationVars.app,
+          },
+          app_upcoming_events: {
+            label: i18n.t("  Upcoming events"),
+            template: singleRowCheckbox,
+            hidden: !notificationVars.app,
+          },
+          email: {
+            label: i18n.t("--Email notifications"),
+            template: singleRowCheckbox,
+          },
+          email_daily: {
+            label: i18n.t("  Daily digest"),
+            template: singleRowCheckbox,
+            hidden: !notificationVars.email,
+          },
+          email_weekly: {
+            label: i18n.t("  Weekly digest"),
+            template: singleRowCheckbox,
+            hidden: !notificationVars.email,
+          },
+        };
+
+        content = <ScrollView
+          style={{flex: 1, padding: 10}}
+          refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
+        >
+          <Form
+            ref="notifications_form"
+            type={formType}
+            options={{
+              label: null,
+              stylesheet: formStylesheet,
+              fields: fieldsOptions,
+            }}
+            onChange={this.onChangeNotifications.bind(this)}
+            value={notificationVars}
+          />
+        </ScrollView>;
+
+        if (!online)
+          content = <Error description={i18n.t("Offline")}/>;
+
+        break;
+      }
     }
 
     const tabs: tabsDefinition = {
-      "user": {label: "Profile"},
-      "preferences": {label: "Preferences"},
+      // "user": {
+      //   label: "Profile",
+      //   icon: "user",
+      // },
+      "preferences": {
+        label: "Preferences",
+        icon: "cog",
+      },
+      "notifications": {
+        label: "Notifications",
+        icon: "bell",
+      },
     };
 
     return <View style={{flex: 1}}>
-      {/*<Tabs
+      <Tabs
+        labelOnlyOnActive
         current={tab}
         changeTab={changeTab}
         tabs={tabs}
-      />*/}
+      />
       {content}
     </View>;
   }

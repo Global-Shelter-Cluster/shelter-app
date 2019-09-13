@@ -27,6 +27,7 @@ import type {localVarsType, localVarsTypeAllOptional} from "../../reducers/local
 import i18n from "../../i18n";
 import {getObject} from "../../model";
 import {GLOBAL_OBJECT_ID} from "../../model/global";
+import clone from "clone";
 
 type Props = {
   online: boolean,
@@ -89,7 +90,7 @@ const mapDispatchToProps = dispatch => ({
   setLanguage: lang => dispatch(updadeCurrentLanguage(lang)),
   getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh)),
   refreshEnabledLanguages: () => dispatch(refreshEnabledLanguages()),
-  updateUser: values => dispatch(updateUser(values)),
+  updateUser: async values => dispatch(updateUser(values)),
 });
 
 class SettingsScreen extends React.Component<Props, State> {
@@ -100,12 +101,11 @@ class SettingsScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = initialState;
-    this.state.user = props.user;
     this.state.localVars = props.localVars;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !propEqual(this.state, nextState, ['tab'], ['user', 'localVars'])
+    return !propEqual(this.state, nextState, ['tab'], ['localVars'])
       || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting'], ['user', 'localVars', 'lastError']);
   }
 
@@ -121,7 +121,7 @@ class SettingsScreen extends React.Component<Props, State> {
       {...this.props}
       tab={this.state.tab}
       changeTab={(tab: tabs) => this.setState({tab})}
-      user={this.state.user}
+      user={this.props.user}
       localVars={this.state.localVars}
       onChangeLocalVars={this.props.submitLocalVars}
       navigation={this.props.navigation}
