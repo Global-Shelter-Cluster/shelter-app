@@ -17,7 +17,13 @@ export async function getPushToken(): Promise<string | null> {
   }
 
   // Get the token that uniquely identifies this device
-  const token = await Notifications.getExpoPushTokenAsync();
+  let token;
+
+  try {
+    token = await Notifications.getExpoPushTokenAsync();
+  } catch (e) {
+    console.log('Problem getting token', e);
+  }
 
   return token;
 }

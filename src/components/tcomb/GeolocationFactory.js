@@ -106,6 +106,7 @@ class GeolocationFactory extends Component<Props, State> {
       const hasData = this.state.lat !== undefined && this.state.lon !== undefined;
       const lat = this.state.lat ? this.state.lat : 0;
       const lon = this.state.lon ? this.state.lon : 0;
+      const coordinate = {latitude: lat, longitude: lon};
       const region: Region = this.state.region ? this.state.region : initialRegion;
 
       const modalMap = <MapView
@@ -122,7 +123,7 @@ class GeolocationFactory extends Component<Props, State> {
 
         onPress={e => this._setLocation(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)}
       >
-        <MapView.Marker coordinate={{latitude: lat, longitude: lon}}/>
+        <MapView.Marker coordinate={coordinate}/>
       </MapView>;
 
       const inlineMap = <MapView
@@ -142,7 +143,7 @@ class GeolocationFactory extends Component<Props, State> {
 
         region={region}
       >
-        {hasData ? <MapView.Marker coordinate={{latitude: lat, longitude: lon}}/> : null}
+        {hasData ? <MapView.Marker coordinate={coordinate}/> : null}
       </MapView>;
 
       return (
