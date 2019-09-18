@@ -1,15 +1,6 @@
 // @flow
 import React from 'react';
-import {
-  FlatList,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import ModalSelector from 'react-native-modal-selector'
 import type {tabsDefinition} from "../../components/Tabs";
@@ -27,7 +18,6 @@ import config from "../../config";
 import TranslatedText from "../../components/TranslatedText";
 import MultiselectFactory from "../../components/tcomb/MultiselectFactory";
 import i18n from "../../i18n";
-import {FontAwesome} from '@expo/vector-icons';
 import MultiSelect from "../../components/Multiselect";
 import persist from "../../persist";
 import type {GlobalObject} from "../../model/global";
@@ -226,7 +216,7 @@ class Settings extends React.Component<Props, State> {
           : null;
 
         content = <ScrollView
-          style={{flex: 1, padding: 10}}
+          style={{flex: 1}}
           refreshControl={<RefreshControl refreshing={loading} onRefresh={() => {
             refreshGlobal();
             refreshUser();
@@ -269,7 +259,7 @@ class Settings extends React.Component<Props, State> {
       "preferences": {label: "Preferences"},
     };
 
-    return <View style={{flex: 1}}>
+    return <View style={{flex: 1, paddingHorizontal: 10}}>
       {/*<Tabs
         current={tab}
         changeTab={changeTab}
