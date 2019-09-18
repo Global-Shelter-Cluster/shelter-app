@@ -98,31 +98,30 @@ const TabScreens = createBottomTabNavigator({
   Me: {
     screen: MeStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Me"/>,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Me"/>,
     },
   },
   Operations: {
     screen: OperationsStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Operations"/>,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Operations"/>,
     },
   },
   // Chat: ChatStack, //TODO: hide this for now
   Resources: {
     screen: ResourcesStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Resources"/>,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Resources"/>,
     },
   },
   Search: {
     screen: SearchStack,
     navigationOptions: {
-      tabBarLabel: () => Platform.OS === 'android' ? null : <TranslatedText style={styles.tabLabel} text="Search"/>,
+      tabBarLabel: () => <TranslatedText style={styles.tabLabel} text="Search"/>,
     },
   },
 }, {
   defaultNavigationOptions: ({navigation}) => ({
-
     tabBarIcon: ({focused, tintColor}) => {
       const {routeName} = navigation.state;
 
@@ -148,6 +147,7 @@ const TabScreens = createBottomTabNavigator({
 const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 12,
+    textAlign: "center",
   }
 });
 
