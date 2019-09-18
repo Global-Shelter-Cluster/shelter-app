@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {KeyboardAvoidingView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -66,12 +66,13 @@ export default class Signup extends React.Component<Props, State> {
     const backToLoginButton = !loggingIn
       ? <Button onPress={() => {
         this.props.navigation.navigate('Login');
-      }} title={i18n.t("Back to Log in")} />
+      }} title={i18n.t("Back to Log in")}/>
       : null;
 
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <View style={styles.innerContainer}>
+      <KeyboardAvoidingView style={styles.container} behavior="height">
+        <ScrollView style={styles.innerContainer} contentContainerStyle={{flex: 1}}>
+          <View style={{flex: 1}}/>
           {!loggingIn
             ? <Text style={styles.banner}>{i18n.t("Create a Shelter Cluster account")}</Text>
             : null
@@ -128,7 +129,7 @@ export default class Signup extends React.Component<Props, State> {
           />}
           {signupButton}
           {backToLoginButton}
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     );
   }
@@ -143,7 +144,6 @@ const styles = StyleSheet.create({
   innerContainer: {
     padding: 20,
     paddingBottom: 30,
-    justifyContent: "space-between",
   },
   text: {
     fontSize: 18,

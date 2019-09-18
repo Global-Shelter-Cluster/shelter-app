@@ -63,5 +63,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   smallContainer: {paddingHorizontal: 10, paddingVertical: 6},
-  smallLabel: {fontSize: 16},
+  smallLabel: {fontSize: 15},
 });
