@@ -28,6 +28,8 @@ import i18n from "../../i18n";
 import {getObject} from "../../model";
 import {GLOBAL_OBJECT_ID} from "../../model/global";
 import clone from "clone";
+import {ensurePermissions} from "../../permission";
+import * as Permissions from "expo-permissions";
 
 type Props = {
   online: boolean,
@@ -46,6 +48,7 @@ type State = {
   tab: tabs,
   user: PrivateUserObject,
   localVars: localVarsType,
+  hasCameraPermissions: boolean,
 }
 
 const initialState = {
@@ -105,7 +108,7 @@ class SettingsScreen extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !propEqual(this.state, nextState, ['tab'], ['localVars'])
+    return !propEqual(this.state, nextState, ['tab', 'hasCameraPermissions'], ['localVars'])
       || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting'], ['user', 'localVars', 'lastError']);
   }
 
@@ -120,7 +123,23 @@ class SettingsScreen extends React.Component<Props, State> {
     return <Settings
       {...this.props}
       tab={this.state.tab}
-      changeTab={(tab: tabs) => this.setState({tab})}
+      hasCameraPermissions={this.state.hasCameraPermissions}
+      changeTab={async (tab: tabs) => {
+        const partialState = {tab};
+
+        if (tab === "user") {
+          try {
+            await ensurePermissions(Permissions.CAMERA_ROLL, Permissions.CAMERA);
+            partialState.hasCameraPermissions = true;
+          } catch (e) {
+            partialState.hasCameraPermissions = false;
+            console.warn(e);
+            // TODO: maybe say something to the user and give them a chance to grant the camera/gallery permissions again
+          }
+        }
+
+        this.setState(partialState);
+      }}
       user={this.props.user}
       localVars={this.state.localVars}
       onChangeLocalVars={this.props.submitLocalVars}

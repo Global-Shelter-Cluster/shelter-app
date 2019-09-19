@@ -24,6 +24,7 @@ import persist from "../../persist";
 import type {GlobalObject} from "../../model/global";
 import Notice from "../../components/Notice";
 import Error from "../../components/Error";
+import ImageFactory from "../../components/tcomb/ImageFactory";
 
 const Form = t.form.Form;
 
@@ -34,6 +35,7 @@ const defaultTimezone = 'America/New_York';
 type Props = {
   online: boolean,
   loading: boolean,
+  hasCameraPermissions: boolean,
   tab: tabs,
   changeTab: (tab: tabs) => void,
   lastError: lastErrorType,
@@ -59,7 +61,8 @@ type State = {
   languageOptionsOld: {},
   languageOptions: [],
   _languageForm: () => void,
-  isVisible: boolean
+  isVisible: boolean,
+  isEdited: boolean,
 };
 
 class Settings extends React.Component<Props, State> {
@@ -93,8 +96,9 @@ class Settings extends React.Component<Props, State> {
     }
   }
 
-  shouldComponentUpdate(nextProps: Props) {
-    return !propEqual(this.props, nextProps, ['online', 'loading', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
+  shouldComponentUpdate(nextProps: Props, nextState: State) {
+    return !propEqual(this.state, nextState, ['isEdited'], [])
+      || !propEqual(this.props, nextProps, ['online', 'loading', 'hasCameraPermissions', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
   }
 
   async _changeLanguage(language: string) {
@@ -165,7 +169,7 @@ class Settings extends React.Component<Props, State> {
   }
 
   render() {
-    const {online, loading, tab, changeTab, lastError, global, user, refreshUser, refreshGlobal, localVars, onChangeLocalVars} = this.props;
+    const {online, loading, tab, hasCameraPermissions, changeTab, lastError, global, user, refreshUser, refreshGlobal, localVars, onChangeLocalVars} = this.props;
     let content = null;
 
     switch (tab) {
@@ -178,29 +182,86 @@ class Settings extends React.Component<Props, State> {
           break;
         }
 
-        content = <ScrollView
-          style={{flex: 1}}
-          refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
-        >
-          <Form
-            ref="user_form"
-            type={{something: t.String}}
-            options={{
-              label: null,
-              stylesheet: formStylesheet,
-              fields: [],
-            }}
-            onChange={() => {
-            }}
-            value={{}}
-          />
-          <Button
-            primary title="Save"
-            onPress={() => {
-              console.log('Not implemented yet');
-            }}
-          />
-        </ScrollView>;
+        const formType = t.struct({
+          name: t.String,
+          photo: t.maybe(t.String),
+          organization: t.String,
+          role: t.String,
+          email: t.refinement(t.String, email => {
+            // valid email address
+            const reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            return reg.test(email);
+          }),
+          password: t.maybe(
+            t.refinement(t.String, value => value.length >= 8), // 8 chars minimum length
+          ),
+        });
+
+        const values = {
+          name: user.name,
+          email: user.mail,
+          organization: user.org,
+          role: user.role,
+        };
+
+        const fieldsOptions = {
+          name: {label: i18n.t("Name")},
+          photo: {
+            label: i18n.t("Photo"),
+            factory: ImageFactory,
+            // hidden: !hasCameraPermissions,
+          },
+          organization: {label: i18n.t("Organization")},
+          role: {label: i18n.t("Role")},
+          email: {label: i18n.t("E-mail address")},
+          password: {
+            label: i18n.t("Password"),
+            help: i18n.t("Leave blank to keep unchanged."),
+          },
+        };
+
+        const fieldsOrder = [
+          'name',
+          'photo',
+          'organization',
+          'role',
+          'email',
+          'password',
+        ];
+
+        content = <View style={{flex: 1}}>
+          <ScrollView
+            style={{flex: 1}}
+            refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
+          >
+            <Form
+              ref="user_form"
+              type={formType}
+              options={{
+                label: null,
+                stylesheet: formStylesheet,
+                fields: fieldsOptions,
+                order: fieldsOrder,
+                i18n: {
+                  optional: '',
+                  required: '',
+                }
+              }}
+              onChange={() => this.setState({isEdited: true})}
+              value={values}
+            />
+          </ScrollView>
+          {this.state.isEdited
+            ? <Button
+              style={{marginBottom: 10}}
+              primary title={i18n.t("Save changes")}
+              onPress={() => {
+                console.log('Not implemented yet');
+              }}
+            />
+            : null
+          }
+        </View>;
         break;
       }
       case "preferences": {
@@ -304,14 +365,14 @@ class Settings extends React.Component<Props, State> {
           email_weekly: t.Boolean,
         });
 
-        const notificationVars = {
+        const values = {
           app_daily: user.notifications && user.notifications.app_daily,
           app_upcoming_events: user.notifications && user.notifications.app_upcoming_events,
           email_daily: user.notifications && user.notifications.email_daily,
           email_weekly: user.notifications && user.notifications.email_weekly,
         };
-        notificationVars.app = (notificationVars.app_daily || notificationVars.app_upcoming_events);
-        notificationVars.email = (notificationVars.email_daily || notificationVars.email_weekly);
+        values.app = (values.app_daily || values.app_upcoming_events);
+        values.email = (values.email_daily || values.email_weekly);
 
         const fieldsOptions = {
           app: {
@@ -321,12 +382,12 @@ class Settings extends React.Component<Props, State> {
           app_daily: {
             label: i18n.t("  Daily digest"),
             template: singleRowCheckbox,
-            hidden: !notificationVars.app,
+            hidden: !values.app,
           },
           app_upcoming_events: {
             label: i18n.t("  Upcoming events"),
             template: singleRowCheckbox,
-            hidden: !notificationVars.app,
+            hidden: !values.app,
           },
           email: {
             label: i18n.t("--Email notifications"),
@@ -335,12 +396,12 @@ class Settings extends React.Component<Props, State> {
           email_daily: {
             label: i18n.t("  Daily digest"),
             template: singleRowCheckbox,
-            hidden: !notificationVars.email,
+            hidden: !values.email,
           },
           email_weekly: {
             label: i18n.t("  Weekly digest"),
             template: singleRowCheckbox,
-            hidden: !notificationVars.email,
+            hidden: !values.email,
           },
         };
 
@@ -357,7 +418,7 @@ class Settings extends React.Component<Props, State> {
               fields: fieldsOptions,
             }}
             onChange={this.onChangeNotifications.bind(this)}
-            value={notificationVars}
+            value={values}
           />
         </ScrollView>;
 
@@ -369,10 +430,10 @@ class Settings extends React.Component<Props, State> {
     }
 
     const tabs: tabsDefinition = {
-      // "user": {
-      //   label: "Profile",
-      //   icon: "user",
-      // },
+      "user": {
+        label: "Profile",
+        icon: "user",
+      },
       "preferences": {
         label: "Preferences",
         icon: "cog",
