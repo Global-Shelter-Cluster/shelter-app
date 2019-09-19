@@ -257,7 +257,7 @@ class Settings extends React.Component<Props, State> {
           : null;
 
         content = <ScrollView
-          style={{flex: 1, padding: 10}}
+          style={{flex: 1}}
           refreshControl={<RefreshControl refreshing={loading} onRefresh={() => {
             refreshGlobal();
             refreshUser();
@@ -345,7 +345,7 @@ class Settings extends React.Component<Props, State> {
         };
 
         content = <ScrollView
-          style={{flex: 1, padding: 10}}
+          style={{flex: 1}}
           refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
         >
           <Form
@@ -383,7 +383,7 @@ class Settings extends React.Component<Props, State> {
       },
     };
 
-    return <View style={{flex: 1}}>
+    return <View style={{flex: 1, paddingHorizontal: 10}}>
       <Tabs
         labelOnlyOnActive
         current={tab}

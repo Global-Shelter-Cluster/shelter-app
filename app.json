@@ -3,16 +3,21 @@
     "name": "Shelter Cluster",
     "description": "Mobile app for the Shelter Cluster",
     "slug": "sheltercluster",
-    "version": "0.1.31",
+    "version": "0.1.41",
     "sdkVersion": "34.0.0",
     "githubUrl": "https://github.com/Global-Shelter-Cluster/shelter-app",
     "orientation": "portrait",
     "primaryColor": "#7F1416",
     "icon": "./assets/icon/opaque.png",
     "android": {
-      "versionCode": 6,
+      "versionCode": 7,
       "icon": "./assets/icon/transparent.png",
-      "package": "org.sheltercluster.shelterapp"
+      "package": "org.sheltercluster.shelterapp",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyANL_vsaMLuS8g_P60P5cDNRhmOxrbpcIs"
+        }
+      }
     },
     "androidStatusBar": {
       "barStyle": "light-content",

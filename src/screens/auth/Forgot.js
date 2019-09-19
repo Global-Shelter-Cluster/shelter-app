@@ -85,7 +85,7 @@ export default class Forgot extends React.Component<Props, State> {
       : null;
 
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <KeyboardAvoidingView style={styles.container} behavior="height">
         <View style={styles.innerContainer}>
           {!loggingIn && !submitted
             ? <TranslatedText style={styles.banner}>Request a new password for your Shelter Cluster account</TranslatedText>

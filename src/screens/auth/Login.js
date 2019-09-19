@@ -1,7 +1,16 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -11,7 +20,6 @@ import type {navigation} from "../../nav";
 import i18n from "../../i18n";
 import TranslatedText from "../../components/TranslatedText";
 import {connect} from 'react-redux';
-import {ScrollView} from "../user/Settings";
 import {getTranslations, updadeCurrentLanguage} from "../../actions";
 import {FontAwesome} from '@expo/vector-icons';
 
@@ -31,6 +39,7 @@ type Props = {
 type State = {
   formValues: { username: string, password: string },
   languageSwitcherOpen: boolean,
+  isKeyboardVisible: boolean,
 }
 
 class Login extends React.Component<Props, State> {
@@ -40,11 +49,28 @@ class Login extends React.Component<Props, State> {
     this.state = {
       formValues: {username: "", password: ""},
       languageSwitcherOpen: false,
+      isKeyboardVisible: false,
     };
   }
 
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => this.setState({isKeyboardVisible: true}),
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => this.setState({isKeyboardVisible: false}),
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
   shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return !propEqual(this.state, nextState, ['languageSwitcherOpen'], ['formValues'])
+    return !propEqual(this.state, nextState, ['languageSwitcherOpen', 'isKeyboardVisible'], ['formValues'])
       || !propEqual(this.props, nextProps, ['currentLanguage', 'online', 'loggingIn'], ['lastError', 'languageOptions']);
   }
 
@@ -119,12 +145,20 @@ class Login extends React.Component<Props, State> {
     </View>;
 
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <ImageBackground
-          style={{flex: 1}}
-          imageStyle={{maxWidth: 400, maxHeight: 400}}
-          source={require('../../../assets/splash.png')}/>
-        <View style={styles.innerContainer}>
+      <KeyboardAvoidingView style={styles.container} behavior="height">
+        <ScrollView style={styles.innerContainer} contentContainerStyle={{flex: 1}}>
+          {this.state.isKeyboardVisible
+            ? <View style={{flex: 1}}/>
+            : <View style={{flex: 1}}>
+              <View style={{flex: 1}}/>
+              <ImageBackground
+                style={{flexGrow: 2}}
+                imageStyle={{width: "100%", maxHeight: 150, resizeMode: "contain"}}
+                source={require('../../../assets/logo.png')}
+              />
+              <View style={{flex: 1}}/>
+            </View>
+          }
           <Text style={styles.title}>ShelterCluster.org</Text>
           {errorMessage}
           {online && !loggingIn && <Form
@@ -163,7 +197,7 @@ class Login extends React.Component<Props, State> {
             {showLanguageSwitcher && this.state.languageSwitcherOpen ? languageSwitcher : forgotButton}
             {showLanguageSwitcher ? languageSwitcherToggle : null}
           </View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     );
   }
@@ -173,11 +207,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: vars.BG_GREY,
     flex: 1,
+    justifyContent: "flex-end",
   },
   innerContainer: {
     padding: 20,
     paddingBottom: 30,
-    justifyContent: "space-between",
   },
   bottomContainer: {
     flexDirection: "row",
