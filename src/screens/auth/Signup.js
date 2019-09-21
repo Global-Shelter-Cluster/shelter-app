@@ -100,7 +100,6 @@ export default class Signup extends React.Component<Props, State> {
                   placeholder: i18n.t("Name"),
                   onSubmitEditing: () => this.refs.form.getComponent('organization').refs.input.focus(),
                   returnKeyType: "next",
-                  autoCapitalize: "none",
                 },
                 organization: {
                   textContentType: "organizationName",
@@ -114,6 +113,7 @@ export default class Signup extends React.Component<Props, State> {
                   keyboardType: "email-address",
                   onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
                   returnKeyType: "next",
+                  autoCapitalize: "none",
                 },
                 password: {
                   textContentType: "password",

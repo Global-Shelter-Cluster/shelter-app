@@ -164,11 +164,14 @@ class ImageFactory extends Component<Props, State> {
             {this.state.image
               ? <TouchableOpacity
                 style={styles.button}
-                onPress={() => this.setState({
-                  image: undefined,
-                  height: new Animated.Value(0),
-                  overflow: 'visible'
-                })}>
+                onPress={() => {
+                  this.setState({
+                    image: undefined,
+                    height: new Animated.Value(0),
+                    overflow: 'visible'
+                  });
+                  super.getLocals().onChange(undefined);
+                }}>
                 <FontAwesome name="times" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
               </TouchableOpacity>
               : null

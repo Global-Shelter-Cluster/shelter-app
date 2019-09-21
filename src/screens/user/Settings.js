@@ -41,10 +41,12 @@ type Props = {
   lastError: lastErrorType,
 
   global: GlobalObject,
+  savedUser: PrivateUserObject, // used to compare to "user"
   user: PrivateUserObject,
   refreshUser: () => void,
   refreshGlobal: () => void,
   updateUser: values => void,
+  updateLocalUser: values => void,
 
   localVars: localVarsType,
   // submitLocalVars: () => void,
@@ -62,7 +64,6 @@ type State = {
   languageOptions: [],
   _languageForm: () => void,
   isVisible: boolean,
-  isEdited: boolean,
 };
 
 class Settings extends React.Component<Props, State> {
@@ -97,8 +98,8 @@ class Settings extends React.Component<Props, State> {
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State) {
-    return !propEqual(this.state, nextState, ['isEdited'], [])
-      || !propEqual(this.props, nextProps, ['online', 'loading', 'hasCameraPermissions', 'tab', 'currentLanguage'], ['user', 'localVars', 'lastError']);
+    return !propEqual(this.state, nextState, [], [])
+      || !propEqual(this.props, nextProps, ['online', 'loading', 'hasCameraPermissions', 'tab', 'currentLanguage'], ['user', 'savedUser', 'localVars', 'lastError']);
   }
 
   async _changeLanguage(language: string) {
@@ -168,15 +169,20 @@ class Settings extends React.Component<Props, State> {
     this.props.updateUser({notifications});
   }
 
+  onSaveUser(values: {}) {
+    if (this.refs.user_form.validate().isValid())
+      this.props.updateUser(values);
+  }
+
   render() {
-    const {online, loading, tab, hasCameraPermissions, changeTab, lastError, global, user, refreshUser, refreshGlobal, localVars, onChangeLocalVars} = this.props;
+    const {online, loading, tab, hasCameraPermissions, changeTab, lastError, global, user, savedUser, refreshUser, refreshGlobal, localVars, onChangeLocalVars, updateLocalUser, updateUser} = this.props;
     let content = null;
 
     switch (tab) {
       case "user": {
         if (equal(lastError, {type: 'object-load', data: {type: 'user', id: user.id}})) {
           content = <MultiLineButton
-            onPress={refresh}
+            onPress={refreshUser}
             title={i18n("Error loading, please check your connection and try again")}
           />;
           break;
@@ -184,10 +190,10 @@ class Settings extends React.Component<Props, State> {
 
         const formType = t.struct({
           name: t.String,
-          photo: t.maybe(t.String),
-          organization: t.String,
+          picture: t.maybe(t.String),
+          org: t.String,
           role: t.String,
-          email: t.refinement(t.String, email => {
+          mail: t.refinement(t.String, email => {
             // valid email address
             const reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
             return reg.test(email);
@@ -199,21 +205,23 @@ class Settings extends React.Component<Props, State> {
 
         const values = {
           name: user.name,
-          email: user.mail,
-          organization: user.org,
+          picture: user.picture,
+          org: user.org,
           role: user.role,
+          mail: user.mail,
+          password: user.password,
         };
 
         const fieldsOptions = {
           name: {label: i18n.t("Name")},
-          photo: {
+          picture: {
             label: i18n.t("Photo"),
             factory: ImageFactory,
             // hidden: !hasCameraPermissions,
           },
-          organization: {label: i18n.t("Organization")},
+          org: {label: i18n.t("Organization")},
           role: {label: i18n.t("Role")},
-          email: {label: i18n.t("E-mail address")},
+          mail: {label: i18n.t("E-mail address")},
           password: {
             label: i18n.t("Password"),
             help: i18n.t("Leave blank to keep unchanged."),
@@ -222,12 +230,23 @@ class Settings extends React.Component<Props, State> {
 
         const fieldsOrder = [
           'name',
-          'photo',
-          'organization',
+          'picture',
+          'org',
           'role',
-          'email',
+          'mail',
           'password',
         ];
+
+        let isEdited = !propEqual(user, savedUser, [
+          'name',
+          'picture',
+          'org',
+          'role',
+          'mail',
+        ], []);
+
+        if (isEdited)
+          console.log({user, savedUser});
 
         content = <View style={{flex: 1}}>
           <ScrollView
@@ -247,17 +266,15 @@ class Settings extends React.Component<Props, State> {
                   required: '',
                 }
               }}
-              onChange={() => this.setState({isEdited: true})}
+              onChange={updateLocalUser}
               value={values}
             />
           </ScrollView>
-          {this.state.isEdited
+          {isEdited
             ? <Button
               style={{marginBottom: 10}}
               primary title={i18n.t("Save changes")}
-              onPress={() => {
-                console.log('Not implemented yet');
-              }}
+              onPress={() => this.onSaveUser(values)}
             />
             : null
           }

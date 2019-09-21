@@ -565,14 +565,14 @@ class Persist {
     // edit your submission (once we support those things).
 
     console.debug("submitAssessmentForm", type, id, values);
-    const processedValues = await this.processAssessmentFormFiles(values);
+    const processedValues = await this.processSubmissionFiles(values);
     console.debug("submitAssessmentForm: processed values", processedValues);
     await this.remote.submitAssessmentForm(type, id, processedValues);
 
-    this.deleteAssessmentFormFiles(values);
+    this.deleteAnySubmittedFiles(values);
   }
 
-  async processAssessmentFormFiles(values: {}) {
+  async processSubmissionFiles(values: {}) {
     const newValues: {} = clone(values);
 
     for (const key in newValues) {
@@ -594,7 +594,7 @@ class Persist {
     return newValues;
   }
 
-  async deleteAssessmentFormFiles(values: {}) {
+  async deleteAnySubmittedFiles(values: {}) {
     for (const key in values) {
       if (typeof values[key] !== "string" || !values[key].startsWith("file://"))
         continue;
@@ -679,10 +679,11 @@ class Persist {
   }
 
   // Updates to Drupal user account.
-  async updateUser(updates: Object) {
-    const res = await this.remote.updateUser(updates);
+  async updateUser(values: Object) {
+    const processedValues = await this.processSubmissionFiles(values);
+    const {objects, update_messages} = await this.remote.updateUser(processedValues);
+    this.deleteAnySubmittedFiles(values);
 
-    const {objects, update_messages} = res;
     // Save everything we received (user object, groups, etc.)
     this.updateLastRead(objects);
     this.saveObjects(objects);

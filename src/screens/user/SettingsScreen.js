@@ -75,10 +75,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  refreshUser: () => {
+const mapDispatchToProps = (dispatch, props) => ({
+  refreshUserInternal: async () => {
     dispatch(clearLastError());
-    dispatch(loadCurrentUser(false, true));
+    await dispatch(loadCurrentUser(false, true));
   },
   refreshGlobal: () => {
     dispatch(clearLastError());
@@ -105,10 +105,11 @@ class SettingsScreen extends React.Component<Props, State> {
     super(props);
     this.state = initialState;
     this.state.localVars = props.localVars;
+    this.state.user = props.user;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !propEqual(this.state, nextState, ['tab', 'hasCameraPermissions'], ['localVars'])
+    return !propEqual(this.state, nextState, ['tab', 'hasCameraPermissions'], ['user', 'localVars'])
       || !propEqual(this.props, nextProps, ['online', 'loading', 'submitting'], ['user', 'localVars', 'lastError']);
   }
 
@@ -140,10 +141,19 @@ class SettingsScreen extends React.Component<Props, State> {
 
         this.setState(partialState);
       }}
-      user={this.props.user}
+      user={this.state.user}
+      savedUser={this.props.user}
       localVars={this.state.localVars}
       onChangeLocalVars={this.props.submitLocalVars}
       navigation={this.props.navigation}
+      updateLocalUser={values => {
+        const user = Object.assign(clone(this.state.user), values);
+        this.setState({user});
+      }}
+      refreshUser={async () => {
+        await this.props.refreshUserInternal();
+        this.setState({user: this.props.user}); // Put the loaded user object into state (i.e. the forms)
+      }}
     />;
   }
 }
