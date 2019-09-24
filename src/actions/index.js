@@ -418,6 +418,8 @@ export const updateRemoteAppConfig = appRemoteConfig => ({
 });
 
 export const updateUser = values => async (dispatch, getState) => {
+  dispatch(clearLastError());
+
   // Get a copy of the current user object, in case we need to restore it (which happens below if the remote call fails).
   const currentUserObject: PrivateUserObject = clone(getCurrentUser(getState()));
   const userId = currentUserObject.id;
@@ -425,6 +427,7 @@ export const updateUser = values => async (dispatch, getState) => {
   // Now get another copy, modify it, and store it immediately so the interface updates quickly.
   const updatedUserObject: PrivateUserObject = clone(currentUserObject);
   Object.assign(updatedUserObject, values);
+  delete updatedUserObject.pass; // in case the user is changing their password, we don't want to store it in the object.
   // updatedUserObject._last_read++;
   dispatch(setObjects({user: {
     ['' + userId]: updatedUserObject,

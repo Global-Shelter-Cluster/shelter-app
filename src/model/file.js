@@ -27,3 +27,5 @@ export const convertFiles = createSelector(
     return ret;
   }
 );
+
+export const isLocalFile = url => typeof url == "string" && url.startsWith("file://");

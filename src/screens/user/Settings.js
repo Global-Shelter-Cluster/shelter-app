@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
+import {KeyboardAvoidingView, RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import ModalSelector from 'react-native-modal-selector'
 import type {tabsDefinition} from "../../components/Tabs";
@@ -22,9 +22,11 @@ import i18n from "../../i18n";
 import MultiSelect from "../../components/Multiselect";
 import persist from "../../persist";
 import type {GlobalObject} from "../../model/global";
-import Notice from "../../components/Notice";
 import Error from "../../components/Error";
 import ImageFactory from "../../components/tcomb/ImageFactory";
+import {isLocalFile} from "../../model/file";
+import clone from "clone";
+import vars from "../../vars";
 
 const Form = t.form.Form;
 
@@ -166,12 +168,23 @@ class Settings extends React.Component<Props, State> {
 
     // Ugly code ends here.
 
-    this.props.updateUser({notifications});
+    this.props.updateLocalUser({notifications});
   }
 
   onSaveUser(values: {}) {
-    if (this.refs.user_form.validate().isValid())
-      this.props.updateUser(values);
+    if (this.refs.user_form.validate().isValid()) {
+      const newValues = clone(values);
+
+      if (newValues.picture && !isLocalFile(newValues.picture))
+        // We're not changing the picture, so let's remove it from our update
+        delete newValues.picture;
+
+      this.props.updateUser(newValues);
+    }
+  }
+
+  onSaveNotifications(values: {}) {
+    this.props.updateUser({notifications: this.props.user.notifications});
   }
 
   render() {
@@ -188,17 +201,21 @@ class Settings extends React.Component<Props, State> {
           break;
         }
 
+        let errorMessage = null;
+        if (lastError.type === 'update-user')
+          errorMessage = lastError.data.message;
+
         const formType = t.struct({
           name: t.String,
           picture: t.maybe(t.String),
-          org: t.String,
-          role: t.String,
+          org: t.maybe(t.String),
+          role: t.maybe(t.String),
           mail: t.refinement(t.String, email => {
             // valid email address
-            const reg = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            const reg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
             return reg.test(email);
           }),
-          password: t.maybe(
+          pass: t.maybe(
             t.refinement(t.String, value => value.length >= 8), // 8 chars minimum length
           ),
         });
@@ -209,7 +226,7 @@ class Settings extends React.Component<Props, State> {
           org: user.org,
           role: user.role,
           mail: user.mail,
-          password: user.password,
+          pass: user.pass,
         };
 
         const fieldsOptions = {
@@ -217,14 +234,23 @@ class Settings extends React.Component<Props, State> {
           picture: {
             label: i18n.t("Photo"),
             factory: ImageFactory,
-            // hidden: !hasCameraPermissions,
+            hidden: !hasCameraPermissions,
           },
           org: {label: i18n.t("Organization")},
           role: {label: i18n.t("Role")},
-          mail: {label: i18n.t("E-mail address")},
-          password: {
+          mail: {
+            label: i18n.t("E-mail address"),
+            textContentType: "emailAddress",
+            keyboardType: "email-address",
+            autoCapitalize: "none",
+
+          },
+          pass: {
             label: i18n.t("Password"),
             help: i18n.t("Leave blank to keep unchanged."),
+            textContentType: "newPassword",
+            password: true,
+            secureTextEntry: true,
           },
         };
 
@@ -234,23 +260,34 @@ class Settings extends React.Component<Props, State> {
           'org',
           'role',
           'mail',
-          'password',
+          'pass',
         ];
 
-        let isEdited = !propEqual(user, savedUser, [
+        const isEdited = !propEqual(user, savedUser, [
           'name',
           'picture',
           'org',
           'role',
           'mail',
+          'pass',
         ], []);
 
-        if (isEdited)
-          console.log({user, savedUser});
-
         content = <View style={{flex: 1}}>
+          {errorMessage
+            ? <Text style={styles.error}>{errorMessage}</Text>
+            : null
+          }
+          {isEdited
+            ? <Button
+              style={{marginBottom: 10}}
+              primary title={i18n.t("Save changes")}
+              onPress={() => this.onSaveUser(values)}
+            />
+            : null
+          }
           <ScrollView
             style={{flex: 1}}
+            contentContainerStyle={{paddingBottom: 60}}
             refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
           >
             <Form
@@ -270,15 +307,11 @@ class Settings extends React.Component<Props, State> {
               value={values}
             />
           </ScrollView>
-          {isEdited
-            ? <Button
-              style={{marginBottom: 10}}
-              primary title={i18n.t("Save changes")}
-              onPress={() => this.onSaveUser(values)}
-            />
-            : null
-          }
         </View>;
+
+        if (!online)
+          content = <Error description={i18n.t("Offline")}/>;
+
         break;
       }
       case "preferences": {
@@ -336,6 +369,7 @@ class Settings extends React.Component<Props, State> {
 
         content = <ScrollView
           style={{flex: 1}}
+          contentContainerStyle={{paddingBottom: 60}}
           refreshControl={<RefreshControl refreshing={loading} onRefresh={() => {
             refreshGlobal();
             refreshUser();
@@ -373,6 +407,18 @@ class Settings extends React.Component<Props, State> {
         break;
       }
       case "notifications": {
+        if (equal(lastError, {type: 'object-load', data: {type: 'user', id: user.id}})) {
+          content = <MultiLineButton
+            onPress={refreshUser}
+            title={i18n("Error loading, please check your connection and try again")}
+          />;
+          break;
+        }
+
+        let errorMessage = null;
+        if (lastError.type === 'update-user')
+          errorMessage = lastError.data.message;
+
         const formType = t.struct({
           app: t.Boolean,
           app_daily: t.Boolean,
@@ -422,22 +468,39 @@ class Settings extends React.Component<Props, State> {
           },
         };
 
-        content = <ScrollView
-          style={{flex: 1}}
-          refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
-        >
-          <Form
-            ref="notifications_form"
-            type={formType}
-            options={{
-              label: null,
-              stylesheet: formStylesheet,
-              fields: fieldsOptions,
-            }}
-            onChange={this.onChangeNotifications.bind(this)}
-            value={values}
-          />
-        </ScrollView>;
+        const isEdited = !propEqual(user, savedUser, [], ['notifications']);
+
+        content = <View style={{flex: 1}}>
+          {errorMessage
+            ? <Text style={styles.error}>{errorMessage}</Text>
+            : null
+          }
+          {isEdited
+            ? <Button
+              style={{marginBottom: 10}}
+              primary title={i18n.t("Save changes")}
+              onPress={this.onSaveNotifications.bind(this)}
+            />
+            : null
+          }
+          <ScrollView
+            style={{flex: 1}}
+            contentContainerStyle={{paddingBottom: 60}}
+            refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
+          >
+            <Form
+              ref="notifications_form"
+              type={formType}
+              options={{
+                label: null,
+                stylesheet: formStylesheet,
+                fields: fieldsOptions,
+              }}
+              onChange={this.onChangeNotifications.bind(this)}
+              value={values}
+            />
+          </ScrollView>
+        </View>;
 
         if (!online)
           content = <Error description={i18n.t("Offline")}/>;
@@ -461,7 +524,7 @@ class Settings extends React.Component<Props, State> {
       },
     };
 
-    return <View style={{flex: 1, paddingHorizontal: 10}}>
+    return <KeyboardAvoidingView style={{flex: 1, paddingHorizontal: 10}} behavior="height">
       <Tabs
         labelOnlyOnActive
         current={tab}
@@ -469,7 +532,7 @@ class Settings extends React.Component<Props, State> {
         tabs={tabs}
       />
       {content}
-    </View>;
+    </KeyboardAvoidingView>;
   }
 }
 
@@ -486,6 +549,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     padding: 10,
+  },
+  error: {
+    color: vars.ACCENT_RED,
   },
 });
 

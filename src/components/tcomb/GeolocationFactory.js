@@ -101,6 +101,10 @@ class GeolocationFactory extends Component<Props, State> {
 
   getTemplate() {
     return (locals: Object) => {
+      if (locals.hidden === true) {
+        return null;
+      }
+
       const stylesheet = locals.stylesheet;
 
       const hasData = this.state.lat !== undefined && this.state.lon !== undefined;

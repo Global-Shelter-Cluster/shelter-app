@@ -41,6 +41,7 @@ import {getCurrentUser} from "../model/user";
 import {getPushToken} from "../push.js";
 import type {newAccountValues} from "../screens/auth/Signup";
 import type {localVarsType} from "../reducers/localVars";
+import {isLocalFile} from "../model/file";
 
 const DIR_PERSISTED = 'persisted';
 
@@ -576,7 +577,7 @@ class Persist {
     const newValues: {} = clone(values);
 
     for (const key in newValues) {
-      if (typeof newValues[key] !== "string" || !newValues[key].startsWith("file://"))
+      if (!isLocalFile(newValues[key]))
         continue;
 
       const info = await FileSystem.getInfoAsync(newValues[key]);

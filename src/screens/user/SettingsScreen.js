@@ -93,7 +93,7 @@ const mapDispatchToProps = (dispatch, props) => ({
   setLanguage: lang => dispatch(updadeCurrentLanguage(lang)),
   getTranslations: (lang, forceRefresh = false) => dispatch(getTranslations(lang, forceRefresh)),
   refreshEnabledLanguages: () => dispatch(refreshEnabledLanguages()),
-  updateUser: async values => dispatch(updateUser(values)),
+  updateUserInternal: async values => dispatch(updateUser(values)),
 });
 
 class SettingsScreen extends React.Component<Props, State> {
@@ -152,6 +152,10 @@ class SettingsScreen extends React.Component<Props, State> {
       }}
       refreshUser={async () => {
         await this.props.refreshUserInternal();
+        this.setState({user: this.props.user}); // Put the loaded user object into state (i.e. the forms)
+      }}
+      updateUser={async values => {
+        await this.props.updateUserInternal(values);
         this.setState({user: this.props.user}); // Put the loaded user object into state (i.e. the forms)
       }}
     />;

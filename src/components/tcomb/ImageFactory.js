@@ -107,6 +107,10 @@ class ImageFactory extends Component<Props, State> {
 
   getTemplate() {
     return (locals: Object) => {
+      if (locals.hidden === true) {
+        return null;
+      }
+
       const stylesheet = locals.stylesheet;
       let topContainer = stylesheet.imagePicker
         ? stylesheet.imagePicker.topContainer
