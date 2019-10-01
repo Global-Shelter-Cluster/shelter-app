@@ -49,6 +49,7 @@ type Props = {
   refreshGlobal: () => void,
   updateUser: values => void,
   updateLocalUser: values => void,
+  discardUserChanges: () => void,
 
   localVars: localVarsType,
   // submitLocalVars: () => void,
@@ -188,7 +189,7 @@ class Settings extends React.Component<Props, State> {
   }
 
   render() {
-    const {online, loading, tab, hasCameraPermissions, changeTab, lastError, global, user, savedUser, refreshUser, refreshGlobal, localVars, onChangeLocalVars, updateLocalUser, updateUser} = this.props;
+    const {online, loading, tab, hasCameraPermissions, changeTab, lastError, global, user, savedUser, refreshUser, refreshGlobal, localVars, onChangeLocalVars, updateLocalUser, updateUser, discardUserChanges} = this.props;
     let content = null;
 
     switch (tab) {
@@ -234,6 +235,7 @@ class Settings extends React.Component<Props, State> {
           picture: {
             label: i18n.t("Photo"),
             factory: ImageFactory,
+            config: {widgetType: "profile-picture"},
             hidden: !hasCameraPermissions,
           },
           org: {label: i18n.t("Organization")},
@@ -278,11 +280,20 @@ class Settings extends React.Component<Props, State> {
             : null
           }
           {isEdited
-            ? <Button
-              style={{marginBottom: 10}}
-              primary title={i18n.t("Save changes")}
-              onPress={() => this.onSaveUser(values)}
-            />
+            ? <View style={{marginBottom: 10, flexDirection: "row"}}>
+              <View style={{flex: 1, marginRight: 5}}>
+                <Button
+                  primary title={i18n.t("Save changes")}
+                  onPress={() => this.onSaveUser(values)}
+                />
+              </View>
+              <View style={{flex: 1, marginLeft: 5}}>
+                <Button
+                  title={i18n.t("Discard")}
+                  onPress={discardUserChanges}
+                />
+              </View>
+            </View>
             : null
           }
           <ScrollView
@@ -476,11 +487,20 @@ class Settings extends React.Component<Props, State> {
             : null
           }
           {isEdited
-            ? <Button
-              style={{marginBottom: 10}}
-              primary title={i18n.t("Save changes")}
-              onPress={this.onSaveNotifications.bind(this)}
-            />
+            ? <View style={{marginBottom: 10, flexDirection: "row"}}>
+              <View style={{flex: 1, marginRight: 5}}>
+                <Button
+                  primary title={i18n.t("Save changes")}
+                  onPress={this.onSaveNotifications.bind(this)}
+                />
+              </View>
+              <View style={{flex: 1, marginLeft: 5}}>
+                <Button
+                  title={i18n.t("Discard")}
+                  onPress={discardUserChanges}
+                />
+              </View>
+            </View>
             : null
           }
           <ScrollView

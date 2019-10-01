@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import {Animated, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import t from 'tcomb-form-native';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,39 +22,15 @@ type Props = {
 };
 
 type State = {
-  image?: string,
+  value?: string,
 };
 
 const Component = t.form.Component;
 
 class ImageFactory extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      image: props.value ? props.value : undefined,
-      height: new Animated.Value(props.value ? 150 : 0),
-      overflow: props.value ? 'hidden' : 'visible',
-    };
-  }
-
   shouldComponentUpdate(nextProps: Props, nextState: State) {
     return true;
   }
-
-  _startAnimation = () => {
-    Animated.sequence([
-      Animated.timing(this.state.height, {
-        toValue: 0,
-        duration: 250
-      }),
-      Animated.timing(this.state.height, {
-        toValue: 150,
-        duration: 500,
-        delay: 75
-      })
-    ]).start();
-  };
 
   _resizeImage = (path: string) => {
     return new Promise(function (resolve, reject) {
@@ -100,8 +76,7 @@ class ImageFactory extends Component<Props, State> {
     // We don't need the original file anymore
     await FileSystem.deleteAsync(path, {idempotent: true});
 
-    const next = this.state.image ? null : () => this._startAnimation();
-    this.setState({image: newPath, overflow: 'hidden'}, next);
+    this.setState({value: newPath});
     super.getLocals().onChange(newPath);
   };
 
@@ -119,92 +94,186 @@ class ImageFactory extends Component<Props, State> {
         ? stylesheet.imagePicker.container
         : styles.container;
 
-      return (
-        <View>
-          {locals.label
-            ? <Text
-              style={[
-                locals.hasError ? stylesheet.controlLabel.error : stylesheet.controlLabel.normal,
-                locals.error ? {color: '#a94442'} : {}
-              ]}>
-              {locals.label}
-            </Text>
-            : null
-          }
-          <View
-            style={[
-              topContainer,
-              locals.hasError ? {borderColor: '#a94442'} : {}
-            ]}>
-            {this.state.image
-              ? <Animated.Image
-                resizeMode="cover"
-                source={{
-                  uri: this.state.image
-                }}
-                style={[styles.image, {height: this.state.height}]}
-              />
-              : null
-            }
-            <View
-              style={[
-                {overflow: this.state.overflow},
-                container,
-                locals.hasError ? {backgroundColor: '#E28E8E'} : {}
-              ]}>
-              <FontAwesome name={"picture-o"} size={90} color={vars.VERY_LIGHT_GREY} style={styles.icon}/>
+      const widgetType = locals.config !== undefined && locals.config.widgetType !== undefined
+        ? locals.config.widgetType
+        : 'normal';
+
+      switch (widgetType) {
+        case 'profile-picture':
+          return (
+            <View style={{marginBottom: 20}}>
+              {locals.label
+                ? <Text
+                  style={[
+                    locals.hasError ? stylesheet.controlLabel.error : stylesheet.controlLabel.normal,
+                    locals.error ? {color: '#a94442'} : {}
+                  ]}>
+                  {locals.label}
+                </Text>
+                : null
+              }
+              <View style={{flexDirection: "row", alignItems: "center"}}>
+                <View style={{flex: 1, alignItems: "center"}}>
+                  <View
+                    style={[
+                      styles.topPictureContainer,
+                      locals.hasError ? {borderColor: '#a94442'} : {},
+                    ]}>
+                    {this.state.value
+                      ? <Image
+                        resizeMode="cover"
+                        source={{
+                          uri: this.state.value
+                        }}
+                        style={{height: 150}}
+                      />
+                      : null
+                    }
+                    <View
+                      style={[
+                        container,
+                        locals.hasError ? {backgroundColor: '#E28E8E'} : {}
+                      ]}>
+                      <FontAwesome name={"user"} size={70} color={vars.VERY_LIGHT_GREY} style={styles.icon}/>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.buttonPictureContainer}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() =>
+                      ImagePicker.launchCameraAsync({mediaTypes: "Images"}).then((image: Object) =>
+                      {
+                        if (image.cancelled)
+                          return;
+                        this._getImageFromStorage(image.uri)
+                      })}>
+                    <FontAwesome name="camera" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={() =>
+                      ImagePicker.launchImageLibraryAsync({mediaTypes: "Images"}).then((image: Object) =>
+                      {
+                        if (image.cancelled)
+                          return;
+                        this._getImageFromStorage(image.uri)
+                      })}>
+                    <FontAwesome name="file-image-o" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
+                  </TouchableOpacity>
+
+                  {this.state.value
+                    ? <TouchableOpacity
+                      style={styles.button}
+                      onPress={() =>
+                      {
+                        this.setState({image: null});
+                        super.getLocals().onChange(null);
+                      }}>
+                      <FontAwesome name="times" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
+                    </TouchableOpacity>
+                    : null
+                  }
+                </View>
+              </View>
+              {locals.help || locals.config.help ? (
+                <Text style={[
+                  locals.hasError ? stylesheet.helpBlock.error : stylesheet.helpBlock.normal,
+                  {paddingVertical: 10, flex: 1},
+                ]}>
+                  {locals.help || locals.config.help}
+                </Text>
+              ) : null}
             </View>
-          </View>
-          <View style={styles.buttonContainer}>
-            {locals.help || locals.config.help ? (
-              <Text style={[
-                locals.hasError ? stylesheet.helpBlock.error : stylesheet.helpBlock.normal,
-                {paddingVertical: 10, flex: 1},
-              ]}>
-                {locals.help || locals.config.help}
-              </Text>
-            ) : null}
+          );
 
-            {this.state.image
-              ? <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  this.setState({
-                    image: undefined,
-                    height: new Animated.Value(0),
-                    overflow: 'visible'
-                  });
-                  super.getLocals().onChange(undefined);
-                }}>
-                <FontAwesome name="times" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
-              </TouchableOpacity>
-              : null
-            }
+        default:
+          return (
+            <View>
+              {locals.label
+                ? <Text
+                  style={[
+                    locals.hasError ? stylesheet.controlLabel.error : stylesheet.controlLabel.normal,
+                    locals.error ? {color: '#a94442'} : {}
+                  ]}>
+                  {locals.label}
+                </Text>
+                : null
+              }
+              <View
+                style={[
+                  topContainer,
+                  locals.hasError ? {borderColor: '#a94442'} : {}
+                ]}>
+                {this.state.value
+                  ? <Image
+                    resizeMode="cover"
+                    source={{
+                      uri: this.state.value
+                    }}
+                    style={{height: 150}}
+                  />
+                  : null
+                }
+                <View
+                  style={[
+                    container,
+                    locals.hasError ? {backgroundColor: '#E28E8E'} : {}
+                  ]}>
+                  <FontAwesome name={"picture-o"} size={90} color={vars.VERY_LIGHT_GREY} style={styles.icon}/>
+                </View>
+              </View>
+              <View style={styles.buttonContainer}>
+                {locals.help || locals.config.help ? (
+                  <Text style={[
+                    locals.hasError ? stylesheet.helpBlock.error : stylesheet.helpBlock.normal,
+                    {paddingVertical: 10, flex: 1},
+                  ]}>
+                    {locals.help || locals.config.help}
+                  </Text>
+                ) : null}
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() =>
-                ImagePicker.launchCameraAsync({mediaTypes: "Images"}).then((image: Object) => {
-                  if (image.cancelled)
-                    return;
-                  this._getImageFromStorage(image.uri)
-                })}>
-              <FontAwesome name="camera" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
-            </TouchableOpacity>
+                {this.state.value
+                  ? <TouchableOpacity
+                    style={styles.button}
+                    onPress={() =>
+                    {
+                      this.setState({image: null});
+                      super.getLocals().onChange(null);
+                    }}>
+                    <FontAwesome name="times" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
+                  </TouchableOpacity>
+                  : null
+                }
 
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() =>
-                ImagePicker.launchImageLibraryAsync({mediaTypes: "Images"}).then((image: Object) => {
-                  if (image.cancelled)
-                    return;
-                  this._getImageFromStorage(image.uri)
-                })}>
-              <FontAwesome name="file-image-o" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() =>
+                    ImagePicker.launchCameraAsync({mediaTypes: "Images"}).then((image: Object) =>
+                    {
+                      if (image.cancelled)
+                        return;
+                      this._getImageFromStorage(image.uri)
+                    })}>
+                  <FontAwesome name="camera" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() =>
+                    ImagePicker.launchImageLibraryAsync({mediaTypes: "Images"}).then((image: Object) =>
+                    {
+                      if (image.cancelled)
+                        return;
+                      this._getImageFromStorage(image.uri)
+                    })}>
+                  <FontAwesome name="file-image-o" size={24} color={vars.SHELTER_GREY} style={styles.icon}/>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+      }
     };
   }
 }
@@ -215,19 +284,30 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     height: 150,
     borderColor: vars.SHELTER_GREY,
-    borderWidth: 1
+    borderWidth: 1,
+  },
+  topPictureContainer: {
+    overflow: 'hidden',
+    borderRadius: 75,
+    width: 150,
+    height: 150,
+    borderColor: vars.SHELTER_GREY,
+    borderWidth: 1,
   },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     height: 100,
-    borderRadius: 2
+    borderRadius: 2,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
     marginBottom: 10,
+  },
+  buttonPictureContainer: {
+    flexDirection: "column",
   },
   button: {
     paddingVertical: 10,
@@ -235,11 +315,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     textAlign: 'center',
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
-  image: {
-    height: 150
-  }
 });
 
 export default ImageFactory;

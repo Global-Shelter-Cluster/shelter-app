@@ -158,6 +158,7 @@ class SettingsScreen extends React.Component<Props, State> {
         await this.props.updateUserInternal(values);
         this.setState({user: this.props.user}); // Put the loaded user object into state (i.e. the forms)
       }}
+      discardUserChanges={() => this.setState({user: this.props.user})}
     />;
   }
 }
