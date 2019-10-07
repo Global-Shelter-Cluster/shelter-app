@@ -151,7 +151,7 @@ class GeolocationFactory extends Component<Props, State> {
       </MapView>;
 
       return (
-        <View>
+        <View style={locals.hasError ? stylesheet.formGroup.error : stylesheet.formGroup.normal}>
           {locals.label
             ? <Text
               style={[
@@ -246,7 +246,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: 10,
   },
   button: {
     paddingVertical: 10,

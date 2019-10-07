@@ -49,9 +49,7 @@ function renderButtonGroup(buttons, stylesheet) {
 
 function renderRow(item, stylesheet) {
   item.input.props.ctx.label = null; // Hide label for each item
-  item.input.props.ctx.stylesheet.formGroup.error.marginTop = 10;
-  // item.input.props.ctx.stylesheet.formGroup.normal.marginBottom = 10;
-  console.log('CAM renderRow',{item});
+
   return (
     <View key={item.key} style={{ flexDirection: "row", alignItems: "center" }}>
       <View style={{ flex: 1 }}>{item.input}</View>

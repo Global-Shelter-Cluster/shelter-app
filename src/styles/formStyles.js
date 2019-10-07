@@ -32,6 +32,10 @@ export const formStylesheet = {
       ...formStyles.fieldContainer,
     },
   },
+  fieldset: {
+    ...Form.stylesheet.fieldset,
+    ...formStyles.fieldContainer,
+  },
   controlLabel: {
     normal: {
       ...Form.stylesheet.controlLabel.normal,

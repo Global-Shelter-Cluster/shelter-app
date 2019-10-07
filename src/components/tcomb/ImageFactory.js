@@ -101,7 +101,7 @@ class ImageFactory extends Component<Props, State> {
       switch (widgetType) {
         case 'profile-picture':
           return (
-            <View style={{marginBottom: 20}}>
+            <View style={locals.hasError ? stylesheet.formGroup.error : stylesheet.formGroup.normal}>
               {locals.label
                 ? <Text
                   style={[
@@ -190,7 +190,7 @@ class ImageFactory extends Component<Props, State> {
 
         default:
           return (
-            <View>
+            <View style={locals.hasError ? stylesheet.formGroup.error : stylesheet.formGroup.normal}>
               {locals.label
                 ? <Text
                   style={[
@@ -304,7 +304,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginBottom: 10,
   },
   buttonPictureContainer: {
     flexDirection: "column",
