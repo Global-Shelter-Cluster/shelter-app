@@ -5,7 +5,7 @@ import {NavigationActions, StackActions} from 'react-navigation';
 import ModalSelector from 'react-native-modal-selector'
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
-import {formStylesheet} from "../../styles/formStyles";
+import {formStylesheet, listItemStylesheet} from "../../styles/formStyles";
 import t from "tcomb-form-native";
 import type {localVarsType} from "../../reducers/localVars";
 import Button from "../../components/Button";
@@ -24,6 +24,7 @@ import persist from "../../persist";
 import type {GlobalObject} from "../../model/global";
 import Error from "../../components/Error";
 import ImageFactory from "../../components/tcomb/ImageFactory";
+import ListTemplate from "../../components/tcomb/ListTemplate";
 import {isLocalFile} from "../../model/file";
 import clone from "clone";
 import vars from "../../vars";
@@ -208,9 +209,11 @@ class Settings extends React.Component<Props, State> {
 
         const formType = t.struct({
           name: t.String,
+          full_name: t.maybe(t.String),
           picture: t.maybe(t.String),
           org: t.maybe(t.String),
           role: t.maybe(t.String),
+          phone: t.list(t.String),
           mail: t.refinement(t.String, email => {
             // valid email address
             const reg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
@@ -223,15 +226,18 @@ class Settings extends React.Component<Props, State> {
 
         const values = {
           name: user.name,
+          full_name: user.full_name,
           picture: user.picture,
           org: user.org,
           role: user.role,
+          phone: user.phone,
           mail: user.mail,
           pass: user.pass,
         };
 
         const fieldsOptions = {
-          name: {label: i18n.t("Name")},
+          name: {label: i18n.t("Username")},
+          full_name: {label: i18n.t("Full name")},
           picture: {
             label: i18n.t("Photo"),
             factory: ImageFactory,
@@ -240,6 +246,11 @@ class Settings extends React.Component<Props, State> {
           },
           org: {label: i18n.t("Organization")},
           role: {label: i18n.t("Role")},
+          phone: {
+            label: i18n.t("Phone number(s)"),
+            template: ListTemplate,
+            stylesheet: listItemStylesheet,
+          },
           mail: {
             label: i18n.t("E-mail address"),
             textContentType: "emailAddress",
@@ -258,21 +269,26 @@ class Settings extends React.Component<Props, State> {
 
         const fieldsOrder = [
           'name',
+          'full_name',
           'picture',
           'org',
           'role',
+          'phone',
           'mail',
           'pass',
         ];
 
         const isEdited = !propEqual(user, savedUser, [
           'name',
+          'full_name',
           'picture',
           'org',
           'role',
           'mail',
           'pass',
-        ], []);
+        ], [
+          'phone',
+        ]);
 
         content = <View style={{flex: 1}}>
           {errorMessage

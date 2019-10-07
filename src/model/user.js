@@ -11,10 +11,12 @@ export type PrivateUserObject = {
   _persist?: true,
   id: number,
   name: string,
+  full_name?: string,
   mail: string,
   picture: string,
   org: string,
   role: string,
+  phone?: Array<string>,
   groups?: Array<number>,
   timezone: string,
   notifications: {
@@ -31,10 +33,12 @@ export type PublicUserObject = {
   _persist?: true,
   id: number,
   name: string,
+  full_name?: string,
   mail: string,
   picture: string,
   org: string,
   role: string,
+  phone?: Array<string>,
 }
 
 export type StubUserObject = {

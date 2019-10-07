@@ -81,3 +81,19 @@ export const textareaStylesheet = {
     },
   },
 };
+
+export const listItemStylesheet = {
+  ...formStylesheet,
+  formGroup: {
+    normal: {
+      ...Form.stylesheet.formGroup.normal,
+      marginTop: 5,
+      marginBottom: 5,
+    },
+    error: {
+      ...Form.stylesheet.formGroup.error,
+      marginTop: 5,
+      marginBottom: 5,
+    },
+  },
+};
