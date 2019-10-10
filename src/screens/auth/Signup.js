@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react';
-import {KeyboardAvoidingView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -70,67 +71,67 @@ export default class Signup extends React.Component<Props, State> {
       : null;
 
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="height">
-        <ScrollView style={styles.innerContainer} contentContainerStyle={{flex: 1}}>
-          <View style={{flex: 1}}/>
-          {!loggingIn
-            ? <Text style={styles.banner}>{i18n.t("Create a Shelter Cluster account")}</Text>
-            : null
-          }
-          {errorMessage}
-          {online && !loggingIn && <Form
-            ref="form"
-            type={t.struct({
-              name: t.String,
-              organization: t.String,
-              email: t.refinement(t.String, email => {
-                // valid email address
-                const reg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-                return reg.test(email);
-              }),
-              password: t.refinement(t.String, value => value.length >= 8), // 8 chars minimum length
-            })}
-            options={{
-              label: null,
-              auto: "placeholders",
-              stylesheet: formStyles,
-              fields: {
-                name: {
-                  textContentType: "name",
-                  placeholder: i18n.t("Name"),
-                  onSubmitEditing: () => this.refs.form.getComponent('organization').refs.input.focus(),
-                  returnKeyType: "next",
-                },
-                organization: {
-                  textContentType: "organizationName",
-                  placeholder: i18n.t("Organization"),
-                  onSubmitEditing: () => this.refs.form.getComponent('email').refs.input.focus(),
-                  returnKeyType: "next",
-                },
-                email: {
-                  placeholder: i18n.t("E-mail address"),
-                  textContentType: "emailAddress",
-                  keyboardType: "email-address",
-                  onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
-                  returnKeyType: "next",
-                  autoCapitalize: "none",
-                },
-                password: {
-                  textContentType: "password",
-                  placeholder: i18n.t("Password"),
-                  password: true,
-                  secureTextEntry: true,
-                  onSubmitEditing: () => this.signup(),
-                  returnKeyType: "go",
-                },
+      <KeyboardAwareScrollView
+        style={styles.container}
+        contentContainerStyle={styles.innerContainer}
+      >
+        {!loggingIn
+          ? <Text style={styles.banner}>{i18n.t("Create a Shelter Cluster account")}</Text>
+          : null
+        }
+        {errorMessage}
+        {online && !loggingIn && <Form
+          ref="form"
+          type={t.struct({
+            name: t.String,
+            organization: t.String,
+            email: t.refinement(t.String, email => {
+              // valid email address
+              const reg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+              return reg.test(email);
+            }),
+            password: t.refinement(t.String, value => value.length >= 8), // 8 chars minimum length
+          })}
+          options={{
+            label: null,
+            auto: "placeholders",
+            stylesheet: formStyles,
+            fields: {
+              name: {
+                textContentType: "name",
+                placeholder: i18n.t("Username"),
+                onSubmitEditing: () => this.refs.form.getComponent('organization').refs.input.focus(),
+                returnKeyType: "next",
               },
-            }}
-            onChange={formValues => this.setState({formValues})} value={this.state.formValues}
-          />}
-          {signupButton}
-          {backToLoginButton}
-        </ScrollView>
-      </KeyboardAvoidingView>
+              organization: {
+                textContentType: "organizationName",
+                placeholder: i18n.t("Organization"),
+                onSubmitEditing: () => this.refs.form.getComponent('email').refs.input.focus(),
+                returnKeyType: "next",
+              },
+              email: {
+                placeholder: i18n.t("E-mail address"),
+                textContentType: "emailAddress",
+                keyboardType: "email-address",
+                onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
+                returnKeyType: "next",
+                autoCapitalize: "none",
+              },
+              password: {
+                textContentType: "password",
+                placeholder: i18n.t("Password"),
+                password: true,
+                secureTextEntry: true,
+                onSubmitEditing: () => this.signup(),
+                returnKeyType: "go",
+              },
+            },
+          }}
+          onChange={formValues => this.setState({formValues})} value={this.state.formValues}
+        />}
+        {signupButton}
+        {backToLoginButton}
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -138,12 +139,12 @@ export default class Signup extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: vars.BG_GREY,
-    flex: 1,
-    justifyContent: "flex-end",
   },
   innerContainer: {
+    flex: 1,
     padding: 20,
     paddingBottom: 30,
+    justifyContent: "flex-end",
   },
   text: {
     fontSize: 18,
