@@ -14,7 +14,6 @@ function renderRowWithoutButtons(item) {
 
 function renderRowButton(button, stylesheet, style) {
   let icon = null;
-  console.log('CAM btnType',button.type);
   switch (button.type) {
     case 'add':
       icon = 'plus';

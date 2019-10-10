@@ -250,13 +250,16 @@ class Settings extends React.Component<Props, State> {
             label: i18n.t("Phone number(s)"),
             template: ListTemplate,
             stylesheet: listItemStylesheet,
+            item: {
+              keyboardType: "phone-pad",
+              textContentType: "telephoneNumber",
+            },
           },
           mail: {
             label: i18n.t("E-mail address"),
             textContentType: "emailAddress",
             keyboardType: "email-address",
             autoCapitalize: "none",
-
           },
           pass: {
             label: i18n.t("Password"),
