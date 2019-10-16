@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react';
-import {ImageBackground, KeyboardAvoidingView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -85,37 +86,38 @@ export default class Forgot extends React.Component<Props, State> {
       : null;
 
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="height">
-        <View style={styles.innerContainer}>
-          {!loggingIn && !submitted
-            ? <TranslatedText style={styles.banner}>Request a new password for your Shelter Cluster account</TranslatedText>
-            : null
-          }
-          {errorMessage}
-          {online && !loggingIn && !submitted && <Form
-            ref="form"
-            type={t.struct({
-              value: t.String,
-            })}
-            options={{
-              label: null,
-              auto: "placeholders",
-              stylesheet: formStyles,
-              fields: {
-                value: {
-                  placeholder: i18n.t("Username or e-mail address"),
-                  onSubmitEditing: () => this.submit(),
-                  returnKeyType: "go",
-                  autoCapitalize: "none",
-                },
+      <KeyboardAwareScrollView
+        style={styles.container}
+        contentContainerStyle={styles.innerContainer}
+      >
+        {!loggingIn && !submitted
+          ? <TranslatedText style={styles.banner}>Request a new password for your Shelter Cluster account</TranslatedText>
+          : null
+        }
+        {errorMessage}
+        {online && !loggingIn && !submitted && <Form
+          ref="form"
+          type={t.struct({
+            value: t.String,
+          })}
+          options={{
+            label: null,
+            auto: "placeholders",
+            stylesheet: formStyles,
+            fields: {
+              value: {
+                placeholder: i18n.t("Username or e-mail address"),
+                onSubmitEditing: () => this.submit(),
+                returnKeyType: "go",
+                autoCapitalize: "none",
               },
-            }}
-            onChange={formValues => this.setState({formValues})} value={this.state.formValues}
-          />}
-          {requestButton}
-          {backToLoginButton}
-        </View>
-      </KeyboardAvoidingView>
+            },
+          }}
+          onChange={formValues => this.setState({formValues})} value={this.state.formValues}
+        />}
+        {requestButton}
+        {backToLoginButton}
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -123,13 +125,12 @@ export default class Forgot extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: vars.BG_GREY,
-    flex: 1,
-    justifyContent: "flex-end",
   },
   innerContainer: {
+    flex: 1,
     padding: 20,
     paddingBottom: 30,
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
   },
   text: {
     fontSize: 18,

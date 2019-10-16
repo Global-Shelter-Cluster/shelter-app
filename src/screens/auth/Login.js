@@ -1,16 +1,8 @@
 // @flow
 
 import React from 'react';
-import {
-  ImageBackground,
-  Keyboard,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import {ImageBackground, Keyboard, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Button from "../../components/Button";
 import vars from "../../vars";
 import t from 'tcomb-form-native';
@@ -145,60 +137,61 @@ class Login extends React.Component<Props, State> {
     </View>;
 
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="height">
-        <ScrollView style={styles.innerContainer} contentContainerStyle={{flex: 1}}>
-          {this.state.isKeyboardVisible
-            ? <View style={{flex: 1}}/>
-            : <View style={{flex: 1}}>
-              <View style={{flex: 1}}/>
-              <ImageBackground
-                style={{flexGrow: 2}}
-                imageStyle={{width: "100%", maxHeight: 150, resizeMode: "contain"}}
-                source={require('../../../assets/logo.png')}
-              />
-              <View style={{flex: 1}}/>
-            </View>
-          }
-          <Text style={styles.title}>ShelterCluster.org</Text>
-          {errorMessage}
-          {online && !loggingIn && <Form
-            ref="form"
-            type={t.struct({
-              username: t.String,
-              password: t.String,
-            })}
-            options={{
-              label: null,
-              auto: "placeholders",
-              stylesheet: formStyles,
-              fields: {
-                username: {
-                  textContentType: "username",
-                  placeholder: i18n.t("Username or e-mail address"),
-                  onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
-                  returnKeyType: "next",
-                  autoCapitalize: "none",
-                },
-                password: {
-                  textContentType: "password",
-                  placeholder: i18n.t("Password"),
-                  password: true,
-                  secureTextEntry: true,
-                  onSubmitEditing: () => this.login(),
-                  returnKeyType: "go",
-                },
-              },
-            }}
-            onChange={formValues => this.setState({formValues})} value={this.state.formValues}
-          />}
-          {loginButton}
-          {signupButton}
-          <View style={styles.bottomContainer}>
-            {showLanguageSwitcher && this.state.languageSwitcherOpen ? languageSwitcher : forgotButton}
-            {showLanguageSwitcher ? languageSwitcherToggle : null}
+      <KeyboardAwareScrollView
+        style={styles.container}
+        contentContainerStyle={styles.innerContainer}
+      >
+        {this.state.isKeyboardVisible
+          ? <View style={{flex: 1}}/>
+          : <View style={{flex: 1}}>
+            <View style={{flex: 1}}/>
+            <ImageBackground
+              style={{flexGrow: 2}}
+              imageStyle={{width: "100%", maxHeight: 150, resizeMode: "contain"}}
+              source={require('../../../assets/logo.png')}
+            />
+            <View style={{flex: 1}}/>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        }
+        <Text style={styles.title}>ShelterCluster.org</Text>
+        {errorMessage}
+        {online && !loggingIn && <Form
+          ref="form"
+          type={t.struct({
+            username: t.String,
+            password: t.String,
+          })}
+          options={{
+            label: null,
+            auto: "placeholders",
+            stylesheet: formStyles,
+            fields: {
+              username: {
+                textContentType: "username",
+                placeholder: i18n.t("Username or e-mail address"),
+                onSubmitEditing: () => this.refs.form.getComponent('password').refs.input.focus(),
+                returnKeyType: "next",
+                autoCapitalize: "none",
+              },
+              password: {
+                textContentType: "password",
+                placeholder: i18n.t("Password"),
+                password: true,
+                secureTextEntry: true,
+                onSubmitEditing: () => this.login(),
+                returnKeyType: "go",
+              },
+            },
+          }}
+          onChange={formValues => this.setState({formValues})} value={this.state.formValues}
+        />}
+        {loginButton}
+        {signupButton}
+        <View style={styles.bottomContainer}>
+          {showLanguageSwitcher && this.state.languageSwitcherOpen ? languageSwitcher : forgotButton}
+          {showLanguageSwitcher ? languageSwitcherToggle : null}
+        </View>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -206,12 +199,12 @@ class Login extends React.Component<Props, State> {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: vars.BG_GREY,
-    flex: 1,
-    justifyContent: "flex-end",
   },
   innerContainer: {
+    flex: 1,
     padding: 20,
     paddingBottom: 30,
+    justifyContent: "flex-end",
   },
   bottomContainer: {
     flexDirection: "row",

@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react';
-import {KeyboardAvoidingView, Platform, RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {RefreshControl, StyleSheet, Text, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import type {WebformObject} from "../../model/webform";
 import {getWebformPageTabs, getWebformTCombData} from "../../model/webform";
 import equal from 'deep-equal';
@@ -141,13 +142,8 @@ export default class Webform extends React.Component<Props> {
       </View>
       : null;
 
-    return <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-    >
-      <ScrollView
-        style={{flex: 1}}
+    return <View style={{flex: 1}}>
+      <KeyboardAwareScrollView
         refreshControl={<RefreshControl refreshing={loading} onRefresh={refresh}/>}
       >
         <Text style={styles.title}>{webform.title}</Text>
@@ -181,9 +177,9 @@ export default class Webform extends React.Component<Props> {
           }
           {submitButton}
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
       {queuedNotice}
-    </KeyboardAvoidingView>;
+    </View>;
   }
 }
 

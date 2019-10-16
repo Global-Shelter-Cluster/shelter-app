@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
-import {KeyboardAvoidingView, RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {RefreshControl, StyleSheet, Text, View} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {NavigationActions, StackActions} from 'react-navigation';
 import ModalSelector from 'react-native-modal-selector'
 import type {tabsDefinition} from "../../components/Tabs";
@@ -315,9 +316,8 @@ class Settings extends React.Component<Props, State> {
             </View>
             : null
           }
-          <ScrollView
+          <KeyboardAwareScrollView
             style={{flex: 1}}
-            contentContainerStyle={{paddingBottom: 60}}
             refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
           >
             <Form
@@ -336,7 +336,7 @@ class Settings extends React.Component<Props, State> {
               onChange={updateLocalUser}
               value={values}
             />
-          </ScrollView>
+          </KeyboardAwareScrollView>
         </View>;
 
         if (!online)
@@ -397,9 +397,8 @@ class Settings extends React.Component<Props, State> {
           </View>
           : null;
 
-        content = <ScrollView
+        content = <KeyboardAwareScrollView
           style={{flex: 1}}
-          contentContainerStyle={{paddingBottom: 60}}
           refreshControl={<RefreshControl refreshing={loading} onRefresh={() => {
             refreshGlobal();
             refreshUser();
@@ -433,7 +432,7 @@ class Settings extends React.Component<Props, State> {
             : null // Hide the language selector if there's just English available
           }
           {timeZoneSelector}
-        </ScrollView>;
+        </KeyboardAwareScrollView>;
         break;
       }
       case "notifications": {
@@ -522,9 +521,9 @@ class Settings extends React.Component<Props, State> {
             </View>
             : null
           }
-          <ScrollView
+          <KeyboardAwareScrollView
             style={{flex: 1}}
-            contentContainerStyle={{paddingBottom: 60}}
+            // contentContainerStyle={{paddingBottom: 60}}
             refreshControl={<RefreshControl refreshing={loading} onRefresh={refreshUser}/>}
           >
             <Form
@@ -538,7 +537,7 @@ class Settings extends React.Component<Props, State> {
               onChange={this.onChangeNotifications.bind(this)}
               value={values}
             />
-          </ScrollView>
+          </KeyboardAwareScrollView>
         </View>;
 
         if (!online)
@@ -563,7 +562,7 @@ class Settings extends React.Component<Props, State> {
       },
     };
 
-    return <KeyboardAvoidingView style={{flex: 1, paddingHorizontal: 10}} behavior="height">
+    return <View style={{flex: 1, paddingHorizontal: 10}}>
       <Tabs
         labelOnlyOnActive
         current={tab}
@@ -571,7 +570,7 @@ class Settings extends React.Component<Props, State> {
         tabs={tabs}
       />
       {content}
-    </KeyboardAvoidingView>;
+    </View>;
   }
 }
 
