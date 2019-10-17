@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react';
-import {Modal, StyleSheet, TouchableOpacity, View, Image, Dimensions} from 'react-native';
+import {Dimensions, Image, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
+import ScalableImage from 'react-native-scalable-image';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import Slideshow from './Slideshow';
@@ -15,6 +16,7 @@ type image = {
 
 type Props = {
   images: Array<image>,
+  bigThumbnails?: true,
 };
 
 type State = {
@@ -39,10 +41,17 @@ export default class ImagesWithSlideshow extends React.Component<Props, State> {
         key={imageIndex}
         onPress={() => this.setState({isModalOpen: true, modalPosition: imageIndex})}
       >
-        <Image
-          style={styles.thumbnail}
-          source={{uri: image.thumbnail}}
-        />
+        {this.props.bigThumbnails
+          ? <ScalableImage
+            style={styles.bigThumbnail}
+            width={Dimensions.get('window').width - 38}
+            source={{uri: image.thumbnail}}
+          />
+          : <Image
+            style={styles.thumbnail}
+            source={{uri: image.thumbnail}}
+          />
+        }
       </TouchableOpacity>);
     });
 
@@ -98,6 +107,9 @@ const styles = StyleSheet.create({
     width: 115,
     height: 115,
     margin: 1,
+  },
+  bigThumbnail: {
+    marginVertical: 10,
   },
   closeButton: {
     position: "absolute",

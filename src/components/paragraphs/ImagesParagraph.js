@@ -1,12 +1,10 @@
 // @flow
 
 import React from 'react';
-import {Modal, View} from 'react-native';
+import {View} from 'react-native';
 import type {ImagesParagraph as ImagesParagraphType} from "../../model/paragraphs";
 import ParagraphTitle from "./ParagraphTitle";
-import Slideshow from "../Slideshow";
 import ImagesWithSlideshow from "../ImagesWithSlideshow";
-import moment from "moment";
 
 const ImagesParagraph = ({paragraph}: {paragraph: ImagesParagraphType}) => {
   const images = paragraph.images.map(image => ({
@@ -17,7 +15,7 @@ const ImagesParagraph = ({paragraph}: {paragraph: ImagesParagraphType}) => {
 
   return <View>
     <ParagraphTitle paragraph={paragraph}/>
-    <ImagesWithSlideshow images={images}/>
+    <ImagesWithSlideshow images={images} bigThumbnails/>
   </View>;
 };
 
