@@ -3,7 +3,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {FontAwesome} from '@expo/vector-icons';
-import {WebView} from 'react-native';
+import {WebView} from 'react-native-webview';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 
 type Props = {}

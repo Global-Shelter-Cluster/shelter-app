@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {WebView} from 'react-native';
+import {WebView} from 'react-native-webview';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import Loading from "../../components/Loading";
 import type {navigation} from "../../nav";

@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react';
-import {Linking, Modal, Platform, Share, StyleSheet, TouchableOpacity, View, WebView} from 'react-native';
+import {Modal, Platform, Share, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {WebView} from 'react-native-webview';
 import type {PublicDocumentObject} from "../model/document";
 import Button from "./Button";
 import {getExtension} from "../util";
