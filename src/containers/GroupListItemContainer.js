@@ -9,6 +9,7 @@ import {getRecentDocumentsCount} from "../model/group";
 import {convertFiles} from "../model/file";
 import {getUnseenAlertIdsForGroup} from "../model/alert";
 import {getCurrentUser} from "../model/user";
+import {getUnseenNewsIdsForGroup} from "../model/news";
 
 const mapStateToProps = (state, props) => {
   const group: PublicGroupObject = convertFiles(state, 'group', getObject(state, 'group', props.id));
@@ -29,6 +30,7 @@ const mapStateToProps = (state, props) => {
     ret.factsheet = group.latest_factsheet ? convertFiles(state, 'factsheet', getObject(state, 'factsheet', group.latest_factsheet)) : null;
     ret.recentDocs = getRecentDocumentsCount(state, props.id);
     ret.unseenAlerts = getUnseenAlertIdsForGroup(state, props.id).length;
+    ret.unseenNews = getUnseenNewsIdsForGroup(state, props.id).length;
   }
 
   return ret;
