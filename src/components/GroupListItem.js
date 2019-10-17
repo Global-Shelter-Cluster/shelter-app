@@ -13,7 +13,7 @@ import {hairlineWidth} from "../util";
 import i18n from "../i18n";
 import TranslatedText from "./TranslatedText";
 
-export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, enter, ellipsizeMode, indent}: {
+export default ({group, link, isFollowed, display, factsheet, recentDocs, unseenAlerts, unseenNews, enter, ellipsizeMode, indent}: {
   group: GroupObject,
   link: boolean,
   isFollowed: boolean,
@@ -21,6 +21,7 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
   factsheet?: FactsheetObject,
   recentDocs?: number,
   unseenAlerts?: number,
+  unseenNews?: number,
   enter: () => {},
   ellipsizeMode?: string,
   indent?: true, // only used when display === "text-only"
@@ -60,6 +61,9 @@ export default ({group, link, isFollowed, display, factsheet, recentDocs, unseen
 
       if (unseenAlerts && unseenAlerts > 0)
         badges.push(<Badge key="unseenAlerts" icon="bell-o" value={unseenAlerts} color="white"/>);
+
+      if (unseenNews && unseenNews > 0)
+        badges.push(<Badge key="unseenNews" icon="newspaper-o" value={unseenNews} color="white"/>);
 
       let assessment_forms = 0;
       if (group.kobo_forms !== undefined && group.kobo_forms.length > 0)
