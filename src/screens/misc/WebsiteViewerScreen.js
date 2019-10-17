@@ -1,8 +1,7 @@
 // @flow
 
 import React from 'react';
-import {FontAwesome} from '@expo/vector-icons';
-import {Text, WebView} from 'react-native';
+import {WebView} from 'react-native';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import Loading from "../../components/Loading";
 import type {navigation} from "../../nav";

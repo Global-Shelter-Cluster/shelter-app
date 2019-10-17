@@ -3,12 +3,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import AlertListItem from '../components/AlertListItem';
-import {getObject} from "../model";
+import {getObject, isObjectSeen} from "../model";
 import {withNavigation} from 'react-navigation';
 import {convertFiles} from "../model/file";
 import type {AlertObject} from "../model/alert";
 import {markSeen} from "../actions";
-import {isObjectSeen} from "../model/alert";
 
 const mapStateToProps = (state, props) => {
   const alert: AlertObject = convertFiles(state, 'alert', getObject(state, 'alert', props.id));

@@ -202,7 +202,6 @@ export const getWebformPageValues = (webform: WebformObject, allValues: Array<{}
 export const setWebformPageValues = (allValues: Array<{}>, page: number, values: {}) => {
   const ret = clone(allValues);
   ret[page] = values;
-  // console.log('CAM setWebformPageValues ', ret);
 
   return ret;
 };

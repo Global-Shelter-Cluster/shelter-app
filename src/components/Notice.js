@@ -2,7 +2,6 @@
 
 import React from "react";
 import {Image, StyleSheet, Text, View} from "react-native";
-import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import Button from "./Button";
 

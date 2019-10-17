@@ -6,18 +6,45 @@ import {getRecentDocumentsCount, isDashboardBlockVisibleByDefault} from "../mode
 import GroupDashboard from "../components/GroupDashboard";
 import type {DashboardBlockType} from "../components/DashboardBlock";
 import {getUnseenAlertIdsForGroup} from "../model/alert";
+import {getUnseenNewsIdsForGroup} from "../model/news";
 import i18n from "../i18n";
 
 const mapStateToProps = (state, {group, navigation}) => {
   const blocks: Array<DashboardBlockType> = [];
 
   const unseenAlerts = getUnseenAlertIdsForGroup(state, group.id);
-  if (unseenAlerts.length > 0)
+  const unseenNews = getUnseenNewsIdsForGroup(state, group.id);
+  if (unseenAlerts.length > 0 && unseenNews.length > 0)
+    blocks.push({
+      title: i18n.t('Alerts & News'),
+      badge: unseenAlerts.length + unseenNews.length,
+      isBadgeHighlighted: true,
+      icon: 'bell-o',
+      icon2: 'newspaper-o',
+      action: () => navigation.push('AlertList', {groupId: group.id}),
+    });
+  else if (unseenAlerts.length > 0)
     blocks.push({
       title: i18n.t('Alerts'),
       badge: unseenAlerts.length,
       isBadgeHighlighted: true,
       icon: 'bell-o',
+      action: () => navigation.push('AlertList', {groupId: group.id}),
+    });
+  else if (unseenNews.length > 0)
+    blocks.push({
+      title: i18n.t('News'),
+      badge: unseenNews.length,
+      isBadgeHighlighted: true,
+      icon: 'newspaper-o',
+      action: () => navigation.push('AlertList', {groupId: group.id}),
+    });
+  else if (group.alerts !== undefined && group.alerts.length > 0 && group.news !== undefined && group.news.length > 0)
+    blocks.push({
+      title: i18n.t('Alerts & News'),
+      badge: group.alerts.length + group.news.length,
+      icon: 'bell-o',
+      icon2: 'newspaper-o',
       action: () => navigation.push('AlertList', {groupId: group.id}),
     });
   else if (group.alerts !== undefined && group.alerts.length > 0)
@@ -27,10 +54,18 @@ const mapStateToProps = (state, {group, navigation}) => {
       icon: 'bell-o',
       action: () => navigation.push('AlertList', {groupId: group.id}),
     });
+  else if (group.news !== undefined && group.news.length > 0)
+    blocks.push({
+      title: i18n.t('News'),
+      badge: group.news.length,
+      icon: 'newspaper-o',
+      action: () => navigation.push('AlertList', {groupId: group.id}),
+    });
   else if (isDashboardBlockVisibleByDefault(group, 'alerts'))
     blocks.push({
-      title: i18n.t('Alerts'),
+      title: i18n.t('Alerts & News'),
       icon: 'bell-o',
+      icon2: 'newspaper-o',
     });
 
   if (group.followers !== undefined && group.followers.length > 0)

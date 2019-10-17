@@ -37,6 +37,7 @@ import AlertListScreen from "./screens/group/AlertListScreen";
 import ContactScreen from "./screens/view/ContactScreen";
 import UserListScreen from "./screens/group/UserListScreen";
 import UserScreen from "./screens/view/UserScreen";
+import NewsScreen from "./screens/view/NewsScreen";
 import i18n from "./i18n";
 
 const AuthScreens = createSwitchNavigator({
@@ -72,6 +73,7 @@ const OperationsStack = createStackNavigator2({
   ArbitraryLibrary: ArbitraryLibraryScreen,
   Library: LibraryScreen,
   AlertList: AlertListScreen,
+  News: NewsScreen,
   Contact: ContactScreen,
   UserList: UserListScreen,
   User: UserScreen,

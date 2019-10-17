@@ -1,41 +1,86 @@
 // @flow
 
 import React from 'react';
-import {FlatList, RefreshControl, SectionList, StyleSheet, Text, View} from 'react-native';
+import {SectionList, StyleSheet, Text, View} from 'react-native';
 import AlertListItemContainer from "../../containers/AlertListItemContainer";
+import NewsListItemContainer from "../../containers/NewsListItemContainer";
 import type {tabsDefinition} from "../../components/Tabs";
 import Tabs from "../../components/Tabs";
 import vars from "../../vars";
+import Notice from "../../components/Notice";
+import i18n from "../../i18n";
 
-export type tabs = "new";
+export type tabs = "alerts" | "news";
 
-export default ({online, loading, tab, seen, unseen, refresh, changeTab}: {
+export default ({online, loading, tab, seenAlerts, unseenAlerts, seenNews, unseenNews, refresh, changeTab}: {
   online: boolean,
   loading: boolean,
   tab: tabs,
-  seen: Array<number>,
-  unseen: Array<number>,
+  seenAlerts: Array<number>,
+  unseenAlerts: Array<number>,
+  seenNews: Array<number>,
+  unseenNews: Array<number>,
   refresh: () => void,
   changeTab: (tab: tabs) => void,
 }) => {
-  const sections: Array<{ title: string | null, data: Array<number> }> = [];
+  let content = null;
 
-  if (unseen.length > 0)
-    sections.push({title: null, data: unseen});
-  if (seen.length > 0)
-    sections.push({title: sections.length === 0 ? null : 'Seen', data: seen});
+  switch (tab) {
+    case "alerts": {
+      const sections: Array<{ title: string | null, data: Array<number> }> = [];
 
-  const sectionList = <SectionList
-    sections={sections}
-    renderSectionHeader={({section}) => section.title === null
-      ? null
-      : <Text style={styles.sectionHeader}>{section.title}</Text>}
-    renderItem={({item}) => <AlertListItemContainer id={item}/>}
-    keyExtractor={item => '' + item}
-  />;
+      if (unseenAlerts.length > 0)
+        sections.push({title: null, data: unseenAlerts});
+      if (seenAlerts.length > 0)
+        sections.push({title: sections.length === 0 ? null : 'Seen', data: seenAlerts});
+
+      content = <SectionList
+        sections={sections}
+        renderSectionHeader={({section}) => section.title === null
+          ? null
+          : <Text style={styles.sectionHeader}>{section.title}</Text>}
+        renderItem={({item}) => <AlertListItemContainer id={item}/>}
+        keyExtractor={item => '' + item}
+      />;
+
+      if (!sections.length) {
+        content = <Notice
+          description={i18n.t("There are no recent alerts for this group.")}
+        />;
+      }
+
+      break;
+    }
+    case "news": {
+      const sections: Array<{ title: string | null, data: Array<number> }> = [];
+
+      if (unseenNews.length > 0)
+        sections.push({title: null, data: unseenNews});
+      if (seenNews.length > 0)
+        sections.push({title: sections.length === 0 ? null : 'Seen', data: seenNews});
+
+      content = <SectionList
+        sections={sections}
+        renderSectionHeader={({section}) => section.title === null
+          ? null
+          : <Text style={styles.sectionHeader}>{section.title}</Text>}
+        renderItem={({item}) => <NewsListItemContainer id={item}/>}
+        keyExtractor={item => '' + item}
+      />;
+
+      if (!sections.length) {
+        content = <Notice
+          description={i18n.t("There are no recent news for this group.")}
+        />;
+      }
+
+      break;
+    }
+  }
 
   const tabs: tabsDefinition = {
-    "new": {label: "Alerts"},
+    "alerts": {label: "Alerts"},
+    "news": {label: "News"},
   };
 
   return <View style={{flex: 1}}>
@@ -44,7 +89,7 @@ export default ({online, loading, tab, seen, unseen, refresh, changeTab}: {
       changeTab={changeTab}
       tabs={tabs}
     />
-    {sectionList}
+    {content}
   </View>;
 }
 

@@ -30,7 +30,6 @@ export const notificationEnter = createSelector(
           case 'pages':
             if (shouldRefresh)
               persist.store.dispatch(loadObject('group', notification.id, false, true));
-            console.log('CAM group nav3 group:pages', {groupId: notification.id, which: link[1]});
             return navService.push('Group', {groupId: notification.id, which: link[1]});
         }
 

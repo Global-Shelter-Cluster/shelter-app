@@ -20,10 +20,13 @@ import type {WebformObject} from "./webform";
 import Webform from "./webform";
 import type {AlertObject} from "./alert";
 import Alert from "./alert";
+import type {NewsObject} from "./news";
+import News from "./news";
 import type {ContactObject} from "./contact";
 import Contact from "./contact";
 import type {PageObject} from "./page";
 import Page from "./page";
+import {createSelector} from "reselect";
 
 export type ObjectType =
   "global"
@@ -35,6 +38,7 @@ export type ObjectType =
   | "kobo_form"
   | "webform"
   | "alert"
+  | "news"
   | "contact"
   | "page";
 
@@ -48,6 +52,7 @@ export type Objects = {
   kobo_form?: { [id: string]: KoboFormObject },
   webform?: { [id: string]: WebformObject },
   alert?: { [id: string]: AlertObject },
+  news?: { [id: string]: NewsObject },
   contact?: { [id: string]: ContactObject },
   page?: { [id: string]: PageObject },
 }
@@ -62,6 +67,7 @@ export type ObjectIds = {
   kobo_form?: Array<number>,
   webform?: Array<number>,
   alert?: Array<number>,
+  news?: Array<number>,
   contact?: Array<number>,
   page?: Array<number>,
 }
@@ -78,6 +84,7 @@ export const expirationLimitsByObjectType = {
   "kobo_form": hour * 6,
   "webform": hour * 6,
   "alert": hour * 24,
+  "news": hour * 24,
   "contact": hour * 24,
   "page": hour * 24,
 };
@@ -92,6 +99,7 @@ export type Object =
   | KoboFormObject
   | WebformObject
   | AlertObject
+  | NewsObject
   | ContactObject
   | PageObject;
 
@@ -112,6 +120,7 @@ export const initialObjectsState: Objects = {
   kobo_form: {},
   webform: {},
   alert: {},
+  news: {},
   contact: {},
   page: {},
 };
@@ -126,6 +135,7 @@ export const initialObjectIdsState: ObjectIds = {
   kobo_form: [],
   webform: [],
   alert: [],
+  news: [],
   contact: [],
   page: [],
 };
@@ -140,6 +150,7 @@ const mapTypesToClasses = {
   'kobo_form': KoboForm,
   'webform': Webform,
   'alert': Alert,
+  'news': News,
   'contact': Contact,
   'page': Page,
 };
@@ -191,3 +202,9 @@ export const getObject = createCachedSelector(
   (state, type, id) => id,
   (objects, id) => objects[id] === undefined ? {id, _mode: ''} : objects[id],
 )((state, type, id) => [type, id].join(':')); // group:123
+
+export const isObjectSeen = createSelector(
+  (state, objectType) => state.seen[objectType],
+  (state, objectType, id) => id,
+  (seenIds, id) => seenIds.indexOf(id) !== -1
+);

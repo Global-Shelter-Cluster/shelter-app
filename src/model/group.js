@@ -49,6 +49,7 @@ export type PrivateGroupObject = {
   kobo_forms?: Array<number>,
   webforms?: Array<number>,
   alerts?: Array<number>,
+  news?: Array<number>,
   followers: Array<number>,
   useful_links?: Array<{ url: string, title?: string }>,
   pages?: Array<number>, // top-level page ids
@@ -88,6 +89,7 @@ export type PublicGroupObject = {
   kobo_forms?: Array<number>,
   webforms?: Array<number>,
   alerts?: Array<number>,
+  news?: Array<number>,
   followers: Array<number>,
   useful_links?: Array<{ url: string, title?: string }>,
   pages?: Array<number>, // top-level page ids
@@ -168,6 +170,9 @@ export default class Group {
 
     if (group.alerts !== undefined)
       ret.push(...group.alerts.map(id => ({type: "alert", id: id})));
+
+    if (group.news !== undefined)
+      ret.push(...group.news.map(id => ({type: "news", id: id})));
 
     if (group.contacts !== undefined)
       ret.push(...group.contacts.map(id => ({type: "contact", id: id})));

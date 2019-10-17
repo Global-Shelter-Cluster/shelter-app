@@ -53,12 +53,6 @@ export default class Alert {
   }
 }
 
-export const isObjectSeen = createSelector(
-  (state, objectType) => state.seen[objectType],
-  (state, objectType, id) => id,
-  (seenIds, id) => seenIds.indexOf(id) !== -1
-);
-
 export const getUnseenAlertIdsForGroup = createSelector(
   state => state,
   state => state.seen.alert,

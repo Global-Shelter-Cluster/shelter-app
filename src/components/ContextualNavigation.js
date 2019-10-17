@@ -1,20 +1,21 @@
 // @flow
 
 import React from 'react';
-import {SectionList, StyleSheet, Text, View} from 'react-native';
+import {SectionList, StyleSheet, View} from 'react-native';
 import type {PublicDocumentObject} from "../model/document";
 import GroupListItemContainer from "../containers/GroupListItemContainer";
 import MultipleGroupListItemContainer from "../containers/MultipleGroupListItemContainer";
 import NavCollapsible from "./NavCollapsible";
 import vars from "../vars";
+import {hairlineWidth} from "../util";
 import type {PublicEventObject} from "../model/event";
 import type {PublicFactsheetObject} from "../model/factsheet";
-import {hairlineWidth} from "../util";
 import type {ContactObject} from "../model/contact";
 import type {PageObject} from "../model/page";
+import type {NewsObject} from "../model/news";
 import TranslatedText from "./TranslatedText";
 
-export default ContextualNavigation = ({object}: { object: PublicDocumentObject | PublicEventObject | PublicFactsheetObject | ContactObject | PageObject }) => {
+export default ContextualNavigation = ({object}: { object: PublicDocumentObject | PublicEventObject | PublicFactsheetObject | ContactObject | PageObject | NewsObject }) => {
   if (!object.groups)
     return null;
 
