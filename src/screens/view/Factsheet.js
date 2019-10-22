@@ -19,7 +19,7 @@ import FactsheetNavigationContainer from "../../containers/FactsheetNavigationCo
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import vars from "../../vars";
-import HTML from 'react-native-render-html';
+import HTML from '../../components/HTML';
 import Loading from "../../components/Loading";
 import Collapsible from "../../components/Collapsible";
 import MultiLineButton from "../../components/MultiLineButton";

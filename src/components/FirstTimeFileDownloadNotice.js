@@ -7,7 +7,7 @@ import vars from "../vars";
 import Button from "./Button";
 import prettyBytes from 'pretty-bytes';
 import i18n from "../i18n";
-import HTML from 'react-native-render-html';
+import HTML from './HTML';
 
 type Props = {
   online: boolean,

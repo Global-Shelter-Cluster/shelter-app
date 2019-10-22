@@ -8,7 +8,7 @@ import DocumentActionsContainer from "../../containers/DocumentActionsContainer"
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import vars from "../../vars";
-import HTML from 'react-native-render-html';
+import HTML from '../../components/HTML';
 import moment from "moment/moment";
 import Loading from "../../components/Loading";
 import {hairlineWidth} from "../../util";

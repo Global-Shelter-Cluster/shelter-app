@@ -7,7 +7,7 @@ import ContextualNavigation from "../../components/ContextualNavigation";
 import ContactActionsContainer from "../../containers/ContactActionsContainer";
 import type {lastErrorType} from "../../reducers/lastError";
 import vars from "../../vars";
-import HTML from 'react-native-render-html';
+import HTML from '../../components/HTML';
 import {hairlineWidth} from "../../util";
 import {FontAwesome} from '@expo/vector-icons';
 

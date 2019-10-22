@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import HTML from 'react-native-render-html';
+import HTML from './HTML';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import {hairlineWidth} from "../util";

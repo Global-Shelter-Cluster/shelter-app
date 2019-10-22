@@ -5,7 +5,7 @@ import {View} from 'react-native';
 import type {ObjectRequest} from "../persist";
 import clone from "clone";
 import t from 'tcomb-form-native';
-import HTML from 'react-native-render-html';
+import HTML from '../components/HTML';
 import type {tabsDefinition} from "../components/Tabs";
 import ImageFactory from "../components/tcomb/ImageFactory";
 import MultiselectFactory from "../components/tcomb/MultiselectFactory";

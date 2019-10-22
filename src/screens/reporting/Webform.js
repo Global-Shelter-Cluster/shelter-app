@@ -10,7 +10,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import Button from "../../components/Button";
 import MultiLineButton from "../../components/MultiLineButton";
 import vars from "../../vars";
-import HTML from 'react-native-render-html';
+import HTML from '../../components/HTML';
 import {hairlineWidth, propEqual} from "../../util";
 import t from "tcomb-form-native";
 import Tabs from "../../components/Tabs";

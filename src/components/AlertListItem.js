@@ -6,7 +6,7 @@ import {FontAwesome} from '@expo/vector-icons';
 import type {AlertObject} from "../model/alert";
 import vars from "../vars";
 import {hairlineWidth, timeAgo} from "../util";
-import HTML from 'react-native-render-html';
+import HTML from './HTML';
 import type {GroupObject} from "../model/group";
 
 export default ({alert, group, isSeen, markSeen, enter, linkType, isTeaser}: {

@@ -4,7 +4,7 @@ import React from 'react';
 import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native';
 import DocumentListItemContainer from "../../containers/DocumentListItemContainer";
 import type {PublicArbitraryLibraryPageObject} from "../../model/page";
-import HTML from "react-native-render-html";
+import HTML from '../../components/HTML';
 import type {lastErrorType} from "../../reducers/lastError";
 import equal from "deep-equal";
 import Loading from "../../components/Loading";
