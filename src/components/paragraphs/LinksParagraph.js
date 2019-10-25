@@ -11,8 +11,6 @@ const LinksParagraph = ({paragraph}: {paragraph: LinksParagraphType}) => {
     <SmartLinkContainer key={index} {...link}/>
   ));
 
-  console.log(links);
-
   return <View>
     <ParagraphTitle paragraph={paragraph}/>
     {links}

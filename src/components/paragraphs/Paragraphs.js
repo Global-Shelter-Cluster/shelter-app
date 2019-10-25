@@ -6,6 +6,7 @@ import type {Paragraphs as ParagraphsType} from "../../model/paragraphs";
 import TextParagraph from "./TextParagraph";
 import ImagesParagraph from "./ImagesParagraph";
 import LinksParagraph from "./LinksParagraph";
+import TableParagraph from "./TableParagraph";
 
 const Paragraphs = ({paragraphs}: { paragraphs: ParagraphsType }) => (
   <View>
@@ -17,6 +18,8 @@ const Paragraphs = ({paragraphs}: { paragraphs: ParagraphsType }) => (
           return <ImagesParagraph key={i} paragraph={paragraph}/>;
         case "links":
           return <LinksParagraph key={i} paragraph={paragraph}/>;
+        case "table":
+          return <TableParagraph key={i} paragraph={paragraph}/>;
         default:
           console.warn("Unknown paragraph type", paragraph.type);
       }

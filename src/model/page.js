@@ -193,7 +193,7 @@ export const getPageEnter = createCachedSelector(
         if (!online)
           return null;
 
-        return () => navigation.push('WebsiteViewer', {url: page.url, title: page.title});
+        return () => navigation.push('Page', {pageId: page.id});
 
       case "library":
         if (!online) // We need to be online since libraries work with Algolia

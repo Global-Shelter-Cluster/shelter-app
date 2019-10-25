@@ -27,7 +27,19 @@ export type LinksParagraph = {
   }>,
 }
 
-export type Paragraph = TextParagraph | ImagesParagraph | LinksParagraph;
+export type TableParagraphCell = {
+  title?: string,
+  url?: string,
+}
+
+export type TableParagraph = {
+  type: "table",
+  title?: string,
+  headers?: Array<string>,
+  rows?: Array<Array<TableParagraphCell>>,
+}
+
+export type Paragraph = TextParagraph | ImagesParagraph | LinksParagraph | TableParagraph;
 
 export type Paragraphs = Array<Paragraph>
 
