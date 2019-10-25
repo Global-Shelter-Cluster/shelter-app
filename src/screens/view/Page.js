@@ -3,6 +3,7 @@
 import React from 'react';
 import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 import ContextualNavigation from "../../components/ContextualNavigation";
+import PageActionsContainer from "../../containers/PageActionsContainer";
 import equal from 'deep-equal';
 import type {lastErrorType} from "../../reducers/lastError";
 import vars from "../../vars";
@@ -40,7 +41,7 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
         <Paragraphs paragraphs={page.content}/>
       </View>
     </ScrollView>
-    {/*<NewsActionsContainer news={page}/>*/}
+    <PageActionsContainer page={page}/>
   </View>;
 }
 

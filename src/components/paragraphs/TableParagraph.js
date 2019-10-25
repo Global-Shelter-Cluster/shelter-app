@@ -100,7 +100,7 @@ const TableParagraph = ({paragraph}: {paragraph: TableParagraphType}) => {
       </TableWrapper>);
     });
 
-  return <View>
+  return <View style={styles.container}>
     <ParagraphTitle paragraph={paragraph}/>
     <Table
     >
@@ -112,6 +112,9 @@ const TableParagraph = ({paragraph}: {paragraph: TableParagraphType}) => {
 export default TableParagraph;
 
 const styles = StyleSheet.create({
+  container: {
+    marginVertical: 10,
+  },
   header: {
     backgroundColor: vars.SHELTER_RED,
   },
