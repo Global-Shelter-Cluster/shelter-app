@@ -1,6 +1,7 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import type {HtmlString, UrlString} from "./index";
 
 export type PublicFactsheetObject = {
   _last_read?: number,
@@ -9,24 +10,24 @@ export type PublicFactsheetObject = {
   id: number,
   groups: Array<number>,
   date: string, // TODO: proper date?
-  image: string,
-  full_image?: string,
+  image: UrlString,
+  full_image?: UrlString,
   prev?: number,
   next?: number,
-  highlights: string, // HTML
+  highlights: HtmlString,
   photo_credit?: string,
-  map?: string,
-  full_map?: string,
-  need_analysis?: string, // HTML
-  response?: string, // HTML
-  gaps_challenges?: string, // HTML
+  map?: UrlString,
+  full_map?: UrlString,
+  need_analysis?: HtmlString,
+  response?: HtmlString,
+  gaps_challenges?: HtmlString,
   key_dates?: Array<{
-    date: string,
+    date: string, // not DateString, since the format of this field is free
     description: string,
   }>,
   key_documents?: Array<number>,
   key_links?: Array<{
-    url: string,
+    url: UrlString,
     title: string,
   }>,
 }
@@ -37,7 +38,7 @@ export type StubFactsheetObject = {
   _persist?: true,
   id: number,
   date: string, // TODO: proper date?
-  image: string,
+  image: UrlString,
 }
 
 export type FactsheetObject = PublicFactsheetObject | StubFactsheetObject;

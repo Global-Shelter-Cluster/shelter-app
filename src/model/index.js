@@ -74,6 +74,10 @@ export type ObjectIds = {
 
 const hour = 3600;
 
+export type HtmlString = string;
+export type UrlString = string;
+export type DateString = string;
+
 export const expirationLimitsByObjectType = {
   "global": hour * 24 * 7,
   "user": hour * 24 * 7,

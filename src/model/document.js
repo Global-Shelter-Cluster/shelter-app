@@ -1,25 +1,26 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import type {DateString, HtmlString, UrlString} from "./index";
 
 export type PublicDocumentObject = {
   _last_read?: number,
   _mode: "public",
   _persist?: true,
   id: number,
-  changed: string, // date
+  changed: DateString,
   title: string,
   publisher: number,
   groups: Array<number>,
   date: string,
-  file?: string,
-  link?: string,
+  file?: UrlString,
+  link?: UrlString,
   source: string,
   language: string,
   featured?: true,
   key?: true,
   preview: string,
-  description: string, // HTML
+  description: HtmlString,
 }
 
 export type StubDocumentObject = {
@@ -27,7 +28,7 @@ export type StubDocumentObject = {
   _mode: "stub",
   _persist?: true,
   id: number,
-  changed: string, // date
+  changed: DateString,
   title: string,
   date: string,
   preview: string,

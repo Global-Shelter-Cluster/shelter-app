@@ -3,6 +3,7 @@
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {html2text} from "../util";
 import * as Contacts from 'expo-contacts';
+import type {HtmlString, UrlString} from "./index";
 
 export type PublicContactObject = {
   _last_read?: number,
@@ -11,12 +12,12 @@ export type PublicContactObject = {
   id: number,
   groups?: Array<number>,
   name: string,
-  picture?: string,
+  picture?: UrlString,
   org?: string,
   role?: string,
   mail?: Array<string>,
   phone?: Array<string>,
-  bio?: string, // HTML
+  bio?: HtmlString,
 }
 
 export type StubContactObject = {
@@ -25,12 +26,12 @@ export type StubContactObject = {
   _persist?: true,
   id: number,
   name: string,
-  picture?: string,
+  picture?: UrlString,
   org?: string,
   role?: string,
   mail?: Array<string>,
   phone?: Array<string>,
-  bio?: string, // HTML
+  bio?: HtmlString,
 }
 
 export type ContactObject = PublicContactObject | StubContactObject;

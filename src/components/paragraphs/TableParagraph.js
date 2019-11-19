@@ -1,10 +1,9 @@
 // @flow
 
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import type {TableParagraph as TableParagraphType, TableParagraphCell} from "../../model/paragraphs";
-import ParagraphTitle from "./ParagraphTitle";
-import {Row, Table, TableWrapper, Cell} from 'react-native-table-component';
+import {Cell, Row, Table, TableWrapper} from 'react-native-table-component';
 import vars from "../../vars";
 import {hairlineWidth} from "../../util";
 import * as WebBrowser from 'expo-web-browser';
@@ -45,9 +44,9 @@ const extractTextValue = cell => {
 };
 
 /**
- *
  * @param {TableParagraphCell} cell
  * @param {number} cellIndex
+ * @param {number} flex
  * @return {*}
  */
 const renderCell = (cell, cellIndex, flex) => {
@@ -70,7 +69,7 @@ const renderCell = (cell, cellIndex, flex) => {
   />;
 };
 
-const TableParagraph = ({paragraph}: {paragraph: TableParagraphType}) => {
+const TableParagraph = ({paragraph}: { paragraph: TableParagraphType }) => {
   const rawData = [];
   if (paragraph.headers)
     rawData.push(paragraph.headers);
@@ -100,20 +99,16 @@ const TableParagraph = ({paragraph}: {paragraph: TableParagraphType}) => {
       </TableWrapper>);
     });
 
-  return <View style={styles.container}>
-    <ParagraphTitle paragraph={paragraph}/>
-    <Table
-    >
-      {content}
-    </Table>
-  </View>;
+  return <Table style={styles.container}>
+    {content}
+  </Table>;
 };
 
 export default TableParagraph;
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    margin: 10,
   },
   header: {
     backgroundColor: vars.SHELTER_RED,

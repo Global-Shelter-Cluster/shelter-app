@@ -13,6 +13,7 @@ import * as Permissions from 'expo-permissions';
 import {textareaStylesheet} from "../styles/formStyles";
 import GeolocationFactory from "../components/tcomb/GeolocationFactory";
 import i18n from "../i18n";
+import type {HtmlString} from "./index";
 
 export type WebformObject = {
   _last_read?: number,
@@ -89,7 +90,7 @@ type WebformGeolocationField = {
 
 type WebformMarkupField = {
   type: "markup",
-  value: string, // HTML
+  value: HtmlString,
   visible: boolean,
   conditional: conditional,
 }

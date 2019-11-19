@@ -1,6 +1,7 @@
 // @flow
 
 import type {ObjectRequest} from "../persist";
+import type {HtmlString, UrlString} from "./index";
 
 export type KoboFormObject = {
   _last_read?: number,
@@ -9,8 +10,8 @@ export type KoboFormObject = {
   id: number,
   groups?: Array<number>,
   title: string,
-  description: string, // HTML
-  kobo_form_url: string,
+  description: HtmlString,
+  kobo_form_url: UrlString,
 }
 
 export default class KoboForm {

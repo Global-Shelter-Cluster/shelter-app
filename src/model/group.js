@@ -6,6 +6,7 @@ import moment from 'moment';
 import createCachedSelector from 're-reselect';
 import {getCurrentUser} from "./user";
 import i18n from '../i18n'
+import type {UrlString} from "./index";
 
 const RECENT_DOCS_MAX_DAYS = 30; // how many days ago are docs still considered "recent"
 
@@ -26,7 +27,7 @@ export type PrivateGroupObject = {
   title: string,
   is_global?: true,
   is_resources?: true,
-  url: string,
+  url: UrlString,
   search_group_nids: Array<number>,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",
@@ -66,7 +67,7 @@ export type PublicGroupObject = {
   title: string,
   is_global?: true,
   is_resources?: true,
-  url: string,
+  url: UrlString,
   search_group_nids: Array<number>,
   region_type?: "Country" | "Region",
   response_status?: "active" | "archived",

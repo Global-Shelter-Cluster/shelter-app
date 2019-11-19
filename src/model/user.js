@@ -2,6 +2,7 @@
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import {createSelector} from 'reselect';
+import type {UrlString} from "./index";
 
 export const MAX_FOLLOWED_GROUPS = 10;
 
@@ -13,7 +14,7 @@ export type PrivateUserObject = {
   name: string,
   full_name?: string,
   mail: string,
-  picture: string,
+  picture: UrlString,
   org: string,
   role: string,
   phone?: Array<string>,
@@ -35,7 +36,7 @@ export type PublicUserObject = {
   name: string,
   full_name?: string,
   mail: string,
-  picture: string,
+  picture: UrlString,
   org: string,
   role: string,
   phone?: Array<string>,
