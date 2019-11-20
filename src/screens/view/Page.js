@@ -11,12 +11,13 @@ import moment from "moment/moment";
 import Loading from "../../components/Loading";
 import MultiLineButton from "../../components/MultiLineButton";
 import Paragraphs from "../../components/paragraphs/Paragraphs";
-import type {PublicPageObject} from "../../model/page";
+import type {PublicBasicPageObject} from "../../model/page";
+import HTML from "../../components/HTML";
 
 export default ({online, page, loaded, refresh, loading, lastError}: {
   online: boolean,
   loading: boolean,
-  page: PublicPageObject,
+  page: PublicBasicPageObject,
   loaded: boolean,
   refresh: () => void,
   lastError: lastErrorType,
@@ -38,7 +39,8 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
       <Text style={styles.secondary}>{moment(page.date).utc().format('D MMM YYYY')}</Text>
       <ContextualNavigation object={page}/>
       <View style={{marginHorizontal: 10}}>
-        <Paragraphs paragraphs={page.content}/>
+        {page.body ? <HTML html={page.body}/> : null}
+        {page.content ? <Paragraphs paragraphs={page.content}/> : null}
       </View>
     </ScrollView>
     <PageActionsContainer page={page}/>

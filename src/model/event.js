@@ -1,19 +1,20 @@
 // @flow
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
+import type {HtmlString} from "./index";
 
 export type PublicEventObject = {
   _last_read?: number,
   _mode: "public",
   _persist?: true,
   id: number,
-  //changed: string, // date
+  //changed: DateString,
   title: string,
   groups: Array<number>,
   date: string,
   map: string,
-  description: string, // HTML
-  address: string, // HTML
+  description: HtmlString,
+  address: HtmlString,
   geo: { lon: number, lat: number, zoom: number },
 }
 
@@ -22,7 +23,7 @@ export type StubEventObject = {
   _mode: "stub",
   _persist?: true,
   id: number,
-  //changed: string, // date
+  //changed: DateString,
   title: string,
   date: string,
   map: string,

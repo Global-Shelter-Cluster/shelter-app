@@ -3,7 +3,6 @@
 import React from 'react';
 import {View} from 'react-native';
 import type {LinksParagraph as LinksParagraphType} from "../../model/paragraphs";
-import ParagraphTitle from "./ParagraphTitle";
 import SmartLinkContainer from "../../containers/SmartLinkContainer";
 
 const LinksParagraph = ({paragraph}: {paragraph: LinksParagraphType}) => {
@@ -12,7 +11,6 @@ const LinksParagraph = ({paragraph}: {paragraph: LinksParagraphType}) => {
   ));
 
   return <View>
-    <ParagraphTitle paragraph={paragraph}/>
     {links}
   </View>;
 };

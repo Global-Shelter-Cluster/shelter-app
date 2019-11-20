@@ -2,9 +2,12 @@
 
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import createCachedSelector from "re-reselect";
+import type {HtmlString, UrlString} from "./index";
 import {detailLevels, OBJECT_MODE_PUBLIC} from "./index";
 import type {navigation} from "../nav";
 import React from "react";
+import type {Paragraphs} from "./paragraphs";
+import {getFilesFromParagraphs} from "./paragraphs";
 
 type PageType =
   "page"
@@ -20,8 +23,9 @@ export type PublicBasicPageObject = {
   type: "page",
   id: number,
   title: string,
-  url: string,
-  body: string, // HTML
+  url: UrlString,
+  body?: HtmlString,
+  content?: Paragraphs,
 }
 
 export type PublicLibraryPageObject = {
@@ -32,8 +36,8 @@ export type PublicLibraryPageObject = {
   type: "library",
   id: number,
   title: string,
-  url: string,
-  body?: string, // HTML
+  url: UrlString,
+  body?: HtmlString,
   is_global_library?: true,
   search: { [string]: { [string]: true } }, // e.g. {"field_technical_support_design": {"Training materials": true, ...}, ...}
 }
@@ -46,8 +50,8 @@ export type PublicArbitraryLibraryPageObject = {
   type: "arbitrary_library",
   id: number,
   title: string,
-  url: string,
-  body?: string, // HTML
+  url: UrlString,
+  body?: HtmlString,
   documents?: Array<number>,
 }
 
@@ -59,8 +63,8 @@ export type PublicPhotoGalleryPageObject = {
   type: "photo_gallery",
   id: number,
   title: string,
-  url: string,
-  body?: string, // HTML
+  url: UrlString,
+  body?: HtmlString,
   sections: Array<{
     title?: string,
     description?: string, // plain text
@@ -83,7 +87,7 @@ export type StubPageObject = {
   type: PageType,
   id: number,
   title: string,
-  url: string,
+  url: UrlString,
 }
 
 export type PublicPageObject =
@@ -103,6 +107,9 @@ export default class Page {
 
     if (page.documents !== undefined)
       ret.push(...page.documents.map(id => ({type: "document", id: id})));
+
+    if (page.content !== undefined)
+      getRelatedFromParagraphs(ret, page.content);
 
     return ret;
   }
@@ -136,6 +143,9 @@ export default class Page {
         });
       });
     }
+
+    if (page.content !== undefined)
+      getFilesFromParagraphs(files, page.content, "page", page.id, ".content");
 
     return files;
   }

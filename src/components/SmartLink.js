@@ -1,22 +1,56 @@
 // @flow
 
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
-import {hairlineWidth} from "../util";
+import type {UrlString} from "../model";
+import FitImage from "react-native-fit-image";
 
-export default ({title, enter, linkType}: {
-  title: string,
+const defaultContactImage = require("../../assets/contact.png");
+
+export default ({title, subtitle, enter, linkType, image, styleAsContact}: {
+  title?: string,
+  subtitle?: string,
   enter?: () => {},
-  linkType: 'document' | 'event' | 'factsheet' | 'kobo_form' | 'webform' | 'group' | 'url',
+  linkType?: 'document' | 'event' | 'factsheet' | 'kobo_form' | 'webform' | 'group' | 'url' | 'email' | 'tel',
+  image?: UrlString,
+  styleAsContact?: true,
 }) => {
-  const contents = [
-    <View key="info" style={styles.info}>
-      <Text numberOfLines={4} ellipsizeMode="tail"
-            style={[styles.title]}>{title}</Text>
-    </View>,
-  ];
+  const contents = [];
+
+  if (styleAsContact) {
+    const contactImage = image
+      ? <Image key="picture" style={styles.contactImage} source={{uri: image}}/>
+      : <Image key="picture" style={styles.contactImage} source={image}/>;
+
+    contents.push(contactImage);
+  }
+
+  if (title || subtitle)
+    contents.push(
+      <View key="info" style={styles.info}>
+        {title
+          ? <Text numberOfLines={image ? 8 : 4} ellipsizeMode="tail"
+                  style={[styles.title]}>{title}</Text>
+          : null
+        }
+        {subtitle
+          ? <Text numberOfLines={image ? 8 : 4} ellipsizeMode="tail"
+                  style={[styles.secondary]}>{subtitle}</Text>
+          : null
+        }
+      </View>
+    );
+
+  if (image && !styleAsContact)
+    contents.push(
+      <FitImage
+        key="image"
+        source={{uri: image}}
+        style={{}} // For some reason removing this makes the image not show. Who knows why...
+      />
+    );
 
   const icons = {
     'document': "file-o",
@@ -26,9 +60,11 @@ export default ({title, enter, linkType}: {
     'webform': "pencil-square-o",
     'group': "users",
     'url': "globe",
+    'email': "envelope-o",
+    'tel': "phone",
   };
 
-  const linkTypeIcon = icons[linkType] !== undefined
+  const linkTypeIcon = linkType !== undefined && icons[linkType] !== undefined
     ? <FontAwesome
       name={icons[linkType]} size={18} color={vars.MEDIUM_GREY}
       style={styles.rightArrow}
@@ -37,22 +73,24 @@ export default ({title, enter, linkType}: {
 
   const isClickable = enter !== undefined;
 
-  return isClickable
-    ? <TouchableOpacity
-      style={[styles.container]}
+  if (isClickable) {
+    return <TouchableOpacity
+      style={styleAsContact ? styles.contactContainer : styles.container}
       onPress={enter}
     >
       {contents}
-      {linkTypeIcon}
+      {image && !styleAsContact ? null : linkTypeIcon}
       <FontAwesome
         name={"angle-right"} size={18} color={vars.MEDIUM_GREY}
         style={styles.rightArrow}
       />
-    </TouchableOpacity>
-    : <View style={styles.container}>
+    </TouchableOpacity>;
+  } else {
+    return <View style={styleAsContact ? styles.contactContainer : styles.container}>
       {contents}
-      {linkTypeIcon}
-    </View>
+      {image && !styleAsContact ? null : linkTypeIcon}
+    </View>;
+  }
 }
 
 const styles = StyleSheet.create({
@@ -60,6 +98,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 10,
     marginLeft: 10,
+    borderColor: vars.SHELTER_GREY,
+  },
+  contactContainer: {
+    flexDirection: "row",
     borderColor: vars.SHELTER_GREY,
   },
   info: {
@@ -70,8 +112,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 4,
   },
+  secondary: {
+    color: vars.SHELTER_GREY,
+  },
   rightArrow: {
     paddingLeft: 10,
     paddingTop: 2,
+  },
+  contactImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    resizeMode: "cover",
+    borderWidth: 1,
+    borderColor: vars.SHELTER_GREY,
+    marginRight: 10,
   },
 });

@@ -1,16 +1,22 @@
 // @flow
 
 import React from 'react';
-import {View} from 'react-native';
 import type {TextParagraph as TextParagraphType} from "../../model/paragraphs";
 import HTML from '../HTML';
-import ParagraphTitle from "./ParagraphTitle";
+import {StyleSheet, View} from "react-native";
 
-const TextParagraph = ({paragraph}: {paragraph: TextParagraphType}) => (
-  <View>
-    <ParagraphTitle paragraph={paragraph}/>
+const TextParagraph = ({paragraph}: { paragraph: TextParagraphType }) => (
+  <View
+    style={styles.container}
+  >
     <HTML html={paragraph.body}/>
   </View>
 );
 
 export default TextParagraph;
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 10,
+  },
+});

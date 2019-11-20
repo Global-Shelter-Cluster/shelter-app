@@ -14,8 +14,8 @@ export type GlobalObject = {
   algolia_app_id: string,
   algolia_search_key: string,
   algolia_prefix: string,
-  global_id: int,
-  resources_id: int,
+  global_id: number,
+  resources_id: number,
   timezones: Array<string>,
 }
 

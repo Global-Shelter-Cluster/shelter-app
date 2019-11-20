@@ -5,6 +5,7 @@ import {createSelector} from 'reselect';
 import {getCurrentUser} from "./user";
 import {getObject} from "./index";
 import moment from 'moment';
+import type {DateString, HtmlString, UrlString} from "./index";
 
 const UNSEEN_ALERTS_MAX_DAYS = 14; // if alerts are unseen but older than this number of days, don't count them
 
@@ -13,17 +14,17 @@ export type AlertObject = {
   _mode: "public",
   _persist?: true,
   id: number,
-  created: string, // date
+  created: DateString,
   groups?: Array<number>,
   title: string,
-  description?: string, // HTML
+  description?: HtmlString,
   document?: number,
   event?: number,
   factsheet?: number,
   kobo_form?: number,
   webform?: number,
   group?: number,
-  url?: string,
+  url?: UrlString,
 }
 
 export default class Alert {

@@ -7,6 +7,7 @@ import {getObject} from "./index";
 import moment from 'moment';
 import type {Paragraphs} from "./paragraphs";
 import {getFilesFromParagraphs} from "./paragraphs";
+import type {DateString, UrlString} from "./index";
 
 const UNSEEN_NEWS_MAX_DAYS = 14; // if news are unseen but older than this number of days, don't count them
 
@@ -16,10 +17,10 @@ export type PublicNewsObject = {
   _persist?: true,
   id: number,
   title: string,
-  date: string,
+  date: DateString,
   groups?: Array<number>,
   content: Paragraphs,
-  url: string,
+  url: UrlString,
 }
 
 export type StubNewsObject = {
@@ -28,7 +29,7 @@ export type StubNewsObject = {
   _persist?: true,
   id: number,
   title: string,
-  date: string,
+  date: DateString,
 }
 
 export type NewsObject = PublicNewsObject | StubNewsObject;

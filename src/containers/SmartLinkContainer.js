@@ -4,6 +4,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withNavigation} from 'react-navigation';
 import SmartLink from "../components/SmartLink";
+import {Linking} from "expo";
 
 const mapStateToProps = (state, props) => {
   const ret = {};
@@ -30,8 +31,23 @@ const mapStateToProps = (state, props) => {
     case 'url':
       //Fall-through
     default:
-      ret.linkType = 'url'; // in case it didn't come in the prop
-      ret.enter = () => props.navigation.push('WebsiteViewer', {title: props.title, url: props.url});
+      if (props.url) {
+        if (props.url.startsWith('mailto:')) {
+          ret.linkType = 'email';
+          ret.enter = () => Linking.openURL(props.url);
+        } else if (props.url.startsWith('tel:')) {
+          ret.linkType = 'tel';
+          ret.enter = () => Linking.openURL(props.url);
+        } else {
+          ret.linkType = 'url'; // in case it didn't come in the prop
+
+          const navOptions = {
+            title: props.title !== undefined ? props.title : props.url,
+            url: props.url,
+          };
+          ret.enter = () => props.navigation.push('WebsiteViewer', navOptions);
+        }
+      }
       break;
   }
 
