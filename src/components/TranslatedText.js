@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import React, {Component} from 'react';
+import {Text} from 'react-native';
 import i18n from '../i18n';
 
 class TranslatedText extends Component {

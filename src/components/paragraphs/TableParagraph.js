@@ -22,7 +22,7 @@ const calculateColumnWidths = data => {
       maxLengths.push(0);
 
     for (const i in row)
-      maxLengths[i] = Math.max(maxLengths[i], row[i].length);
+      maxLengths[i] = Math.max(maxLengths[i], Math.min(100, row[i].length));
   }
 
   // Do some mathematical magic so that the column widths are somewhat normalized

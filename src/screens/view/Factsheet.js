@@ -1,17 +1,7 @@
 // @flow
 
 import React from 'react';
-import {
-  Image,
-  Linking,
-  RefreshControl,
-  ScrollView,
-  Share,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import {RefreshControl, ScrollView, StyleSheet, Text, View} from 'react-native';
 import type {PublicFactsheetObject} from "../../model/factsheet";
 import ContextualNavigation from "../../components/ContextualNavigation";
 import ExpandableFitImageContainer from "../../containers/ExpandableFitImageContainer";
@@ -24,6 +14,11 @@ import Loading from "../../components/Loading";
 import Collapsible from "../../components/Collapsible";
 import MultiLineButton from "../../components/MultiLineButton";
 import i18n from "../../i18n";
+import TableParagraph from "../../components/paragraphs/TableParagraph";
+import DocumentListItemContainer from "../../containers/DocumentListItemContainer";
+import SmartLinkContainer from "../../containers/SmartLinkContainer";
+import FactsheetKeyFigures from "../../components/factsheets/FactsheetKeyFigures";
+import FitImage from "react-native-fit-image";
 
 export default ({online, factsheet, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -58,6 +53,15 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
       {factsheet.map !== undefined && <Collapsible title={i18n.t("Map")}>
         <ExpandableFitImageContainer source={{uri: factsheet.map}} full={factsheet.full_map}/>
       </Collapsible>}
+      {factsheet.coverage_against_targets !== undefined && <Collapsible title={i18n.t("Coverage against targets")}>
+        {factsheet.coverage_against_targets.description !== undefined ?
+          <Text>
+            {factsheet.coverage_against_targets.description}
+          </Text> :
+          null
+        }
+        <FitImage source={{uri: factsheet.coverage_against_targets.chart}}/>
+      </Collapsible>}
       {factsheet.need_analysis !== undefined && <Collapsible title={i18n.t("Need analysis")}>
         <HTML html={factsheet.need_analysis}/>
       </Collapsible>}
@@ -66,6 +70,24 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
       </Collapsible>}
       {factsheet.gaps_challenges !== undefined && <Collapsible title={i18n.t("Gaps / challenges")}>
         <HTML html={factsheet.gaps_challenges}/>
+      </Collapsible>}
+      {factsheet.key_figures !== undefined && <Collapsible title={i18n.t("Key figures")} noHorizontalMargins>
+        <FactsheetKeyFigures keyFigures={factsheet.key_figures}/>
+      </Collapsible>}
+      {factsheet.key_dates !== undefined && <Collapsible title={i18n.t("Key dates")} noHorizontalMargins>
+        <TableParagraph paragraph={{
+          type: "table",
+          rows: factsheet.key_dates.map(row => ([
+            {title: row.date},
+            {title: row.description},
+          ])),
+        }}/>
+      </Collapsible>}
+      {factsheet.key_documents !== undefined && <Collapsible title={i18n.t("Key documents")} noHorizontalMargins>
+        {factsheet.key_documents.map(id => <DocumentListItemContainer key={id} id={id}/>)}
+      </Collapsible>}
+      {factsheet.key_links !== undefined && <Collapsible title={i18n.t("Key links")} noHorizontalMargins>
+        {factsheet.key_links.map((data, index) => <SmartLinkContainer key={index} {...data}/>)}
       </Collapsible>}
     </ScrollView>
   </View>;

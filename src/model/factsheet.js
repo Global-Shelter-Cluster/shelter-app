@@ -3,6 +3,22 @@
 import type {ObjectFileDescription, ObjectRequest} from "../persist";
 import type {HtmlString, UrlString} from "./index";
 
+export type NumberFactsheetKeyFigure = {
+  type: "number",
+  label: string,
+  value: number,
+}
+
+export type ChartFactsheetKeyFigure = {
+  type: "chart",
+  title: string,
+  description?: string,
+  chart: UrlString,
+  smallImage?: true,
+}
+
+export type FactsheetKeyFigure = NumberFactsheetKeyFigure | ChartFactsheetKeyFigure;
+
 export type PublicFactsheetObject = {
   _last_read?: number,
   _mode: "public",
@@ -30,6 +46,11 @@ export type PublicFactsheetObject = {
     url: UrlString,
     title: string,
   }>,
+  key_figures?: Array<FactsheetKeyFigure>,
+  coverage_against_targets?: {
+    description?: string,
+    chart?: UrlString,
+  },
 }
 
 export type StubFactsheetObject = {
