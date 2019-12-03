@@ -53,9 +53,9 @@ export default ({online, factsheet, loaded, refresh, loading, lastError}: {
       {factsheet.map !== undefined && <Collapsible title={i18n.t("Map")}>
         <ExpandableFitImageContainer source={{uri: factsheet.map}} full={factsheet.full_map}/>
       </Collapsible>}
-      {factsheet.coverage_against_targets !== undefined && <Collapsible title={i18n.t("Coverage against targets")}>
+      {factsheet.coverage_against_targets !== undefined && <Collapsible title={i18n.t("Coverage against targets")} noHorizontalMargins>
         {factsheet.coverage_against_targets.description !== undefined ?
-          <Text>
+          <Text style={{marginHorizontal: 10}}>
             {factsheet.coverage_against_targets.description}
           </Text> :
           null
