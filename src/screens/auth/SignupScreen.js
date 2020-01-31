@@ -9,8 +9,7 @@ import Signup from "./Signup";
 import {propEqual} from "../../util";
 import type {lastErrorType} from "../../reducers/lastError";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import i18n from "../../i18n";
 
 type Props = {
@@ -34,7 +33,7 @@ class SignupScreen extends React.Component<Props> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName)),
+      payload => hitPage(payload.state.routeName),
     );
 
     if (this.props.loggedIn)

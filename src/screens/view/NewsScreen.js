@@ -11,8 +11,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 
 type Props = {
   online: boolean,
@@ -60,7 +59,7 @@ class NewsScreen extends React.Component<Props> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.news.id)),
+      payload => hitPage(payload.state.routeName + '/' + this.props.news.id),
     );
   }
 

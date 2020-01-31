@@ -12,8 +12,7 @@ import {convertFiles} from "../../model/file";
 import moment from "moment/moment";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 
 type Props = {
   online: boolean,
@@ -63,7 +62,7 @@ class FactsheetScreen extends React.Component<Props> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.factsheet.id)),
+      payload => hitPage(payload.state.routeName + '/' + this.props.factsheet.id),
     );
   }
 

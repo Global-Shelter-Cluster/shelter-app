@@ -5,8 +5,7 @@ import {WebView} from 'react-native-webview';
 import NavTitleContainer from "../../containers/NavTitleContainer";
 import Loading from "../../components/Loading";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import i18n from "../../i18n";
 
 type Props = {
@@ -21,7 +20,7 @@ export default class WebsiteViewerScreen extends React.Component<Props> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName)),
+      payload => hitPage(payload.state.routeName),
     );
   }
 

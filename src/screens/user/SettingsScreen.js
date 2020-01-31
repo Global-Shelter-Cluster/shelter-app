@@ -19,8 +19,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import type {PrivateUserObject} from "../../model/user";
 import {getCurrentUser} from "../../model/user";
 import type {localVarsType, localVarsTypeAllOptional} from "../../reducers/localVars";
@@ -116,7 +115,7 @@ class SettingsScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName)),
+      payload => hitPage(payload.state.routeName),
     );
   }
 

@@ -9,8 +9,7 @@ import ArbitraryLibrary from "./ArbitraryLibrary";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import type {PublicArbitraryLibraryPageObject} from "../../model/page";
 import type {lastErrorType} from "../../reducers/lastError";
 
@@ -60,7 +59,7 @@ class ArbitraryLibraryScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.page.id)),
+      payload => hitPage(payload.state.routeName + '/' + this.props.page.id),
     );
   }
 

@@ -13,8 +13,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import type {tabs} from "./Group";
 import i18n from "../../i18n"
 
@@ -103,7 +102,7 @@ class GroupScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id)),
+      payload => hitPage(payload.state.routeName + '/' + this.props.group.id),
     );
   }
 

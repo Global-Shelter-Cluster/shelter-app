@@ -13,8 +13,7 @@ import {GLOBAL_OBJECT_ID} from "../../model/global";
 import {clearLastError, loadCurrentUser, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer";
 import TranslatedText from "../../components/TranslatedText";
 import i18n from '../../i18n';
@@ -83,7 +82,7 @@ class OperationsScreen extends React.Component<Props, State> {
     this.props.navigation.addListener(
       'didFocus',
       payload => {
-        analytics.hit(new PageHit(payload.state.routeName + '/' + this.state.tab));
+        hitPage(payload.state.routeName + '/' + this.state.tab);
         i18n.forceUpdate(this, 'Operations');
       }
     );
@@ -91,7 +90,7 @@ class OperationsScreen extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.tab !== this.state.tab)
-      analytics.hit(new PageHit(this.props.navigation.state.routeName + '/' + this.state.tab));
+      hitPage(this.props.navigation.state.routeName + '/' + this.state.tab);
   }
 
   render() {

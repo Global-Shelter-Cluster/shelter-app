@@ -12,8 +12,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import clone from "clone";
 import i18n from "../../i18n";
 
@@ -88,7 +87,7 @@ class WebformScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.webform.id)),
+      payload => hitPage(payload.state.routeName + '/' + this.props.webform.id),
     );
   }
 

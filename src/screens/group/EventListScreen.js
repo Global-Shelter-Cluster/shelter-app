@@ -11,8 +11,7 @@ import EventList from "./EventList";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 
 type Props = {
   online: boolean,
@@ -70,7 +69,7 @@ class EventListScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id)),
+      payload => hitPage(payload.state.routeName + '/' + this.props.group.id),
     );
   }
 

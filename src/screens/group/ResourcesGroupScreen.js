@@ -13,8 +13,7 @@ import type {lastErrorType} from "../../reducers/lastError";
 import {convertFiles} from "../../model/file";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import type {GlobalObject} from "../../model/global";
 import type {tabs} from "./Group";
 import i18n from "../../i18n";
@@ -114,7 +113,7 @@ class ResourcesGroupScreen extends React.Component<Props> {
     this.props.navigation.addListener(
       'didFocus',
       payload => {
-        analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.group.id))
+        hitPage(payload.state.routeName + '/' + this.props.group.id);
         i18n.forceUpdate(this, 'Resources');
       },
     );

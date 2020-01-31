@@ -10,8 +10,7 @@ import LogoutNavButtonContainer from "../../containers/LogoutNavButtonContainer"
 import {clearLastError, loadCurrentUser} from "../../actions";
 import {propEqual} from "../../util";
 import {getUnseenAlertIds} from "../../model/alert";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import type {AssessmentFormType} from "../../persist";
 import i18n from "../../i18n";
 import TranslatedText from "../../components/TranslatedText";
@@ -69,7 +68,7 @@ class DashboardScreen extends React.Component<Props> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName)),
+      payload => hitPage(payload.state.routeName),
     );
   }
 

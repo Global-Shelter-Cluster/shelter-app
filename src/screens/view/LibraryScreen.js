@@ -9,8 +9,7 @@ import Library from "./Library";
 import {clearLastError, loadObject} from "../../actions";
 import {propEqual} from "../../util";
 import type {navigation} from "../../nav";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import type {PublicLibraryPageObject} from "../../model/page";
 import type {lastErrorType} from "../../reducers/lastError";
 import type {GlobalObject} from "../../model/global";
@@ -64,7 +63,7 @@ class LibraryScreen extends React.Component<Props, State> {
   componentDidMount() {
     this.props.navigation.addListener(
       'didFocus',
-      payload => analytics.hit(new PageHit(payload.state.routeName + '/' + this.props.page.id)),
+      payload => hitPage(payload.state.routeName + '/' + this.props.page.id),
     );
   }
 

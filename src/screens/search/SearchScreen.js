@@ -12,8 +12,7 @@ import Error from "../../components/Error";
 import Search from "./Search";
 import type {navigation} from "../../nav";
 import type {tabs} from "./Search";
-import analytics from "../../analytics";
-import {PageHit} from "expo-analytics";
+import {hitPage} from "../../analytics";
 import i18n from "../../i18n";
 
 type Props = {
@@ -71,7 +70,7 @@ class SearchScreen extends React.Component<Props, State> {
     this.props.navigation.addListener(
       'didFocus',
       payload => {
-        analytics.hit(new PageHit(payload.state.routeName))
+        hitPage(payload.state.routeName);
         i18n.forceUpdate(this, 'Search');
       },
     );
