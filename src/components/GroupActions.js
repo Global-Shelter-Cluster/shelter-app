@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import i18n from "../i18n";
+import type {EventDescription} from "../analytics";
 
 type Props = {
   group: PublicGroupObject,
@@ -35,8 +36,11 @@ export default class GroupActions extends React.Component<Props, State> {
 
   render() {
     const {group, online, changingFollowing, isFollowing, groupTypeIsFollowable, cantFollow, viewOnWebsite, follow, unfollow} = this.props;
-
     const buttons = [];
+    const eventBase: EventDescription = {
+      category: 'group',
+      label: group.id + ': ' + group.title + ' (' + group.type + ')',
+    };
 
     if (changingFollowing)
       buttons.push(<Button key="follow" disabledIcon="refresh" title={i18n.t("Loading...")}/>);
@@ -44,6 +48,7 @@ export default class GroupActions extends React.Component<Props, State> {
       buttons.push(<Button
         key="follow" primary title={i18n.t("Un-follow")}
         icon="sign-out"
+        event={Object.assign({action: 'unfollow'}, eventBase)}
         onPress={unfollow}/>);
     else if (cantFollow && groupTypeIsFollowable)
       buttons.push(<Button key="follow" disabledIcon="ban" title={i18n.t("Follow")}/>);
@@ -51,12 +56,14 @@ export default class GroupActions extends React.Component<Props, State> {
       buttons.push(<Button
         key="follow" primary title={i18n.t("Follow")}
         icon="sign-in"
+        event={Object.assign({action: 'follow'}, eventBase)}
         onPress={follow}/>);
 
     if (online)
       buttons.push(<Button
         key="view" title={i18n.t("Website")}
         icon="external-link"
+        event={Object.assign({action: 'view on website'}, eventBase)}
         onPress={viewOnWebsite}/>);
     else
       buttons.push(<Button key="view" disabledIcon="wifi" title={i18n.t("Website")}/>);

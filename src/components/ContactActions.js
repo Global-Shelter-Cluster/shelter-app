@@ -9,6 +9,7 @@ import {ensurePermissions} from "../permission";
 import * as Permissions from 'expo-permissions';
 import * as Contacts from 'expo-contacts';
 import i18n from "../i18n";
+import type {EventDescription} from "../analytics";
 
 type Props = {
   contact: ContactObject,
@@ -31,12 +32,17 @@ export default class ContactActions extends React.Component<Props, State> {
     const {contact, online} = this.props;
     const buttons = [];
     const shareMessage = [contact.name];
+    const eventBase: EventDescription = {
+      category: 'contact',
+      label: contact.id + ': ' + contact.name,
+    };
 
     if (contact.mail !== undefined)
       contact.mail.map((address, i) => {
         buttons.push(<Button
           style={styles.button}
           key={"mail" + i} title={address} icon="envelope-o"
+          event={Object.assign({action: 'email'}, eventBase)}
           onPress={() => {
             // MailComposer.composeAsync({recipients: [address]}); (Expo library)
             Linking.openURL('mailto:' + address); // TODO: is this better?
@@ -51,6 +57,7 @@ export default class ContactActions extends React.Component<Props, State> {
         buttons.push(<Button
           style={styles.button}
           key={"phone" + i} title={number} icon="phone"
+          event={Object.assign({action: 'call'}, eventBase)}
           onPress={() => {
             Linking.openURL('tel:' + number);
           }}
@@ -62,6 +69,7 @@ export default class ContactActions extends React.Component<Props, State> {
     buttons.push(<Button
       primary style={styles.button}
       key="contact" title={i18n.t("Contact")} icon="address-card-o"
+      event={Object.assign({action: 'phone contact'}, eventBase)}
       onPress={async () => {
         try {
           await ensurePermissions(Permissions.CONTACTS);

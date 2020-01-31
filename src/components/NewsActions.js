@@ -7,6 +7,7 @@ import Button from "./Button";
 import {ensurePermissions} from "../permission";
 import * as Permissions from 'expo-permissions';
 import i18n from "../i18n";
+import type {EventDescription} from "../analytics";
 
 type Props = {
   news: NewsObject,
@@ -28,10 +29,15 @@ export default class NewsActions extends React.Component<Props, State> {
   render() {
     const {news} = this.props;
     const buttons = [];
+    const eventBase: EventDescription = {
+      category: 'news',
+      label: news.id + ': ' + news.title,
+    };
 
-    buttons.push(<Button key="share" title={i18n.t("Share")} icon="share" onPress={() => {
-      Share.share({url: news.url})
-    }}/>);
+    buttons.push(<Button
+      key="share" title={i18n.t("Share")} icon="share"
+      event={Object.assign({action: 'share'}, eventBase)}
+      onPress={() => Share.share({url: news.url})}/>);
 
     return <View style={styles.container}>
       {buttons}

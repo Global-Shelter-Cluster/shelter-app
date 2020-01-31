@@ -5,8 +5,10 @@ import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {FontAwesome} from '@expo/vector-icons';
 import vars from "../vars";
 import SingleLineText from "./SingleLineText";
+import type {EventDescription} from "../analytics";
+import {hitEvent} from "../analytics";
 
-const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style, disabled, small}: {
+const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style, disabled, small, event}: {
   onPress?: () => void,
   primary?: boolean,
   dimmed?: boolean, // Ignored if "primary" is present.
@@ -16,6 +18,7 @@ const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style, dis
   style?: {},
   disabled?: boolean,
   small?: boolean,
+  event?: EventDescription, // If passed, triggers an analytics event hit when the button is pressed
 }) => {
   const iconSize = small ? 16 : 18;
 
@@ -33,7 +36,16 @@ const Button = ({onPress, primary, dimmed, title, icon, disabledIcon, style, dis
     );
   const textColor = !primary && dimmed ? vars.SHELTER_GREY : "white";
 
-  return <TouchableOpacity disabled={disabled} onPress={onPress} style={[styles.container, {backgroundColor: bgColor}, style, small ? styles.smallContainer : null]}>
+  const onPressWithEvent = () => {
+    if (onPress) {
+      if (event)
+        hitEvent(event);
+
+      onPress();
+    }
+  };
+
+  return <TouchableOpacity disabled={disabled} onPress={onPressWithEvent} style={[styles.container, {backgroundColor: bgColor}, style, small ? styles.smallContainer : null]}>
     {icon && <FontAwesome name={icon} size={iconSize} color={textColor} style={styles.icon}/>}
     <SingleLineText style={[styles.label, small ? styles.smallLabel : null, {color: textColor}]}>{title}</SingleLineText>
   </TouchableOpacity>;

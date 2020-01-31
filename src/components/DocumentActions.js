@@ -11,6 +11,7 @@ import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import PDFReader from 'rn-pdf-reader-js';
 import i18n from "../i18n";
+import type {EventDescription} from "../analytics";
 
 type Props = {
   document: PublicDocumentObject,
@@ -33,12 +34,17 @@ export default class DocumentActions extends React.Component<Props, State> {
     const {document, online} = this.props;
     const buttons = [];
     const isLink = document.link !== undefined;
+    const eventBase: EventDescription = {
+      category: 'document',
+      label: document.id + ': ' + document.title,
+    };
 
     if (isLink) {
       // It's a link
       if (online)
         buttons.push(<Button
           key="view" primary title="View"
+          event={Object.assign({action: 'view'}, eventBase)}
           onPress={() => this.setState({modal: 'link'})}/>);
       else
         buttons.push(<Button key="view" disabledIcon="wifi" title={i18n.t("View")} />);
@@ -53,10 +59,12 @@ export default class DocumentActions extends React.Component<Props, State> {
             if (Platform.OS === 'ios')
               buttons.push(<Button
                 key="view" primary title={i18n.t("View")}
+                event={Object.assign({action: 'view'}, eventBase)}
                 onPress={() => this.setState({modal: 'webview'})}/>);
             else
               buttons.push(<Button
                 key="view" primary title={i18n.t("View")}
+                event={Object.assign({action: 'view'}, eventBase)}
                 onPress={() => this.setState({modal: 'pdf'})}/>);
             break;
 
@@ -64,6 +72,7 @@ export default class DocumentActions extends React.Component<Props, State> {
             // TODO: figure out what to do in this case...
             buttons.push(<Button
               key="view" primary title={i18n.t("View")}
+              event={Object.assign({action: 'view'}, eventBase)}
               onPress={() => this.setState({modal: 'webview'})}/>);
         }
       } else
@@ -72,9 +81,10 @@ export default class DocumentActions extends React.Component<Props, State> {
     }
 
     // if (online)
-      buttons.push(<Button key="share" title={i18n.t("Share")} icon="share" onPress={() => {
-        Share.share({url: document.file})
-      }}/>);
+      buttons.push(<Button
+        key="share" title={i18n.t("Share")} icon="share"
+        event={Object.assign({action: 'share'}, eventBase)}
+        onPress={() => Share.share({url: document.file})}/>);
     // else
     //   buttons.push(<Button key="share" disabledIcon="wifi" title="Share"/>);
 

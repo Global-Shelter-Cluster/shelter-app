@@ -6,6 +6,7 @@ import Button from "./Button";
 import vars from "../vars";
 import i18n from "../i18n";
 import type {PublicPageObject} from "../model/page";
+import type {EventDescription} from "../analytics";
 
 type Props = {
   page: PublicPageObject,
@@ -27,13 +28,17 @@ export default class PageActions extends React.Component<Props, State> {
 
   render() {
     const {page, online, viewOnWebsite} = this.props;
-
     const buttons = [];
+    const eventBase: EventDescription = {
+      category: 'page',
+      label: page.id + ': ' + page.title + ' (' + page.type + ')',
+    };
 
     if (online)
       buttons.push(<Button
         key="view" title={i18n.t("Website")}
         icon="external-link"
+        event={Object.assign({action: 'view on website'}, eventBase)}
         onPress={viewOnWebsite}/>);
     else
       buttons.push(<Button key="view" disabledIcon="wifi" title={i18n.t("Website")}/>);

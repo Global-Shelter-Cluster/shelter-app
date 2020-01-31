@@ -10,6 +10,7 @@ import vars from "../vars";
 import {FontAwesome} from '@expo/vector-icons';
 import moment from "moment/moment";
 import i18n from "../i18n";
+import type {EventDescription} from "../analytics";
 
 type Props = {
   event: PublicEventObject,
@@ -32,12 +33,17 @@ export default class EventActions extends React.Component<Props, State> {
     const {event, online} = this.props;
     const buttons = [];
     const hasGeolocation = event.geo !== undefined && event.geo.lat && event.geo.lon;
+    const eventBase: EventDescription = {
+      category: 'event',
+      label: event.id + ': ' + event.title,
+    };
 
     if (hasGeolocation) {
       // It's a link
       if (online)
         buttons.push(<Button
           key="map" primary title={i18n.t("Map")}
+          event={Object.assign({action: 'map'}, eventBase)}
           onPress={() => this.setState({modal: 'map'})}/>);
       else
         buttons.push(<Button key="map" disabledIcon="wifi" title={i18n.t("Map")}/>);

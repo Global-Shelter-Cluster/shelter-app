@@ -114,6 +114,11 @@ export default class Webform extends React.Component<Props> {
 
     const submitButton = <Button
       primary title={isLastPage ? i18n.t("Submit") : i18n.t("Next page")}
+      event={isLastPage ? {
+        category: 'webform',
+        action: 'submit',
+        label: webform.id + ': ' + webform.title,
+      } : null}
       onPress={onSubmitWithValidation}
     />;
 
