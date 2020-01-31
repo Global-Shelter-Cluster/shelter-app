@@ -8,7 +8,7 @@ import type {
   ObjectRequest
 } from "../persist";
 import persist from "../persist";
-import {NetInfo} from 'react-native';
+import NetInfo from "@react-native-community/netinfo";
 import type {ObjectIds, Objects, ObjectType} from "../model";
 import config from "../config";
 import type {flags} from "../reducers/flags";
@@ -237,9 +237,9 @@ export const initialize = () => async dispatch => {
   // Update "online" state based on device connection.
   // See https://facebook.github.io/react-native/docs/netinfo.html
   const connectionInfoHandler = connectionInfo => dispatch(changeFlag('online', connectionInfo.type !== 'none'));
-  const connectionInfo = await NetInfo.getConnectionInfo();
+  const unsubscribe = NetInfo.addEventListener(connectionInfoHandler); // TODO: unsubscribe when app stops?
+  const connectionInfo = await NetInfo.fetch();
   connectionInfoHandler(connectionInfo);
-  NetInfo.addEventListener('connectionChange', connectionInfoHandler);
 
   // Initialize persist object (loads user object if already logged in)
   await persist.init();
