@@ -24,6 +24,7 @@ import Collapsible from "../../components/Collapsible";
 import moment from "moment";
 import ImagesWithSlideshow from "../../components/ImagesWithSlideshow";
 import MultiLineButton from "../../components/MultiLineButton";
+import Paragraphs from "../../components/paragraphs/Paragraphs";
 
 export default ({online, page, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -77,9 +78,10 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
     >
       <Text style={styles.title}>{page.title}</Text>
       <ContextualNavigation object={page}/>
-      {page.body !== undefined && page.body
-        ? <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>
-        : null}
+      <View style={{marginHorizontal: 10}}>
+        {page.body ? <HTML html={page.body}/> : null}
+        {page.content ? <Paragraphs paragraphs={page.content}/> : null}
+      </View>
       {sections}
     </ScrollView>
     {/*<DocumentActionsContainer document={document}/>*/}

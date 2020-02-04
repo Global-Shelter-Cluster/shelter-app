@@ -12,6 +12,7 @@ import vars from "../../vars";
 import ContextualNavigation from "../../components/ContextualNavigation";
 import {ScrollView} from "./PhotoGallery";
 import MultiLineButton from "../../components/MultiLineButton";
+import Paragraphs from "../../components/paragraphs/Paragraphs";
 
 export default ({online, page, loaded, refresh, loading, lastError}: {
   online: boolean,
@@ -51,9 +52,10 @@ export default ({online, page, loaded, refresh, loading, lastError}: {
           case "nav":
             return <ContextualNavigation object={page}/>;
           case "body":
-            return page.body !== undefined && page.body
-              ? <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>
-              : null;
+            return <View style={{marginHorizontal: 10}}>
+              {page.body ? <HTML html={page.body}/> : null}
+              {page.content ? <Paragraphs paragraphs={page.content}/> : null}
+            </View>;
           case "separator":
             return <View style={{height: 10}}/>;
           case "document":

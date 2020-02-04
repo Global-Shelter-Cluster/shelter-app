@@ -16,6 +16,7 @@ import type {GlobalObject} from "../../model/global";
 import {InstantSearch} from "react-instantsearch/native";
 import {generateIndexName} from "../../model/search";
 import MultiLineButton from "../../components/MultiLineButton";
+import Paragraphs from "../../components/paragraphs/Paragraphs";
 
 const Hits = connectInfiniteHits(({hits, hasMore, refine, header, refresh}) => {
   const onEndReached = function () {
@@ -83,10 +84,10 @@ export default ({online, page, loaded, global, refresh, loading, lastError}: {
         header={<View style={{marginBottom: 10}}>
           <Text style={styles.title}>{page.title}</Text>
           <ContextualNavigation object={page}/>
-          {page.body !== undefined && page.body
-            ? <View style={{marginHorizontal: 10}}><HTML html={page.body}/></View>
-            : null
-          }
+          <View style={{marginHorizontal: 10}}>
+            {page.body ? <HTML html={page.body}/> : null}
+            {page.content ? <Paragraphs paragraphs={page.content}/> : null}
+          </View>
         </View>}
       />
     </InstantSearch>
