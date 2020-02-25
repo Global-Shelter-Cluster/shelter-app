@@ -13,3 +13,6 @@ A change in the SDK means we have to do new builds and publish them through the 
 
 When this happens, we should increment the number in the `PROD_RELEASE_CHANNEL` file, which gets picked
 up by `src/config.js`, `publish.sh`, and `build.sh`.
+
+We also need to increment the `android.versionCode` number whenever we publish a new build to the
+Android store.
